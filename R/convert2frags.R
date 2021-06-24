@@ -22,7 +22,7 @@
 convert2frags <- function(tracking_data) {
   # convert the tracking_data list to a dataframe
   tracking_data_df <-
-    as.data.frame(do.call(bind_cols, tracking_data[1:7]))
+    as.data.frame(do.call(dplyr::bind_cols, tracking_data[1:7]))
   # convert the dataframe tracking_data_df to a list containing fragments data as sublists
   tracking_data_list <-
     split(tracking_data_df, tracking_data_df$identity)
