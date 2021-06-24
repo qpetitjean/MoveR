@@ -50,7 +50,7 @@ trackSensitiv <-
     # initialize progress bar
     total = length(referenceDf)
     pb <-
-      progress_bar$new(format = "referenceDf processing [:bar] :current/:total (:percent)", total = total)
+      progress::progress_bar$new(format = "referenceDf processing [:bar] :current/:total (:percent)", total = total)
     pb$tick(0)
     Sys.sleep(0.001)
     

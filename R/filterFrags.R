@@ -68,7 +68,7 @@ filterFrags = function(trackDat,
     # initialize progress bar
     total = length(frags)
     pb <-
-      progress_bar$new(format = "fragments processing [:bar] :current/:total (:percent)", total = total)
+      progress::progress_bar$new(format = "fragments processing [:bar] :current/:total (:percent)", total = total)
     pb$tick(0)
     Sys.sleep(0.001)
     
