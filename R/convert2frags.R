@@ -29,7 +29,7 @@ convert2frags <- function(tracking_data, by = NULL) {
     as.data.frame(do.call(dplyr::bind_cols, tracking_data[1:7]))
   # convert the dataframe tracking_data_df to a list containing fragments data as sublists
   tracking_data_list <-
-    split(tracking_data_df, tracking_data_df$by)
+    split(tracking_data_df, list_get(tracking_data_df, by))
   # add fragments name fragments to each sublist
   names(tracking_data_list) <-
     paste("frags", (1:length(tracking_data_list)), sep = "_")
