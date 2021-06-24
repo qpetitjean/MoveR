@@ -1,0 +1,66 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse  = TRUE,
+  comment   = "#>",
+  fig.path  = "man/figures/",
+  out.width = "100%"
+)
+```
+
+
+
+MovR <img src="man/figures/hexsticker.png" height="120" align="right"/>
+=========================================================
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+
+The goal of the R package `MovR` is to **{{ PLEASE ADD A FEW LINES }}**
+
+
+
+## Installation
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+```{r eval = FALSE}
+# install.packages("remotes")
+remotes::install_github("qpetitjean/MovR")
+```
+
+Then you can attach the package `MovR`:
+
+```{r eval = FALSE}
+library("MovR")
+```
+
+
+
+## Overview
+
+Here is an overview of `MovR` content: **{{ PLEASE ADD A FEW LINES }}**
+
+
+
+## Citation
+
+Please cite this package as: 
+
+> PETITJEAN Quentin (`r format(Sys.Date(), "%Y")`) MovR: An R 
+package to **{{ TITLE }}**. R package version 0.0.0.9000.
+
+
+
+## Code of Conduct
+
+Please note that the `MovR` project is released with a 
+[Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). 
+By contributing to this project, you agree to abide by its terms.
