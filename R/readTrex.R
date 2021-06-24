@@ -95,19 +95,19 @@ readTrex = function(trexPath,
     mget(ls(pattern = "*_frame", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list)) 
   df_list_frame_segments <-
-    list.match(df_list_frame_temp, "_frame_segments")
+    rlist::list.match(df_list_frame_temp, "_frame_segments")
   df_list_frame_temp <-
-    list.remove(df_list_frame_temp,  names(df_list_frame_segments))
+    rlist::list.remove(df_list_frame_temp,  names(df_list_frame_segments))
   df_list_frame <-
-    list.remove(df_list_frame_temp,  "df_list_frame_segments")
+    rlist::list.remove(df_list_frame_temp,  "df_list_frame_segments")
   
   # bind results of all individuals for frame
   frame <-
-    list.rbind(df_list_frame) 
+    rlist::list.rbind(df_list_frame) 
   
   # bind results of all individuals for frame_segments
    frame_segments <-
-    list.rbind(df_list_frame_segments) 
+    rlist::list.rbind(df_list_frame_segments) 
   
   # create x.pos.head, and x.pos.centroid dataframes
   # create a list of df, specifying the pattern argument
@@ -117,51 +117,51 @@ readTrex = function(trexPath,
   
   # select lists which contain _X#wcentroid only
   df_list_Xwcentroid <-
-    list.match(df_list_x_temp, "_X#wcentroid") 
+    rlist::list.match(df_list_x_temp, "_X#wcentroid") 
   
   # remove previously selected lists from the full x list
   df_list_x_temp <-
-    list.remove(df_list_x_temp,  names(df_list_Xwcentroid)) 
+    rlist::list.remove(df_list_x_temp,  names(df_list_Xwcentroid)) 
  
    # remove previously selected df_list_Xwcentroid from the full x list
   df_list_x <-
-    list.remove(df_list_x_temp,  "df_list_Xwcentroid") 
+    rlist::list.remove(df_list_x_temp,  "df_list_Xwcentroid") 
   
   # bind results of all individuals for x position
   x.pos.head <-
-    list.rbind(df_list_x) 
+    rlist::list.rbind(df_list_x) 
   
   # bind results of all individuals for xw centroid
    x.pos.centroid <-
-    list.rbind(df_list_Xwcentroid) 
+    rlist::list.rbind(df_list_Xwcentroid) 
   
   # create y.pos.head and y.pos.centroid dataframes
   df_list_y_temp <-
     mget(ls(pattern = "*_Y", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list)) # create a list of df, specifying the pattern argument
-  df_list_Ywcentroid <- list.match(df_list_y_temp, "_Y#wcentroid")
+  df_list_Ywcentroid <- rlist::list.match(df_list_y_temp, "_Y#wcentroid")
   df_list_y_temp <-
-    list.remove(df_list_y_temp,  names(df_list_Ywcentroid))
-  df_list_y <- list.remove(df_list_y_temp,  "df_list_Ywcentroid")
+    rlist::list.remove(df_list_y_temp,  names(df_list_Ywcentroid))
+  df_list_y <- rlist::list.remove(df_list_y_temp,  "df_list_Ywcentroid")
   
   # bind results of all individuals for y position
   y.pos.head <-
-    list.rbind(df_list_y) 
+    rlist::list.rbind(df_list_y) 
   
   # bind results of all individuals for yw centroid
   y.pos.centroid <-
-    list.rbind(df_list_Ywcentroid) 
+    rlist::list.rbind(df_list_Ywcentroid) 
   
   # create time and timestamps dataframes
   df_list_time_temp <-
     mget(ls(pattern = "*_time", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  df_list_timestamp <- list.match(df_list_time_temp, "_timestamp")
+  df_list_timestamp <- rlist::list.match(df_list_time_temp, "_timestamp")
   df_list_time_temp <-
-    list.remove(df_list_time_temp,  names(df_list_timestamp))
-  df_list_time <- list.remove(df_list_time_temp,  "df_list_timestamp")
-  time <- list.rbind(df_list_time)
-  timestamp <- list.rbind(df_list_timestamp)
+    rlist::list.remove(df_list_time_temp,  names(df_list_timestamp))
+  df_list_time <- rlist::list.remove(df_list_time_temp,  "df_list_timestamp")
+  time <- rlist::list.rbind(df_list_time)
+  timestamp <- rlist::list.rbind(df_list_timestamp)
   timestamps <- as.matrix(unname(unique(timestamp / 1000000)))
   
   # create SPEED, SPEED#wcentroid, SPEED#smooth#wcentroid and SPEED#pcentroid dataframes
@@ -169,19 +169,19 @@ readTrex = function(trexPath,
     mget(ls(pattern = "*_SPEED", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
   df_list_SPEEDwcentroid <-
-    list.match(df_list_SPEED_temp, "_SPEED#wcentroid")
+    rlist::list.match(df_list_SPEED_temp, "_SPEED#wcentroid")
   df_list_SPEEDsmoothwcentroid <-
-    list.match(df_list_SPEED_temp, "_SPEED#smooth#wcentroid")
+    rlist::list.match(df_list_SPEED_temp, "_SPEED#smooth#wcentroid")
   df_list_SPEEDpcentroid <-
-    list.match(df_list_SPEED_temp, "_SPEED#pcentroid")
+    rlist::list.match(df_list_SPEED_temp, "_SPEED#pcentroid")
   df_list_SPEED_temp <-
-    list.remove(df_list_SPEED_temp,  names(df_list_SPEEDwcentroid))
+    rlist::list.remove(df_list_SPEED_temp,  names(df_list_SPEEDwcentroid))
   df_list_SPEED_temp <-
-    list.remove(df_list_SPEED_temp,  names(df_list_SPEEDsmoothwcentroid))
+    rlist::list.remove(df_list_SPEED_temp,  names(df_list_SPEEDsmoothwcentroid))
   df_list_SPEED_temp <-
-    list.remove(df_list_SPEED_temp,  names(df_list_SPEEDpcentroid))
+    rlist::list.remove(df_list_SPEED_temp,  names(df_list_SPEEDpcentroid))
   df_list_SPEED <-
-    list.remove(
+    rlist::list.remove(
       df_list_SPEED_temp,
       c(
         "df_list_SPEEDwcentroid",
@@ -189,10 +189,10 @@ readTrex = function(trexPath,
         "df_list_SPEEDpcentroid"
       )
     )
-  SPEED <- list.rbind(df_list_SPEED)
-  SPEEDwcentroid <- list.rbind(df_list_SPEEDwcentroid)
-  SPEEDsmoothwcentroid <- list.rbind(df_list_SPEEDwcentroid)
-  SPEEDpcentroid <- list.rbind(df_list_SPEEDpcentroid)
+  SPEED <- rlist::list.rbind(df_list_SPEED)
+  SPEEDwcentroid <- rlist::list.rbind(df_list_SPEEDwcentroid)
+  SPEEDsmoothwcentroid <- rlist::list.rbind(df_list_SPEEDwcentroid)
+  SPEEDpcentroid <- rlist::list.rbind(df_list_SPEEDpcentroid)
   
   # create ACCELERATIONpcentroid dataframes
   df_list_ACCELERATIONpcentroid <-
@@ -200,13 +200,13 @@ readTrex = function(trexPath,
       ls(pattern = "*_ACCELERATION#pcentroid", envir = as.environment(Variable_list)),
       envir = as.environment(Variable_list)
     )
-  ACCELERATIONpcentroid <- list.rbind(df_list_ACCELERATIONpcentroid)
+  ACCELERATIONpcentroid <- rlist::list.rbind(df_list_ACCELERATIONpcentroid)
   
   # create angle dataframes
   df_list_ANGLE <-
     mget(ls(pattern = "*_ANGLE", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  angle <- list.rbind(df_list_ANGLE)
+  angle <- rlist::list.rbind(df_list_ANGLE)
   
   # create ACCELERATIONwcentroid dataframes
   df_list_ACCELERATIONwcentroid <-
@@ -214,7 +214,7 @@ readTrex = function(trexPath,
       ls(pattern = "*_ACCELERATION#wcentroid", envir = as.environment(Variable_list)),
       envir = as.environment(Variable_list)
     )
-  ACCELERATIONwcentroid <- list.rbind(df_list_ACCELERATIONwcentroid)
+  ACCELERATIONwcentroid <- rlist::list.rbind(df_list_ACCELERATIONwcentroid)
   
   # create angle dataframes
   df_list_ANGULAR_Acentroid <-
@@ -222,13 +222,13 @@ readTrex = function(trexPath,
       ls(pattern = "*_ANGULAR_A#centroid", envir = as.environment(Variable_list)),
       envir = as.environment(Variable_list)
     )
-  ANGULAR_Acentroid <- list.rbind(df_list_ANGULAR_Acentroid)
+  ANGULAR_Acentroid <- rlist::list.rbind(df_list_ANGULAR_Acentroid)
   
   # create AX dataframes
   df_list_AX <-
     mget(ls(pattern = "*_AX", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  AX <- list.rbind(df_list_AX)
+  AX <- rlist::list.rbind(df_list_AX)
   
   # create ANGULAR_Vcentroid dataframes
   df_list_ANGULAR_Vcentroid <-
@@ -236,19 +236,19 @@ readTrex = function(trexPath,
       ls(pattern = "*_ANGULAR_V#centroid", envir = as.environment(Variable_list)),
       envir = as.environment(Variable_list)
     )
-  ANGULAR_Vcentroid <- list.rbind(df_list_ANGULAR_Vcentroid)
+  ANGULAR_Vcentroid <- rlist::list.rbind(df_list_ANGULAR_Vcentroid)
   
   # create AY dataframes
   df_list_AY <-
     mget(ls(pattern = "*_AY", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  AY <- list.rbind(df_list_AY)
+  AY <- rlist::list.rbind(df_list_AY)
   
   # create MIDLINE_OFFSET dataframes
   df_list_MIDLINE_OFFSET <-
     mget(ls(pattern = "*_MIDLINE_OFFSET", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  MIDLINE_OFFSET <- list.rbind(df_list_AY)
+  MIDLINE_OFFSET <- rlist::list.rbind(df_list_AY)
   
   # create BORDER_DISTANCEpcentroid dataframes
   df_list_BORDER_DISTANCEpcentroid <-
@@ -257,37 +257,37 @@ readTrex = function(trexPath,
       envir = as.environment(Variable_list)
     )
   BORDER_DISTANCEpcentroid <-
-    list.rbind(df_list_BORDER_DISTANCEpcentroid)
+    rlist::list.rbind(df_list_BORDER_DISTANCEpcentroid)
   
   # create VX dataframes
   df_list_VX <-
     mget(ls(pattern = "*_VX", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  VX <- list.rbind(df_list_VX)
+  VX <- rlist::list.rbind(df_list_VX)
   
   # create VY dataframes
   df_list_VY <-
     mget(ls(pattern = "*_VY", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  VY <- list.rbind(df_list_VY)
+  VY <- rlist::list.rbind(df_list_VY)
   
   # create midline_length dataframes
   df_list_midline_length <-
     mget(ls(pattern = "*_midline_length", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  midline_length <- list.rbind(df_list_midline_length)
+  midline_length <- rlist::list.rbind(df_list_midline_length)
   
   # create midline_x dataframes
   df_list_midline_x <-
     mget(ls(pattern = "*_midline_x", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  midline_x <- list.rbind(df_list_midline_x)
+  midline_x <- rlist::list.rbind(df_list_midline_x)
   
   # create midline_y dataframes
   df_list_midline_y <-
     mget(ls(pattern = "*_midline_y", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  midline_y <- list.rbind(df_list_midline_y)
+  midline_y <- rlist::list.rbind(df_list_midline_y)
   
   # create normalized_midline dataframes
   df_list_normalized_midline <-
@@ -295,25 +295,25 @@ readTrex = function(trexPath,
       ls(pattern = "*_normalized_midline", envir = as.environment(Variable_list)),
       envir = as.environment(Variable_list)
     )
-  normalized_midline <- list.rbind(df_list_normalized_midline)
+  normalized_midline <- rlist::list.rbind(df_list_normalized_midline)
   
   # create num_pixels dataframes
   df_list_num_pixels <-
     mget(ls(pattern = "*_num_pixels", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  num_pixels <- list.rbind(df_list_num_pixels)
+  num_pixels <- rlist::list.rbind(df_list_num_pixels)
   
   # create segment_length dataframes
   df_list_segment_length <-
     mget(ls(pattern = "*_segment_length", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  segment_length <- list.rbind(df_list_segment_length)
+  segment_length <- rlist::list.rbind(df_list_segment_length)
   
   # create segment_vxys dataframes
   df_list_segment_vxys <-
     mget(ls(pattern = "*_segment_vxys", envir = as.environment(Variable_list)),
          envir = as.environment(Variable_list))
-  segment_vxys <- list.rbind(df_list_segment_vxys)
+  segment_vxys <- rlist::list.rbind(df_list_segment_vxys)
   
   # create missing, identity and ntargets dataframes
   df_list_missing_temp <-
