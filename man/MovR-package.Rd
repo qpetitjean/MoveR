@@ -4,10 +4,10 @@
 \name{MovR-package}
 \alias{MovR}
 \alias{MovR-package}
-\title{MovR: The Title of the Project}
+\title{MovR: R Package For Movement Analysis}
 \description{
-A paragraph providing a full description of the project (on several 
-    lines...)
+A set of functions helping users to process (i.e., filter, clean, draw and analyse) movement datas provided by 
+    tracking software.
 }
 \seealso{
 Useful links:
