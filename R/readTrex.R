@@ -38,7 +38,7 @@ readTrex = function(trexPath,
 
   # import numpy python module to read .npz files
   np <-
-    import("numpy") 
+    reticulate::import("numpy") 
   
   # create a list of the .npz files (output for each individuals detected by Trex)
   if (length(trexPath %>% list.files(pattern = "*.npz")) == 0) {
