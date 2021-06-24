@@ -23,7 +23,7 @@
 convert2frags <- function(tracking_data, by = NULL) {
   # convert the tracking_data list to a dataframe
   if(is.null(by)){
-      stop(by argument is missing: \nimpossible to join fragments without their identity)
+      stop("by argument is missing: \nimpossible to join fragments without their identity")
   }
   tracking_data_df <-
     as.data.frame(do.call(dplyr::bind_cols, tracking_data[1:7]))
