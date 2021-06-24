@@ -10,7 +10,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-2708-7831")),
            person(given   = "Vincent",
            family  = "CALCAGNO",
-           role    = c("aut", "cre"),
+           role    = c("aut"),
            email   = "vincent.calcagno@inrae.fr",
            comment = c(ORCID = "0000-0002-5781-967X")))
 Description: A set of functions helping users to process (i.e., filter, clean, draw and analyse) movement datas provided by 
