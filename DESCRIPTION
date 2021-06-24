@@ -1,6 +1,6 @@
 Package: MovR
 Type: Package
-Title: R Package For Movement Analysis
+Title: The Title of the Project
 Version: 0.0.0.9000
 Authors@R: c(
     person(given   = "Quentin",
