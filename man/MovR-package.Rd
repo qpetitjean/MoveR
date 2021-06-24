@@ -20,5 +20,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Quentin PETITJEAN \email{q.petitjean1@gmail.com} (\href{https://orcid.org/0000-0003-2708-7831}{ORCID})
 
+Authors:
+\itemize{
+  \item Vincent CALCAGNO \email{vincent.calcagno@inrae.fr} (\href{https://orcid.org/0000-0002-5781-967X}{ORCID})
+}
+
 }
 \keyword{internal}
