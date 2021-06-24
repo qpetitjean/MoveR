@@ -8,8 +8,8 @@ Authors@R: c(
            role    = c("aut", "cre"),
            email   = "q.petitjean1@gmail.com",
            comment = c(ORCID = "0000-0003-2708-7831")))
-Description: A paragraph providing a full description of the project (on several 
-    lines...)
+Description: A set of functions helping users to process (i.e., filter, clean, draw and analyse) movement datas provided by 
+tracking software.  
 URL: https://github.com/qpetitjean/MovR
 BugReports: https://github.com/qpetitjean/MovR/issues
 License: GPL (>= 2)
@@ -17,6 +17,13 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Imports: 
+    plyr
+    progress
+    R.matlab
+    reticulate
+    rlist
+    tidyverse
 Suggests: 
     knitr,
     rmarkdown,
