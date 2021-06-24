@@ -337,13 +337,13 @@ readTrex = function(trexPath,
   
   # create identity df
   identity_temp <-
-    data.frame(str_remove(missing_track$identity, "_missing"))
+    data.frame(stringr::str_remove(missing_track$identity, "_missing"))
   names(identity_temp)[1] <- "identity"
   
   # keep the id of individual only
    identity <-
     as.matrix(unname(as.numeric(
-      str_remove(identity_temp$identity, "indiv")
+      stringr::str_remove(identity_temp$identity, "indiv")
     ))) 
   missing <- as.matrix(unname(missing_track$missing_ind))
   
