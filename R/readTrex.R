@@ -329,7 +329,7 @@ readTrex = function(trexPath,
     purrr::map(df_list_missing_temp3, ~ tibble::rowid_to_column(.x, "frame_numb"))
   missing_track <- as.data.frame(df_list_missing %>%
                                    purrr::map_df(dplyr::bind_rows, .id = "identity"))
-  ntargets_temp <- plyr::ddply(missing_track, "frame_numb", numcolwise(sum))
+  ntargets_temp <- plyr::ddply(missing_track, "frame_numb", plyr::numcolwise(sum))
   ntargets_temp$indiv_numb <-
     rep(length(unique(missing_track$identity)))
   ntargets <-
