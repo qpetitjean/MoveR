@@ -79,14 +79,14 @@ readTrex = function(trexPath,
     lapply(Trex_ind_list, function(i) {
       np$load(file.path(trexPath, i))
     }) %>%
-    set_names(paste("data", Trex_ind_names, sep = "_")) 
+    purr::set_names(paste("data", Trex_ind_names, sep = "_")) 
 
   Variable_list <- mapply(function(j, k) {
     as.matrix(j[[k]])
   },
   indiv_list,
   rep(indiv_list[[1]]$files, times = length(indiv_list))) %>%
-    set_names(paste(Trex_ind_names, rep(indiv_list[[1]]$files, times = length(indiv_list)), sep =
+    purr::set_names(paste(Trex_ind_names, rep(indiv_list[[1]]$files, times = length(indiv_list)), sep =
                       "_"))
   
   # create frame and frame_segments dataframes
