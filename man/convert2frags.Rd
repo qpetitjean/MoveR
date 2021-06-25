@@ -4,10 +4,12 @@
 \alias{convert2frags}
 \title{Convert raw tracking data to fragments list}
 \usage{
-convert2frags(tracking_data)
+convert2frags(tracking_data, by = NULL)
 }
 \arguments{
 \item{tracking_data}{A list containing raw tracking datas}
+
+\item{by}{A character vector identifying fragments to join by}
 }
 \value{
 A list of fragments
