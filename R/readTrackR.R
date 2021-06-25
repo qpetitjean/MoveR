@@ -3,7 +3,7 @@
 #'
 #' @description
 #'
-#' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorY}}
+#' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
 #'
 #' @param trackRPath The path of the TrackR output file (.csv) to load within R environment
 #' (e.g. "C:/Users/[username]/Desktop/video_folder/Results.csv")

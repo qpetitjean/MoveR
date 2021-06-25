@@ -3,8 +3,6 @@
 #' @description compare the location of individual performed manually and by tracking software to return false positive, false negative and
 #' sensitivity index
 #'
-#' @seealso
-#'
 #' @param referenceDf a list of data frame containing "true" x and y coordinates of individuals (manually detected using imageJ for instance)
 #' as well as the id of the frame. In case the list contains several data frame (i.e., location of individuals for several frames),
 #' sensitivity index is averged and Sd, Se and n are returned

@@ -6,7 +6,7 @@
 #' The second list of 33 elements return the classic set of variables returned by Trex.
 #' If needed this function can also mirror Y coordinates
 #'
-#' @seealso readCtrax, mirrorYFunc
+#' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
 #'
 #' @param trexPath The path of the Trex outputs folder to load .npz files within R environment 
 #' (e.g. "C:/Users/[username]/Desktop/Trex_output")

@@ -2,7 +2,7 @@
 #'
 #' @description
 #'
-#' @seealso read_Ctrax, read_Trex, readTrackR, mirrorY_coords
+#' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readTrackR}}, \code{\link{mirrorYFunc}}
 #'
 #' @param IdtrackerPath The path of the idtrackerai output file (.npz) to load within R environment
 #' (e.g. "C:/Users/[username]/Desktop/video_folder/trajectories.npz")

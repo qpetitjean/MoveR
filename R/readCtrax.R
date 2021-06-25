@@ -3,7 +3,7 @@
 #' @description Given a .mat file corresponding to Ctrax tracking output,
 #' this function open the .mat file in R, reconstruct time serie and if needed mirror Y coordinates
 #'
-#' @seealso generateTime, mirrorYFunc
+#' @seealso \code{\link{generateTime}}, \code{\link{mirrorYFunc}} 
 #'
 #' @param ctraxPath The path of the Ctrax output file to load within R environment 
 #' (e.g. "C:/Users/[username]/Desktop/video_folder/Ctrax_output.mat")
