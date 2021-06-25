@@ -32,7 +32,7 @@ readIdtracker = function(IdtrackerPath,
                          imgHeight = NA) {
   # import numpy python module to read .npz files
   np <-
-    import("numpy")
+    reticulate::import("numpy")
   
   idtracker_data <-
     np$load(

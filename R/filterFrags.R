@@ -78,9 +78,14 @@ filterFrags = function(trackDat,
       ## split each fragment according to the filter and the specified condition
       newFrags <-
         split(trackDat[[i]], cumsum(filter[[i]] == splitCond))
-      ## remove the first row of each new fragment since it correspond to an element which does not respect condition
-      newFrags <- lapply(newFrags, function(x)
-        x[-1,])
+      ## remove the first row of each new fragment when it correspond to an element which does not respect condition
+        if (length(newFrags) > 1) {
+        newfrags_l1 <- newFrags[[1]]
+        newFrags <- lapply(newFrags[2:max(length((newFrags)))], function(x)
+          x[-1, ])
+        newFrags[["0"]] <- newfrags_l1
+        newFrags <- newFrags[sort(names(newFrags))]
+      }
       ## in case there is empty new fragment removed it
       newFrags <-
         newFrags[sapply(newFrags, function(x)
