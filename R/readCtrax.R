@@ -3,7 +3,7 @@
 #' @description Given a .mat file corresponding to Ctrax tracking output,
 #' this function open the .mat file in R, reconstruct time serie and if needed mirror Y coordinates
 #'
-#' @seealso generate_time, mirrorY_coords
+#' @seealso generateTime, mirrorYFunc
 #'
 #' @param ctraxPath The path of the Ctrax output file to load within R environment 
 #' (e.g. "C:/Users/[username]/Desktop/video_folder/Ctrax_output.mat")
@@ -31,12 +31,12 @@
 readCtrax=function(ctraxPath, sep = ",", mirrorY = FALSE, imgHeight = NA){ 
 
   # Import output files from Ctrax in a list of df 
-  if (inherits(try(readMat(ctraxPath, sep = sep), silent = TRUE)
+  if (inherits(try(R.matlab::readMat(ctraxPath, sep = sep), silent = TRUE)
                , "try-error")) {
     stop("undefined or wrong path supplied : No such file or directory")
     
   } else {
-    Ctrax_Raw <- readMat(ctraxPath, sep = sep)
+    Ctrax_Raw <- R.matlab::readMat(ctraxPath, sep = sep)
   }
 
   # generate a vector containing the corresponding frame number for each row of the dataset
