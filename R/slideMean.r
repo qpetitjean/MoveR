@@ -1,4 +1,3 @@
-
 #' @title Sliding mean
 #'
 #' @description Given a vector containing numeric data, this function returns a vector of smoothed data by computing 
