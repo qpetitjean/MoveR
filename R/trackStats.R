@@ -11,7 +11,7 @@
 #' the frequency at which frames are recorded/displayed in the video
 #'
 #' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates 
-#' (e.g., size in cm / size in pixels; see TrajScale())
+#' (e.g., size in cm / size in pixels; see trajr::TrajScale())
 #'
 #' @param unit The unit expected after scaling (e.g., "cm", "m", ...)
 #'
@@ -81,16 +81,16 @@ trackStats = function(trackDat,
   trjList <- list()
   for (i in seq(length(trackDat))) {
     trj_temp <-  
-      TrajFromCoords(dplyr::select(trackDat[[i]], c("x.pos", "y.pos", "frame")), spatialUnits = "pixels", timeCol = 3)
+      trajr::TrajFromCoords(dplyr::select(trackDat[[i]], c("x.pos", "y.pos", "frame")), spatialUnits = "pixels", timeCol = 3)
     trjList[[names(trackDat)[i]]] <-
-      TrajScale(trj_temp, scale, "cm")
+      trajr::TrajScale(trj_temp, scale, "cm")
     # progress bar
     pb$tick(1)
     Sys.sleep(1 / 1000)
   }
   fragLength_unit <- paste("fragLength", unit, sep = "_")
   fragLength <- unname(unlist(lapply(trjList, function(x)
-    TrajLength(x))))
+    trajr::TrajLength(x))))
   
   ## compute total frags length in cm
   totFragLength <- sum(unlist(fragLength))
