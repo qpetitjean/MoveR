@@ -38,7 +38,7 @@ analyseFrags <- function(trackDat, customFunc) {
   Sys.sleep(0.001)
   
   for(i in names(trackDat)){
-    trackDat[[VarName]] <- customFunc(trackDat[[i]]) 
+    trackDat[[i]][[VarName]] <- customFunc(trackDat[[i]]) 
     # progress bar
     pb$tick(1)
     Sys.sleep(1 / 1000)

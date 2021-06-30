@@ -18,11 +18,11 @@
 #' @examples
 #' set.seed(123) 
 #' # compute smoothed mean 
-#' smoothMean <- slidFunc( x = rnorm(150), Tstep = 15, customFunc = function (x) mean(x, na.rm = T))
+#' smoothMean <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) mean(x, na.rm = T))
 #' # compute smoothed variance 
-#' smoothVar <- slidFunc( x = rnorm(150), Tstep = 15, customFunc = function (x) var(x, na.rm = T))
+#' smoothVar <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) var(x, na.rm = T))
 #' # compute smoothed sd
-#' smoothSd <- slidFunc( x = rnorm(150), Tstep = 15, customFunc = function (x) sd(x, na.rm = T))
+#' smoothSd <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) sd(x, na.rm = T))
 
 slidWin <- function (x, Tstep, customFunc) {
   smoothed <- vector()
