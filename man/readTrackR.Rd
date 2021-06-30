@@ -27,5 +27,5 @@ A list containing tracking data
 
 }
 \seealso{
-\code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorY}}
+\code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
 }

@@ -32,5 +32,5 @@ If needed this function can also mirror Y coordinates
 
 }
 \seealso{
-readCtrax, mirrorYFunc
+\code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
 }

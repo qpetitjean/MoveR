@@ -14,7 +14,7 @@ trackStats(trackDat, frameR = NA, scale = NA, unit = "unit")
 the frequency at which frames are recorded/displayed in the video}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-(e.g., size in cm / size in pixels; see TrajScale())}
+(e.g., size in cm / size in pixels; see trajr::TrajScale())}
 
 \item{unit}{The unit expected after scaling (e.g., "cm", "m", ...)}
 }

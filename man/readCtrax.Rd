@@ -28,5 +28,5 @@ this function open the .mat file in R, reconstruct time serie and if needed mirr
 
 }
 \seealso{
-generateTime, mirrorYFunc
+\code{\link{generateTime}}, \code{\link{mirrorYFunc}}
 }

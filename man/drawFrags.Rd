@@ -6,10 +6,9 @@
 \usage{
 drawFrags(
   fragsList,
-  selFrags = c(NA),
-  viDur = NA,
+  selFrags = NULL,
   imgRes = c(1920, 1080),
-  timeWin = list(0, viDur),
+  timeWin = list(c(0, Inf)),
   colGrad = c("#000000", "#999999", "#6600CC", "#9999FF", "#33CCFF", "#0066CC",
     "#66CC00", "#FFFF00", "#FF3300", "#CC0000"),
   add2It = NULL
@@ -20,8 +19,6 @@ drawFrags(
 
 \item{selFrags}{A vector of either numeric values or character strings,
 the number or the id of the selFrags to plot (optional)}
-
-\item{viDur}{A numeric value expressed in frames, the length/duration of the video (mandatory)}
 
 \item{imgRes}{A vector of 2 numeric values, resolution of the video used as x and y limit of the plot
 (i.e., the number of pixels in image width and height, e.g., 1920 x 1080).}
@@ -52,9 +49,9 @@ for (i in seq(10)) {
  rPath <- TrajGenerate(1000, random = TRUE, fps = 1)
  rPath$y = rPath$y - min(rPath$y)
  rPath$x = rPath$x - min(rPath$x)
- i = data.frame(rPath[1], rPath[2], rPath[3])
- names(i) = c("x.pos", "y.pos", "frame")
- fragsList = list.append(fragsList, i)
+ sillydf = data.frame(rPath[1], rPath[2], rPath[3])
+ names(sillydf) = c("x.pos", "y.pos", "frame")
+ fragsList[[i]] = sillydf
 }
 # convert frag list to a simple list to extract image resolution for generated fragments (x, y scales of the plot)
 trackDat <- convert2list(fragsList)
@@ -63,8 +60,7 @@ trackDat <- convert2list(fragsList)
 drawFrags(
  fragsList,
  imgRes = c(max(trackDat$x.pos), max(trackDat$y.pos)),
- timeWin = list(c(0, 1001)),
- viDur = 1001
+ timeWin = list(c(0, 1001))
 )
 
 # Exemple 2: draw only selected fragments (i.e., 1, 5 and 10), for the whole video duration
@@ -72,7 +68,6 @@ drawFrags(
  fragsList,
  imgRes = c(max(trackDat$x.pos), max(trackDat$y.pos)),
  timeWin = list(c(0, 1001)),
- viDur = 1001,
  selFrags = c(1, 5, 10)
 )
 
@@ -80,8 +75,7 @@ drawFrags(
 drawFrags(
  fragsList,
  imgRes = c(max(trackDat$x.pos), max(trackDat$y.pos)),
- timeWin = list(c(1, 100), c(800, 900)),
- viDur = 1001
+ timeWin = list(c(1, 100), c(800, 900))
 )
 
 # Exemple 4: draw fragments according to time intervals (first interval 1 to 100, second interval 800 to 900 frames)
@@ -90,7 +84,6 @@ drawFrags(
 fragsList,
 imgRes = c(max(trackDat$x.pos), max(trackDat$y.pos)),
 timeWin = list(c(1, 100), c(800, 900)),
-viDur = 1001,
 add2It = list(for (j in seq(fragsList)) {
  points(
    fragsList[[j]]$x.pos[fragsList[[j]]$frame == 1],
