@@ -38,7 +38,14 @@ analyseFrags <- function(trackDat, customFunc) {
   Sys.sleep(0.001)
   
   for(i in names(trackDat)){
-    trackDat[[i]][[VarName]] <- customFunc(trackDat[[i]]) 
+    if (!inherits(try(customFunc(trackDat[[i]]), silent = T)
+                  , "try-error")) {
+    trackDat[[i]][[VarName]] <- customFunc(trackDat[[i]])
+    } else if (inherits(try(customFunc(trackDat[[i]]), silent = T)
+                        , "try-error") | class(customFunc(trackDat[[i]])) == "function") {
+      trackDat[[i]][[VarName]] <- NA
+      warning("In fragment ",i , " : analyseFrags returned NA, perhaps check customFunc parameters")
+    }
     # progress bar
     pb$tick(1)
     Sys.sleep(1 / 1000)
