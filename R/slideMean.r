@@ -18,4 +18,4 @@
 #' # TODO
 #'
 
-slidMean <- function(x, TStep){stats::filter(x, rep(1 / TStep, TStep), method = "convolution", sides = 2)}
+slideMean <- function(x, TStep){stats::filter(x, rep(1 / TStep, TStep), method = "convolution", sides = 2)}
