@@ -43,4 +43,5 @@ analyseFrags <- function(trackDat, customFunc) {
     pb$tick(1)
     Sys.sleep(1 / 1000)
   }
+  return(trackDat)
 }
