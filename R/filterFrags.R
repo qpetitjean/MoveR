@@ -90,7 +90,7 @@ filterFrags = function(trackDat,
       newFrags <-
         newFrags[sapply(newFrags, function(x)
           dim(x)[1]) > 0]
-      ## append filter the new fragments by mindur and append them to the output
+      ## filter the new fragments by mindur and append them to the output
       ### in case the filtration step does not return new fragment
       if (length(newFrags) == 0) {
         nbNew_temp <- 0

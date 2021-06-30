@@ -8,7 +8,7 @@
 #'
 #' @param TStep A numeric value corresponding to the length of the sliding window (number of values)
 #' 
-#' @param customFunc A function used to perform the conputation along the sliding window
+#' @param customFunc A function used to perform the computation along the sliding window
 #'
 #' @return A vector containing smoothed data 
 #'
