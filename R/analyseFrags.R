@@ -29,7 +29,7 @@
 analyseFrags <- function(trackDat, customFunc, VarName = NULL) {
   
   # in case VarName is not specified, extract the name of the custom function
-  if (VarName == NULL) {
+  if (is.null(VarName)) {
     VarName <- strsplit(sub("\\(.*", "", deparse(customFunc)), " ")
     if (length(VarName) > 1) {
       VarName = VarName[[2]]
