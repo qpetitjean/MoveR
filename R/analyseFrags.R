@@ -39,7 +39,7 @@ analyseFrags <- function(trackDat, customFunc) {
   
   for(i in names(trackDat)){
     if (!inherits(try(customFunc(trackDat[[i]]), silent = T)
-                  , "try-error")) {
+                  , "try-error") | !class(customFunc(trackDat[[i]])) == "function") {
     trackDat[[i]][[VarName]] <- customFunc(trackDat[[i]])
     } else if (inherits(try(customFunc(trackDat[[i]]), silent = T)
                         , "try-error") | class(customFunc(trackDat[[i]])) == "function") {
