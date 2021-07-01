@@ -1,4 +1,4 @@
-#' @title Compute speed index 
+#' @title Compute speed 
 #'
 #'
 #' @description Given a data frames containing tracking informations for a given fragment, 

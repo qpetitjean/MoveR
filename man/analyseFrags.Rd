@@ -12,7 +12,7 @@ analyseFrags(trackDat, customFunc)
 \item{customFunc}{A function used to perform the computation along all fragments}
 }
 \value{
-this function returns a new list of dataframe corresponding to each new fragments created based on the result of filterFunc
+this function returns a new list of dataframe corresponding to each new fragments with the result of customFunc appended
 }
 \description{
 Given a list of data frames containing tracking informations for each fragment and

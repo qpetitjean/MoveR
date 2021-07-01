@@ -1,4 +1,4 @@
-#' @title Compute corrected rediscretized sinuosity index 
+#' @title Compute turning angle
 #'
 #'
 #' @description Given a data frames containing tracking informations for a given fragment, 
@@ -46,12 +46,14 @@ turnAngle <- function(df, unit = c("radians", "degrees")) {
     }
   }
   turnAngle <-  append(turnAngle, NA, after = length(turnAngle))
-  if (unit == "radians") {
+  if (length(unit) > 1) {
+    stop("Unit argument is not specified, choose either radians or degrees")
+  } else if (!unit == "degrees" & !unit == "radians"){
+    stop("Unit argument seems misspelled, choose either radians or degrees")
+  } else if (unit == "radians") {
     turnAngle <- turnAngle
   } else if (unit == "degrees") {
     turnAngle <- turnAngle * 180 / pi
-  }if (length(unit) > 1 | !unit == "degrees" | !unit == "radians") {
-    stop("Unit argument is not specified or misspelled, choose either radians or degrees")
   }
   return(turnAngle)
 }

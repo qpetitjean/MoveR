@@ -2,7 +2,7 @@
 % Please edit documentation in R/speed.R
 \name{speed}
 \alias{speed}
-\title{Compute speed index}
+\title{Compute speed}
 \usage{
 speed(df, scale = NULL, unit = NULL)
 }
@@ -15,12 +15,12 @@ speed(df, scale = NULL, unit = NULL)
 \item{unit}{The unit expected after scaling (e.g., "cm", "m", ...)}
 }
 \value{
-this function returns a vector containing the value of sinuosity for a given fragment
+this function returns a vector containing the value of speed along a given fragment
 }
 \description{
 Given a data frames containing tracking informations for a given fragment,
-this function rediscretize fragment path and returns a vector containing the value of
-sinuosity along this fragment
+this function scale fragment path and returns a vector containing the value of
+speed along this fragment
 }
 \examples{
 

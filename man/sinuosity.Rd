@@ -7,7 +7,7 @@
 sinuosity(df, scale = NULL, unit = NULL, segL)
 }
 \arguments{
-\item{df}{A data frame containing at x, y coordinates and time columns named "x.pos", "y.pos", "frame" for a fragment}
+\item{df}{A data frame containing x, y coordinates and time columns named "x.pos", "y.pos", "frame" for a fragment}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
 (e.g., size in cm / size in pixels; see trajr::TrajScale())}
