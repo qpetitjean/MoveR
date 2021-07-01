@@ -2,8 +2,8 @@
 #'
 #'
 #' @description Given a data frames containing tracking informations for a given fragment, 
-#' this function rediscretize fragment path and returns a vector containing the value of 
-#' sinuosity along this fragment
+#' this function scale fragment path and returns a vector containing the value of 
+#' speed along this fragment
 #' 
 #'
 #' @param df A data frame containing at x, y coordinates and time columns named "x.pos", "y.pos", "frame" for a fragment
@@ -14,10 +14,10 @@
 #' @param unit The unit expected after scaling (e.g., "cm", "m", ...)
 #' 
 #'
-#' @return this function returns a vector containing the value of sinuosity for a given fragment
+#' @return this function returns a vector containing the value of speed along a given fragment
 #'
 #'
-#' @authors Quentin Petitjean, Vincent Calcagno
+#' @authors Quentin Petitjean
 #'
 #'
 #'

@@ -10,7 +10,7 @@
 #' 
 #' @param customFunc A function used to perform the computation along all fragments
 #'
-#' @return this function returns a new list of dataframe corresponding to each new fragments created based on the result of filterFunc
+#' @return this function returns a new list of dataframe corresponding to each new fragments with the result of customFunc appended
 #'
 #'
 #' @authors Quentin Petitjean
@@ -39,7 +39,7 @@ analyseFrags <- function(trackDat, customFunc) {
   
   for(i in names(trackDat)){
     if (!inherits(try(customFunc(trackDat[[i]]), silent = T)
-                  , "try-error") | !class(customFunc(trackDat[[i]])) == "function") {
+                  , "try-error") & !class(customFunc(trackDat[[i]])) == "function") {
     trackDat[[i]][[VarName]] <- customFunc(trackDat[[i]])
     } else if (inherits(try(customFunc(trackDat[[i]]), silent = T)
                         , "try-error") | class(customFunc(trackDat[[i]])) == "function") {
