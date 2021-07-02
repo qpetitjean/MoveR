@@ -1,5 +1,4 @@
 #' @title Sliding window
-
 #' @description Given a vector containing numeric data, this function returns a vector of smoothed data by performing any computation 
 #' along a centered sliding window 
 #'
@@ -23,6 +22,8 @@
 #' smoothVar <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) var(x, na.rm = T))
 #' # compute smoothed sd
 #' smoothSd <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) sd(x, na.rm = T))
+#'
+#' @export
 
 slidWin <- function (x, Tstep, customFunc) {
   smoothed <- vector()
