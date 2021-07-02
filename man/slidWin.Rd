@@ -2,7 +2,7 @@
 % Please edit documentation in R/slidWin.R
 \name{slidWin}
 \alias{slidWin}
-\title{Sliding mean}
+\title{Sliding window}
 \usage{
 slidWin(x, Tstep, customFunc)
 }
@@ -28,4 +28,5 @@ smoothMean <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) mea
 smoothVar <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) var(x, na.rm = T))
 # compute smoothed sd
 smoothSd <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) sd(x, na.rm = T))
+
 }
