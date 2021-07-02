@@ -1,4 +1,4 @@
-#' @title Sliding mean
+#' @title Sliding window
 
 #' @description Given a vector containing numeric data, this function returns a vector of smoothed data by performing any computation 
 #' along a centered sliding window 
