@@ -7,7 +7,8 @@
 convert2list(tracking_data)
 }
 \arguments{
-\item{tracking_data}{A list containing fragments tracking datas}
+\item{tracking_data}{A list of data frame containing tracking informations for each fragment
+(e.g., maj.ax, angle, min.ax, x.pos, y.pos, ...)}
 }
 \value{
 A list of tracking data as in raw file
