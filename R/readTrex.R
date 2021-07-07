@@ -104,7 +104,7 @@ readTrex = function(trexPath,
     gsub("[.][0-9]*", "", rownames(missing_track))
   ntargets_temp <-
     stats::ave(missing_track$missingInd, missing_track$frameNumb, FUN = sum)
-  ntargets_temp <- as.data.frame(ntargets_temp)
+  ntargets_temp <- unique(as.data.frame(cbind(ntargets_temp, frameNumb = missing_track$frameNumb)))
   ## compute number of missing individual per frame
   ntargets_temp$indiv_numb <-
     rep(length(unique(missing_track$identity)))
@@ -161,7 +161,7 @@ readTrex = function(trexPath,
       x.pos = unname(as.matrix(metricList[["X#wcentroid"]])),
       y.pos = unname(as.matrix(metricList[["Y#wcentroid"]])),
       identity = identity,
-      frame = frame,
+      frame = unname(as.matrix(unique(metricList[["frame"]]))),
       ntargets = ntargets,
       timestamps = unname(as.matrix(unique(
         metricList$timestamp / 1000000
