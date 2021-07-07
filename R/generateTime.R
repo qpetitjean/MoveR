@@ -29,4 +29,3 @@ generateTime <- function(trackingData) {
   }
   return(allTimes)
 }
-

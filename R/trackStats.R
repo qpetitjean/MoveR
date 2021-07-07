@@ -81,7 +81,7 @@ trackStats = function(trackDat,
   trjList <- list()
   for (i in seq(length(trackDat))) {
     trj_temp <-  
-      trajr::TrajFromCoords(dplyr::select(trackDat[[i]], c("x.pos", "y.pos", "frame")), spatialUnits = "pixels", timeCol = 3)
+      trajr::TrajFromCoords(df[, c("x.pos", "y.pos", "frame")], spatialUnits = "pixels", timeCol = 3)
     trjList[[names(trackDat)[i]]] <-
       trajr::TrajScale(trj_temp, scale, "cm")
     # progress bar

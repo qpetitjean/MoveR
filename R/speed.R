@@ -36,8 +36,10 @@ speed <- function(df, scale = NULL, unit = NULL) {
     ("the scaling factor to be applied to the trajectory coordinates is missing, default is 1/1")
     scale = 1/1
   }
+  
+  
   trj <-
-    trajr::TrajFromCoords(dplyr::select(df, c("x.pos", "y.pos", "frame")),
+    trajr::TrajFromCoords(df[, c("x.pos", "y.pos", "frame")],
                           spatialUnits = "pixels",
                           timeCol = 3)
   trj <- trajr::TrajScale(trj, scale, unit)

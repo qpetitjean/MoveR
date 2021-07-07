@@ -55,7 +55,7 @@ if (FALSE %in% selFrames) {
             list(increment[which(selFrames == FALSE)]) ,
             sep = " ")
     w3 <-
-      ",\n resampling have added a line containing NA, perhaps consider modifying Tstep"
+      ",\n resampling have added lines containing NA, perhaps consider modifying Tstep"
     warning(w1, ": ", w2, w3)
   } else {
     w1 <- paste("In fragment", unique(trackDat[[i]]$identity), sep = " ")
@@ -64,7 +64,7 @@ if (FALSE %in% selFrames) {
             list(increment[which(selFrames == FALSE)]) ,
             sep = " ")
     w3 <-
-      ",\n resampling have added a line containing NA, perhaps consider modifying Tstep"
+      ",\n resampling have added lines containing NA, perhaps consider modifying Tstep"
     warning(w1, ": ", w2, w3)
     
   }

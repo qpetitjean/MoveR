@@ -22,14 +22,26 @@
 
 convert2frags <- function(tracking_data, by = NULL) {
   # convert the tracking_data list to a dataframe
-  if(is.null(by)){
-      stop("by argument is missing: \nimpossible to join fragments without an identifier")
+  if (is.null(by)) {
+    stop("by argument is missing: impossible to join fragments without an identifier")
   }
-  tracking_data_df <-
-    as.data.frame(do.call(dplyr::bind_cols, tracking_data))
+  if (inherits(try(as.data.frame(tracking_data), silent = T)
+               , "try-error")) {
+    diff <-
+      unlist(lapply(tracking_data, length))[!duplicated(unlist(lapply(tracking_data, length)))]
+    sim <-
+      unlist(lapply(tracking_data, length))[duplicated(unlist(lapply(tracking_data, length)))]
+    diff <- diff[!diff %in% sim]
+    stop(
+      "The input contains lists with different length: consider removing ",
+      deparse(names(diff))
+    )
+  } else {
+    tracking_data_df <- as.data.frame(tracking_data)
+  }
   # convert the dataframe tracking_data_df to a list containing fragments data as sublists
   tracking_data_list <-
     split(tracking_data_df, list_get(tracking_data_df, by))
-
+  
   return(tracking_data_list)
 }
