@@ -17,13 +17,13 @@
 #' @examples
 #'
 #'#' # Exemple 1: test for the presence of infinite value in x.pos, the result is TRUE 
-#' if infinite values are detected
+#'   # if infinite values are detected
 #'  
 #' filterFunc(trackDat, toFilter = "x.pos", customFunc = function(x) is.infinite(x))
 #' 
 #'
 #' # Exemple 2: perform a condition test on the length of the individuals, the result is TRUE 
-#' if individual size is ranging between 1 and 20 pixels
+#' # if individual size is ranging between 1 and 20 pixels
 #'  
 #' filterFunc(trackDat, toFilter = "maj.ax", customFunc = function(x) x >= 1 & x <= 20)
 #'
