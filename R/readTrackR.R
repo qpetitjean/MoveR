@@ -1,7 +1,9 @@
 
 #' @title Load TrackR tracking output .csv file
 #'
-#' @description
+#' @description Given a .csv file corresponding to TrackR tracking output,
+#' this function process the .csv file to return a list containing tracking data
+#' If needed this function can also mirror Y coordinates
 #'
 #' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
 #'
@@ -12,7 +14,6 @@
 #'
 #' @param imgHeight A numeric value expressed in pixels, the true length of Y axis
 #' corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE)
-#'
 #'
 #'
 #' @return A list containing tracking data
