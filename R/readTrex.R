@@ -161,7 +161,7 @@ readTrex = function(trexPath,
       x.pos = unname(as.matrix(metricList[["X#wcentroid"]])),
       y.pos = unname(as.matrix(metricList[["Y#wcentroid"]])),
       identity = identity,
-      frame = unname(as.matrix(unique(metricList[["frame"]]))),
+      frame = unname(as.matrix(metricList[["frame"]])),
       ntargets = ntargets,
       timestamps = unname(as.matrix(unique(
         metricList$timestamp / 1000000
