@@ -4,7 +4,7 @@
 \alias{readCtrax}
 \title{Load Ctrax tracking output file}
 \usage{
-readCtrax(ctraxPath, sep = ",", mirrorY = FALSE, imgHeight = NA)
+readCtrax(ctraxPath, mirrorY = FALSE, imgHeight = NA)
 }
 \arguments{
 \item{ctraxPath}{The path of the Ctrax output file to load within R environment

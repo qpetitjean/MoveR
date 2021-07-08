@@ -19,7 +19,9 @@ corresponding to the height of the image or video resolution (default = 1080)}
 A list containing tracking data
 }
 \description{
-
+Given a .npy file corresponding to idtracker tracking output,
+this function process the .npy file to return a list containing tracking data
+If needed this function can also mirror Y coordinates
 }
 \examples{
 

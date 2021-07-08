@@ -19,7 +19,9 @@ corresponding to the height of the image or video resolution (optional, only use
 A list containing tracking data
 }
 \description{
-
+Given a .csv file corresponding to TrackR tracking output,
+this function process the .csv file to return a list containing tracking data
+If needed this function can also mirror Y coordinates
 }
 \examples{
 
