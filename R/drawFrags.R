@@ -43,7 +43,8 @@
 #'  names(sillydf) = c("x.pos", "y.pos", "frame")
 #'  fragsList[[i]] = sillydf
 #'}
-#'# convert frag list to a simple list to extract image resolution for generated fragments (x, y scales of the plot)
+#'# convert frag list to a simple list to extract image resolution for generated fragments 
+#'# (x, y scales of the plot)
 #' trackDat <- convert2list(fragsList)
 #'
 #'# Exemple 1: draw all fragments, for the whole video duration
@@ -61,15 +62,18 @@
 #'  selFrags = c(1, 5, 10)
 #')
 #'
-#'# Exemple 3: draw fragments according to time intervals (first interval 1 to 100, second interval 800 to 900 frames)
+#'# Exemple 3: draw fragments according to time intervals 
+#'# (first interval 1 to 100, second interval 800 to 900 frames)
 #'drawFrags(
 #'  fragsList,
 #'  imgRes = c(max(trackDat$x.pos), max(trackDat$y.pos)),
 #'  timeWin = list(c(1, 100), c(800, 900))
 #')
 #'
-#'# Exemple 4: draw fragments according to time intervals (first interval 1 to 100, second interval 800 to 900 frames)
-#'# and add dummy points on the plot (here we draw the starting and ending points of each fragments in blue and green respectively)
+#'# Exemple 4: draw fragments according to time intervals
+#'# (first interval 1 to 100, second interval 800 to 900 frames)
+#'# and add dummy points on the plot 
+#'# (here we draw the starting and ending points of each fragments in blue and green respectively)
 #'drawFrags(
 #' fragsList,
 #' imgRes = c(max(trackDat$x.pos), max(trackDat$y.pos)),
