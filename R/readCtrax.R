@@ -28,15 +28,15 @@
 #'
 #' @export
 
-readCtrax=function(ctraxPath, sep = ",", mirrorY = FALSE, imgHeight = NA){ 
+readCtrax=function(ctraxPath, mirrorY = FALSE, imgHeight = NA){ 
 
   # Import output files from Ctrax in a list of df 
-  if (inherits(try(R.matlab::readMat(ctraxPath, sep = sep), silent = TRUE)
+  if (inherits(try(R.matlab::readMat(ctraxPath), silent = TRUE)
                , "try-error")) {
     stop("undefined or wrong path supplied : No such file or directory")
     
   } else {
-    Ctrax_Raw <- R.matlab::readMat(ctraxPath, sep = sep)
+    Ctrax_Raw <- R.matlab::readMat(ctraxPath)
   }
 
   # generate a vector containing the corresponding frame number for each row of the dataset
