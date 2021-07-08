@@ -1,6 +1,8 @@
 #' @title Load idtracker tracking output .npy file
 #'
-#' @description
+#' @description Given a .npy file corresponding to idtracker tracking output,
+#' this function process the .npy file to return a list containing tracking data
+#' If needed this function can also mirror Y coordinates
 #'
 #' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readTrackR}}, \code{\link{mirrorYFunc}}
 #'
