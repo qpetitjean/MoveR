@@ -3,7 +3,7 @@
 #' @description Given the path of a folder containing multiple Trex outputs (one .npz file per individual),
 #' this function group them in a list containing 2 dataframes' lists.
 #' The first list containing 8 elements is the processed output (i.e., the elements further used by functions of this package).
-#' The second list of 33 elements return the classic set of variables returned by Trex.
+#' The second list returns the set of variables computed by Trex.
 #' If needed this function can also mirror Y coordinates
 #'
 #' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
