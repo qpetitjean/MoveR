@@ -45,14 +45,13 @@ sinuosity <- function(df, scale = NULL, unit = NULL, segL) {
                           spatialUnits = "pixels",
                           timeCol = 3)
   trj <- trajr::TrajScale(trj, scale, unit)
-  if (!inherits(try(trajr::TrajRediscretize(trj, segL), silent = T)
-                , "try-error")) {
+  trjL <- trajr::TrajLength(trj)
+  if (trjL >= segL) {
     discretized <- trajr::TrajRediscretize(trj, segL)
-    sinuosity <- trajr::TrajSinuosity2(discretized)
-  } else if (inherits(try(trajr::TrajRediscretize(df, segL), silent = T)
-                      , "try-error")) {
-    sinuosity <- NA
+    sinuosityRes <- trajr::TrajSinuosity2(discretized)
+  } else if (trjL < segL) {
+    sinuosityRes <- NA
     warning("The fragment is shorter than segL, sinuosity returned NA, segL might be to high")
   }
-  return(sinuosity)
+  return(sinuosityRes)
 }
