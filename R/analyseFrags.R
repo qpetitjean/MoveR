@@ -42,6 +42,10 @@ analyseFrags <- function(trackDat, customFunc, VarName = NULL) {
   pb$tick(0)
   Sys.sleep(0.001)
   
+  if(is.null(names(trackDat))){ 
+    names(trackDat) <- seq(length(trackDat))
+  } 
+    
   for(i in names(trackDat)){
     if (!inherits(try(customFunc(trackDat[[i]]), silent = T)
                   , "try-error") & !class(customFunc(trackDat[[i]])) == "function") {
