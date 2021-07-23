@@ -141,7 +141,7 @@ drawFrags <- function(fragsList,
         list_get(x, "frame")
       ))))
   
-  # define color ramp according to timeWin
+  # define color ramp according to video duration
   Pal <- colorRampPalette(c(colGrad))
   coloration <- Pal(viDur)
   color_legend <- Pal(viDur)
@@ -191,65 +191,59 @@ drawFrags <- function(fragsList,
     add2It
   }
   
+  if(!is.list(timeWin)) {
+    stop("timeWin argument should be a list of vector(s) containing starting and ending value of each time window interval")
+  }
+  if(max(unlist(lapply(timeWin, length))) > 2 ) {
+    max(lapply(timeWin, length)))
+    stop("timeWin argument contains a vector of length > 2, 
+         timeWin should be a list of vector(s) containing 2 values (start and end of the time window interval)")
+  }
+  
   # if timeWin is set to default (0 to Inf)
   if (length(timeWin) == 1 & timeWin[[1]][2] == Inf) {
-   timeWin[[1]][2] = viDur
-  }
+    timeWin[[1]][2] = viDur
+    NewfragsList <- fragsList
+  } else {
+    # if timeWin is specified draw only the fraction of fragments within time window interval(s) 
+    timeWinSeq <- unlist(lapply(timeWin, function(x) seq(x[1], x[2])))
+    # identify part of fragment detected in the selected Time interval
+    When <- lapply(fragsList, function (x) x$frame %in% timeWinSeq)
+    # identify which fragment are detected in the selected Time interval
+    Who <- which(unlist(lapply(When, function(y) TRUE %in% y)) == TRUE) 
+    # isolate part of detected fragment included in time interval
+    WhoWhen <- lapply(When[c(names(Who))], function (z) which(z== TRUE))
+    NewfragsList <- list()
+    for(j in names(WhoWhen)) {
+      NewfragsList[[j]] <- fragsList[[j]][c(WhoWhen[[j]]),]
+    }}
   
-  # if timeWin is specified color only the fraction of fragments within time window interval(s)
-  dfColoration <- cbind(replicate(length(timeWin), coloration))
-  
-  for (i in seq(length(timeWin))) {
-    if (timeWin[[i]][1] > 0) {
-      lower <- timeWin[[i]][1] - 1
-      dfColoration[1:lower, i] = rgb(1, 1, 1, 0)
-    } else if (timeWin[[i]][1] == 0) {
-      dfColoration[, i] <- Pal(viDur)
-    }
-    
-    if (timeWin[[i]][2] < viDur) {
-      higher <- timeWin[[i]][2] + 1
-      dfColoration[higher:(viDur), i] = rgb(1, 1, 1, 0)
-    } else if (timeWin[[i]][2] == viDur) {
-      dfColoration[, i] = Pal(viDur)
-    }
-  }
-  
-  # In case several time window intervals are specified, this concatenate all coloration vector to plot all intervals
-  dfColoration[dfColoration == rgb(1, 1, 1, 0)] <- NA
-  dfColoration <- as.data.frame(dfColoration)
-  coloration <- dfColoration[, 1]
-  for (j in 1:length(dfColoration)) {
-    coloration[!is.na(dfColoration[, j])] = dfColoration[, j][!is.na(dfColoration[, j])]
-  }
-  coloration[is.na(coloration)] <- rgb(1, 1, 1, 0)
-  
-  # plot all fragments according to timeWin color
+  # plot all fragments according to timeWin
   if (is.null(selFrags)) {
     # initialize progress bar
-    total = length(fragsList)
+    total = length(NewfragsList)
     pb <-
       progress::progress_bar$new(format = "fragments drawing [:bar] :current/:total (:percent)", total = total)
     pb$tick(0)
     Sys.sleep(0.001)
     
-    for (f in seq(length(fragsList))) {
-      fragsList[[f]]$colorpal <-
-        coloration[match(fragsList[[f]]$frame, rownames(as.data.frame(coloration)))]
+    for (f in seq(length(NewfragsList))) {
+      NewfragsList[[f]]$colorpal <-
+        coloration[match(NewfragsList[[f]]$frame, rownames(as.data.frame(coloration)))]
       points(
-        fragsList[[f]]$x.pos[1],
-        fragsList[[f]]$y.pos[1],
-        col = fragsList[[f]]$colorpal[1],
+        NewfragsList[[f]]$x.pos[1],
+        NewfragsList[[f]]$y.pos[1],
+        col = NewfragsList[[f]]$colorpal[1],
         pch = 19,
         cex = 0.5
       )
-      with(fragsList[[f]],
+      with(NewfragsList[[f]],
            segments(
              head(x.pos, -1),
              head(y.pos, -1),
              x.pos[-1],
              y.pos[-1],
-             fragsList[[f]]$colorpal
+             NewfragsList[[f]]$colorpal
            ))
       
       # progress bar
@@ -266,22 +260,22 @@ drawFrags <- function(fragsList,
     Sys.sleep(0.001)
     
     for (f in selFrags) {
-      fragsList[[f]]$colorpal <-
-        coloration[match(fragsList[[f]]$frame, rownames(as.data.frame(coloration)))]
+      NewfragsList[[f]]$colorpal <-
+        coloration[match(NewfragsList[[f]]$frame, rownames(as.data.frame(coloration)))]
       points(
-        fragsList[[f]]$x.pos[1],
-        fragsList[[f]]$y.pos[1],
-        col = fragsList[[f]]$colorpal,
+        NewfragsList[[f]]$x.pos[1],
+        NewfragsList[[f]]$y.pos[1],
+        col = NewfragsList[[f]]$colorpal,
         pch = 19,
         cex = 0.5
       )
-      with(fragsList[[f]],
+      with(NewfragsList[[f]],
            segments(
              head(x.pos, -1),
              head(y.pos, -1),
              x.pos[-1],
              y.pos[-1],
-             fragsList[[f]]$colorpal
+             NewfragsList[[f]]$colorpal
            ))
       
       # progress bar
