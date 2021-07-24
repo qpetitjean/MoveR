@@ -195,7 +195,6 @@ drawFrags <- function(fragsList,
     stop("timeWin argument should be a list of vector(s) containing starting and ending value of each time window interval")
   }
   if(max(unlist(lapply(timeWin, length))) > 2 ) {
-    max(lapply(timeWin, length)))
     stop("timeWin argument contains a vector of length > 2, 
          timeWin should be a list of vector(s) containing 2 values (start and end of the time window interval)")
   }
