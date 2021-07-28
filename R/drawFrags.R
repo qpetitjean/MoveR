@@ -204,6 +204,13 @@ drawFrags <- function(fragsList,
     timeWin[[1]][2] = viDur
     NewfragsList <- fragsList
   } else {
+    # in case there is Inf in timWin replace it by vidur
+    InfLoc <- length(unlist(lapply(lapply(timeWin, function(x) which(x == Inf)), function (y) length(y) > 0)))
+    if(length(InfLoc) > 0) {
+      timeWin[[InfLoc]][which(timeWin[[InfLoc]] == Inf)] <- viDur 
+    } else {
+      timeWin = timeWin
+    }
     # if timeWin is specified draw only the fraction of fragments within time window interval(s) 
     timeWinSeq <- unlist(lapply(timeWin, function(x) seq(x[1], x[2])))
     # identify part of fragment detected in the selected Time interval

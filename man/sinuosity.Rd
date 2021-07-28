@@ -4,7 +4,7 @@
 \alias{sinuosity}
 \title{Compute corrected rediscretized sinuosity index}
 \usage{
-sinuosity(df, scale = NULL, unit = NULL, segL)
+sinuosity(df, scale = NULL, unit = NULL, segL = NULL)
 }
 \arguments{
 \item{df}{A data frame containing x, y coordinates and time columns named "x.pos", "y.pos", "frame" for a fragment}
@@ -15,7 +15,7 @@ sinuosity(df, scale = NULL, unit = NULL, segL)
 \item{unit}{The unit expected after scaling (e.g., "cm", "m", ...)}
 
 \item{segL}{A numeric value expressed in the unit specified by user and corresponding
-to the length of the resampling step needed to discretize the input trajectory
+to the length of the resampling step needed to discretize the input trajectory (optional)
 see trajr::TrajRediscretize())}
 }
 \value{
