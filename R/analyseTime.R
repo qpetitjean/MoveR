@@ -106,6 +106,7 @@ analyseTime <-
         # compute the metrics specified through customFunc on the selected fragment part
         # initialize result vector for a given Time interval
         Res <- vector()
+        len <- vector()
         # loop trough fragments on a given Time interval
         for (j in names(WhoWhen)) {
           df <- trackDat[[j]][c(WhoWhen[[j]]), ]
