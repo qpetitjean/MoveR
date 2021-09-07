@@ -3,6 +3,7 @@
 export(actives)
 export(analyseBouts)
 export(analyseFrags)
+export(analyseTime)
 export(convert2frags)
 export(convert2list)
 export(drawFrags)
