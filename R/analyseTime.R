@@ -23,6 +23,7 @@
 #' to perform the computation, allow to make computation faster, it hence determine the resolution of the
 #' returned results (e.g., 5000 mean that values will be computed every 5000 frames)
 #'
+#' @param wtd TRUE or FALSE, compute a weighed metric (TRUE) or not (FALSE), (default is FALSE)
 #'
 #' @return this function returns a vector containing the smoothed values
 #' computed according to the custom function across time
@@ -44,9 +45,10 @@ analyseTime <-
            customFunc = NULL,
            Tinterval = NULL,
            Tstep = 1,
-           sampling = 1) {
+           sampling = 1, 
+           wtd = FALSE) {
   
-    if (is.null(timeCol) | is.null("runTimelinef" %in% unlist(lapply(finalDatFrags2, names)))) {
+    if (is.null(timeCol) | is.null("runTimelinef" %in% unlist(lapply(trackDat, names)))) {
       stop(
         "timeCol argument is missing or is not found in the provided dataset, timeCol might be misspelled"
       )
@@ -91,7 +93,7 @@ analyseTime <-
         selVal <- timeline[(i - ((Tstep - 1) / 2)):(i + ((Tstep - 1) / 2))]
         # identify part of fragment detected in the selected Time interval
         When <-
-          lapply(finalDatFrags2, function(x)
+          lapply(trackDat, function(x)
             x$runTimelinef %in% selVal)
         # identify which fragment are detected in the selected Time interval
         Who <-
@@ -106,12 +108,24 @@ analyseTime <-
         Res <- vector()
         # loop trough fragments on a given Time interval
         for (j in names(WhoWhen)) {
-          df <- finalDatFrags2[[j]][c(WhoWhen[[j]]), ]
+          df <- trackDat[[j]][c(WhoWhen[[j]]), ]
           Res_temp <- customFunc(df)
           Res <- c(Res, Res_temp)
+          len_temp <- length(df[[timeCol]])
+          len <- c(len, len_temp)
         }
         # compute the metric mean on a given Time interval (across fragments)
-        smoothed_temp <- mean(Res, na.rm = T)
+        ## in case weighed argument is FALSE, compute a simple mean
+        if(wtd == FALSE){ 
+          smoothed_temp <- mean(Res, na.rm = T)
+        } else if (wtd == TRUE) { 
+          ## in case weighed argument is TRUE, compute a weighed mean according to fragment length (Timecol)
+          # create an equivalent of na.rm = T and compute the weighed mean
+          na.rm <- !is.na(Res) & !is.na(len)
+          Res <- Res[na.rm]
+          len <- len[na.rm]
+          smoothed_temp <- sum(len * Res) / sum(len) 
+            }
         smoothed <- c(smoothed, smoothed_temp)
       } else {
         smoothed <- c(smoothed, NA)
