@@ -47,7 +47,7 @@
 #'
 #' @export
 
-analyseTimeBoots.wtd <-
+analyseTimeBoots <-
   function(trackDat,
            timeCol = NULL,
            customFunc = NULL,
