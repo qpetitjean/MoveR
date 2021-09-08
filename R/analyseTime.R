@@ -61,20 +61,17 @@ analyseTime <-
       # define the timeline
       timeline <- seq(max(unlist(lapply(trackDat, function (w)
         max(w[timeCol], na.rm = T))), na.rm = T))
-      # compute sliding mean every n time unit (according to "sampling" parameter) allow to make computation faster
-      Newtimeline <- seq(from = 0,
-                         to = length(timeline),
-                         by = sampling)
-      Newtimeline[which(Newtimeline == 0)] <- 1
     } else {
       # define the timeline
       timeline <- seq(from = Tinterval[1],
-                     to = Tinterval[2],
-                     by = sampling)
-      # compute sliding mean every n time unit (according to "sampling" parameter) allow to make computation faster
-      Newtimeline <- timeline
-      Newtimeline[which(Newtimeline == 0)] <- 1
+                      to = Tinterval[2],
+                      by = 1)
     }
+    # compute sliding mean every n time unit (according to "sampling" parameter) allow to make computation faster
+    Newtimeline <- seq(from = timeline[1],
+                       to = timeline[length(timeline)],
+                       by = sampling)
+    Newtimeline[which(Newtimeline == 0)] <- 1
     
     # initialize result vector
     smoothed <- vector()
@@ -88,9 +85,14 @@ analyseTime <-
     for (i in Newtimeline) {
       # Select Time interval according to the specified Tstep and extract the concerned fragments part
       # since we use a sliding mean, the time values below Tstep/2 result in NA
-      if (!(i - ((Tstep - 1) / 2)) < 1 &
-          !(i + ((Tstep - 1) / 2)) > length(timeline)) {
-        selVal <- timeline[(i - ((Tstep - 1) / 2)):(i + ((Tstep - 1) / 2))]
+      if (!(i - ((Tstep - 1) / 2)) < Newtimeline[1] &
+          !(i + ((Tstep - 1) / 2)) > Newtimeline[length(Newtimeline)]) {
+        selVal <-
+          timeline[which(timeline == (i - round(((
+            Tstep - 1
+          ) / 2)))):which(timeline == (i + round(((
+            Tstep - 1
+          ) / 2))))]
         # identify part of fragment detected in the selected Time interval
         When <-
           lapply(trackDat, function(x)
