@@ -90,7 +90,7 @@ analyseTimeBoots <-
     # initialize bootstrap result vector
     BootSampling <- list()
     boot.ci.student <- data.frame(matrix(ncol = 4, nrow = 0))
-    colnames(boot.ci.student) <- c("97.5%", "2.5%", "mean", "frame")
+    colnames(boot.ci.student) <- c("97.5%", "2.5%", "mean", timeCol)
     # loop trough fragments part to compute metrics according to customFunc
     for (i in Newtimeline) {
       # Select Time interval according to the specified Tstep and extract the concerned fragments part
