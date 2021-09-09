@@ -68,20 +68,29 @@ analyseTimeBoots <-
     
     if (is.null(Tinterval)) {
       # define the timeline
-      timeline <- seq(max(unlist(lapply(trackDat, function (w)
-        max(w[timeCol], na.rm = T))), na.rm = T))
+      timeline <- seq(min(unlist(lapply(trackDat, function (w)
+        min(w[timeCol], na.rm = T))), na.rm = T),
+        max(unlist(lapply(trackDat, function (w)
+          max(w[timeCol], na.rm = T))), na.rm = T), by = 1)
+      # compute sliding mean every n time unit (according to "sampling" parameter) allow to make computation faster
+      Newtimeline <- seq(from = timeline[1],
+                         to = timeline[length(timeline)],
+                         by = sampling)
+      Newtimeline[length(Newtimeline)+1] <- timeline[length(timeline)]
+      Newtimeline[which(Newtimeline == 0)] <- 1
     } else {
       # define the timeline
-      timeline <- seq(from = Tinterval[1],
-                      to = Tinterval[2],
+      timeline <- seq(from = round(Tinterval[1] - ((Tstep - 1) / 2)),
+                      to = round(Tinterval[2] + ((Tstep - 1) / 2)),
                       by = 1)
+      # compute sliding mean every n time unit (according to "sampling" parameter) allow to make computation faster
+      Newtimeline <- seq(from = Tinterval[1],
+                         to = Tinterval[2],
+                         by = sampling)
+      Newtimeline[length(Newtimeline)+1] <- Tinterval[2]
+      Newtimeline[which(Newtimeline == 0)] <- 1
     }
-    # compute sliding mean every n time unit (according to "sampling" parameter) allow to make computation faster
-    Newtimeline <- seq(from = timeline[1],
-                       to = timeline[length(timeline)],
-                       by = sampling)
-    Newtimeline[which(Newtimeline == 0)] <- 1
-    
+  
     # initialize progress bar
     total = length(Newtimeline)
     pb <-
@@ -95,12 +104,12 @@ analyseTimeBoots <-
     for (i in Newtimeline) {
       # Select Time interval according to the specified Tstep and extract the concerned fragments part
       # since we use a sliding mean, the time values below Tstep/2 result in NA
-      if (!(i - ((Tstep - 1) / 2)) < Newtimeline[1] &
-          !(i + ((Tstep - 1) / 2)) > Newtimeline[length(Newtimeline)]) {
+      if (!round((i - ((Tstep - 1) / 2))) < timeline[1] &
+          !round((i + ((Tstep - 1) / 2))) > Newtimeline[length(Newtimeline)]) {
         selVal <-
-          timeline[which(timeline == (i - round(((
+          timeline[which(timeline ==  round((i -((
             Tstep - 1
-          ) / 2)))):which(timeline == (i + round(((
+          ) / 2)))):which(timeline == round((i + ((
             Tstep - 1
           ) / 2))))]
         # identify part of fragment detected in the selected Time interval
@@ -229,6 +238,7 @@ analyseTimeBoots <-
           rbind(boot.ci.student, boot.ci.student_temp)
       } else {
         boot.ci.student[nrow(boot.ci.student) + 1, ] <- NA
+        boot.ci.student[nrow(boot.ci.student), timeCol] <- i
       }
       # progress bar
       pb$tick(1)
