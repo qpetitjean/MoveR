@@ -103,13 +103,23 @@ analyseTimeBoots <-
     # loop trough fragments part to compute metrics according to customFunc
     for (i in Newtimeline) {
       # Select Time interval according to the specified Tstep and extract the concerned fragments part
-      # since we use a sliding mean, the time values below Tstep/2 result in NA
-      if (!(timeline[1] < min(unlist(lapply(trackDat, function (w)
-          min(w[timeCol], na.rm = T))), na.rm = T)) &
-          !(round((i - ((Tstep - 1) / 2))) < timeline[1]) &
-          !(round((i + ((Tstep - 1) / 2))) > Newtimeline[length(Newtimeline)])) {
+      # since we use a sliding mean, the time values below the minimum time value detected in the dataset as well as
+      # when i - (Tstep-1)/2 is below the first value of the timeline or i + (Tstep-1)/2 is above the last value
+      # of the timeline, it result in NA
+      if (suppressWarnings(!(min(timeline[which(timeline < i &
+                                                timeline > round((i - ((
+                                                  Tstep - 1
+                                                ) / 2))))]) <
+                             min(unlist(
+                               lapply(trackDat, function (w)
+                                 min(w[timeCol], na.rm = T))
+                             ), na.rm = T)) &
+                           !(round((i - ((Tstep - 1) / 2
+                           ))) < timeline[1]) &
+                           !(round((i + ((Tstep - 1) / 2
+                           ))) > timeline[length(timeline)]))) {
         selVal <-
-          timeline[which(timeline ==  round((i -((
+          timeline[which(timeline ==  round((i - ((
             Tstep - 1
           ) / 2)))):which(timeline == round((i + ((
             Tstep - 1
