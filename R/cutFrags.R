@@ -29,7 +29,7 @@
 cutFrags <- function(trackDat, customFunc) {
   # identify part of fragment detected in the selected Time interval
   When <-
-    lapply(finalDatFrags2, customFunc)
+    lapply(trackDat, customFunc)
   # identify which fragment are detected in the selected Time interval
   Who <-
     which(unlist(lapply(When, function(y)
