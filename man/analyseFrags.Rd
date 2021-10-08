@@ -4,15 +4,14 @@
 \alias{analyseFrags}
 \title{Fragments analyses}
 \usage{
-analyseFrags(trackDat, customFunc, VarName = NULL)
+analyseFrags(trackDat, customFunc)
 }
 \arguments{
 \item{trackDat}{A list of data frame containing tracking informations for each fragment}
 
-\item{customFunc}{A function used to perform the computation along all fragments}
-
-\item{VarName}{A character string specifying the name of the computed metric (optional) by default the function
-retrieve the name of the custom function and consider it as the metric name}
+\item{customFunc}{A function or a list of functions used to perform the computation along all fragments
+NB: in case customFunc is a list of unnamed function it will try to retrieve their names by returning the first character string
+following function() as name of the results column}
 }
 \value{
 this function returns a new list of dataframe corresponding to each new fragments with the result of customFunc appended
