@@ -9,6 +9,8 @@
 #' @param trackDat A list of data frame containing tracking informations for each fragment
 #'
 #' @param customFunc A function or a list of functions used to perform the computation along all fragments
+#' NB: in case customFunc is a list of unnamed function it will try to retrieve their names by returning the first character string
+#' following function() as name of the results column
 #'
 #' @return this function returns a new list of dataframe corresponding to each new fragments with the result of customFunc appended
 #'

@@ -48,7 +48,7 @@ analyseTime <-
            sampling = 1, 
            wtd = FALSE) {
   
-    if (is.null(timeCol) | is.null("runTimelinef" %in% unlist(lapply(trackDat, names)))) {
+    if (is.null(timeCol) | is.null(timeCol %in% unlist(lapply(trackDat, names)))) {
       stop(
         "timeCol argument is missing or is not found in the provided dataset, timeCol might be misspelled"
       )
@@ -90,6 +90,20 @@ analyseTime <-
       progress::progress_bar$new(format = "frame processing [:bar] :current/:total (:percent)", total = total)
     pb$tick(0)
     
+    # if customFunc is a unnamed list of function, retrieve function names
+    if (is.list(customFunc)) {
+      if (is.null(names(customFunc))) {
+        VarName <-
+          lapply(customFunc, function(x)
+            strsplit(sub("\\(.*", "", deparse(x)), " ")[[2]])
+        names(customFunc) <- unlist(VarName)
+      }
+      # if customFunc is a function retrieve function names and transformed it to a named list
+    } else if (is.function(customFunc)) {
+      VarName <- strsplit(sub("\\(.*", "", deparse(customFunc)), " ")[[2]]
+      customFunc <- list(customFunc)
+      names(customFunc) <- VarName
+    }
     # loop trough fragments part to compute metrics according to customFunc
     for (i in Newtimeline) {
       # Select Time interval according to the specified Tstep and extract the concerned fragments part
@@ -114,30 +128,30 @@ analyseTime <-
           ) / 2)))):which(timeline == round((i + ((
             Tstep - 1
           ) / 2))))]
-        # identify part of fragment detected in the selected Time interval
-        When <-
-          lapply(trackDat, function(x)
-            x$runTimelinef %in% selVal)
-        # identify which fragment are detected in the selected Time interval
-        Who <-
-          which(unlist(lapply(When, function(y)
-            TRUE %in% y)) == TRUE)
-        # isolate part of detected fragment included in time interval
-        WhoWhen <-
-          lapply(When[c(names(Who))], function (z)
-            which(z == TRUE))
+        # select the fragment that are detected in the selected timeline part and 
+        # Cut them according the selected part of the timeline 
+        WhoWhen <- cutFrags(trackDat, function (x)
+          x[[timeCol]] %in% selVal)
         # compute the metrics specified through customFunc on the selected fragment part
         # initialize result vector for a given Time interval
         Res <- vector()
         len <- vector()
+        # compute the metrics specified through customFunc on the selected fragment part
+        # initialize result list for a given Time interval
+        Res <- list()
+        len <- vector()
         # loop trough fragments on a given Time interval
         for (j in names(WhoWhen)) {
-          df <- trackDat[[j]][c(WhoWhen[[j]]), ]
-          Res_temp <- customFunc(df)
-          Res <- c(Res, Res_temp)
+          df <- WhoWhen[[j]]
+          for (n in seq(length(customFunc))) {
+            Res_temp <- customFunc[[n]](df)
+            Res[[names(customFunc)[n]]] <-
+              c(Res[[names(customFunc)[n]]], Res_temp)
+          }
           len_temp <- length(df[[timeCol]])
           len <- c(len, len_temp)
         }
+        
         # compute the metric mean on a given Time interval (across fragments)
         ## in case weighed argument is FALSE, compute a simple mean
         if(wtd == FALSE){ 
