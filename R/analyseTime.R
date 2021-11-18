@@ -130,8 +130,8 @@ analyseTime <-
     for (i in Newtimeline) {
       # Select Time interval according to the specified Tstep and extract the concerned fragments part
       # since we use a sliding mean, the time values below the minimum time value detected in the dataset as well as
-      # when i - (Tstep-1)/2 is below the first value of the timeline or i + (Tstep-1)/2 is above the last value
-      # of the timeline, it result in NA
+      # when i - (Tstep-1)/2 is below the first value of the timeline or i + (Tstep-1)/2 is above the maximum 
+      # time value detected in the dataset, it result in NA
       if (suppressWarnings(!(min(timeline[which(timeline < i &
                                                 timeline > round((i - ((
                                                   Tstep - 1
@@ -143,7 +143,10 @@ analyseTime <-
                            !(round((i - ((Tstep - 1) / 2
                            ))) < timeline[1]) &
                            !(round((i + ((Tstep - 1) / 2
-                           ))) > timeline[length(timeline)]))) {
+                           ))) > max(unlist(
+                             lapply(trackDat, function (w)
+                               max(w[timeCol], na.rm = T))
+                           ), na.rm = T)))) {
         selVal <-
           timeline[which(timeline ==  round((i - ((
             Tstep - 1
