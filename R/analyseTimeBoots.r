@@ -270,7 +270,7 @@ analyseTimeBoots <-
           }
           wtd.sd[[name]] <- sqrt(unlist(wtd.sd_temp[[name]]) / (V1 - V2 / V1))
           
-          BootSampling[[paste(timeCol, as.character(i), sep = "_")]] <- bootsamplesVal
+          BootSampling[[paste(timeCol, as.character(i), sep = "_")]][["sampling"]] <- bootsamplesVal
           BootSampling[[paste(timeCol, as.character(i), sep = "_")]][["wtd.Result"]] <-
             data.frame(cbind(wtd.mean, wtd.sd))
           
