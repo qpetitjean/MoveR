@@ -171,6 +171,15 @@ analyseTimeBoots <-
         Nafrags <- unlist(lapply(Nadetect, function(y) y[which(is.na(y$x)), 1]))
         Nafrags <- Nafrags[!duplicated(Nafrags)]
         if(length(Nafrags) > 0) {
+          warning(
+            "For some fragments the following custom function returned NA: ",
+            list(unique(gsub(
+              '[[:digit:]]+', '', names(Nafrags)
+            ))),
+            "\nThese fragments were omitted from every customFunc during mean and 95% cI computation",
+            "\n\nsee below for the list of fragments involved:\n",
+            list(unique(unname(Nafrags)))
+          )
         NafragsPos <- unlist(lapply(Nadetect, function(x) which(x$names.WhoWhen.%in%Nafrags)))
         NafragsPos <- NafragsPos[!duplicated(NafragsPos)]
         ## perform the bootstrap
