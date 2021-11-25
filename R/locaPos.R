@@ -3,7 +3,7 @@
 #' @description determine the position of a particles along a trajectory according to a reference matrix
 #' 
 #'
-#' @param RefMatPath A distance matrix or path to a file containing a distance matrix representing 
+#' @param RefMat A distance matrix or path to a file containing a distance matrix representing 
 #' the canevas of the arena or distance to any object (e.g., create a distance map using ImageJ)
 #'
 #' @param df A data frame containing x, y coordinates and speed columns named "x.pos", "y.pos", "speed" for a fragment
