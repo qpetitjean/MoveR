@@ -36,7 +36,7 @@
 #'# generate some dummy fragments
 #'fragsList = list()
 #'for (i in seq(10)) {
-#'  rPath <- TrajGenerate(1000, random = TRUE, fps = 1)
+#'  rPath <- trajr::TrajGenerate(1000, random = TRUE, fps = 1)
 #'  rPath$y = rPath$y - min(rPath$y)
 #'  rPath$x = rPath$x - min(rPath$x)
 #'  sillydf = data.frame(rPath[1], rPath[2], rPath[3])
