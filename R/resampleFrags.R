@@ -8,7 +8,7 @@
 #' @param trackDat A list of data frame containing tracking informations for each fragment
 #' (e.g., maj.ax, angle, min.ax, x.pos, y.pos, ...)
 #'
-#' @param TStep A numeric value corresponding to the length of the resampling step (number of frames)
+#' @param Tstep A numeric value corresponding to the length of the resampling step (number of frames)
 #' 
 #' @return A list of data frame containing resampled tracking informations for each fragment 
 #'
