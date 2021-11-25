@@ -7,7 +7,7 @@
 #'
 #' @param df A data frame containing at x, y coordinates named "x.pos", "y.pos", for a fragment
 #' 
-#' @param step A numeric value specifying the number of unit between the two position for which distance will be computed
+#' @param Step A numeric value specifying the number of unit between the two position for which distance will be computed
 #' 
 #' @return this function returns a vector containing the distance between each points of the 
 #' trajectory according to the specified step
