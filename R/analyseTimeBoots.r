@@ -39,8 +39,6 @@
 #'
 #' @authors Quentin Petitjean
 #'
-#' @importFrom "stats"
-#'
 #'
 #' @examples
 #'
