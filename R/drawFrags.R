@@ -157,7 +157,7 @@ drawFrags <- function(fragsList,
   
   # create legend
   par(mfg = c(1, 2), mai = c(0.9, 0.2, 0.6, 0.08))
-  legend_image <- as.raster(matrix(color_legend, ncol = 1))
+  legend_image <- grDevices::as.raster(matrix(color_legend, ncol = 1))
   plot(
     c(0, 4),
     c(0, 1),
@@ -173,7 +173,7 @@ drawFrags <- function(fragsList,
     y = seq(0, 1, l = 5),
     labels = round(seq(0, viDur, l = 5), digits = 0)
   )
-  rasterImage(legend_image, 1, 1, 0, 0)
+  graphics::rasterImage(legend_image, 1, 1, 0, 0)
   
   # create blank plot
   par(mfg = c(1, 1), mai = c(0.9, 0.8, 0.6, 0.01))
