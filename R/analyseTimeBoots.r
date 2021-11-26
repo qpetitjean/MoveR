@@ -39,6 +39,7 @@
 #'
 #' @authors Quentin Petitjean
 #'
+#' @importFrom "stats"
 #'
 #'
 #' @examples
@@ -76,19 +77,23 @@ analyseTimeBoots <-
       Newtimeline <- seq(from = timeline[1],
                          to = timeline[length(timeline)],
                          by = sampling)
-      Newtimeline[length(Newtimeline)+1] <- timeline[length(timeline)]
+      Newtimeline[length(Newtimeline) + 1] <-
+        timeline[length(timeline)]
       Newtimeline[which(Newtimeline == 0)] <- 1
       Newtimeline <- Newtimeline[!duplicated(Newtimeline)]
     } else {
       # define the timeline
-      timeline <- seq(from = round(Tinterval[1] - ((Tstep - 1) / 2)),
-                      to = round(Tinterval[2] + ((Tstep - 1) / 2)),
-                      by = 1)
+      timeline <-
+        seq(
+          from = round(Tinterval[1] - ((Tstep - 1) / 2)),
+          to = round(Tinterval[2] + ((Tstep - 1) / 2)),
+          by = 1
+        )
       # compute sliding mean every n time unit (according to "sampling" parameter) allow to make computation faster
       Newtimeline <- seq(from = Tinterval[1],
                          to = Tinterval[2],
                          by = sampling)
-      Newtimeline[length(Newtimeline)+1] <- Tinterval[2]
+      Newtimeline[length(Newtimeline) + 1] <- Tinterval[2]
       Newtimeline[which(Newtimeline == 0)] <- 1
       Newtimeline <- Newtimeline[!duplicated(Newtimeline)]
     }
@@ -114,16 +119,17 @@ analyseTimeBoots <-
     # initialize bootstrap result vector
     BootSampling <- list()
     boot.ci.student <- list()
-    for(name in names(customFunc)){ 
-      temp_df <- data.frame(matrix(NA, nrow = length(Newtimeline), ncol = 4))
+    for (name in names(customFunc)) {
+      temp_df <-
+        data.frame(matrix(NA, nrow = length(Newtimeline), ncol = 4))
       colnames(temp_df) <- c("97.5%", "2.5%", "mean", timeCol)
       boot.ci.student[[name]] <- temp_df
-      }
+    }
     # loop trough fragments part to compute metrics according to customFunc
     for (i in Newtimeline) {
       # Select Time interval according to the specified Tstep and extract the concerned fragments part
       # since we use a sliding mean, the time values below the minimum time value detected in the dataset as well as
-      # when i - (Tstep-1)/2 is below the first value of the timeline or i + (Tstep-1)/2 is above the maximum 
+      # when i - (Tstep-1)/2 is below the first value of the timeline or i + (Tstep-1)/2 is above the maximum
       # time value detected in the dataset, it result in NA
       if (suppressWarnings(!(min(timeline[which(timeline < i &
                                                 timeline > round((i - ((
@@ -146,164 +152,271 @@ analyseTimeBoots <-
           ) / 2)))):which(timeline == round((i + ((
             Tstep - 1
           ) / 2))))]
-        # select the fragment that are detected in the selected timeline part and 
-        # Cut them according the selected part of the timeline 
+        # select the fragment that are detected in the selected timeline part and
+        # Cut them according the selected part of the timeline
         WhoWhen <- cutFrags(trackDat, function (x)
           x[[timeCol]] %in% selVal)
         # compute the metrics specified through customFunc on the selected fragment part
         # initialize result list for a given Time interval
         Res <- list()
-        len <- vector()
+        len <- list()
         # loop trough fragments on a given Time interval
         for (j in names(WhoWhen)) {
           df <- WhoWhen[[j]]
           for (n in seq(length(customFunc))) {
+            #store the result of each computation in a list
             Res_temp <- customFunc[[n]](df)
-              Res[[names(customFunc)[n]]] <-
-                c(Res[[names(customFunc)[n]]], Res_temp)
+            Res[[names(customFunc)[n]]] <-
+              c(Res[[names(customFunc)[n]]], Res_temp)
+            #store the length of each fragment used in the computation in a list
+            len_temp <- length(df[[timeCol]])
+            len[[names(customFunc)[n]]] <-
+              c(len[[names(customFunc)[n]]], len_temp)
           }
-          len_temp <- length(df[[timeCol]])
-          len <- c(len, len_temp)
         }
-        # in case for some fragment the specified computation result in NA,
-        # identify NA fragments to avoid their sampling during bootstrap
-        Nadetect <-  lapply(Res, function(x) data.frame(names(WhoWhen), x))
-        Nafrags <- unlist(lapply(Nadetect, function(y) y[which(is.na(y$x)), 1]))
-        Nafrags <- Nafrags[!duplicated(Nafrags)]
-        if(length(Nafrags) > 0) {
-          warning(
-            "For some fragments the following custom function returned NA: ",
-            list(unique(gsub(
-              '[[:digit:]]+', '', names(Nafrags)
-            ))),
-            "\nThese fragments were omitted from every customFunc during mean and 95% cI computation",
-            "\n\nsee below for the list of fragments involved:\n",
-            list(unique(unname(Nafrags)))
-          )
-        NafragsPos <- unlist(lapply(Nadetect, function(x) which(x$names.WhoWhen.%in%Nafrags)))
-        NafragsPos <- NafragsPos[!duplicated(NafragsPos)]
-        ## perform the bootstrap
-        # compute confidence interval using studentize bootstrap on this part of the dataset
-        # create an equivalent of na.rm = T,to remove fragments returning NA after custom computation
-        Res <- lapply(Res, function(z) z[-c(NafragsPos)])
-        len <- len[-c(NafragsPos)]
-        }
-        samplen <- length(len)
+        # Group Res and len in a list of df and append fragment Id to it
+        Reslen <-
+          lapply(names(Res), function(x)
+            data.frame(
+              Res = Res[[x]],
+              len = len[[x]],
+              fragId = names(WhoWhen)
+            ))
+        names(Reslen) <- names(Res)
+        # create an equivalent of na.rm = T, useful to compute the weighed mean for each metric and
+        # to know how many fragments are used for computation for each metrics
+        Reslen <- lapply(Reslen, function(x)
+          na.omit(x))
+        samplen <- lapply(Reslen, nrow)
         meanx <- list()
         sdx <- list()
         # in case weighed argument is FALSE, compute a simple mean
         if (wtd == FALSE) {
-          meanx <- lapply(Res, function(x) mean(x, na.rm = T))
-          sdx <- lapply(Res, function(x) sd(x, na.rm = T))
+          meanx <- lapply(Reslen, function(x)
+            mean(x$Res, na.rm = T))
+          sdx <- lapply(Reslen, function(x)
+            sd(x$Res, na.rm = T))
         } else if (wtd == TRUE) {
           # in case weighed argument is TRUE, compute a weighed mean according to fragment length (Timecol)
-          meanx <- lapply(Res, function(x) sum(len * x) / sum(len))
-          V1 <- sum(len)
-          V2 <- sum(len ^ 2)
-          sdx <- as.list(mapply(function(x,y) sqrt(sum(len * ((x - y) ^ 2)) / (V1 - V2 / V1)), Res, meanx))
+          meanx <-
+            lapply(Reslen, function(x)
+              sum(x$len * x$Res) / sum(x$len))
+          V1 <- lapply(Reslen, function(x)
+            sum(x$len))
+          V2 <- lapply(Reslen, function(x)
+            sum(x$len ^ 2))
+          sdx <- as.list(lapply(names(Reslen), function(x) {
+            sqrt(sum(Reslen[[x]]$len * ((
+              Reslen[[x]]$Res - meanx[[x]]
+            ) ^ 2)) / (V1[[x]] - V2[[x]] / V1[[x]]))
+          }))
+          names(sdx) <- names(meanx)
         }
-        # create an empty matrix to store the mean value computed for each sampled fragment
-        #bootsamplesVal <- data.frame(matrix(NA, samplen, bootn))
-        bootsamplesVal <- list()
-        # create an empty matrix to store the length of each sampled fragment (needed to compute wheighed mean)
-        #bootsampleslen <- data.frame(matrix(NA, samplen, bootn))
-        bootsampleslen <- list()
+        # create a list of the fragment that could be sampled for each customfunc (after removing fragments which return NA)
+        toSample <- lapply(Reslen, function (x)
+          x$fragId)
+        # check the number of fragments that could be sampled for each customfunc (after removing fragments which return NA)
+        toSampleLen <- lapply(toSample, length)
+        # in case the number of fragments that could be sampled differ among customfunc, identify for which customfunc it is the case
+        # and list the omitted fragment to return it in the result list, see the sublists "BootSampling" -> "omitted.Frags"
+        shorterMetric <-
+          do.call("rbind", lapply(toSampleLen, function(x)
+            x < max(unlist(toSampleLen), na.rm = T)))
+        if (length(shorterMetric[which(shorterMetric == TRUE)]) > 0 &
+            length(toSampleLen) > 1) {
+          omittedFrags <-
+            lapply(toSample[rownames(shorterMetric)[which(shorterMetric == TRUE)]], function(x) {
+              !names(WhoWhen) %in% x
+            })
+          omittedFragsL <- list()
+          for (o in names(omittedFrags)) {
+            omittedFragsL[[o]] <-
+              names(WhoWhen)[lapply(omittedFrags, function(x)
+                which(x == TRUE))[[o]]]
+          }
+          # specify which metrics (1 metric is chosen for each number of fragment) will be used for fragment sampling
+          samplingList <-
+            c(rownames(shorterMetric)[which(shorterMetric == TRUE)], rownames(shorterMetric)[which(shorterMetric == FALSE)][1])
+          if (length(rownames(shorterMetric)[which(shorterMetric == FALSE)]) > 1) {
+            warning(
+              "At Time=",
+              i,
+              ", the following custom functions returned NA for some fragments : ",
+              list(rownames(shorterMetric)[which(shorterMetric == TRUE)])
+              ,
+              "\nfragment sampling is thus different among customfunc, check in the BootSampling -> omitted.Frags sublist \nto see which fragments were omitted from the computation"
+            )
+          } else if (length(rownames(shorterMetric)[which(shorterMetric == FALSE)]) == 1) {
+            warning(
+              "At Time=",
+              i,
+              ", All the custom functions returned NA for some fragments, \nfragment sampling is thus different among every customfunc.\ncheck in the BootSampling -> omitted.Frags sublist to see which fragments were omitted from the computation"
+            )
+          }
+        } else if (!length(shorterMetric[which(shorterMetric == TRUE)]) > 0 &
+                   length(toSampleLen) == 1) {
+          omittedFragsL <- NULL
+          samplingList <- names(toSampleLen)
+        } else if (!length(shorterMetric[which(shorterMetric == TRUE)]) > 0 &
+                   length(toSampleLen) > 1) {
+          omittedFragsL <- NULL
+          samplingList <- names(toSampleLen)[1]
+        }
         # create a matrix to store the names of the sampled fragments
-        toSample <-
-          names(WhoWhen)[which(!(names(WhoWhen) %in% Nafrags))]
-        bootsamples <-
+        bootsamples <- lapply(samplingList, function(x) {
           matrix(
-            sample(toSample, size = samplen * bootn, replace = T),
-            nrow = samplen,
+            sample(
+              toSample[[x]],
+              size = samplen[[x]] * bootn,
+              replace = T
+            ),
+            nrow = samplen[[x]],
             ncol = bootn
           )
-        # fill the matrix with the value corresponding to each sampled fragment
-        for (k in seq(bootn)) {
-          Res <- list()
-          len <- vector()
-          for (j in bootsamples[, k]) {
-            df <- WhoWhen[[j]]
-            for (n in seq(length(customFunc))) {
-              Res_temp <- customFunc[[n]](df)
-              Res[[names(customFunc)[n]]] <-
-                c(Res[[names(customFunc)[n]]], Res_temp)
-            }
-            len_temp <- length(df[[timeCol]])
-            len <- c(len, len_temp)
-          }
-          bootsamplesVal[[k]] <- Res
-          bootsampleslen[[k]] <- len
+        })
+        names(bootsamples) <- samplingList
+        if ((is.null(omittedFragsL) &
+             length(toSampleLen) > 1) |
+            (!is.null(omittedFragsL) &
+             length(shorterMetric[which(shorterMetric == FALSE)]) > 0)) {
+          bootsamplesRep <-
+            rep(list(bootsamples[[rownames(shorterMetric)[which(shorterMetric == FALSE)][1]]]),
+                length(rownames(shorterMetric)[which(shorterMetric == FALSE)]) - 1)
+          names(bootsamplesRep) <-
+            rownames(shorterMetric)[which(shorterMetric == FALSE)][-1]
+          bootsamples <- c(bootsamples, bootsamplesRep)
         }
         
-          # compute the bootstrap estimates
-          meanBoot <- list()
-          bootEst <- list()
-          wtd.mean <- list()
-          wtd.sd <- list()
-          boot.ci.student_temp <- list()
-          for (name in names(customFunc)) {
-            # in case user want to compute unweighed bootstrap according to fragment length (Timecol)
-            if (wtd == FALSE) {
-            meanBoot[[name]] <-
-              mean(unlist(lapply(lapply(X = bootsamplesVal, FUN = "[[", name), function(x)
-                mean(x, na.rm = T))), na.rm = T)
-            bootEst[[name]] <-
-              unlist(lapply(lapply(lapply(X = bootsamplesVal, FUN = "[[", name), function(x)
-                mean(x, na.rm = T)), function (y)
-                  y - meanx[[name]])) /
-              unlist((lapply(lapply(X = bootsamplesVal, FUN = "[[", name), function(x)
-                sd(x, na.rm = T)))) / sqrt(samplen)
-            BootSampling[[paste(timeCol, as.character(i), sep = "_")]] <-
-            bootsamplesVal
-          } else if (wtd == TRUE) {
+        # Match names of the sampled fragments with computed values and fragment length for each customfunc
+        bootsamplesVal <-
+          lapply(names(bootsamples), function(x) {
+            array(unlist(lapply(seq(bootn), function(y) {
+              Reslen[[x]]$Res[match(bootsamples[[x]][, y], Reslen[[x]]$fragId)]
+            })), dim = c(length(bootsamples[[x]]) / bootn, bootn))
+          })
+        names(bootsamplesVal) <- names(bootsamples)
+        
+        bootsampleslen <-
+          lapply(names(bootsamples), function(x) {
+            array(unlist(lapply(seq(bootn), function(y) {
+              Reslen[[x]]$len[match(bootsamples[[x]][, y], Reslen[[x]]$fragId)]
+            })), dim = c(length(bootsamples[[x]]) / bootn, bootn))
+          })
+        names(bootsampleslen) <- names(bootsamples)
+        
+        # compute the bootstrap estimates
+        # in case user want to compute unweighed bootstrap according to fragment length (Timecol)
+        if (wtd == FALSE) {
+          ## compute the means
+          UbWtd.mean <-
+            lapply(names(customFunc), function(x) {
+              unlist(lapply(seq(bootn), function(y) {
+                mean(bootsamplesVal[[x]][, y], na.rm = T)
+              }))
+            })
+          names(UbWtd.mean) <- names(customFunc)
+          meanBoot <-
+            lapply(UbWtd.mean, function(x)
+              mean(x, na.rm = T))
+          ## compute the sd
+          UnWtd.sd <- lapply(names(customFunc), function(x)
+            unlist(lapply(seq(bootn), function(y) {
+              sd(bootsamplesVal[[x]][, y], na.rm = T)
+            })))
+          names(UnWtd.sd) <- names(customFunc)
+          ## compute the estimates
+          bootEstNum <- lapply(names(customFunc), function(x)
+            unlist(lapply(seq(bootn), function(y) {
+              mean(bootsamplesVal[[x]][, y], na.rm = T) - meanx[[x]]
+            })))
+          names(bootEstNum) <- names(customFunc)
+          bootEstDenom <- lapply(names(customFunc), function(x)
+            unlist(lapply(seq(bootn), function(y) {
+              sd(bootsamplesVal[[x]][, y], na.rm = T) / sqrt(samplen[[x]])
+            })))
+          names(bootEstDenom) <- names(customFunc)
+          bootEst <-
+            lapply(names(customFunc), function(z) {
+              bootEstNum[[z]] / bootEstDenom[[z]]
+            })
+          names(bootEst) <- names(customFunc)
+          ## append the list of Unweighted mean and sd
+          BootSampling[[paste(timeCol, as.character(i), sep = "_")]][["UnWtd.Result"]] <-
+            data.frame(cbind(UbWtd.mean, UnWtd.sd))
+        } else if (wtd == TRUE) {
           # in case user want to compute weighed bootstrap according to fragment length (Timecol)
-          # compute weighted mean according to the size of the sampled fragment (timecol)
-          wtd.mean[[name]] <-
-            mapply(
-              bootsampleslen,
-              lapply(X = bootsamplesVal, FUN = "[[", name),
-              FUN = function(x, y)
-                sum(x * y)
-            ) / unlist(lapply(bootsampleslen, sum))
-          meanBoot[[name]] <- mean(wtd.mean[[name]], na.rm = T)
-          # compute weighted sd according to the size of the sampled fragment (timecol)
-          V1 <- unlist(lapply(bootsampleslen, sum))
-          V2 <- unlist(lapply(bootsampleslen, function(x)
-            sum(x ^ 2)))
-          wtd.sd_temp <- list()
-          for (l in seq(bootn)) {
-            temp <- list()
-            temp[[name]] <-
-              sum(bootsampleslen[[l]] * ((bootsamplesVal[[l]][[name]] - wtd.mean[[name]][l]) ^ 2))
-            wtd.sd_temp[[name]] <- c(wtd.sd_temp[[name]], temp[[name]])
-          }
-          wtd.sd[[name]] <- sqrt(unlist(wtd.sd_temp[[name]]) / (V1 - V2 / V1))
-          
-          BootSampling[[paste(timeCol, as.character(i), sep = "_")]][["sampling"]] <- bootsamplesVal
+          ## compute weighted mean according to the size of the sampled fragment (timecol)
+          wtd.mean <- lapply(names(customFunc), function(x) {
+            unlist(lapply(seq(bootn), function(y) {
+              sum(bootsamplesVal[[x]][, y] * bootsampleslen[[x]][, y]) / sum(bootsampleslen[[x]][, y])
+            }))
+          })
+          names(wtd.mean) <- names(customFunc)
+          meanBoot <-
+            lapply(wtd.mean, function(x)
+              mean(x, na.rm = T))
+          ## compute weighted sd according to the size of the sampled fragment (timecol)
+          V1 <- lapply(names(customFunc), function(x)
+            unlist(lapply(seq(bootn), function(y) {
+              sum(bootsampleslen[[x]][, y], na.rm = T)
+            })))
+          names(V1) <- names(customFunc)
+          V2 <- lapply(names(customFunc), function(x)
+            unlist(lapply(seq(bootn), function(y) {
+              sum(bootsampleslen[[x]][, y] ^ 2, na.rm = T)
+            })))
+          names(V2) <- names(customFunc)
+          wtd.sd_temp <- lapply(names(customFunc), function(z) {
+            unlist(lapply(seq(bootn), function(y) {
+              sum(bootsampleslen[[z]][, y] * ((
+                bootsamplesVal[[z]][, y] - wtd.mean[[z]][y]
+              ) ^ 2))
+            }))
+          })
+          names(wtd.sd_temp) <- names(customFunc)
+          wtd.sd <- lapply(names(customFunc), function(z) {
+            sqrt(wtd.sd_temp[[z]] / (V1[[z]] - V2[[z]] / V1[[z]]))
+          })
+          names(wtd.sd) <- names(customFunc)
+          # append the list of weighted mean and sd
           BootSampling[[paste(timeCol, as.character(i), sep = "_")]][["wtd.Result"]] <-
             data.frame(cbind(wtd.mean, wtd.sd))
-          
           # compute the bootstrap estimates
-          bootEst[[name]] <-
-            (wtd.mean[[name]] - meanx[[name]]) / (wtd.sd[[name]] / sqrt(samplen))
-          }
-            # compute the studentize CI 95%
-            boot.ci.student_temp[[name]] <-
-              meanx[[name]] - quantile(bootEst[[name]],
-                                       probs = c(0.975, 0.025),
-                                       na.rm = T) *
-              sdx[[name]] / sqrt(samplen)
-            
-            boot.ci.student_temp[[name]] <-
-              data.frame(t(c(boot.ci.student_temp[[name]], meanBoot[[name]], i)))
-            colnames(boot.ci.student_temp[[name]]) <-
-              c("97.5%", "2.5%", "mean", timeCol)
-            boot.ci.student[[name]][which(Newtimeline == i),] <- boot.ci.student_temp[[name]]
-          }
-          } else {
-            for (name in names(customFunc)) {
-        boot.ci.student[[name]][which(Newtimeline == i), timeCol] <- i
-            }
+          bootEst <- lapply(names(customFunc), function(x) {
+            (wtd.mean[[x]] - meanx[[x]]) / (wtd.sd[[x]] / sqrt(samplen[[x]]))
+          })
+          names(bootEst) <- names(customFunc)
+        }
+        # append the list of sampled fragments, values as well as the omitted fragments
+        BootSampling[[paste(timeCol, as.character(i), sep = "_")]][["sampled.Frags"]] <-
+          bootsamples
+        BootSampling[[paste(timeCol, as.character(i), sep = "_")]][["sampled.Values"]] <-
+          bootsamplesVal
+        BootSampling[[paste(timeCol, as.character(i), sep = "_")]][["omitted.Frags"]] <-
+          omittedFragsL
+        # compute the studentize CI 95%
+        boot.ci.student_temp <-
+          lapply(names(customFunc), function(z) {
+            data.frame(t(c((
+              meanx[[z]] - quantile(
+                bootEst[[z]],
+                probs = c(0.975, 0.025),
+                na.rm = T
+              ) *
+                sdx[[z]] / sqrt(samplen[[z]])
+            ), meanBoot[[z]], i
+            )))
+          })
+        names(boot.ci.student_temp) <- names(customFunc)
+        # append the results (CI 95%, mean and time) to the boot.ci.student list
+        for (name in names(customFunc)) {
+          boot.ci.student[[name]][which(Newtimeline == i), ] <-
+            boot.ci.student_temp[[name]]
+        }
+      } else {
+        for (name in names(customFunc)) {
+          boot.ci.student[[name]][which(Newtimeline == i), timeCol] <- i
+        }
       }
       # progress bar
       pb$tick(1)
