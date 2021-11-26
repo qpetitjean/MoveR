@@ -10,7 +10,7 @@ resampleFrags(trackDat, Tstep)
 \item{trackDat}{A list of data frame containing tracking informations for each fragment
 (e.g., maj.ax, angle, min.ax, x.pos, y.pos, ...)}
 
-\item{TStep}{A numeric value corresponding to the length of the resampling step (number of frames)}
+\item{Tstep}{A numeric value corresponding to the length of the resampling step (number of frames)}
 }
 \value{
 A list of data frame containing resampled tracking informations for each fragment

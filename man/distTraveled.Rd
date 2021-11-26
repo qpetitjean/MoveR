@@ -9,7 +9,7 @@ distTraveled(df, Step = 1)
 \arguments{
 \item{df}{A data frame containing at x, y coordinates named "x.pos", "y.pos", for a fragment}
 
-\item{step}{A numeric value specifying the number of unit between the two position for which distance will be computed}
+\item{Step}{A numeric value specifying the number of unit between the two position for which distance will be computed}
 }
 \value{
 this function returns a vector containing the distance between each points of the

@@ -7,10 +7,10 @@
 locaPos(RefMat = NULL, df = NULL)
 }
 \arguments{
-\item{df}{A data frame containing x, y coordinates and speed columns named "x.pos", "y.pos", "speed" for a fragment}
-
-\item{RefMatPath}{A distance matrix or path to a file containing a distance matrix representing
+\item{RefMat}{A distance matrix or path to a file containing a distance matrix representing
 the canevas of the arena or distance to any object (e.g., create a distance map using ImageJ)}
+
+\item{df}{A data frame containing x, y coordinates and speed columns named "x.pos", "y.pos", "speed" for a fragment}
 }
 \value{
 This function returns a vector containing the position of a particule according to a reference matrix along its trajectory

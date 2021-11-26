@@ -9,9 +9,9 @@ slidWin(x, Tstep, customFunc)
 \arguments{
 \item{x}{A vector containing data to smooth}
 
-\item{customFunc}{A function used to perform the computation along the sliding window}
+\item{Tstep}{A numeric value corresponding to the length of the sliding window (number of values)}
 
-\item{TStep}{A numeric value corresponding to the length of the sliding window (number of values)}
+\item{customFunc}{A function used to perform the computation along the sliding window}
 }
 \value{
 A vector containing smoothed data
