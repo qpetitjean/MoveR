@@ -112,7 +112,7 @@ ANND <- function(trackDat,
     # because they are sampled at the same time unit (frame)
     maxId <- length(WhoWhen)
     #in case there is duplicated values at the same time in whowhen
-    if(max(unlist(lapply(WhoWhen, function(x) nrow(x))), na.rm = T)){
+    if(max(unlist(lapply(WhoWhen, function(x) nrow(x))), na.rm = T) > 1){
       WhoWhen <- lapply(names(WhoWhen), function(x) WhoWhen[[x]][-which(duplicated(WhoWhen[[x]][["x.pos"]])),])
     }
     # compute distance to each neighbour for each present fragment (ND - neighbour distance)
