@@ -98,6 +98,8 @@ analyseTime <-
       Newtimeline[length(Newtimeline) + 1] <- Tinterval[2]
       Newtimeline[which(Newtimeline == 0)] <- 1
     }
+    if(length(which(duplicated(Newtimeline))) > 0){
+    Newtimeline <- Newtimeline[-which(duplicated(Newtimeline))]}
     # if customFunc is a unnamed list of function, retrieve function names
     if (is.list(customFunc)) {
       if (is.null(names(customFunc))) {
