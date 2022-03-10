@@ -78,7 +78,6 @@ analyseTimeBoots <-
       Newtimeline[length(Newtimeline) + 1] <-
         timeline[length(timeline)]
       Newtimeline[which(Newtimeline == 0)] <- 1
-      Newtimeline <- Newtimeline[!duplicated(Newtimeline)]
     } else {
       # define the timeline
       timeline <-
@@ -93,8 +92,9 @@ analyseTimeBoots <-
                          by = sampling)
       Newtimeline[length(Newtimeline) + 1] <- Tinterval[2]
       Newtimeline[which(Newtimeline == 0)] <- 1
-      Newtimeline <- Newtimeline[!duplicated(Newtimeline)]
     }
+    if(length(which(duplicated(Newtimeline))) > 0){
+      Newtimeline <- Newtimeline[-which(duplicated(Newtimeline))]}
     # initialize progress bar
     total = length(Newtimeline)
     pb <-

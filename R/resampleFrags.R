@@ -21,8 +21,13 @@
 #' 
 
 
-resampleFrags <- function(trackDat, Tstep) {
+resampleFrags <- function(trackDat, Tstep = NULL) {
 
+  if (is.null(Tstep)) {
+    stop(
+      "Tstep argument is missing: a value corresponding to the resampling step is needed to resample the data"
+    )}
+  
 # initialize progress bar
 total = length(trackDat)
 pb <-
@@ -35,7 +40,7 @@ for(i in seq(length(trackDat))){
 # identify the first frame where the fragment is detected
 start <- trackDat[[i]][trackDat[[i]]$frame == sort(trackDat[[i]]$frame),][1,]
 # use it as the starting point of the increment for resempling
-increment <- seq(from = start$frame[1,1], to = max(trackDat[[i]]$frame, na.rm = T), by = Tstep)
+increment <- seq(from = start$frame, to = max(trackDat[[i]]$frame, na.rm = T), by = Tstep)
 selFrames <- increment %in% trackDat[[i]]$frame 
 # store frame to keep and detect which have to be added
 toKeep_temp <- increment[selFrames]
