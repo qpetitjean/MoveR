@@ -4,13 +4,15 @@
 \alias{resampleFrags}
 \title{Fragment resampling}
 \usage{
-resampleFrags(trackDat, Tstep = NULL)
+resampleFrags(trackDat, Tstep = NULL, TimeCol = NULL)
 }
 \arguments{
 \item{trackDat}{A list of data frame containing tracking informations for each fragment
 (e.g., maj.ax, angle, min.ax, x.pos, y.pos, ...)}
 
-\item{Tstep}{A numeric value corresponding to the length of the resampling step (number of frames)}
+\item{Tstep}{A numeric value corresponding to the length of the resampling step (unit of time, e.g., frame)}
+
+\item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame")}
 }
 \value{
 A list of data frame containing resampled tracking informations for each fragment
