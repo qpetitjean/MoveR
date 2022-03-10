@@ -6,8 +6,9 @@
 #' sinuosity along this fragment
 #'
 #'
-#' @param df A data frame containing x, y coordinates and time columns named "x.pos", "y.pos", "frame" for a fragment
-#'
+#' @param df A data frame containing at x and y coordinates columns named "x.pos", "y.pos", the df should also contains
+#' a time column (e.g., frame, second) for a fragment
+#' 
 #' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
 #' (e.g., size in cm / size in pixels; see trajr::TrajScale())
 #'
@@ -17,6 +18,7 @@
 #' to the length of the resampling step needed to discretize the input trajectory (optional)
 #' see trajr::TrajRediscretize()) 
 #'
+#' @param TimeCol A character string corresponding to the name of the column containing Time information (e.g., "frame")
 #'
 #' @return this function returns a vector containing the value of sinuosity for a given fragment
 #'
@@ -34,11 +36,16 @@
 sinuosity <- function(df,
                       scale = NULL,
                       unit = NULL,
-                      segL = NULL) {
+                      segL = NULL,
+                      TimeCol = NULL) {
   if (is.null(unit)) {
     warning("the unit of the trajectory path after scaling is missing, default is pixels")
     unit = "pixels"
   }
+  if (is.null(TimeCol)) {
+    stop(
+      "TimeCol argument is missing: the name of the column carying time information is needed to compute speed"
+    )}
   if (is.null(scale)) {
     (
       "the scaling factor to be applied to the trajectory coordinates is missing, default is 1/1"
@@ -46,7 +53,7 @@ sinuosity <- function(df,
     scale = 1 / 1
   }
   trj <-
-    trajr::TrajFromCoords(df[, c("x.pos", "y.pos", "frame")],
+    trajr::TrajFromCoords(df[, c("x.pos", "y.pos", TimeCol)],
                           spatialUnits = "pixels",
                           timeCol = 3)
   trj <- trajr::TrajScale(trj, scale, unit)
