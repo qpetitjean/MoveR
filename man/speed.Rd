@@ -4,15 +4,18 @@
 \alias{speed}
 \title{Compute speed}
 \usage{
-speed(df, scale = NULL, unit = NULL)
+speed(df, scale = NULL, unit = NULL, TimeCol = NULL)
 }
 \arguments{
-\item{df}{A data frame containing at x, y coordinates and time columns named "x.pos", "y.pos", "frame" for a fragment}
+\item{df}{A data frame containing at x and y coordinates columns named "x.pos", "y.pos", the df should also contains
+a time column (e.g., frame, second) for a fragment}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
 (e.g., size in cm / size in pixels; see trajr::TrajScale())}
 
 \item{unit}{The unit expected after scaling (e.g., "cm", "m", ...)}
+
+\item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame")}
 }
 \value{
 this function returns a vector containing the value of speed along a given fragment

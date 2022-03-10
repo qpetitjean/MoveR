@@ -4,10 +4,11 @@
 \alias{sinuosity}
 \title{Compute corrected rediscretized sinuosity index}
 \usage{
-sinuosity(df, scale = NULL, unit = NULL, segL = NULL)
+sinuosity(df, scale = NULL, unit = NULL, segL = NULL, TimeCol = NULL)
 }
 \arguments{
-\item{df}{A data frame containing x, y coordinates and time columns named "x.pos", "y.pos", "frame" for a fragment}
+\item{df}{A data frame containing at x and y coordinates columns named "x.pos", "y.pos", the df should also contains
+a time column (e.g., frame, second) for a fragment}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
 (e.g., size in cm / size in pixels; see trajr::TrajScale())}
@@ -17,6 +18,8 @@ sinuosity(df, scale = NULL, unit = NULL, segL = NULL)
 \item{segL}{A numeric value expressed in the unit specified by user and corresponding
 to the length of the resampling step needed to discretize the input trajectory (optional)
 see trajr::TrajRediscretize())}
+
+\item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame")}
 }
 \value{
 this function returns a vector containing the value of sinuosity for a given fragment
