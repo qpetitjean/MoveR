@@ -4,7 +4,7 @@
 \alias{resampleFrags}
 \title{Fragment resampling}
 \usage{
-resampleFrags(trackDat, Tstep)
+resampleFrags(trackDat, Tstep = NULL)
 }
 \arguments{
 \item{trackDat}{A list of data frame containing tracking informations for each fragment
