@@ -21,7 +21,7 @@
 #' 
 #' #TODO
 #' 
-
+#' @export
 
 resampleFrags <- function(trackDat, Tstep = NULL, TimeCol = NULL) {
 
