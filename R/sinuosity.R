@@ -44,7 +44,7 @@ sinuosity <- function(df,
   }
   if (is.null(TimeCol)) {
     stop(
-      "TimeCol argument is missing: the name of the column carying time information is needed to compute speed"
+      "TimeCol argument is missing: the name of the column carying time information is needed to compute sinuosity"
     )}
   if (is.null(scale)) {
     (

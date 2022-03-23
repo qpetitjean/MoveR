@@ -70,36 +70,65 @@ analyseTime <-
       customFunc <- list(customFunc)
       names(customFunc) <- VarName
     }
+    
+    # define the timeline
+    ## check the time step of the timeline across the dataset
+    TimelineStep <- unique(unlist(lapply(trackDat, function (w)
+      apply(w[timeCol], 2, function(x) signif(diff(x), 4))
+    )))
+    ## in case the time step is not constant used the minimum value and print a warning message
+    if(length(TimelineStep) == 1){
+      TimeLStep <- TimelineStep
+    }else if(length(TimelineStep) > 1) {
+      TimeLStep <- min(TimelineStep, na.rm = T)
+      warning(
+        "In TimeCol : \n the time step is not constant across trackDat and returns the following values: ",
+        TimelineStep,
+        "\n here the function used ",
+        min(TimelineStep, na.rm = T),
+        ", but perhaps consider resampling the fragments to better control the behavior of the function", 
+        "\n see MovR::resampleFrags()"
+      )
+    }
     if (is.null(Tinterval)) {
-      # define the timeline
+      # create the timeline
       timeline <- seq(min(unlist(lapply(trackDat, function (w)
         min(w[timeCol], na.rm = T))), na.rm = T),
         max(unlist(lapply(trackDat, function (w)
-          max(w[timeCol], na.rm = T))), na.rm = T), by = 1)
-      # compute sliding mean every n time unit (according to "sampling" parameter) allow to make computation faster
+          max(w[timeCol], na.rm = T))), na.rm = T), by = TimeLStep)
+      if(timeline[length(timeline)] != max(unlist(lapply(trackDat, function (w)
+        max(w[timeCol], na.rm = T))), na.rm = T)){
+        timeline[length(timeline)+1] <- max(unlist(lapply(trackDat, function (w)
+          max(w[timeCol], na.rm = T))), na.rm = T)
+      }
+      # resample the timeline according to "sampling" parameter (computation will be made at these time values)
       Newtimeline <- seq(from = timeline[1],
                          to = timeline[length(timeline)],
                          by = sampling)
-      Newtimeline[length(Newtimeline) + 1] <-
-        timeline[length(timeline)]
+      
+      if(Newtimeline[length(Newtimeline)] != timeline[length(timeline)]){
+        Newtimeline[length(Newtimeline) + 1] <- timeline[length(timeline)]
+      }
       Newtimeline[which(Newtimeline == 0)] <- 1
     } else {
-      # define the timeline
       timeline <-
         seq(
-          from = round(Tinterval[1] - ((Tstep - 1) / 2)),
-          to = round(Tinterval[2] + ((Tstep - 1) / 2)),
-          by = 1
+          from = Tinterval[1] - ((Tstep - TimeLStep) / 2),
+          to = Tinterval[2] + ((Tstep - TimeLStep) / 2),
+          by = TimeLStep
         )
-      # compute sliding mean every n time unit (according to "sampling" parameter) allow to make computation faster
+      
+      # resample the timeline according to "sampling" parameter (computation will be made at these time values)
       Newtimeline <- seq(from = Tinterval[1],
                          to = Tinterval[2],
                          by = sampling)
-      Newtimeline[length(Newtimeline) + 1] <- Tinterval[2]
+      if(Newtimeline[length(Newtimeline)] != Tinterval[2]){
+        Newtimeline[length(Newtimeline)+1] <- Tinterval[2]
+      }
       Newtimeline[which(Newtimeline == 0)] <- 1
     }
     if(length(which(duplicated(Newtimeline))) > 0){
-    Newtimeline <- Newtimeline[-which(duplicated(Newtimeline))]}
+      Newtimeline <- Newtimeline[-which(duplicated(Newtimeline))]}
     # if customFunc is a unnamed list of function, retrieve function names
     if (is.list(customFunc)) {
       if (is.null(names(customFunc))) {
@@ -131,34 +160,39 @@ analyseTime <-
     # loop trough fragments part to compute metrics according to customFunc
     for (i in Newtimeline) {
       # Select Time interval according to the specified Tstep and extract the concerned fragments part
-      # since we use a sliding mean, the time values below the minimum time value detected in the dataset as well as
-      # when i - (Tstep-1)/2 is below the first value of the timeline or i + (Tstep-1)/2 is above the maximum 
-      # time value detected in the dataset, it result in NA
-      if (suppressWarnings(!(min(timeline[which(timeline < i &
-                                                timeline > round((i - ((
-                                                  Tstep - 1
-                                                ) / 2))))]) <
-                             min(unlist(
-                               lapply(trackDat, function (w)
-                                 min(w[timeCol], na.rm = T))
-                             ), na.rm = T)) &
-                           !(round((i - ((Tstep - 1) / 2
-                           ))) < timeline[1]) &
-                           !(round((i + ((Tstep - 1) / 2
-                           ))) > max(unlist(
-                             lapply(trackDat, function (w)
-                               max(w[timeCol], na.rm = T))
-                           ), na.rm = T)))) {
+      
+      if (suppressWarnings(
+        # the minimun timeline value below i and above the inferior substep is NOT lower than the minimum timeCol value within the dataset
+        !(min(timeline[which(timeline < i &
+                             timeline > (i - ((Tstep - TimeLStep) / 2)))]) <
+          min(unlist(lapply(trackDat, function (w)
+            min(w[timeCol], na.rm = T))), na.rm = T))
+        &
+        # AND the inferior substep is NOT below the first value of the timeline 
+        !((i - ((Tstep - TimeLStep) / 2)) < timeline[1]) 
+        &
+        # AND the superior substep is NOT higher than the maximum timeCol value within the dataset
+        !((i + ((Tstep - TimeLStep) / 2)) >
+          max(unlist(lapply(trackDat, function (w)
+            max(w[timeCol], na.rm = T))), na.rm = T))
+      )) {
+        # Specify the limit of the subampling step accordingly
+        subStepInf <- abs(timeline - (i - ((Tstep - TimeLStep)/2)))
+        subStepSup <- abs(timeline - (i + ((Tstep - TimeLStep)/2)))
+        # create a vector containing the selected value of the timeline for the given substep
         selVal <-
-          timeline[which(timeline ==  round((i - ((
-            Tstep - 1
-          ) / 2)))):which(timeline == round((i + ((
-            Tstep - 1
-          ) / 2))))]
-        # select the fragment that are detected in the selected timeline part and
-        # Cut them according the selected part of the timeline
-        WhoWhen <- cutFrags(trackDat, function (x)
-          x[[timeCol]] %in% selVal)
+          timeline[min(which(abs((
+            min(subStepInf, na.rm = T) - subStepInf
+          )) == 0 )):max(which(abs((
+            min(subStepSup, na.rm = T) - subStepSup
+          )) == 0))]
+        
+        # select the fragment that are detected in the selected timeline part 
+        WhoWhen <-
+          cutFrags(trackDat, function(x)
+            x[[timeCol]] >= min(selVal, na.rm = T) &
+              x[[timeCol]] <= max(selVal, na.rm = T))
+        
         # compute the metrics specified through customFunc on the selected fragment part
         # initialize result list for a given Time interval
         Res <- list()
