@@ -6,16 +6,16 @@
 #'
 #' @param trackDat A list of tracking fragments to plot along x and y coordinates
 #'
-#' @param binRad A numeric value corresponding to the diameter of the typical surface a particle can "explore" around its position.
-#' For instance, the reaction distance of a Trichograms (i.e., a parasitoïd micro-wasp) is about 4 mm, in this case, a reasonable value is of order 16 mm^2,
+#' @param binRad A numeric value corresponding to the diameter of the typical surface a particle can "explore" around its position
+#' For instance, the reaction distance of a Trichograms (i.e., a parasitoid micro-wasp) is about 4 mm, in this case, a reasonable value is of order 16 mm^2,
 #' the diameter of such a cell is hence about 8 mm
 #'
 #' @param imgRes A vector of 2 numeric values, resolution of the video used as x and y limit of the plot
 #'  (i.e., the number of pixels in image width and height, e.g., 1920 x 1080).
 #'
-#' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
+#' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates (optional)
 #'
-#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame")
+#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame") (optional)
 #'
 #' @param timeWin  A list of one or several vector containing 2 numeric values separated by a comma
 #' corresponding to the time interval between which the fragments have to be drawn according to timeCol (optional)
