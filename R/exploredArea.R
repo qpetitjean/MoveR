@@ -34,7 +34,7 @@
 #'
 #' @export
 
-ExploredArea <-
+exploredArea <-
   function(trackDat,
            binRad = NULL,
            imgRes = c(1920, 1080),
