@@ -6,7 +6,7 @@
 #'
 #' @param trackDat A list of tracking fragments to plot along x and y coordinates
 #'
-#' @param binRad A numeric value corresponding to the diameter of the typical surface a particle can 'explore' around its position.
+#' @param binRad A numeric value corresponding to the diameter of the typical surface a particle can "explore" around its position.
 #' For instance, the reaction distance of a Trichograms (i.e., a parasitoïd micro-wasp) is about 4 mm, in this case, a reasonable value is of order 16 mm^2,
 #' the diameter of such a cell is hence about 8 mm
 #'
