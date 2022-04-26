@@ -15,9 +15,8 @@ turnAngle(df, unit = c("radians", "degrees"))
 this function returns a vector containing the value of turning angle computed along a given fragment
 }
 \description{
-Given a data frames containing tracking informations for a given fragment,
-this function compute turning angle of individual and returns a vector containing the value of
-turning angle along this fragment
+Given a data frames containing tracking information for a particle,
+this function compute returns a vector containing the value of turning angle along the considered fragment
 }
 \examples{
 

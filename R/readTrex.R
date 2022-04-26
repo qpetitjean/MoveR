@@ -18,8 +18,7 @@
 #' and the second containing all the elements retrieved from the .npz files (see rawDat argument).
 #' Also, by default the function mirror y coordinates to start on the bottom-left (see mirrorY argument).
 #'
-#' @param trexPath The path of the Trex outputs folder to load .npz files within R environment
-#' (e.g. "C:/Users/username/Desktop/Trex_output")
+#' @param trexPath The path of the Trex output folder where .npz files are stored
 #'
 #' @param mirrorY TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = TRUE)
 #'
