@@ -1,9 +1,8 @@
 #' @title Compute turning angle
 #'
 #'
-#' @description Given a data frames containing tracking informations for a given fragment, 
-#' this function compute turning angle of individual and returns a vector containing the value of 
-#' turning angle along this fragment
+#' @description Given a data frames containing tracking information for a particle, 
+#' this function compute returns a vector containing the value of turning angle along the considered fragment
 #' 
 #'
 #' @param df A data frame containing x, y coordinates columns named "x.pos", "y.pos" for a given fragment
