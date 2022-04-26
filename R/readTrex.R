@@ -1,11 +1,11 @@
 #' @title Load Trex tracking output .npz files
 #'
 #' @description Given the path of a folder containing multiple Trex outputs (one .npz file per particle/individual),
-#' this function returns a list of 9 vectors classically used for further computations using MovR package: 
+#' this function returns a list of 9 vectors classically used for further computations using MovR package:
 #' \itemize{
-#'    \item{'maj.ax': }{the length of major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
+#'    \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
 #'    \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to X-axis.}
-#'    \item{'min.ax': }{the length of minor axis for a particle over frame (i.e., width of the ellipse), returns NA since it is not present in the TREX output.}
+#'    \item{'min.ax': }{the length of the minor axis for a particle over frame (i.e., width of the ellipse), returns NA since it is not present in the TREX output.}
 #'    \item{'x.pos': }{x position of the particle's centroid.}
 #'    \item{'y.pos': }{y position of the particle's centroid.}
 #'    \item{'identity': }{the particle's identity given by the tracking software.}
@@ -13,8 +13,8 @@
 #'    \item{'ntargets': }{the number of particle tracked over each frame.}
 #'    \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 #' }
-#' 
-#' Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above 
+#'
+#' Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above
 #' and the second containing all the elements retrieved from the .npz files (see rawDat argument).
 #' Also, by default the function mirror y coordinates to start on the bottom-left (see mirrorY argument).
 #'
@@ -23,7 +23,7 @@
 #' @param mirrorY TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = TRUE)
 #'
 #' @param imgHeight A numeric value expressed in pixels, the true length of Y axis
-#' corresponding to the height of the image or video resolution (default = 1080)
+#' corresponding to the height of the image or video resolution
 #'
 #' @param rawDat TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .npz files, may drastically increase the size of the object returned by the function (default = FALSE)
 #'
@@ -36,13 +36,29 @@
 #' @seealso \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
 #'
 #' @examples
-#'  
-#' # Load the list containing the 9 vectors classically used for further computation and mirror Y coordinates to start on the bottom-left
-#' Data <- readTrex(system.file("sampleData/sample_1/TREXOutput", package = "MovR"), mirrorY = T, imgHeight = 1080, rawDat = F)
 #'
-#' # Load the list containing 2 sublists, the first containing the 9 vectors classically used for further computation and the 
-#' # second list containing all the elements retrieved from .npz files, also do not mirror Y coordinates (start on the top-left)
-#' Data <- readTrex(system.file("sampleData/sample_1/TREXOutput", package = "MovR"), mirrorY = F, imgHeight = NULL, rawDat = T)
+#' # Load the list containing the 9 vectors classically used for further computation 
+#' # and mirror Y coordinates to start on the bottom-left
+#' 
+#' Data <-
+#'   readTrex(
+#'     system.file("sampleData/sample_1/TREXOutput", package = "MovR"),
+#'     mirrorY = T,
+#'     imgHeight = 1080,
+#'     rawDat = F
+#'   )
+#' 
+#' # Load the list containing 2 sublists, the first containing the 9 vectors classically used for further computation 
+#' # and the second list containing all the elements retrieved from .npz files, 
+#' # also do not mirror Y coordinates (start on the top-left)
+#' 
+#' Data <-
+#'   readTrex(
+#'     system.file("sampleData/sample_1/TREXOutput", package = "MovR"),
+#'     mirrorY = F,
+#'     imgHeight = NULL,
+#'     rawDat = T
+#'   )
 #'
 #'
 #' @export
@@ -51,9 +67,11 @@ readTrex = function(trexPath,
                     mirrorY = TRUE,
                     imgHeight = NULL,
                     rawDat = FALSE) {
-  if(mirrorY == TRUE & is.null(imgHeight)){ 
-    stop("imgHeight argument is missing, the height of the image resolution is needed to mirror y coordinates")
-    }
+  if (mirrorY == TRUE & is.null(imgHeight)) {
+    stop(
+      "imgHeight argument is missing, the height of the image resolution is needed to mirror y coordinates"
+    )
+  }
   # import numpy python module to read .npz files
   np <-
     reticulate::import("numpy")

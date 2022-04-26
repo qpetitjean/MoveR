@@ -29,7 +29,8 @@ Imports:
     R.matlab (>= 3.6.2),
     reticulate (>= 1.20),
     stats (>= 4.1.0),
-    trajr (>= 1.4.0)
+    trajr (>= 1.4.0),
+    hexbin (>= 1.28.2)
 Suggests: 
     knitr,
     rmarkdown,
