@@ -59,7 +59,7 @@ readTrex = function(trexPath,
   np <-
     reticulate::import("numpy")
   
-  # create a list of the .npz files (output for each particle detected by Trex)
+  # create a list of the .npz files (i.e., the output for each particle detected by Trex)
   if (length(list.files(trexPath, pattern = "*.npz")) == 0) {
     stop("No such file or directory : undefined or wrong path supplied")
     
@@ -79,7 +79,7 @@ readTrex = function(trexPath,
   Trex_ind_list <-
     Trex_ind_list[!grepl ("recognition", Trex_ind_list)]
   
-  # create a vector containing the id of particles and replace fish per indiv
+  # create a vector containing the particles' id and replace fish or other by the generic name: "indiv"
   Trex_ind_names <-
     unlist(lapply(Trex_ind_list,
                   function(i) {
@@ -89,8 +89,8 @@ readTrex = function(trexPath,
                       )))
                     ), 1)), sep = "")
                   }))
-  # load npz files of all particles detected in the tracking session in a list
-  # and rename levels elements of the list according to particle's id
+  # load .npz files for all the particles detected in the tracking session in a list
+  # and rename levels of the list according to particle's id
   indiv_list <- stats::setNames(lapply(Trex_ind_list, function(i) {
     np$load(file.path(trexPath, i))
   }),
