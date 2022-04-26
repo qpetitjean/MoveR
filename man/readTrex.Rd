@@ -7,8 +7,7 @@
 readTrex(trexPath, mirrorY = TRUE, imgHeight = NULL, rawDat = FALSE)
 }
 \arguments{
-\item{trexPath}{The path of the Trex outputs folder to load .npz files within R environment
-(e.g. "C:/Users/username/Desktop/Trex_output")}
+\item{trexPath}{The path of the Trex output folder where .npz files are stored}
 
 \item{mirrorY}{TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = TRUE)}
 
