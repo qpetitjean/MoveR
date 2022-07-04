@@ -1,27 +1,26 @@
 #' @title Compute distance to the edge of an object (e.g., the arena) along a trajectory
 #'
 #'
-#' @description Given a data frames containing tracking information for a given fragment,
-#' this function compute the euclidean distance between points defining the edge of an object (e.g., the arena)
-#' and coordinates of the trajectory, the function returns the distance between each points of the
-#' trajectory and the closest point of the object edge
+#' @description Given a data frame containing tracking information for a given fragment and a data frame containing the 
+#' coordinates of an object edges, this function compute the euclidean distance between the edge of the object (e.g., the arena)
+#' and coordinates of the particle along its trajectory. The function then returns the distance between each points of the
+#' trajectory and the closest point to the object edge.
 #'
 #'
-#' @param df A data frame containing at x, y coordinates named "x.pos", "y.pos", for a fragment
+#' @param df A data frame containing at x, y coordinates named "x.pos", "y.pos", for a fragment.
 #'
-#' @param edge A data frame containing at x, y coordinates named "x.pos", "y.pos" and specifiyng the location of the
-#' arena or any object edge
+#' @param edge A data frame containing x, y coordinates named "x.pos", "y.pos" and specifiyng the location of the
+#' arena or any object edge.
 #'
-#' @param customFunc A function used to specify the formula used to compute the
-#' distance between a given object or arena border and individuals along a trajectory
-#' It is possible to call already implemented methods for Circular arena by calling customFunc = "CircularArena"
+#' @param customFunc A function used to specify the formula allowing to compute the
+#' distance between a given object or arena edge and the particle along its trajectory
+#' It is possible to call already implemented methods for Circular arena by calling customFunc = "CircularArena".
 #'
-#' @return this function returns a vector containing the distance between each points of the
-#' trajectory and the closest point of the object edge
+#' @return This function returns a vector containing the distance between each points of the
+#' trajectory and the closest point of the object edge.
 #'
 #'
-#' @authors Quentin Petitjean
-#'
+#' @authors Quentin PETITJEAN
 #'
 #' @examples
 #'
@@ -38,8 +37,8 @@ dist2Edge <- function(df, edge, customFunc) {
                                  (center[2] - edge["y.pos"]) ^ 2
     )), na.rm = T)
     customFunc <- function(i) {
-      sqrt((center[1] - df$x.pos[i]) ^ 2 +
-             (center[2] - df$y.pos[i]) ^ 2) - radius
+      sqrt((center[1] - df[["x.pos"]][i]) ^ 2 +
+             (center[2] - df[["y.pos"]][i]) ^ 2) - radius
     }
   }
   Res <-

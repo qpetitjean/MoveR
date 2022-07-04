@@ -1,42 +1,37 @@
-#' @title extactBouts
-#'
+#' @title Extract specified patterns from fragments
 #'
 #' @description Given a list of data frames containing tracking informations including a vector 
 #' containing behavioral patterns (e.g., behavioral states, location in areas) for each fragment, 
-#' the function extracts fragments part containing the specified pattern
+#' the function extracts fragments part that contains the specified pattern.
 #' 
 #'
-#' @param trackDat A list of data frame containing tracking informations for each fragment
+#' @param trackDat A list of data frame containing tracking informations for each fragment, including a vector 
+#' containing behavioral patterns (e.g., behavioral states, location in areas).
 #' 
-#' @param Bstate The name of a vector/df column present in each df of trackDat and indicating the state of the individual
-#' along a fragment (i.e. numeric or characters)
+#' @param Bstate The name of the column indicating the state of the individual along each fragment.
 #' 
-#' @param pattern A character string containing a regular expression
-#' to be matched in the Bstate vector. see gregexpr()
+#' @param pattern A character string containing a regular expression to be matched in the Bstate vector. see gregexpr().
 #'
-#' @return this function returns a list containing several sublists:
-#' 1- a list containing the pattern specified by the user
-#' 2- a list containing the bouts the extracted according to the specified pattern, bouts are grouped and 
-#' named according to the id of the original fragment (e.g. the first bouts extracted from the first fragment will be located in the sublist named frags_1
-#' and will be named frags_1.1)
-#'
-#' @authors Quentin Petitjean
-#'
+#' @return This function returns a list containing the part of the fragments corresponding to the specified pattern. 
+#' The part of the fragments corresponding to the specified pattern are grouped into a list named according to the id of the original fragment 
+#' (e.g. the first detected pattern extracted from the first fragment is located in the sublist named frags_1 and is named frags_1.1).
+#' 
+#' @authors Quentin PETITJEAN
 #'
 #' @examples
 #'
-#' #TODO
+#'# TODO
 #'
 #' @export
 
-extactBouts <-
+patternExtract <-
   function(trackDat,
            Bstate = NULL,
            pattern = NULL) {
     if (is.null(Bstate)) {
       stop("Bstate argument is missing, a column containing behavioral state information is needed to find the specified pattern")
     }
-    if (is.null(unlist(lapply(trackDat, function(x) {list_get(x, Bstate)})))) {
+    if (is.null(unlist(lapply(trackDat, function(x) {listGet(x, Bstate)})))) {
       stop("Bstate column is misspelled or is missing from fragment list, a column containing behavioral state information is needed to find the specified pattern")
     }
     if (is.null(pattern)) {
@@ -74,16 +69,16 @@ extactBouts <-
       })
     names(Positions) <- names(starts)
     # For each fragment, extract the part that match the pattern
-    ExtractBouts <- lapply(names(Positions), function(x) {
+    extractPattern <- lapply(names(Positions), function(x) {
       lapply(seq(length(Positions[[x]])), function(y) {
         trackDat[[x]][c(Positions[[x]][[y]]),]
       })
     })
     # name each sublist according to the fragments they belong to
-    names(ExtractBouts) <- names(Positions)
-    sublistNames <- lapply(names(ExtractBouts), function(y){paste(y, ".", seq(length(ExtractBouts[[y]])), sep="")})
-   for(i in seq(length(ExtractBouts))){
-     names(ExtractBouts[[i]]) <- sublistNames[[i]]
+    names(extractPattern) <- names(Positions)
+    sublistNames <- lapply(names(extractPattern), function(y){paste(y, ".", seq(length(extractPattern[[y]])), sep="")})
+   for(i in seq(length(extractPattern))){
+     names(extractPattern[[i]]) <- sublistNames[[i]]
    }
-    return(list(Pattern = pattern, ExtractedBouts = ExtractBouts))
+    return(extractPattern)
   }

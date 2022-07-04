@@ -9,7 +9,7 @@
 #'    \item{'x.pos': }{x position of the particle's centroid.}
 #'    \item{'y.pos': }{y position of the particle's centroid.}
 #'    \item{'identity': }{the particle's identity given by the tracking software.}
-#'    \item{'frame': }{montonically increasing integer number representing the elapsed time over each particle's trajectory.}
+#'    \item{'frame': }{the video frame number at which the measurements has been made.}
 #'    \item{'ntargets': }{the number of particle tracked over each frame.}
 #'    \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 #' }
@@ -18,17 +18,18 @@
 #' and the second containing all the elements retrieved from the .npz files (see rawDat argument).
 #' Also, by default the function mirror y coordinates to start on the bottom-left (see mirrorY argument).
 #'
-#' @param trexPath The path of the Trex output folder where .npz files are stored
+#' @param trexPath The path of the Trex output folder where .npz files are stored.
 #'
-#' @param mirrorY TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = TRUE)
+#' @param mirrorY TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = TRUE).
 #'
-#' @param imgHeight A numeric value expressed in pixels, the true length of Y axis
-#' corresponding to the height of the image or video resolution
+#' @param imgHeight A numeric value expressed in pixels, the length of Y axis
+#' corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).
 #'
-#' @param rawDat TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .npz files, may drastically increase the size of the object returned by the function (default = FALSE)
+#' @param rawDat TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .npz files (see \link{https://trex.run}),
+#' may drastically increase the size of the object returned by the function (default = FALSE).
 #'
-#' @return A set of two lists containing tracking data, the first list corresponding to raw tracking data
-#' in usable format for this package, the second corresponding to raw data as returned by Trex
+#' @return A list containing either a list of 9 elements classically used for further computations or a list containing 2 sublists, the first corresponding to the one previously mentioned
+#' and the second containing all the elements retrieved from the .npz files (see rawDat argument). Also, by default the function mirror y coordinates to start on the bottom-left.
 #'
 #'
 #' @authors Quentin PETITJEAN
@@ -37,21 +38,21 @@
 #'
 #' @examples
 #'
-#' # Load the list containing the 9 vectors classically used for further computation 
+#' # Load the list containing the 9 vectors classically used for further computation
 #' # and mirror Y coordinates to start on the bottom-left
-#' 
+#'
 #' Data <-
 #'   readTrex(
 #'     system.file("sampleData/sample_1/TREXOutput", package = "MovR"),
 #'     mirrorY = T,
-#'     imgHeight = 1080,
+#'     imgHeight = 2160,
 #'     rawDat = F
 #'   )
-#' 
-#' # Load the list containing 2 sublists, the first containing the 9 vectors classically used for further computation 
-#' # and the second list containing all the elements retrieved from .npz files, 
+#'
+#' # Load the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
+#' # and the second list containing all the elements retrieved from .npz files,
 #' # also do not mirror Y coordinates (start on the top-left)
-#' 
+#'
 #' Data <-
 #'   readTrex(
 #'     system.file("sampleData/sample_1/TREXOutput", package = "MovR"),
@@ -59,7 +60,6 @@
 #'     imgHeight = NULL,
 #'     rawDat = T
 #'   )
-#'
 #'
 #' @export
 
@@ -207,7 +207,7 @@ readTrex = function(trexPath,
     )
   } else if (rawDat == TRUE) {
     Data_Trex_All <- list(
-      Data_Trex <- list(
+      Data_Trex = list(
         maj.ax = unname(as.matrix(metricList$midline_length)),
         angle = unname(as.matrix(metricList$ANGLE)),
         min.ax = as.numeric(rep(NA, dim(
@@ -222,7 +222,7 @@ readTrex = function(trexPath,
           unique(metricList$timestamp / 1000000)
         ))
       ),
-      Data_Trex_Raw <-
+      Data_Trex_Raw =
         lapply(metricList, function (x)
           unname(as.matrix(x)))
     )

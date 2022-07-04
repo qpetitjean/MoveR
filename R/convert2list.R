@@ -1,35 +1,44 @@
-#' @title Convert fragments list to simple list
+#' @title Convert a list of fragments to list of variables
 #'
-#' @description Given a nested list containing fragments sublists 
-#' to a simple list as original raw data for use in track_stat
-#'
-#'
-#' @param tracking_data A list of data frame containing tracking informations for each fragment
-#' (e.g., maj.ax, angle, min.ax, x.pos, y.pos, ...)
+#' @description Given a list containing 1 or more data frames corresponding to the data for each fragments
+#' the function reduce the list by concatenating fragments' data based on the variables present within each fragment data frame 
+#' and add fragment identity as a new variable.
 #'
 #'
-#' @return A list of tracking data as in raw file
+#' @param trackDat A list of data frame containing tracking information for each fragment (e.g., x.pos, y.pos, frame).
 #'
-#' @authors Quentin Petitjean
+#' @return A list of vectors corresponding to the variable retrieved from the fragments.
 #'
-#'
+#' @authors Quentin PETITJEAN
+#' 
+#' @seealso \code{\link{convert2frags}}
 #'
 #' @examples
 #'
-#' # TODO
+#' #'# generate some dummy fragments
+#' ## start to specify some parameters to generate fragments
+#'Fragn <- 10 # the number of fragment to simulate
+#'FragL <- 1:1000 # the length of the fragments or a sequence to randomly sample fragment length
+#'
+#'fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
+#'  trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
+#'    data.frame(
+#'      x.pos = j$x - min(j$x),
+#'      y.pos = j$y - min(j$y),
+#'      frame = j$time
+#'    )), seq(Fragn))
+#'
+#'# convert frag list to a simple list to extract image resolution for generated fragments
+#' trackDatList <- convert2list(fragsList)
 #'
 #' @export
 
-convert2list <- function(tracking_data) {
-  tracking_data_list <- list()
-  # convert the fragments list nested in tracking_data to a dataframe and add the fragment id
-  tracking_data_df <- do.call("rbind", tracking_data)
-  tracking_data_df$frags_id <-
-    gsub("[.][0-9]*", "", rownames(tracking_data_df))
-  # then transfrom each df column in one element of the list
-  for (i in names(tracking_data_df)) {
-    tracking_data_list[[i]] <- unname(as.matrix(tracking_data_df[, i]))
-    
-  }
-  return(tracking_data_list)
+convert2list <- function(trackDat) {
+  # convert the fragments' list to a data frame and add the fragment id
+  trackDatdf <- do.call("rbind", trackDat)
+  trackDatdf[["fragsId"]] <-
+    gsub("[.][0-9]*", "", rownames(trackDatdf))
+  # then transform the data frame to a list
+  trackDatList <- as.list(trackDatdf)
+  return(trackDatList)
 } 
