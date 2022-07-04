@@ -7,20 +7,21 @@
 slidWin(x, Tstep, customFunc)
 }
 \arguments{
-\item{x}{A vector containing data to smooth}
+\item{x}{A vector containing data to smooth.}
 
-\item{Tstep}{A numeric value corresponding to the length of the sliding window (number of values)}
+\item{Tstep}{A numeric value corresponding to the length of the sliding window (i.e., the number of values).}
 
-\item{customFunc}{A function used to perform the computation along the sliding window}
+\item{customFunc}{A function used to perform the computation along the sliding window.}
 }
 \value{
-A vector containing smoothed data
+A vector containing smoothed data.
 }
 \description{
-Given a vector containing numeric data, this function returns a vector of smoothed data by performing any computation
-along a centered sliding window
+Given a vector containing numeric data, this function returns a vector of smoothed data
+by performing the specified computation along a centered sliding window.
 }
 \examples{
+
 set.seed(123) 
 # compute smoothed mean 
 smoothMean <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) mean(x, na.rm = T))

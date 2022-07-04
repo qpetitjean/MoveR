@@ -2,32 +2,64 @@
 % Please edit documentation in R/readIdtracker.R
 \name{readIdtracker}
 \alias{readIdtracker}
-\title{Load idtracker tracking output .npy file}
+\title{Load idtracker.ai tracking output .npy file}
 \usage{
-readIdtracker(IdtrackerPath, mirrorY = FALSE, imgHeight = NA)
+readIdtracker(IdtrackerPath, mirrorY = TRUE, imgHeight = NULL, frameR = NULL)
 }
 \arguments{
-\item{IdtrackerPath}{The path of the idtrackerai output file (.npz) to load within R environment
-(e.g. "C:/Users/\link{username}/Desktop/video_folder/trajectories.npz")}
+\item{IdtrackerPath}{The full path of the idtrackerai output file (.npy).}
 
-\item{mirrorY}{TRUE or FALSE, set the origin of Y coords, if TRUE Y coords are mirrored}
+\item{mirrorY}{TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = TRUE).}
 
-\item{imgHeight}{A numeric value expressed in pixels, the true length of Y axis
-corresponding to the height of the image or video resolution (default = 1080)}
+\item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
+corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).}
+
+\item{frameR}{A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video
+(optional, only used to compute timestamps).}
 }
 \value{
-A list containing tracking data
+A list containing 9 elements classically used for further computations.
+Also, by default the function returns y coordinates starting on the bottom-left.
 }
 \description{
-Given a .npy file corresponding to idtracker tracking output,
-this function process the .npy file to return a list containing tracking data
-If needed this function can also mirror Y coordinates
+Given the path of the .npy file corresponding to idtracker output,
+this function returns a list of 9 vectors classically used for further computations using MovR package:
+\itemize{
+\item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse), returns NA since it is not present in the Idtracker output.}
+\item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to y-axis, returns NA since it is not present in the Idtracker output.}
+\item{'min.ax': }{the length of the minor axis for a particle over frame (i.e., width of the ellipse), returns NA since it is not present in the Idtracker output.}
+\item{'x.pos': }{x position of the particle's centroid.}
+\item{'y.pos': }{y position of the particle's centroid.}
+\item{'identity': }{the particle's identity given by the tracking software.}
+\item{'frame': }{the video frame number at which the measurements has been made.}
+\item{'ntargets': }{the number of particle tracked over each frame.}
+\item{'timestamps': }{the elapsed time over each frame, in seconds.}
+}
+Also, by default the function mirror y coordinates to start on the bottom-left (see mirrorY argument).
 }
 \examples{
 
-# TODO
+# Load the list containing the 9 vectors classically used for further computation
+# and mirror Y coordinates to start on the bottom-left
+
+Data <-
+  readIdtracker(
+    system.file("sampleData/sample_1/IdTrackerOutput", package = "MovR"),
+    mirrorY = T,
+    imgHeight = 2160
+  )
+
+# Load the list containing the 9 vectors classically used for further computation
+# and do not mirror Y coordinates to start on the top-left
+
+Data <-
+  readIdtracker(
+    system.file("sampleData/sample_1/IdTrackerOutput", package = "MovR"),
+    mirrorY = F,
+    imgHeight = NULL
+  )
 
 }
 \seealso{
-\code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readTrackR}}, \code{\link{mirrorYFunc}}
+\code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{mirrorYFunc}}
 }

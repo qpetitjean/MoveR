@@ -2,25 +2,42 @@
 % Please edit documentation in R/distTraveled.R
 \name{distTraveled}
 \alias{distTraveled}
-\title{Compute distance to something along a trajectory}
+\title{Compute the distance traveled by a particle along a trajectory}
 \usage{
-distTraveled(df, Step = 1)
+distTraveled(df, step = 1)
 }
 \arguments{
-\item{df}{A data frame containing at x, y coordinates named "x.pos", "y.pos", for a fragment}
+\item{df}{A data frame containing at x, y coordinates named "x.pos", "y.pos", for a fragment.}
 
-\item{Step}{A numeric value specifying the number of unit between the two position for which distance will be computed}
+\item{step}{A numeric value specifying the number of time unit or records between the two positions from which distance will be computed.}
 }
 \value{
 this function returns a vector containing the distance between each points of the
-trajectory according to the specified step
+trajectory according to the specified step.
 }
 \description{
 Given a data frames containing tracking information for a given fragment,
-this function compute the euclidean distance along the trajectory according to a given step
+this function compute the euclidean distance along the trajectory according to a given step.
 }
 \examples{
 
-#TODO
+# generate a dummy fragment
+## start to specify some parameters to generate the fragment
+FragL <- 100 # the length of the fragment or a sequence to randomly sample fragment length
+
+fragDatTemp <- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)
+fragDat <- data.frame(
+ x.pos = fragDatTemp[["x"]] - min(fragDatTemp[["x"]]),
+ y.pos = fragDatTemp[["y"]] - min(fragDatTemp[["y"]] ),
+ frame = fragDatTemp[["time"]]
+)
+# compute the distance traveled between each point of the trajectory
+fragDat[["distTraveled"]] <- distTraveled(fragDat, Step = 1)
+
+# check the result
+str(fragDat)
+
+# sum all the distance to compute the total distance traveled by the particle over the trajectory
+sum(fragDat[["distTraveled"]], na.rm = T)
 
 }

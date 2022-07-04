@@ -2,31 +2,61 @@
 % Please edit documentation in R/readCtrax.R
 \name{readCtrax}
 \alias{readCtrax}
-\title{Load Ctrax tracking output file}
+\title{Load Ctrax tracking output .mat file}
 \usage{
-readCtrax(ctraxPath, mirrorY = FALSE, imgHeight = NA)
+readCtrax(ctraxPath, mirrorY = FALSE, imgHeight = NULL)
 }
 \arguments{
-\item{ctraxPath}{The path of the Ctrax output file to load within R environment
-(e.g. "C:/Users/\link{username}/Desktop/video_folder/Ctrax_output.mat")}
+\item{ctraxPath}{The full path of the Ctrax output file (.mat).}
 
-\item{mirrorY}{TRUE or FALSE, set the origin of Y coords, if TRUE Y coords are mirrored}
+\item{mirrorY}{TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the top-left (default = FALSE).}
 
-\item{imgHeight}{A numeric value expressed in pixels, the true length of Y axis
-corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE)}
+\item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
+corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).}
 }
 \value{
-A list containing tracking data
+A list containing 9 elements classically used for further computations.
+Also, by default the function returns y coordinates starting on the bottom-left.
 }
 \description{
-Given a .mat file corresponding to Ctrax tracking output,
-this function open the .mat file in R, reconstruct time serie and if needed mirror Y coordinates
+Given the path of the .mat file corresponding to Ctrax output,
+this function returns a list of 9 vectors classically used for further computations using MovR package:
+\itemize{
+\item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
+\item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to y-axis.}
+\item{'min.ax': }{the length of the minor axis for a particle over frame (i.e., width of the ellipse).}
+\item{'x.pos': }{x position of the particle's centroid.}
+\item{'y.pos': }{y position of the particle's centroid.}
+\item{'identity': }{the particle's identity given by the tracking software.}
+\item{'frame': }{the video frame number at which the measurements has been made.}
+\item{'ntargets': }{the number of particle tracked over each frame.}
+\item{'timestamps': }{the elapsed time over each frame, in seconds.}
+}
+Also, the function can mirror y coordinates (see mirrorY argument).
 }
 \examples{
 
-# TODO
+# Load the list containing the 9 vectors classically used for further computation
+# and mirror Y coordinates to start on the top-left
+
+Data <-
+  readCtrax(
+    system.file("sampleData/sample_1/CtraxOutput", package = "MovR"),
+    mirrorY = T,
+    imgHeight = 2160
+  )
+
+# Load the list containing the 9 vectors classically used for further computation
+# and do not mirror Y coordinates to start on the bottom-left
+
+Data <-
+  readCtrax(
+    system.file("sampleData/sample_1/CtraxOutput", package = "MovR"),
+    mirrorY = F,
+    imgHeight = NULL
+  )
 
 }
 \seealso{
-\code{\link{generateTime}}, \code{\link{mirrorYFunc}}
+\code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
 }

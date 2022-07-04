@@ -4,28 +4,74 @@
 \alias{readTrackR}
 \title{Load TrackR tracking output .csv file}
 \usage{
-readTrackR(trackRPath, mirrorY = FALSE, imgHeight = NA)
+readTrackR(
+  trackRPath,
+  mirrorY = FALSE,
+  imgHeight = NULL,
+  frameR = NULL,
+  rawDat = FALSE
+)
 }
 \arguments{
-\item{trackRPath}{The path of the TrackR output file (.csv) to load within R environment
-(e.g. "C:/Users/\link{username}/Desktop/video_folder/Results.csv")}
+\item{trackRPath}{The full path of the TrackR output file (.csv).}
 
-\item{mirrorY}{TRUE or FALSE, set the origin of Y coords, if TRUE Y coords are mirrored}
+\item{mirrorY}{TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the top-left (default = FALSE).}
 
-\item{imgHeight}{A numeric value expressed in pixels, the true length of Y axis
-corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE)}
+\item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
+corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).}
+
+\item{frameR}{A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video (optional, only used to compute timestamps).}
+
+\item{rawDat}{TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .csv file (see \link{https://swarm-lab.github.io/trackR}),
+may drastically increase the size of the object returned by the function (default = FALSE).}
 }
 \value{
-A list containing tracking data
+A list containing either a list of 9 elements classically used for further computations or a list containing 2 sublists, the first corresponding to the one previously mentioned
+and the second containing all the elements retrieved from the .csv file (see rawDat argument). Also, by default the function returns y coordinates starting on the bottom-left.
 }
 \description{
-Given a .csv file corresponding to TrackR tracking output,
-this function process the .csv file to return a list containing tracking data
-If needed this function can also mirror Y coordinates
+Given the path of the .csv file corresponding to TrackR output,
+this function returns a list of 9 vectors classically used for further computations using MovR package:
+\itemize{
+\item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
+\item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to y-axis.}
+\item{'min.ax': }{the length of the minor axis for a particle over frame (i.e., width of the ellipse).}
+\item{'x.pos': }{x position of the particle's centroid.}
+\item{'y.pos': }{y position of the particle's centroid.}
+\item{'identity': }{the particle's identity given by the tracking software.}
+\item{'frame': }{the video frame number at which the measurements has been made.}
+\item{'ntargets': }{the number of particle tracked over each frame.}
+\item{'timestamps': }{the elapsed time over each frame, in seconds.}
+}
+
+Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above
+and the second containing all the elements retrieved from the .csv file (see rawDat argument).
+Also, the function can mirror y coordinates (see mirrorY argument).
 }
 \examples{
 
-# TODO
+# Load the list containing the 9 vectors classically used for further computation
+# and mirror Y coordinates to start on the top-left
+
+Data <-
+  readTrackR(
+    system.file("sampleData/sample_1/TrackROutput", package = "MovR"),
+    mirrorY = T,
+    imgHeight = 2160,
+    rawDat = F
+  )
+
+# Load the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
+# and the second list containing all the elements retrieved from .csv file,
+# also do not mirror Y coordinates (start on the bottom-left)
+
+Data <-
+  readTrackR(
+    system.file("sampleData/sample_1/TrackROutput", package = "MovR"),
+    mirrorY = F,
+    imgHeight = NULL,
+    rawDat = T
+  )
 
 }
 \seealso{

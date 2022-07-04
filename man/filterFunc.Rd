@@ -2,37 +2,49 @@
 % Please edit documentation in R/filterFunc.R
 \name{filterFunc}
 \alias{filterFunc}
-\title{create and test custom filter for tracking data}
+\title{create and test a custom filter on tracking fragments}
 \usage{
 filterFunc(trackDat, toFilter = NULL, customFunc = NULL)
 }
 \arguments{
-\item{trackDat}{a list of data frame containing tracking infomations for each fragment
-(e.g., maj.ax, angle, min.ax, x.pos, y.pos, ...)}
+\item{trackDat}{A list of data frames containing tracking information for each fragment (e.g., x.pos, y.pos, frame).}
 
-\item{toFilter}{an element of the fragment's data frame from which condition will be verified}
+\item{toFilter}{An element of the fragment's data frame (a column name) from which condition will be verified.}
 
-\item{customFunc}{a custom function containing condition(s) to be applied to toFilter argument}
+\item{customFunc}{A custom function containing condition(s) to be applied to toFilter argument.}
 }
 \value{
-a list of vector containing the result of a user defined condition test for each fragment
+A list of vector of the same length than the fragments list containing
+the result of a user specified condition test for each fragment.
 }
 \description{
-Given a list of data frame containing tracking informations for each fragment,
-this function returns a list of vector containing the result of a user defined condition test for each fragment
+Given a list of data frames containing tracking information for each fragment,
+this function returns a list of vector containing the result of a user defined condition test for each fragment.
 }
 \examples{
 
-#' # Exemple 1: test for the presence of infinite value in x.pos, the result is TRUE 
-  # if infinite values are detected
+# load the sample data
+Data <-
+ readTrex(
+   system.file("sampleData/sample_1/TREXOutput", package = "MovR"),
+   mirrorY = T,
+   imgHeight = 2160,
+   rawDat = F
+ )
+# convert it to a list of fragments
+trackDat <- convert2frags(Data[1:7], by = "identity")
+
+## Exemple 1: test for the presence of infinite value in x.pos,
+  # if infinite values are detected, the result is TRUE 
  
 filterFunc(trackDat, toFilter = "x.pos", customFunc = function(x) is.infinite(x))
 
-
-# Exemple 2: perform a condition test on the length of the individuals, the result is TRUE 
-# if individual size is ranging between 1 and 20 pixels
+## Exemple 2: test for the length of the individuals, 
+# if individual size is ranging between 1 and 20 pixels, the result is TRUE 
  
 filterFunc(trackDat, toFilter = "maj.ax", customFunc = function(x) x >= 1 & x <= 20)
 
-
+}
+\seealso{
+\code{\link{filterFrags}}
 }
