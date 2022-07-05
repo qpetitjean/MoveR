@@ -25,7 +25,7 @@
 #'  total surface explored in a geometrically consistent and scalable manner
 #'
 #'
-#' @authors Quentin Petitjean, Vincent Calcagno
+#' @authors Quentin PETITJEAN, Vincent CALCAGNO
 #'
 #'
 #' @examples
@@ -66,12 +66,12 @@ exploredArea <-
         timeWin[[InfLoc]][which(timeWin[[InfLoc]] == Inf)] <-
           max(unlist(lapply(trackDat, function(x)
             max(
-              list_get(x, timeCol)
+              listGet(x, timeCol)
             ))))
       } else{
         # in case the input trackDat contains value for only one fragment (a dataframe)
         timeWin[[InfLoc]][which(timeWin[[InfLoc]] == Inf)] <-
-          max(list_get(trackDat, timeCol), na.rm = T)
+          max(listGet(trackDat, timeCol), na.rm = T)
       }
     } else {
       timeWin = timeWin
@@ -102,16 +102,16 @@ exploredArea <-
     
     # Compute the surface of a regular hexagon as follow: 3*side*apothem
     # where:
-    # the apothem corresponds to binrad/2
+    # the apothem corresponds to binRad/2
     # side corresponds to the length of one side and is computed as follow: apothem * 2 tan(pi/6)
-    # hence surface is 3 * (binrad/2 * 2 * tan(pi/6)) * binrad/2 which can be simplified
-    surface <- 1.5 * tan(pi / 6) * binrad ^ 2
+    # hence surface is 3 * (binrad/2 * 2 * tan(pi/6)) * binRad/2 which can be simplified
+    surface <- 1.5 * tan(pi / 6) * binRad ^ 2
     
     ## Divide the plane in a hexagonal grid, each cell representing a neighborhood that a particule could 'explore' around its position
-    ## and count the number of unique cells that the particule has entered in at least once using hexagonal heatmaps, as implemented in hexbin package
+    ## and count the number of unique cells that the particle has entered in at least once using hexagonal heatmaps, as implemented in hexbin package
     ## compute the number of bins needed given the perception distance of the insect
-    nbins <- imgRes[1] / binrad
-    ## apply hexbin to do the counting of visted cells
+    nbins <- imgRes[1] / binRad
+    ## apply hexbin to count the number of visited cells
     nbcells <-
       hexbin::hexbin(
         trackDatList[["x.pos"]],
@@ -126,14 +126,15 @@ exploredArea <-
     ### plot the result
     Exploredplot <- hexbin::hexbinplot(
       trackDatList[["y.pos"]] ~
-        trackDatList[["x.pos"]] ,
+        trackDatList[["x.pos"]],
+      xbins = binRad,
       data = trackDatList,
       aspect = '1',
       main = "Heatmap of the explored areas",
       xlab = "Video width",
       ylab = "Video height",
       colramp = function(n) {
-        heat.ob(n, beg = 240, end = 1)
+        hexbin::heat.ob(n, beg = 240, end = 1)
       },
       colorcut = seq(0, 1, length = 10),
       cex.labels = 0.9,

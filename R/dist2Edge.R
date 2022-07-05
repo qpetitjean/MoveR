@@ -22,9 +22,43 @@
 #'
 #' @authors Quentin PETITJEAN
 #'
-#' @examples
+#' @examples # TODO with a circular arena and to complete with a polygaonal arena
 #'
-#' #TODO
+#'# Exemple 1: With a circular arena
+#'
+#'
+#'# Exemple 2: With a a polygonal arena
+#'
+#'# load the sample data
+#'Data <-
+#'  readTrex("https://github.com/qpetitjean/MovR/tree/MovRV1/sampleData/sample_1/TREXOutput",
+#'    mirrorY = T,
+#'    imgHeight = 2160,
+#'   rawDat = F
+#'  )
+#'# convert it to a list of fragments
+#'trackDat <- convert2frags(Data[1:7], by = "identity")
+#'# load the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or 
+#'# the location of one or several areas of interest (here we have created a distance map using ImageJ)
+#'refDat <-
+#'  as.matrix(read.delim("https://github.com/qpetitjean/MovR/blob/MovRV1/sampleData/sample_1/ReferenceData/ImgTresholding_2602_ISA3080_Low_5.mov_1800.txt",
+#'    dec = "."
+#'  ))
+#'#  retrieve the value of the edge limit (1) and of the center limit (254) to plot them
+#'arenaEdge <- data.frame(which(refDat == 1, arr.ind=T))
+#'arenaCenter <- data.frame(which(refDat == 254, arr.ind=T))
+#'
+#'# draw only the first fragment
+#'drawFrags(
+#'  trackDat,
+#'  selFrags = 1,
+#'  imgRes = c(3840, 2160),
+#'  add2It = list(
+#'   points(x = arenaEdge[, 2], y = arenaEdge[, 1], cex = 0.1)
+#' )
+#')
+#'
+#'dist2Edge(trackDat[[1]])
 #'
 #' @export
 

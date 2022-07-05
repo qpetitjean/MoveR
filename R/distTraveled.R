@@ -25,7 +25,7 @@
 #'  frame = fragDatTemp[["time"]]
 #')
 #'# compute the distance traveled between each point of the trajectory
-#'fragDat[["distTraveled"]] <- distTraveled(fragDat, Step = 1)
+#'fragDat[["distTraveled"]] <- distTraveled(fragDat, step = 1)
 #'
 #'# check the result
 #'str(fragDat)
@@ -47,7 +47,7 @@ distTraveled <- function(df, step = 1){
     )
   }
   Res <-
-    sapply(seq(1, nrow(df), by = Step), function(i)
+    sapply(seq(1, nrow(df), by = step), function(i)
       sqrt((df[["x.pos"]][i + 1] - df[["x.pos"]][i])^ 2 +
              (df[["y.pos"]][i + 1] - df[["y.pos"]][i])^ 2))
   return(Res)

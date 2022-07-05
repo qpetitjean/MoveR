@@ -33,6 +33,9 @@ resampleFrags <- function(trackDat, Tstep = NULL, TimeCol = NULL) {
     stop(
       "TimeCol argument is missing: the name of the column carying time information is needed to resample the data"
     )}
+  if(is.data.frame(trackDat)){
+    trackDat <- list(trackDat)
+  }
 # initialize progress bar
 total = length(trackDat)
 pb <-
@@ -83,6 +86,9 @@ if (FALSE %in% selFrames) {
     # progress bar
     pb$tick(1)
     Sys.sleep(1 / 1000)
+}
+if(length(trackDat) == 1){
+  trackDat <- trackDat[[1]]
 }
 return(trackDat)
 }

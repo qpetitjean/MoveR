@@ -1,4 +1,4 @@
-#' @title Compute Average Nearest Neighbour Distance among fragments
+#' @title Compute Average Nearest Neighbour Distance (ANND) among fragments
 #'
 #'
 #' @description Given a list of data frames containing tracking informations for each fragment (including the timeline)
@@ -6,20 +6,19 @@
 #' if bootn parameter is above 0, the function compute studentize 95 % CI using bootstrapping method
 #'
 #'
-#' @param trackDat A list of data frame containing tracking informations for each fragment (including a timeline)
+#' @param trackDat A list of data frame containing tracking informations for each fragment (including a timeline).
 #'
-#' @param timeCol A character string specifying the name of the timeline column
+#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
 #'
 #' @param Tinterval A vector containing two numeric values expressed in the timeline unit and
 #' specifying the time interval on which the computation is performed
-#' (default is null, meaning the computation will be performed on the whole timeline)
+#' (default is null, meaning the computation will be performed on the whole timeline).
 #'
-#' @param sampling A numeric value expressed in the timeline unit and specifying a subsampling used to
-#' to perform the computation, allow to make computation faster, it hence determine the resolution of the
-#' returned results (e.g., 5000 mean that values will be computed every 5000 frames)
+#' @param sampling A numeric value expressed in the timeline unit and specifying the subsampling step used to
+#' to perform the computation (it allow to make computation faster). In other words, it determine the resolution of the
+#' returned results (e.g., a value of 5000 mean that values will be computed every 5000 frames).
 #'
-#' @param bootn A numeric value corresponding to the number of bootstrap sampling to compute studentize 95% CI 
-#'
+#' @param bootn A numeric value corresponding to the number of bootstrap sampling to compute studentize 95% confidence interval.
 #'
 #' @return this function returns a list containing three sublist, the first sublist contains a dataframe with
 #' bootstrap results (mean ANND, CI 97.5%, CI 2.5%, Sd, number of detected individual 
@@ -30,7 +29,7 @@
 #' neighbour distance for each of the sampled fragments.
 #'
 #'
-#' @authors Quentin Petitjean
+#' @authors Quentin PETITJEAN
 #'
 #'
 #' @examples

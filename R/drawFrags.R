@@ -410,6 +410,10 @@ drawFrags <- function(trackDat,
                                  x[[timeCol]] %in% timeWinSeq[[p]]
                              ))
   }
+  
+  if(length(timeWin) > 1){
+    NewfragsList <- unlist(NewfragsList, recursive=FALSE)
+  }
   # plot all fragments according to timeWin
   if (is.null(selFrags)) {
     # initialize progress bar
