@@ -411,7 +411,7 @@ drawFrags <- function(trackDat,
                              ))
   }
   
-  if(length(timeWin) > 1){
+  if(length(timeWin) >= 1){
     NewfragsList <- unlist(NewfragsList, recursive=FALSE)
   }
   # plot all fragments according to timeWin

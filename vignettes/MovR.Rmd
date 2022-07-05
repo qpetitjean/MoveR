@@ -25,6 +25,10 @@ if(require(MovR)) {
   remotes::install_github("qpetitjean/MovR")
 }
 library("MovR")
+if(require(foreach)) {
+  install.packages("foreach")
+}
+library(foreach)
 ```
 
 # Load the exemple dataset (Trex tracker)
@@ -58,6 +62,44 @@ trackDat <- MovR::convert2frags(Data_Trex_Sample,
                                 by = "identity")
 ```
 To ease further computation and graphical representation the data are then converted to a list of fragments (based on particle' identity), corresponding to the trajectory of all the particles detected over the tracking, using the "convert2frags" function. 
+
+# first look at the trajecories
+
+```{r DrawfragsIni}
+drawFrags(
+  trackDat,
+  imgRes = c(1920, 1080),
+  timeCol = "frame"
+)
+```
+Using the drawFrags() function, it is easy to represent the trajectories included in the dataset.
+
+```{r DrawfragsIni10frags}
+drawFrags(
+  trackDat,
+  selFrags = c(1:10),
+  imgRes = c(1920, 1080),
+  timeCol = "frame"
+)
+```
+Or to focus on the trajectories described by only some fragments (here the tens' first) included in the dataset.
+
+```{r DrawfragsIniTime}
+par(mfrow=c(1,2))
+drawFrags(
+  trackDat,
+  timeWin = list(c(1, 1000)),
+  imgRes = c(1920, 1080),
+  timeCol = "frame"
+)
+drawFrags(
+  trackDat,
+  timeWin = list(c(1, 1000), c(30000, 31000)),
+  imgRes = c(1920, 1080),
+  timeCol = "frame"
+)
+```
+Or to focus on the trajectories made within a given time intervals between 1 and 1000 frames on the left panel and between between 1 and 1000 frames and 30000 and 31000 frames on the right panel.
 
 # clean the dataset 
 
@@ -349,6 +391,274 @@ Data_Trex_stats_after_filter <-
 str(Data_Trex_stats_before_filter)
 str(Data_Trex_stats_after_filter)
 ```
+
+# Compute metrics over fragments
+
+As it was already showed for the computation of the particles' speed and distance to the edge, MoveR package make it easy to perform various intensive computation on relatively large dataset.
+Here, we will compute other metrics related to particles' movement that can be useful for further analyses, using the function analyseFrags. For this, we will specify a bunch of custom function grouped in a list which will be use by "customFunc" argument to run the computation easily.
+
+```{r MetricCompute}
+
+# First, we need to define the parameters used by the various element of the custom function
+
+## For simple activity computation:
+### find the speed treshold above which individuals will be considered as active (TRUE) or not (FALSE).
+### For this, we draw the distribution of particles' speed and locate the valley within the bivariate distribution (the values above the valley correspond to active moments while the values below the valley correspond to the inactive moments).
+
+### convert the dataset to a list to ease computation
+trackDatL <- convert2list(trackDat4)
+hist(log10(trackDatL$speed),
+     breaks = 100,
+     main = "speed (log10)")
+
+### using the locator() function or other automatic algorythms we can consider that the valley is detected at the treshold of -2.518466
+activTresh = -2.518466
+abline(v = activTresh, col = "red")
+
+## For simple determination of the Thigmotactism:
+## find the distance treshold above which individuals will be considered at the edge of the arena (TRUE) or at the center (FALSE)
+
+### in the case of the Thrigramma the reaction distance (perception) of an individual is considered as about 4 mm (see Wajnberg and Colazza 1998), an individual can hence perceive the arena edge from 4 mm distance.
+TrichPerceptDist <- 4
+
+### compute the radius of the circular arena in pixels
+radius <- mean(unlist(sqrt((center[1] - edge["x.pos"]) ^ 2 +
+                             (center[2] - edge["y.pos"]) ^ 2)), na.rm = T)
+
+### convert the arena radius in mm
+radiusmm <-
+  (round(radius, digits = -2) * scaling) * 10
+
+### compute the distance below which individuals perceive the arena edge
+edgeTresh <-
+  radius * TrichPerceptDist / radiusmm
+
+
+# now we have all the element, we can specify the batch of functions to pass to the analyseFrags function for metric computation along fragments:
+
+customFuncList = list(
+  # compute sinuosity (a modulus present within the MoveR package)
+  sinuosity = function(x)
+    MovR::sinuosity(
+      x,
+      scale = scaling,
+      unit = "cm",
+      TimeCol = "frame"
+    ),
+  # compute turning angles (a modulus present within the MoveR package)
+  turnAngle = function(x)
+    if (nrow(x) >= 3) {
+      MovR::turnAngle(x, unit = "radians")
+    } else{
+      NA
+    },
+  # compute simple activity (a modulus present within the MoveR package)
+  actives1 = function(x)
+    MovR::actives1(x, minSpeed = 10 ^ activTresh, speedCol = "speed"),
+  # compute distance traveled (a modulus present within the MoveR package)
+  distTraveled = function(x)
+    MovR::distTraveled(x, step = 1),
+  # compute proportion of individuals at the edge of the arena
+  Edge = function(x)
+    abs(x$dist2Edge) < edgeTresh
+)
+
+# then run the computation. To increase the speed of the process, the computation can easily be paralellized over several cores:
+## determine total number of fragments
+Fragsn <- length(trackDat4)
+# determine the number of available cores
+nbCores <-
+  parallel::detectCores(all.tests = FALSE, logical = TRUE)
+# create the cluster for parallel computation (here we use the half of the total resource of the computer : 8 cores)
+CoresToUse <- nbCores / 2
+myCluster <-
+  parallel::makeCluster(CoresToUse, # number of cores to use
+                        type = "PSOCK")
+# Register the cluster
+doParallel::registerDoParallel(myCluster)
+# create a foreach loop to repeat the function on a given intervals of fragment
+toLoop <- seq(from = 1,
+              to = Fragsn,
+              by = Fragsn / CoresToUse)
+toLoop <- round(toLoop)
+if (!Fragsn %in% toLoop) {
+  toLoop <- c(toLoop, Fragsn)
+}
+# import function and dataset needed for the computation
+parallel::clusterExport(
+  myCluster,
+  c(
+    "analyseFrags",
+    "customFuncList",
+    "scaling",
+    "edgeTresh",
+    "activTresh",
+    "trackDat4"
+  )
+)
+
+trackDat5 <-
+  foreach::foreach(i = toLoop[1:length(toLoop) - 1], .combine = 'c') %dopar%
+  analyseFrags(trackDat4[i:ifelse(i == toLoop[length(toLoop) - 1],
+                                 toLoop[length(toLoop)],
+                                 toLoop[which(toLoop == i) + 1] - 1)],
+               customFunc = customFuncList)
+
+
+parallel::stopCluster(myCluster)
+
+# We can then check that the resulting metrics has been added to the dataset on the first fragment for instance: 
+head(trackDat5[["frags_1"]])
+
+```
+
+# Smooth the computed metrics over the fragments
+
+Using the previously computed metrics, it is possible to smooth the results over each fragment by using "analyseFrags" and the sliding window (i.e., slidWin()) modulus.
+Here, we use a step of 10 frame as sliding window to compute the mean sinuosity,
+the mean turning angle ans well as the turning angle variance, the mean speed and speed variance, the mean activity as well as the mean proportion of time spent near the edge, the mean distance to the edge and the mean and maximum traveled distance.
+
+```{r SmoothMetric}
+
+# Specify the batch of function to pass to the analyseFrags function to smooth metrics along fragments: 
+
+customFuncList = list(
+  # smooth sinuosity
+  SlideMeanSinuos = function (y)
+    MovR::slidWin(y$sinuosity,
+                  Tstep = 10, function (x)
+                    mean(x, na.rm = T)),
+  # smooth turning angles
+  SlideMeanAngle = function (y)
+    MovR::slidWin(y$turnAngle,
+                  Tstep = 10, function (x)
+                    mean(x, na.rm = T)),
+  # smooth turning angles variance
+  SlideVarAngle = function (y)
+    MovR::slidWin(y$turnAngle,
+                  Tstep = 10, function (x)
+                    circular::var(
+                      circular::circular(
+                        x,
+                        type = "angle",
+                        units = "radians",
+                        zero = 0
+                      ),
+                      na.rm = T
+                    )),
+  # smooth speed
+  SlidemeanSpeed = function (y)
+    MovR::slidWin(y$speed,
+                  Tstep = 10, function (x)
+                    mean(x, na.rm = T)),
+  # smooth speed variance
+  SlideVarSpeed = function (y)
+    MovR::slidWin(y$speed,
+                  Tstep = 10, function (x)
+                    var(x, na.rm = T)),
+  # smooth activity
+  Slidemeanactivity = function (y)
+    MovR::slidWin(y$actives,
+                  Tstep = 10, function (x)
+                    mean(x, na.rm = T)),
+  # smooth the proportion of time spent near the edge
+  SlidemeanEdgeProp = function (y)
+    MovR::slidWin(y$Edge,
+                  Tstep = 10, function (x)
+                    mean(x, na.rm = T)),
+  # smooth the distance to the edge
+  SlidemeanDist2Edge = function (y)
+    MovR::slidWin(y$dist2Edge,
+                  Tstep = 10, function (x)
+                    mean(x, na.rm = T)),
+  # smooth traveled distance
+  SlidemeanTraveledDist = function (y)
+    MovR::slidWin(y$distTraveled,
+                  Tstep = 10, function (x)
+                    mean(x, na.rm = T)),
+  # smooth maximum distance traveled
+  SlideMaxDist = function (y)
+    MovR::slidWin(y$distTraveled,
+                  Tstep = 10, function (x)
+                    max(x, na.rm = T))
+)
+
+# Parallelizing analysefrags to make the analysis faster
+## determine total number of fragments
+Fragsn <- length(trackDat5)
+
+# create the cluster for parallel computation (here we use the half of the total resource of the computer : 8 cores)
+myCluster <-
+  parallel::makeCluster(CoresToUse, # number of cores to use
+                        type = "PSOCK")
+# Register the cluster
+doParallel::registerDoParallel(myCluster)
+# create a foreach loop to repeat the function on given time intervals
+toLoop <- seq(from = 1,
+              to = Fragsn,
+              by = Fragsn / CoresToUse)
+toLoop <- round(toLoop)
+if (!Fragsn %in% toLoop) {
+  toLoop <- c(toLoop, Fragsn)
+}
+# import function and dataset needed for the computation
+parallel::clusterExport(myCluster,
+                        c("analyseFrags",
+                          "customFuncList",
+                          "trackDat5"))
+
+trackDat6 <-
+  foreach::foreach(i = toLoop[1:length(toLoop) - 1], .combine = 'c') %dopar% analyseFrags(
+    trackDat5[i:ifelse(i == toLoop[length(toLoop) - 1], 
+                       toLoop[length(toLoop)], 
+                       toLoop[which(toLoop == i) + 1] - 1)], 
+    customFunc = customFuncList)
+
+parallel::stopCluster(myCluster)
+
+# We can then check that the resulting metrics has been added to the dataset on the first fragment for instance: 
+head(trackDat6[["frags_1"]])
+
+```
+
+To summarize, it is easy to run relatively intensive computation on a large set of fragments and even smooth the resulting metrics. To do that, the user only need one function (analyseFrags()) and some of the already implemented modulus (e.g., speed(), sinuosity(), tunrAngle(), actives1(), dist2Edge(), distTraveled()). Also, the function is flexible enough to accept any computation specified by the user within the "customFunc" argument.
+
+# Compute more advanced activity metric: the actives2 function
+
+```{r actives2}
+# convert the dataset to a list to ease computation
+trackDatL <- as.data.frame(convert2list(trackDat6))
+
+# retrieve the smoothed speed metric (SlidemeanSpeed) and the smoothed turning angle variance (SlideVarAngle) to separate active and inactive individuals
+smoothedData <- data.frame(
+  cbind(
+    SlidemeanSpeed = trackDatL$SlidemeanSpeed,
+    SlideVarAngle = trackDatL$SlideVarAngle
+  )
+)
+
+trackDat7 <-
+  actives2(
+    trackDat = trackDat6,
+    trackDatSmoothed = smoothedData,
+    var1 = "SlideVarAngle",
+    var2 = "SlidemeanSpeed",
+    nbins = 100,
+    na.rm = T,
+    graph = T
+  )
+
+# We can then check that the resulting metrics has been added to the dataset on the first fragment for instance: 
+head(trackDat7[["frags_1"]])
+```
+
+
+
+# Smooth the metrics over the timeline
+
+
+
+# compute studentized 95% confidence interval using bootstrapping
 
 
 

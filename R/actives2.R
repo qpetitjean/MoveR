@@ -368,8 +368,8 @@ actives2 <- function(trackDat, trackDatSmoothed, var1 = NULL, var2 = NULL, nbins
   
   trackdatL <- convert2list(trackDat)
   toClust <-
-    data.frame(SlideVarAngle = trackdatL["SlideVarAngle"],
-               LogSlidemeanSpeed = log10(trackdatL["SlidemeanSpeed"]))
+    data.frame(SlideVarAngle = trackdatL[["SlideVarAngle"]],
+               LogSlidemeanSpeed = log10(trackdatL[["SlidemeanSpeed"]]))
   SigSqrt <- evecs %*% diag(sqrt(evals)) %*% t(evecs)
   Z <-
     t(apply(toClust, 1, function(x)
