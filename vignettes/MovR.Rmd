@@ -33,6 +33,7 @@ library(foreach)
 
 # Load the exemple dataset (Trex tracker)
 ```{r LoadDataset}
+library("MovR")
 # path to the video file (replace by the github repository - once open source)
 videoPath = "E:/Videos_comportement/Bidime_Trex_npzfiles/2021-03-01-ISA17150-chaud"
 # path to the arena border file (generated using imageJ) (replace by the github repository - once open source)

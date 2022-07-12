@@ -22,7 +22,7 @@
 #' either with their name or hexadecimal values (optional).
 #'
 #' @param colId A character string corresponding to a column name
-#' present within each fragment' dataframe from the trackDat list
+#' present within each fragments' data frame from the trackDat list
 #' and which is used as grouping factor to color the fragments (default = timeCol).
 #' If colId is composed of continuous values, the legend will be plotted as a gradient.
 #'
@@ -48,6 +48,8 @@
 #' @param cex.lab Character size and expansion for axes label (default = 1).
 #'
 #' @param cex.leg Character size and expansion for the legend label (default = 1).
+#'
+#' @param cex.start Dot size representing the start of a fragment (default = 0.5).
 #'
 #' @return A plot with all or only selected fragment paths colored according to time.
 #'
@@ -168,7 +170,8 @@ drawFrags <- function(trackDat,
                       cex.axis = 1,
                       cex.main = 1.25,
                       cex.lab = 1,
-                      cex.leg = 1) {
+                      cex.leg = 1,
+                      cex.start = 0.5) {
   if (is.null(names(trackDat))) {
     names(trackDat) <- seq(length(trackDat))
   }
@@ -180,22 +183,21 @@ drawFrags <- function(trackDat,
   # compute the duration of the video according to timeCol argument
   viDur <-
     max(unlist(lapply(trackDat, function(x)
-      max(
-        listGet(x, timeCol)
-      ))))
+      max(listGet(x, timeCol),
+          na.rm = T))))
   
-  # define color ramp according to colId argument or video duration
-  Pal <- grDevices::colorRampPalette(c(colGrad))
-  if (!is.null(colId)) {
-    colVal <- unique(unlist(lapply(trackDat, function(x)
-      listGet(x, colId))))
-    coloration <- Pal(length(colVal[!is.na(colVal)]))
-  } else{
-    coloration <- Pal(viDur)
+  # if colId argument is NULL, set it to timeCol as default
+  if (is.null(colId)) {
+    colId <- timeCol
   }
+  # define color ramp according to colId argument
+  Pal <- grDevices::colorRampPalette(c(colGrad))
+  colVal <- unique(unlist(lapply(trackDat, function(x)
+    listGet(x, colId))))
+  colVal <- colVal[order(colVal)]
+  coloration <- Pal(length(colVal[!is.na(colVal)]))
   
   # initialize the plot window
-  
   ScaleY <- pretty(c(0, imgRes[[2]]), n = 5)
   ScaleX <- pretty(c(0, imgRes[[1]]), n = 5)
   
@@ -286,85 +288,76 @@ drawFrags <- function(trackDat,
   
   ## in case legend argument is TRUE, create a legend
   if (isTRUE(legend)) {
-
     ### legend title (retrieve from colId)
     graphics::text(
-      max(ScaleX) + (10*max(ScaleX)/100),
-      max(ScaleY) + (5*max(ScaleY)/100),
+      max(ScaleX) + (10 * max(ScaleX) / 100),
+      max(ScaleY) + (5 * max(ScaleY) / 100),
       ifelse(
-        !is.null(colId),
-        colId,
-        paste("Time ", "(", timeCol, ")", sep = "")
+        colId == timeCol,
+        paste("Time ", "(", timeCol, ")", sep = ""),
+        colId
       ),
       cex = cex.leg,
       font = 1,
       xpd = TRUE
     )
     
-    ### draw the legend as a gradient if colId is a continuous vector (numerical) or as category in case 
+    ### draw the legend as a gradient if colId is a continuous vector (numerical) or as category in case
     ### colId is a factor or character vector
-    if (!is.null(colId)) {
-      if (is.numeric(colVal[!is.na(colVal)])) {
-        ScaleLeg <-
-          seq(1, length(colVal[!is.na(colVal)]), 
-              by = ceiling(length(colVal[!is.na(colVal)]) / 5))
-        
-        legend_image <-
-          grDevices::as.raster(matrix(coloration, ncol = 1))
-        graphics::rasterImage(legend_image, 
-                              max(ScaleX) + (5*max(ScaleX)/100), 
-                              max(ScaleY) - (5*max(ScaleY)/100), 
-                              max(ScaleX) + (10*max(ScaleX)/100), 
-                              min(ScaleY) + (5*max(ScaleY)/100))
-        graphics::text(
-          x = max(ScaleX) + (20 * max(ScaleX) / 100),
-          y = seq(
-            min(ScaleY) + (5 * max(ScaleY) / 100),
-            max(ScaleY) - (5 * max(ScaleY) / 100),
-            l = ifelse(length(colVal[!is.na(colVal)]) < 5,
-                   length(colVal[!is.na(colVal)]),
-                   5)
-          ),
-          labels = unique(colVal[!is.na(colVal)])[ScaleLeg],
-          cex = cex.leg
-        )
-      } else{
-        graphics::legend(
-          x = max(ScaleX) + (5*max(ScaleX)/100),
-          y = max(ScaleY) - (1 * max(ScaleY) / 100),
-          legend = colVal[!is.na(colVal)],
-          pch = 22,
-          col = "black",
-          pt.bg = coloration,
-          bty = "n",
-          pt.cex = 2,
-          text.font = 1,
-          cex = cex.leg,
-          xpd = TRUE,
-          ncol = ceiling(length(colVal[!is.na(colVal)]) / 10)
-        )
+    if (is.numeric(colVal[!is.na(colVal)])) {
+      ScaleVal <-
+        pretty(c(min(colVal, na.rm = T), max(colVal, na.rm = T)), n = 5)
+      ScaleLegtemp <- which(colVal %in% ScaleVal)
+      if (length(ScaleLegtemp) < length(ScaleVal)) {
+        ScaleLegtemp <-
+          c(ScaleLegtemp, max(ScaleLegtemp + mean(diff(
+            ScaleLegtemp
+          ))))
       }
-    } else{
+      if(max(nchar(ScaleVal)) >= 5){
+        ScaleVal <- format(ScaleVal, scientific = TRUE)
+      }else{
+        ScaleVal <- format(ScaleVal, scientific = FALSE)
+      }
+      ScaleLeg <-
+        as.integer(ScaleLegtemp * max(ScaleY) / max(ScaleLegtemp))
+      ScaleLeg[1] <- ScaleLeg[1] + (5 * max(ScaleY) / 100)
+      ScaleLeg[length(ScaleLeg)] <-
+        ScaleLeg[length(ScaleLeg)] - (5 * max(ScaleY) / 100)
+      
       legend_image <-
         grDevices::as.raster(matrix(coloration, ncol = 1))
-      graphics::rasterImage(legend_image, 
-                            max(ScaleX) + (5*max(ScaleX)/100), 
-                            max(ScaleY) - (5*max(ScaleY)/100), 
-                            max(ScaleX) + (10*max(ScaleX)/100), 
-                            min(ScaleY) + (5*max(ScaleY)/100))
+      graphics::rasterImage(
+        legend_image,
+        max(ScaleX) + (5 * max(ScaleX) / 100),
+        max(ScaleY) - (5 * max(ScaleY) / 100),
+        max(ScaleX) + (10 * max(ScaleX) / 100),
+        min(ScaleY) + (5 * max(ScaleY) / 100)
+      )
       graphics::text(
-        x = max(ScaleX) + (20*max(ScaleX)/100),
-        y = seq(
-          min(ScaleY) + (5 * max(ScaleY) / 100),
-          max(ScaleY) - (5 * max(ScaleY) / 100),
-          l = 5
-        ),
-        labels = round(seq(0, viDur, l = 5), digits = 0),
+        x = max(ScaleX) + (20 * max(ScaleX) / 100),
+        y = ScaleLeg,
+        labels =  ScaleVal,
         cex = cex.leg
+      )
+    } else{
+      graphics::legend(
+        x = max(ScaleX) + (5 * max(ScaleX) / 100),
+        y = max(ScaleY) - (1 * max(ScaleY) / 100),
+        legend = colVal[!is.na(colVal)],
+        pch = 22,
+        col = "black",
+        pt.bg = coloration,
+        bty = "n",
+        pt.cex = 2,
+        text.font = 1,
+        cex = cex.leg,
+        xpd = TRUE,
+        ncol = ceiling(length(colVal[!is.na(colVal)]) / 10)
       )
     }
   }
-
+  
   # if an additional function (add2it argument) is added to drawFrags draw it
   if (!is.null(add2It) == TRUE) {
     add2It
@@ -384,10 +377,10 @@ drawFrags <- function(trackDat,
   
   # if timeWin is set to default (0 to Inf)
   if (length(timeWin) == 1 & timeWin[[1]][2] == Inf) {
-    timeWin[[1]][2] = viDur
+    timeWin[[1]][2] <- viDur
     NewfragsList <- trackDat
   } else {
-    # in case there is Inf in timWin replace it by vidur
+    # in case there is Inf in timeWin replace it by vidur
     InfLoc <-
       length(unlist(lapply(lapply(timeWin, function(x)
         which(x == Inf)), function (y)
@@ -395,25 +388,24 @@ drawFrags <- function(trackDat,
     if (length(InfLoc) > 0) {
       timeWin[[InfLoc]][which(timeWin[[InfLoc]] == Inf)] <- viDur
     } else {
-      timeWin = timeWin
+      timeWin <- timeWin
     }
-    # if timeWin is specified draw only the fraction of fragments within time window interval(s)
-    timeWinSeq <- lapply(timeWin, function(x)
-      seq(x[1], x[2]))
-    
     ## cut the fragments to draw only the specified part
-    NewfragsList <- lapply(seq(length(timeWinSeq)),
+    NewfragsList <- lapply(seq(length(timeWin)),
                            function(p)
                              cutFrags(
                                trackDat,
                                customFunc = function(x)
-                                 x[[timeCol]] %in% timeWinSeq[[p]]
+                                 x[[timeCol]] >= timeWin[[p]][[1]] &
+                                 x[[timeCol]] <= timeWin[[p]][[2]]
                              ))
+    
+    NewfragsList <- unlist(NewfragsList, recursive = FALSE)
   }
   
-  if(length(timeWin) >= 1){
-    NewfragsList <- unlist(NewfragsList, recursive=FALSE)
-  }
+  coloration <-
+    data.frame(colors = coloration, colVal = as.numeric(colVal))
+  
   # plot all fragments according to timeWin
   if (is.null(selFrags)) {
     # initialize progress bar
@@ -424,25 +416,20 @@ drawFrags <- function(trackDat,
     Sys.sleep(0.001)
     
     for (f in seq(length(NewfragsList))) {
-      if (!is.null(colId)) {
-        NewfragsList[[f]]$colorpal <-
-          coloration[match(listGet(NewfragsList[[f]], colId), colVal[!is.na(colVal)])]
-      } else{
-        NewfragsList[[f]]$colorpal <-
-          coloration[match(NewfragsList[[f]][[timeCol]], rownames(as.data.frame(coloration)))]
-      }
+      NewfragsList[[f]]$colorpal <-
+        coloration[match(as.character(listGet(NewfragsList[[f]], colId)), as.character(coloration[["colVal"]][!is.na(colVal)])), "colors"]
       graphics::points(
         NewfragsList[[f]]$x.pos[1],
         NewfragsList[[f]]$y.pos[1],
         col = NewfragsList[[f]]$colorpal[1],
         pch = 19,
-        cex = 0.5
       )
+      cex = cex.start
       with(
         NewfragsList[[f]],
         graphics::segments(
-          head(x.pos, -1),
-          head(y.pos, -1),
+          head(x.pos,-1),
+          head(y.pos,-1),
           x.pos[-1],
           y.pos[-1],
           NewfragsList[[f]]$colorpal,
@@ -464,25 +451,20 @@ drawFrags <- function(trackDat,
     Sys.sleep(0.001)
     
     for (f in selFrags) {
-      if (!is.null(colId)) {
-        NewfragsList[[f]]$colorpal <-
-          coloration[match(listGet(NewfragsList[[f]], colId), colVal[!is.na(colVal)])]
-      } else{
-        NewfragsList[[f]]$colorpal <-
-          coloration[match(NewfragsList[[f]][[timeCol]], rownames(as.data.frame(coloration)))]
-      }
+      NewfragsList[[f]]$colorpal <-
+        coloration[match(as.character(listGet(NewfragsList[[f]], colId)), as.character(coloration[["colVal"]][!is.na(colVal)])), "colors"]
       graphics::points(
         NewfragsList[[f]]$x.pos[1],
         NewfragsList[[f]]$y.pos[1],
         col = NewfragsList[[f]]$colorpal,
         pch = 19,
-        cex = 0.5
+        cex = cex.start
       )
       with(
         NewfragsList[[f]],
         graphics::segments(
-          head(x.pos, -1),
-          head(y.pos, -1),
+          head(x.pos,-1),
+          head(y.pos,-1),
           x.pos[-1],
           y.pos[-1],
           NewfragsList[[f]]$colorpal,

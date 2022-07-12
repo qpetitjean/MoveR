@@ -86,7 +86,7 @@
 #'  # Then remove values that are not included within the [1:20] interval and split the fragments accordingly
 #'  # here we keep every remaining fragment, whatever its duration (the number of record within each fragment)
 #'
-#'trackDat_Size20 <- filterFrags(trackDat, filter = FiltInf, splitCond = TRUE, minDur = 1)
+#'trackDat_Size20 <- filterFrags(trackDat, filter = FiltSize, splitCond = TRUE, minDur = 1)
 #'
 #'  # Check the summary of the filtering
 #'  
@@ -98,7 +98,7 @@
 #'  
 #'  # alternatively, we can only keep the fragments with a duration above 10 (the number of record within each fragment) by modifying the minDur argument
 #'
-#'trackDat_Size20_Dur10 <- filterFrags(trackDat, filter = FiltInf, splitCond = TRUE, minDur = 10)
+#'trackDat_Size20_Dur10 <- filterFrags(trackDat, filter = FiltSize, splitCond = TRUE, minDur = 10)
 #'
 #'  # Check the summary of the filtering
 #'  

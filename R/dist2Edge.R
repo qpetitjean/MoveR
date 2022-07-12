@@ -27,7 +27,7 @@
 #'# Exemple 1: With a circular arena
 #'
 #'
-#'# Exemple 2: With a a polygonal arena
+#'# Exemple 2: With a a polygonal arena, using a distance matrix to avoid tough computation
 #'
 #'# load the sample data
 #'Data <-
