@@ -2,40 +2,110 @@
 #'
 #'
 #' @description Given a list of data frames containing tracking informations for each fragment (including the timeline)
-#' and a custom function, this function perform the computation specified by the custom function across time
-#' and smooth it before returning values
+#' and a custom function, this function perform the computation specified by the custom function(s) across time
+#' and smooth it and returns a list containing as much data frame as the number of custom functions specified by
+#' the customFunc argument. Each data frame includes a column indicating the timeline and the result of the computation across time.
 #'
 #'
-#' @param trackDat A list of data frame containing tracking informations for each fragment (including a timeline)
+#' @param trackDat A list of data frame containing tracking informations for each fragment (including a timeline).
 #'
-#' @param timeCol A character string specifying the name of the timeline column
+#' @param timeCol A character string corresponding to the name of the column containing time information.
 #'
-#' @param customFunc A function used to perform the computation across time
-#'
+#' @param customFunc A function or a list of functions used to perform the computation across time.
+#' NB: in case customFunc is a list of unnamed function it will try to retrieve their names by returning the first character string
+#' following the function() call as the name of the results column.
+#' 
 #' @param Tinterval A vector containing two numeric values expressed in the timeline unit and
-#' specifying the time interval on which the computation is performed
-#' (default is null, meaning the computation will be performed on the whole timeline)
+#' specifying the time interval on which the computation is performed (default is null, meaning the computation will be performed on the whole timeline).
 #'
 #' @param Tstep A numeric value expressed in the timeline unit and specifying the size of the
-#' sliding window used to perform the computation
+#' sliding window used to perform the computation (e.g., a value of 200, mean that for each sampling point, the computation
+#' is performed using the 100 previous and the 100 next values).
 #'
 #' @param sampling A numeric value expressed in the timeline unit and specifying a subsampling used to
 #' to perform the computation, allow to make computation faster, it hence determine the resolution of the
-#' returned results (e.g., 5000 mean that values will be computed every 5000 frames)
+#' returned results (e.g., a value of 5000 mean that values will be computed every 5000 time units).
 #'
-#' @param wtd TRUE or FALSE, compute a weighed metric (TRUE) or not (FALSE), (default is FALSE)
+#' @param wtd TRUE or FALSE, compute a weighed metric (TRUE) or not (FALSE) according to the length of the fragments (default is FALSE).
 #'
-#' @return this function returns a vector containing the smoothed values
-#' computed according to the custom function across time
+#' @return this function returns a list containing as much data frame as the number of custom functions specified by
+#' the customFunc argument. Each dataframe includes a column indicating the timeline according to timeCol and sampling arguments 
+#' as well as the result of the computation performed according to the customFunc.
 #'
 #'
-#' @authors Quentin Petitjean
+#' @authors Quentin PETITJEAN
 #'
 #'
 #'
 #' @examples
 #'
-#' #TODO
+#'# generate some dummy fragments
+#'## start to specify some parameters to generate fragments
+#'Fragn <- 25 # the number of fragment to simulate
+#'FragL <-
+#'  100:1000 # the length of the fragments or a sequence to randomly sample fragment length
+#'
+#'fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
+#'  trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
+#'    data.frame(
+#'      x.pos = j$x - min(j$x),
+#'      y.pos = j$y - min(j$y),
+#'      frame = j$time
+#'    )), seq(Fragn))
+#'
+#'# check the fragments
+#'
+#'drawFrags(fragsList,
+#'          imgRes = c(max(convert2list(fragsList)[["x.pos"]]),
+#'                     max(convert2list(fragsList)[["y.pos"]])),
+#'          timeCol = "frame")
+#'
+#'# add some metric to the dataset (speed and turning angle) and time unit conversion
+#'
+#'fragsListV1 <-
+#'  analyseFrags(
+#'    fragsList,
+#'    customFunc = list(
+#'      # specify a first function to compute speed over each fragment (a modulus present within the MoveR package)
+#'      speed = function(x)
+#'        MovR::speed(
+#'          x,
+#'          TimeCol = "frame",
+#'          scale = 1,
+#'          unit = "pixels"
+#'        ),
+#'      # compute turning angle in radians over each fragment (a modulus present within the MoveR package)
+#'      TurnAngle = function(x)
+#'        MovR::turnAngle(x, unit = "radians"),
+#'      # convert the time expressed in frame in second using a conversion factor of 25 frame per second
+#'      TimeSec = function(x)
+#'        x[["frame"]] / 25,
+#'      # or in minutes
+#'      TimeMin = function(x)
+#'        x[["frame"]] / 25 / 60
+#'    )
+#'  )
+#'
+#'# smooth the speed and the turning angle across fragments and time, here we perform the computation 
+#'# every 50 time unit and on an interval of 100 values, 50 values are taken before and 50 values after the given time unit.
+#'Smoothedtracks <- analyseTime(
+#'  trackDat = fragsListV1,
+#'  timeCol = "frame",
+#'  Tstep = 100,
+#'  sampling = 50,
+#'  wtd = TRUE,
+#'  customFunc = list(
+#'    MeanSpeed = function(x)
+#'      mean(x[["speed"]], na.rm = T),
+#'    MeanTurnAngle = function(x)
+#'      mean(x[["TurnAngle"]], na.rm = T)
+#'  )
+#')
+#'
+#'# plot the results
+#'par(mfrow = c(1, 2))
+#'plot(Smoothedtracks[["MeanSpeed"]]$MeanSpeed ~ Smoothedtracks[["MeanSpeed"]]$frame, type = "l")
+#'plot(Smoothedtracks[["MeanTurnAngle"]]$MeanTurnAngle ~ Smoothedtracks[["MeanTurnAngle"]]$frame, type = "l")
 #'
 #' @export
 
@@ -70,7 +140,6 @@ analyseTime <-
       customFunc <- list(customFunc)
       names(customFunc) <- VarName
     }
-    
     # define the timeline
     ## check the time step of the timeline across the dataset
     TimelineStep <- unique(unlist(lapply(trackDat, function (w)
@@ -87,7 +156,7 @@ analyseTime <-
         "\n here the function used ",
         min(TimelineStep, na.rm = T),
         ", but perhaps consider resampling the fragments to better control the behavior of the function", 
-        "\n see MovR::resampleFrags()"
+        "\n see resampleFrags()"
       )
     }
     if (is.null(Tinterval)) {
@@ -129,20 +198,6 @@ analyseTime <-
     }
     if(length(which(duplicated(Newtimeline))) > 0){
       Newtimeline <- Newtimeline[-which(duplicated(Newtimeline))]}
-    # if customFunc is a unnamed list of function, retrieve function names
-    if (is.list(customFunc)) {
-      if (is.null(names(customFunc))) {
-        VarName <-
-          lapply(customFunc, function(x)
-            strsplit(sub("\\(.*", "", deparse(x)), " ")[[2]])
-        names(customFunc) <- unlist(VarName)
-      }
-      # if customFunc is a function retrieve function names and transformed it to a named list
-    } else if (is.function(customFunc)) {
-      VarName <- strsplit(sub("\\(.*", "", deparse(customFunc)), " ")[[2]]
-      customFunc <- list(customFunc)
-      names(customFunc) <- VarName
-    }
     # initialize result list
     smoothed <- list()
     for (name in names(customFunc)) {

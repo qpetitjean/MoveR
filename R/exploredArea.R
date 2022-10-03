@@ -1,25 +1,29 @@
-#' @title Explored Area
+#' @title Compute the total surface explored and display the corresponding heatmap
 #'
 #' @description Given a list of tracking fragments containing cartesian coordinates, and a value of
 #'  reaction distance this function displays an heatmap (i.e., hexbin plot) of the explored areas and returns the
-#'  total surface explored in a geometrically consistent and scalable manner
+#'  total surface explored in a geometrically consistent and scalable manner.
 #'
-#' @param trackDat A list of tracking fragments to plot along x and y coordinates
+#' @param trackDat A list of data frame containing tracking informations for each fragment (including a timeline)
+#' or a data frame containing tracking information for one fragment.
 #'
 #' @param binRad A numeric value corresponding to the diameter of the typical surface a particle can "explore" around its position
 #' For instance, the reaction distance of a Trichograms (i.e., a parasitoid micro-wasp) is about 4 mm, in this case, a reasonable value is of order 16 mm^2,
-#' the diameter of such a cell is hence about 8 mm
+#' the diameter of such a cell is hence about 8 mm.
 #'
-#' @param imgRes A vector of 2 numeric values, resolution of the video used as x and y limit of the plot
+#' @param imgRes A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot
 #'  (i.e., the number of pixels in image width and height, e.g., 1920 x 1080).
 #'
-#' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates (optional)
+#' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates (optional).
 #'
-#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame") (optional)
+#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
 #'
 #' @param timeWin  A list of one or several vector containing 2 numeric values separated by a comma
-#' corresponding to the time interval between which the fragments have to be drawn according to timeCol (optional)
+#' corresponding to the time interval between which the fragments have to be drawn according to timeCol (optional).
 #'
+#' @param saveGraph TRUE or FALSE, if TRUE, the heatmap is saved as a .tiff file in the hardrive - within the working directory.
+#' if FALSE, the heatmap is only displayed. Alternatively, the user can specify the saving function and hence the extension and the 
+#' directory where the heatmap will be saved (see for instance grDevices::png(), grDevices::jpeg() or grDevices::tiff()).
 #'
 #' @return displays an heatmap (i.e., hexbin plot) of the explored areas and returns the
 #'  total surface explored in a geometrically consistent and scalable manner
@@ -30,7 +34,60 @@
 #'
 #' @examples
 #'
+#'# generate some dummy fragments
+#'## start to specify some parameters to generate fragments
+#'Fragn <- 20 # the number of fragment to simulate
+#'FragL <- 100:1000 # the length of the fragments or a sequence to randomly sample fragment length
 #'
+#'fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
+#'  trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
+#'    data.frame(
+#'      x.pos = j$x - min(j$x),
+#'      y.pos = j$y - min(j$y),
+#'      frame = j$time
+#'    )), seq(Fragn))
+#'
+#'# check the fragments
+#'
+#'drawFrags(fragsList,
+#'          imgRes = c(max(convert2list(fragsList)[["x.pos"]]),
+#'                     max(convert2list(fragsList)[["y.pos"]])),
+#'          timeCol = "frame")
+#'          
+#'# extract image resolution
+#'imgRes <- c(max(convert2list(fragsList)[["x.pos"]]), max(convert2list(fragsList)[["y.pos"]]))
+#'# compute the total surface explored and displays the heatmap for all fragments 
+#'# and save the plot in the working directory using user specified parameters (saveGraph argument)
+#'# if saveGraph is "TRUE", the plot is saved in the working directory as .png image
+#'# if saveGraph is "FALSE", the plot is only displayed.
+#'exploredArea(fragsList, 
+#'             binRad = 8, 
+#'             imgRes = imgRes,
+#'             scale = 1,
+#'             timeCol = "frame",
+#'             timeWin = list(c(0, Inf)), 
+#'             saveGraph = grDevices::tiff("exploredPlotTest.tiff",
+#'                                         width = 600,
+#'                                         height = 600
+#'             ))
+#'
+#'# compute the surface explored for each fragment and display (but do not save) the heatmap for each fragment
+#'# here by combining exploredArea and analyseFrags, the surface explored for each fragment will be appended to the data 
+#'# of the corresponding fragment.
+#'analyseFrags(
+#'  fragsList,
+#'  customFunc = list(
+#'    exploredArea = function(x)
+#'      exploredArea(
+#'        x,
+#'        binRad = 8,
+#'        imgRes = imgRes,
+#'        scale = 1,
+#'        timeCol = "frame",
+#'        timeWin = list(c(0, Inf)),
+#'        saveGraph = FALSE
+#'      ))
+#')
 #'
 #' @export
 
@@ -40,7 +97,8 @@ exploredArea <-
            imgRes = c(1920, 1080),
            scale = 1,
            timeCol = "frame",
-           timeWin = list(c(0, Inf))) {
+           timeWin = list(c(0, Inf)),
+           saveGraph = FALSE) {
     if(is.null(binRad)){ 
       stop(
         "binRad argument is missing, \na numeric value specifying the diameter of the cell a particle can explore is needed to compute the surface explored"
@@ -76,30 +134,21 @@ exploredArea <-
     } else {
       timeWin = timeWin
     }
-    selVal <- unlist(lapply(timeWin, function(x)
-      seq(x[1],
-          x[2])))
-    # select the fragment that are detected in the selected timeline part
-    if (class(trackDat) == "list" & length(trackDat) >= 1) {
-      WhoWhen <-
-        cutFrags(trackDat, function(x)
-          x[[timeCol]] >= min(selVal, na.rm = T) &
-            x[[timeCol]] <= max(selVal, na.rm = T))
-    } else{
-      # in case the input trackDat contains value for only one fragment (a dataframe)
-      WhoWhen <-
-        trackDat[which(trackDat[[TimeCol]] >= min(selVal, na.rm = T) &
-                         trackDat[[TimeCol]] <= max(selVal, na.rm = T)),]
-    }
+
+    # select the part of the fragments that are included in timeWin
+      WhoWhen <- lapply(seq(length(timeWin)),
+             function(p)
+               cutFrags(
+                 trackDat,
+                 customFunc = function(x)
+                   x[[timeCol]] >= timeWin[[p]][[1]] &
+                   x[[timeCol]] <= timeWin[[p]][[2]]
+               ))
+      WhoWhen <- unlist(WhoWhen, recursive = FALSE)
     
     # Then, convert the list of fragment as an unique list (only in case there is several fragment in trackDat)
-    if (class(WhoWhen) == "list" & length(WhoWhen) > 1) {
       trackDatList <- convert2list(WhoWhen)
-    } else{
-      # in case the input trackDat contains value for only one fragment (a dataframe)
-      trackDatList <- WhoWhen
-    }
-    
+  
     # Compute the surface of a regular hexagon as follow: 3*side*apothem
     # where:
     # the apothem corresponds to binRad/2
@@ -151,7 +200,23 @@ exploredArea <-
         tck = 0.25
       )
     )
-    
     print(Exploredplot)
+    if (isTRUE(saveGraph)) {
+      for(i in seq(1e10)){
+        plotname <- paste(paste("Exploredplot", i, sep = "_"), "tiff", sep = ".")
+          if(isTRUE(file.exists(paste(getwd(), plotname, sep = "/")))){
+            next
+          }else{
+            break
+          }
+      }
+      grDevices::tiff(plotname)
+      print(Exploredplot)
+      dev.off()
+    }else if(!isTRUE(saveGraph) & !isFALSE(saveGraph)){
+      saveGraph
+      print(Exploredplot)
+      dev.off()
+    }
     return(Explored)
   }

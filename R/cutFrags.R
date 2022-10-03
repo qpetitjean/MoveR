@@ -3,7 +3,8 @@
 #' @description Given a list of data frames containing tracking information for each fragments the function
 #' returns the fragments part(s) that meet the condition specified in the customFunc.
 #'
-#' @param trackDat A list of data frames containing tracking information for each fragment (i.e., x.pos, y.pos).
+#' @param trackDat A list of data frames containing tracking information for each fragment (i.e., x.pos, y.pos) 
+#' or a data frame containing tracking information for one fragment.
 #'
 #' @param customFunc A function used to cut/subset the fragments.
 #'
@@ -110,6 +111,12 @@
 #' @export
 
 cutFrags <- function(trackDat, customFunc) {
+  if (class(trackDat) == "data.frame") {
+    trackDat <- list(trackDat)
+  }
+  if (is.null(names(trackDat))) {
+    names(trackDat) <- seq(length(trackDat))
+  }
   # identify part of fragment detected in the selected Time interval
   When <-
     lapply(trackDat, customFunc)
@@ -122,7 +129,7 @@ cutFrags <- function(trackDat, customFunc) {
     lapply(When[c(names(Who))], function (z)
       which(z == TRUE))
   # store the selected fragment part in a list
-  output <- setNames(lapply(names(WhoWhen), function(w)
-    trackDat[[w]][c(WhoWhen[[w]]), ]), names(WhoWhen))
+  output <- stats::setNames(lapply(names(WhoWhen), function(w)
+    trackDat[[w]][c(WhoWhen[[w]]),]), names(WhoWhen))
   return(output)
 }

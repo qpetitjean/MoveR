@@ -4,6 +4,7 @@ author: "Quentin PETITJEAN"
 date: "05/07/2022"
 output: 
   html_document:
+    keep_md: true
     toc: TRUE
     toc_depth: 3
     toc_float: TRUE
@@ -14,6 +15,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# flowchart of the MoveR package
 
 # Load libraries 
 ```{r libraries, eval = FALSE}
@@ -33,7 +36,6 @@ library(foreach)
 
 # Load the exemple dataset (Trex tracker)
 ```{r LoadDataset}
-library("MovR")
 # path to the video file (replace by the github repository - once open source)
 videoPath = "E:/Videos_comportement/Bidime_Trex_npzfiles/2021-03-01-ISA17150-chaud"
 # path to the arena border file (generated using imageJ) (replace by the github repository - once open source)
@@ -64,7 +66,7 @@ trackDat <- MovR::convert2frags(Data_Trex_Sample,
 ```
 To ease further computation and graphical representation the data are then converted to a list of fragments (based on particle' identity), corresponding to the trajectory of all the particles detected over the tracking, using the "convert2frags" function. 
 
-# first look at the trajecories
+# first look at the trajectories
 
 ```{r DrawfragsIni}
 drawFrags(
@@ -331,7 +333,9 @@ meanBodyL <-
   mean(convert2list(trackDat3)$maj.ax, na.rm = T) / 2
 
 ## plot it
-hist(indOut, breaks = 100, main = "Distance to the edge, \npositive values correspond to Indivs that are outside the arena")
+hist(indOut, 
+     breaks = 100, 
+     main = "Distance to the edge, \npositive values correspond to the trajectory part that are outside the arena")
 abline(v = meanBodyL)
 
 # the result seem satisfactory 
@@ -366,7 +370,6 @@ Once the cleaning seem done, the various filter summary can be retrieved and eas
 It is also possible to display a summary of the tracking information of both the initial dataset (i.e., trackDat) and the cleaned one (trackDat4) using the "trackStats" function to quickly compare them.
 
 ```{r CleaningSummary}
-
 # create a summary of each filter results 
 FilterSummary <- do.call("cbind",
                          list(
@@ -516,8 +519,8 @@ head(trackDat5[["frags_1"]])
 # Smooth the computed metrics over the fragments
 
 Using the previously computed metrics, it is possible to smooth the results over each fragment by using "analyseFrags" and the sliding window (i.e., slidWin()) modulus.
-Here, we use a step of 10 frame as sliding window to compute the mean sinuosity,
-the mean turning angle ans well as the turning angle variance, the mean speed and speed variance, the mean activity as well as the mean proportion of time spent near the edge, the mean distance to the edge and the mean and maximum traveled distance.
+Here, we use a step of 10 frames as sliding window to compute the mean sinuosity,
+the mean turning angle as well as the turning angle variance, the mean speed and speed variance, the mean activity as well as the mean proportion of time spent near the edge, the mean distance to the edge and the mean and maximum traveled distance.
 
 ```{r SmoothMetric}
 
@@ -660,6 +663,4 @@ head(trackDat7[["frags_1"]])
 
 
 # compute studentized 95% confidence interval using bootstrapping
-
-
 

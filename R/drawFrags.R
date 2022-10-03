@@ -10,7 +10,7 @@
 #' @param selFrags A vector of either numeric values or character strings,
 #' the number or the id of the selFrags to plot (optional).
 #'
-#' @param imgRes A vector of 2 numeric values, resolution of the video used as x and y limit of the plot
+#' @param imgRes A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot
 #'  (i.e., the number of pixels in image width and height, default = 1920 x 1080).
 #'
 #' @param timeWin  A list of one or several vector containing 2 numeric values separated by a comma
@@ -335,7 +335,7 @@ drawFrags <- function(trackDat,
         min(ScaleY) + (5 * max(ScaleY) / 100)
       )
       graphics::text(
-        x = max(ScaleX) + (20 * max(ScaleX) / 100),
+        x = max(ScaleX) + (15 * max(ScaleX) / 100),
         y = ScaleLeg,
         labels =  ScaleVal,
         cex = cex.leg
