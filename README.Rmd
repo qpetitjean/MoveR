@@ -23,7 +23,7 @@ MoveR <img src="man/figures/hexsticker.png" height="120" align="right"/>
 <!-- badges: end -->
 
 
-The goal of the R package `MoveR` is to ease animal movement analyses.
+The goal of the R package `MoveR` is to help users analyze the output of automated video tracking solutions in a reproducible, reliable and open framework.
 
 
 
@@ -55,7 +55,7 @@ Here is an overview of `MoveR` content: **{{ PLEASE ADD A FEW LINES }}**
 Please cite this package as: 
 
 > PETITJEAN Quentin (`r format(Sys.Date(), "%Y")`) MoveR: An R 
-package to **{{ TITLE }}**. R package version 0.0.0.9000.
+package to ease animal movement analyses. R package version 0.0.0.9000.
 
 
 
