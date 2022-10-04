@@ -56,12 +56,12 @@
 #' @export
 
 actives1 <- function (df, speedCol = NULL, minSpeed = NULL) {
-  if(is.null(listGet(df, "x.pos"))){
+  if(is.null(MoveR::listGet(df, "x.pos"))){
     stop(
       "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
     )
   }
-  if(is.null(listGet(df, "y.pos"))){
+  if(is.null(MoveR::listGet(df, "y.pos"))){
     stop(
       "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
     )
@@ -70,7 +70,7 @@ actives1 <- function (df, speedCol = NULL, minSpeed = NULL) {
     stop(
       "speedCol argument is missing: the name of the column carying speed of the particle along its trajectory is needed to determine activity state"
     )}
-  if(is.null(listGet(df, speedCol))){
+  if(is.null(MoveR::listGet(df, speedCol))){
     stop(
       "speedCol argument is misspelled or is absent from the input df: the name of the column carying speed of the particle along its trajectory is needed to determine activity state"
     )}
