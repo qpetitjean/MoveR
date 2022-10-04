@@ -34,9 +34,9 @@ turchinD <-
            behavStates = NULL) {
     # retrieve var1 and var2 from the dataset and transform them if needed
     trackdatL <- MoveR::convert2list(trackDat)
-    turnAngle <- trackdatL[["turnAngle"]]
-    distTraveled <- trackdatL[["distTraveled"]]
-    behavStates <- trackdatL[["behavStates"]]
+    turnAngle <- trackdatL[[turnAngle]]
+    distTraveled <- trackdatL[[distTraveled]]
+    behavStates <- trackdatL[[behavStates]]
     
     # compute the mean sinus of the turning angle
     Msin <-
@@ -53,6 +53,10 @@ turchinD <-
     # compute the mean squared distance traveled for over actives states
     Mdistsquared <-
       mean(distTraveled[which(behavStates == "active")] ^ 2, na.rm = T)
+    
+    # compute the mean activity
+    act <-
+      length(which(behavStates == "active")) / length(behavStates[-c(which(is.na(behavStates)))]) * 100
     
     # Compute corrected net square displacement according to Turchin 1998
     # the correction depends on the activity rate as follow: activityrate * (m2 + 2m1 * phi / (1-phi))
