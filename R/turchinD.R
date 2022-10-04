@@ -25,6 +25,7 @@
 #'
 #' #TODO
 #'
+#'#' @export
 
 turchinD <-
   function(turnAngle = NULL,
