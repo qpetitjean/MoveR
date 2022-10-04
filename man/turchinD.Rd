@@ -2,22 +2,22 @@
 % Please edit documentation in R/turchinD.R
 \name{turchinD}
 \alias{turchinD}
-\title{Compute the Net square displacement (Turchin 1998)}
+\title{Compute the net square displacement (Turchin 1998)}
 \usage{
-turchinD(turnAngle = NULL, distTraveled = NULL, behavStates = NULL)
+turchinD(trackDat, turnAngle = NULL, distTraveled = NULL, behavStates = NULL)
 }
 \arguments{
+\item{trackDat}{A list of data frame containing tracking informations for each fragment, including a vector
+containing behavioral patterns (e.g., behavioral states, location in areas).}
+
 \item{turnAngle}{A character string indicating the name of the variable specifying the turning angles over each trajectories.}
 
 \item{distTraveled}{A character string indicating the name of the variable specifying the distance traveled by the particles.}
 
 \item{behavStates}{A character string indicating the name of the variable specifying behavioral states.}
-
-\item{trackDat}{A list of data frame containing tracking informations for each fragment, including a vector
-containing behavioral patterns (e.g., behavioral states, location in areas).}
 }
 \value{
-this function returns the Net square displacement value used to infer populations spread according to Turchin (1998).
+this function returns the net square displacement value used to infer populations spread according to Turchin (1998).
 }
 \description{
 Given a list of data frames containing tracking informations and including the value of turning angles,
