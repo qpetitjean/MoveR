@@ -127,7 +127,7 @@
 #'# - the final representation of the 2d clustering with the increasing size of the dot representing the increasing number of count
 #'# - a pie chart representing the proportion of actives vs inactives states
 #'
-#'fragsListV1Smoothed <- actives2(
+#'fragsListV1Smoothed <- MoveR::actives2(
 #'  fragsListV1Smoothed,
 #'  var1 = "SlidemeanSpeed",
 #'  var2 = "SlideVarAngle",
