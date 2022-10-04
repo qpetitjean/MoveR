@@ -54,21 +54,19 @@
 #'    )), seq(Fragn))
 #'
 #'# check the fragments
-#'
 #'drawFrags(fragsList,
-#'          imgRes = c(max(convert2list(fragsList)[["x.pos"]]),
-#'                     max(convert2list(fragsList)[["y.pos"]])),
+#'          imgRes = c(max(MoveR::convert2list(fragsList)[["x.pos"]]),
+#'                     max(MoveR::convert2list(fragsList)[["y.pos"]])),
 #'          timeCol = "frame")
 #'
 #'# add some metric to the dataset (speed and turning angle) and time unit conversion
-#'
 #'fragsListV1 <-
-#'  analyseFrags(
+#'  MoveR::analyseFrags(
 #'    fragsList,
 #'    customFunc = list(
 #'      # specify a first function to compute speed over each fragment (a modulus present within the MoveR package)
 #'      speed = function(x)
-#'        MovR::speed(
+#'        MoveR::speed(
 #'          x,
 #'          TimeCol = "frame",
 #'          scale = 1,
@@ -76,7 +74,7 @@
 #'        ),
 #'      # compute turning angle in radians over each fragment (a modulus present within the MoveR package)
 #'      TurnAngle = function(x)
-#'        MovR::turnAngle(x, unit = "radians"),
+#'        MoveR::turnAngle(x, unit = "radians"),
 #'      # convert the time expressed in frame in second using a conversion factor of 25 frame per second
 #'      TimeSec = function(x)
 #'        x[["frame"]] / 25,
@@ -88,7 +86,7 @@
 #'
 #'# smooth the speed and the turning angle across fragments and time, here we perform the computation 
 #'# every 50 time unit and on an interval of 100 values, 50 values are taken before and 50 values after the given time unit.
-#'Smoothedtracks <- analyseTime(
+#'Smoothedtracks <- MoveR::analyseTime(
 #'  trackDat = fragsListV1,
 #'  timeCol = "frame",
 #'  Tstep = 100,

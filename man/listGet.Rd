@@ -2,33 +2,33 @@
 % Please edit documentation in R/listGet.R
 \name{listGet}
 \alias{listGet}
-\title{Get an object within a dataframe, a list or a nested list}
+\title{Get an object within a dataframe, a list or a nested list.}
 \usage{
 listGet(myList, toFind)
 }
 \arguments{
-\item{myList}{A dataframe, list or a nested list where to look for}
+\item{myList}{A dataframe, list or a nested list where to look for.}
 
-\item{toFind}{A character string corresponding to the name of the object to find}
+\item{toFind}{A character string corresponding to the name of the object to find.}
 }
 \value{
-The object to find or NULL whether the object have been not found
+The object to find or NULL whether the object have been not found.
 }
 \description{
-The function looks for an object name within all levels of a list and returns it when found
+The function looks for an object name within a data frame or across all levels of a list and returns it.
 }
 \examples{
 
-# create some silly containers where to look for
-
+# create some silly containers where to look for:
+## a data frame
 df =  data.frame(values = c(1:4),
 identity = LETTERS[1:4],
 other = c("pif", "paf", "pouf","pof"))
-
+## a simple list
 slist = list(values = c(1:20),
 identity = LETTERS[1:4],
 other = c("pif", "paf", "pouf","pof"))
-
+## a nested list
 nlist = list(
 values = c(1:20),
 other = c("pif", "paf", "pouf","pof"),
@@ -37,7 +37,7 @@ nested = list(
  values2 = c(1:20),
  other2 = c("pif", "paf", "pouf","pof")
 ))
-
+## a more complicated nested list 
 nnlist = list(
 values = c(1:20),
 other = c("pif", "paf", "pouf","pof"),

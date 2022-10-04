@@ -31,7 +31,7 @@
 #'
 #'# load the sample data
 #'Data <-
-#'  readTrex("https://github.com/qpetitjean/MovR/tree/MovRV1/sampleData/sample_1/TREXOutput",
+#'  readTrex("https://github.com/qpetitjean/MoveR/tree/MovRV1/sampleData/sample_1/TREXOutput",
 #'    mirrorY = T,
 #'    imgHeight = 2160,
 #'   rawDat = F
@@ -41,7 +41,7 @@
 #'# load the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or 
 #'# the location of one or several areas of interest (here we have created a distance map using ImageJ)
 #'refDat <-
-#'  as.matrix(read.delim("https://github.com/qpetitjean/MovR/blob/MovRV1/sampleData/sample_1/ReferenceData/ImgTresholding_2602_ISA3080_Low_5.mov_1800.txt",
+#'  as.matrix(read.delim("https://github.com/qpetitjean/MoveR/blob/MovRV1/sampleData/sample_1/ReferenceData/ImgTresholding_2602_ISA3080_Low_5.mov_1800.txt",
 #'    dec = "."
 #'  ))
 #'#  retrieve the value of the edge limit (1) and of the center limit (254) to plot them

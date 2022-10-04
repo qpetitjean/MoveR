@@ -23,7 +23,8 @@ drawFrags(
   cex.axis = 1,
   cex.main = 1.25,
   cex.lab = 1,
-  cex.leg = 1
+  cex.leg = 1,
+  cex.start = 0.5
 )
 }
 \arguments{
@@ -32,7 +33,7 @@ drawFrags(
 \item{selFrags}{A vector of either numeric values or character strings,
 the number or the id of the selFrags to plot (optional).}
 
-\item{imgRes}{A vector of 2 numeric values, resolution of the video used as x and y limit of the plot
+\item{imgRes}{A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot
 (i.e., the number of pixels in image width and height, default = 1920 x 1080).}
 
 \item{timeWin}{A list of one or several vector containing 2 numeric values separated by a comma
@@ -44,7 +45,7 @@ corresponding to the time interval between which selFrags have to be drawn in fr
 either with their name or hexadecimal values (optional).}
 
 \item{colId}{A character string corresponding to a column name
-present within each fragment' dataframe from the trackDat list
+present within each fragments' data frame from the trackDat list
 and which is used as grouping factor to color the fragments (default = timeCol).
 If colId is composed of continuous values, the legend will be plotted as a gradient.}
 
@@ -70,6 +71,8 @@ for the x and y axis respectively (default = 0).}
 \item{cex.lab}{Character size and expansion for axes label (default = 1).}
 
 \item{cex.leg}{Character size and expansion for the legend label (default = 1).}
+
+\item{cex.start}{Dot size representing the start of a fragment (default = 0.5).}
 }
 \value{
 A plot with all or only selected fragment paths colored according to time.

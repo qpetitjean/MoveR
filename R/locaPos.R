@@ -23,7 +23,7 @@
 #'# load the sample data
 #'Data <-
 #'  readTrex(
-#'    system.file("sampleData/sample_1/TREXOutput", package = "MovR"),
+#'    system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
 #'    mirrorY = T,
 #'    imgHeight = 2160,
 #'    rawDat = F
@@ -35,7 +35,7 @@
 #'# the location of one or several areas of interest (here we have created a distance map using ImageJ)
 #'refDat <-
 #'  as.matrix(read.delim(
-#'    system.file("sampleData/sample_1/ReferenceData/TREXOutput/RefDat_2602_ISA3080_Low_5.csv", package = "MovR"),
+#'    system.file("sampleData/sample_1/ReferenceData/TREXOutput/RefDat_2602_ISA3080_Low_5.csv", package = "MoveR"),
 #'    dec = "."
 #'  ))
 #'##  retrieve the value of the edge limit (1) and of the center limit (254) to plot them

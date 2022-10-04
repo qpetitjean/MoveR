@@ -76,7 +76,7 @@ informations related to sensitivity analysis:
 # load the sample data
 Data <-
  readTrex(
-   system.file("sampleData/sample_1/TREXOutput", package = "MovR"),
+   system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
    mirrorY = T,
    imgHeight = 2160,
    rawDat = F
@@ -87,7 +87,7 @@ trackDat <- convert2frags(Data[1:7], by = "identity")
 # load the reference dataset (a dataframe containing manually detected position of the particle's over time unit)
 refDat <-
  read.csv(
-   system.file("sampleData/sample_1/ReferenceData", package = "MovR"),
+   system.file("sampleData/sample_1/ReferenceData", package = "MoveR"),
    dec = ".",
    sep = ";"
  )

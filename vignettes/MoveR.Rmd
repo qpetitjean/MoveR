@@ -24,10 +24,10 @@ if(require(remotes)) {
   install.packages("remotes")
 }
 library("remotes")
-if(require(MovR)) {
-  remotes::install_github("qpetitjean/MovR")
+if(require(MoveR)) {
+  remotes::install_github("qpetitjean/MoveR")
 }
-library("MovR")
+library("MoveR")
 if(require(foreach)) {
   install.packages("foreach")
 }
@@ -47,8 +47,8 @@ scaling = 1 / 413.4
 # the frame rate of the video expressed in frame per second
 frameRate = 25
 
-# use the readTrex function from MovR package to load the tracking results
-Data_Trex <- MovR::readTrex(trexPath = videoPath,
+# use the readTrex function from MoveR package to load the tracking results
+Data_Trex <- MoveR::readTrex(trexPath = videoPath,
                             imgHeight = 1080,
                             mirrorY = TRUE)
 str(Data_Trex)
@@ -61,7 +61,7 @@ Data_Trex_Sample <-
   as.data.frame(Data_Trex[1:7])[which(Data_Trex[["frame"]] <= 60 * 60 * 25), ]
 
 # convert the data to a list of fragment
-trackDat <- MovR::convert2frags(Data_Trex_Sample,
+trackDat <- MoveR::convert2frags(Data_Trex_Sample,
                                 by = "identity")
 ```
 To ease further computation and graphical representation the data are then converted to a list of fragments (based on particle' identity), corresponding to the trajectory of all the particles detected over the tracking, using the "convert2frags" function. 
@@ -201,7 +201,7 @@ trackDat2 <-
   analyseFrags(trackDat2,
                customFunc = list(
                  speed = function(x)
-                   MovR::speed(
+                   MoveR::speed(
                      x,
                      scale = scaling,
                      unit = "cm",
@@ -318,7 +318,7 @@ trackDat3 <-
   analyseFrags(trackDat3,
                customFunc = list(
                  dist2Edge = function(x)
-                   MovR::dist2Edge(x, edge,
+                   MoveR::dist2Edge(x, edge,
                                    customFunc = "CircularArena")
                ))
 
@@ -443,7 +443,7 @@ edgeTresh <-
 customFuncList = list(
   # compute sinuosity (a modulus present within the MoveR package)
   sinuosity = function(x)
-    MovR::sinuosity(
+    MoveR::sinuosity(
       x,
       scale = scaling,
       unit = "cm",
@@ -452,16 +452,16 @@ customFuncList = list(
   # compute turning angles (a modulus present within the MoveR package)
   turnAngle = function(x)
     if (nrow(x) >= 3) {
-      MovR::turnAngle(x, unit = "radians")
+      MoveR::turnAngle(x, unit = "radians")
     } else{
       NA
     },
   # compute simple activity (a modulus present within the MoveR package)
   actives1 = function(x)
-    MovR::actives1(x, minSpeed = 10 ^ activTresh, speedCol = "speed"),
+    MoveR::actives1(x, minSpeed = 10 ^ activTresh, speedCol = "speed"),
   # compute distance traveled (a modulus present within the MoveR package)
   distTraveled = function(x)
-    MovR::distTraveled(x, step = 1),
+    MoveR::distTraveled(x, step = 1),
   # compute proportion of individuals at the edge of the arena
   Edge = function(x)
     abs(x$dist2Edge) < edgeTresh
@@ -529,17 +529,17 @@ the mean turning angle as well as the turning angle variance, the mean speed and
 customFuncList = list(
   # smooth sinuosity
   SlideMeanSinuos = function (y)
-    MovR::slidWin(y$sinuosity,
+    MoveR::slidWin(y$sinuosity,
                   Tstep = 10, function (x)
                     mean(x, na.rm = T)),
   # smooth turning angles
   SlideMeanAngle = function (y)
-    MovR::slidWin(y$turnAngle,
+    MoveR::slidWin(y$turnAngle,
                   Tstep = 10, function (x)
                     mean(x, na.rm = T)),
   # smooth turning angles variance
   SlideVarAngle = function (y)
-    MovR::slidWin(y$turnAngle,
+    MoveR::slidWin(y$turnAngle,
                   Tstep = 10, function (x)
                     circular::var(
                       circular::circular(
@@ -552,37 +552,37 @@ customFuncList = list(
                     )),
   # smooth speed
   SlidemeanSpeed = function (y)
-    MovR::slidWin(y$speed,
+    MoveR::slidWin(y$speed,
                   Tstep = 10, function (x)
                     mean(x, na.rm = T)),
   # smooth speed variance
   SlideVarSpeed = function (y)
-    MovR::slidWin(y$speed,
+    MoveR::slidWin(y$speed,
                   Tstep = 10, function (x)
                     var(x, na.rm = T)),
   # smooth activity
   Slidemeanactivity = function (y)
-    MovR::slidWin(y$actives,
+    MoveR::slidWin(y$actives,
                   Tstep = 10, function (x)
                     mean(x, na.rm = T)),
   # smooth the proportion of time spent near the edge
   SlidemeanEdgeProp = function (y)
-    MovR::slidWin(y$Edge,
+    MoveR::slidWin(y$Edge,
                   Tstep = 10, function (x)
                     mean(x, na.rm = T)),
   # smooth the distance to the edge
   SlidemeanDist2Edge = function (y)
-    MovR::slidWin(y$dist2Edge,
+    MoveR::slidWin(y$dist2Edge,
                   Tstep = 10, function (x)
                     mean(x, na.rm = T)),
   # smooth traveled distance
   SlidemeanTraveledDist = function (y)
-    MovR::slidWin(y$distTraveled,
+    MoveR::slidWin(y$distTraveled,
                   Tstep = 10, function (x)
                     mean(x, na.rm = T)),
   # smooth maximum distance traveled
   SlideMaxDist = function (y)
-    MovR::slidWin(y$distTraveled,
+    MoveR::slidWin(y$distTraveled,
                   Tstep = 10, function (x)
                     max(x, na.rm = T))
 )

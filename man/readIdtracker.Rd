@@ -23,7 +23,7 @@ Also, by default the function returns y coordinates starting on the bottom-left.
 }
 \description{
 Given the path of the .npy file corresponding to idtracker output,
-this function returns a list of 9 vectors classically used for further computations using MovR package:
+this function returns a list of 9 vectors classically used for further computations using MoveR package:
 \itemize{
 \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse), returns NA since it is not present in the Idtracker output.}
 \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to y-axis, returns NA since it is not present in the Idtracker output.}
@@ -44,7 +44,7 @@ Also, by default the function mirror y coordinates to start on the bottom-left (
 
 Data <-
   readIdtracker(
-    system.file("sampleData/sample_1/IdTrackerOutput", package = "MovR"),
+    system.file("sampleData/sample_1/IdTrackerOutput", package = "MoveR"),
     mirrorY = T,
     imgHeight = 2160
   )
@@ -54,7 +54,7 @@ Data <-
 
 Data <-
   readIdtracker(
-    system.file("sampleData/sample_1/IdTrackerOutput", package = "MovR"),
+    system.file("sampleData/sample_1/IdTrackerOutput", package = "MoveR"),
     mirrorY = F,
     imgHeight = NULL
   )

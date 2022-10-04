@@ -1,10 +1,10 @@
-citHeader("To cite MovR in publications use:")
+citHeader("To cite MoveR in publications use:")
 
 bibentry(
   bibtype = "Manual",
-  title   = "MovR: {An} {R} package to ...",
+  title   = "MoveR: {An} {R} package to ...",
   author  = c(person("PETITJEAN Quentin")),
   year    = "2021",
   note    = "R package version 0.0.0.9000",
-  url     = "https://github.com/qpetitjean/MovR"
+  url     = "https://github.com/qpetitjean/MoveR"
 )

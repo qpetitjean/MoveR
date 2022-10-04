@@ -52,7 +52,111 @@ and a custom function, this function perform the computation specified by the cu
 and smooth it before returning values
 }
 \examples{
+# generate some dummy fragments
+## start to specify some parameters to generate fragments
+Fragn <- 25 # the number of fragment to simulate
+FragL <-
+ 100:1000 # the length of the fragments or a sequence to randomly sample fragment length
 
-#TODO
+fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
+ trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
+   data.frame(
+     x.pos = j$x - min(j$x),
+     y.pos = j$y - min(j$y),
+     frame = j$time
+   )), seq(Fragn))
+
+# check the fragments
+MoveR::drawFrags(fragsList,
+               imgRes = c(max(MoveR::convert2list(fragsList)[["x.pos"]]),
+                          max(MoveR::convert2list(fragsList)[["y.pos"]])),
+               timeCol = "frame")
+
+# add some metric to the dataset (speed and turning angle) and time unit conversion
+fragsListV1 <-
+ MoveR::analyseFrags(
+   fragsList,
+   customFunc = list(
+     # specify a first function to compute speed over each fragment (a modulus present within the MoveR package)
+     speed = function(x)
+       MoveR::speed(
+         x,
+         TimeCol = "frame",
+         scale = 1,
+         unit = "pixels"
+       ),
+     # compute turning angle in radians over each fragment (a modulus present within the MoveR package)
+     TurnAngle = function(x)
+       MoveR::turnAngle(x, unit = "radians"),
+     # convert the time expressed in frame in second using a conversion factor of 25 frame per second
+     TimeSec = function(x)
+       x[["frame"]] / 25,
+     # or in minutes
+     TimeMin = function(x)
+       x[["frame"]] / 25 / 60
+   )
+ )
+
+# smooth the speed and the turning angle across fragments and time, here we perform the computation 
+# every 50 time unit and on an interval of 100 values, 50 values are taken before and 50 values after the given time unit. 
+# and compute studentize 95\% CI using bootstrap with 999 sampling. 
+SmoothedtracksBoot <- MoveR::analyseTimeBoots(
+ trackDat = fragsListV1,
+ timeCol = "frame",
+ Tstep = 100,
+ sampling = 50,
+ wtd = TRUE,
+ bootn = 999,
+ customFunc = list(
+   MeanSpeed = function(x)
+     mean(x[["speed"]], na.rm = T),
+   MeanTurnAngle = function(x)
+     mean(x[["TurnAngle"]], na.rm = T)
+ )
+)
+
+# plot the results
+## need to remove the NA introduced during smoothing to plot the 95\% CI envelope
+SmoothedtracksBootCInoNA <-
+ lapply(SmoothedtracksBoot[["BootCiStudent"]], function(x)
+   x[!is.na(x[["mean"]]), ])
+
+## plot the mean and the 95\% CI envelope by looping through the list containing the smoothed results for the speed and the turning angle
+par(mfrow = c(1, 2))
+for (i in seq(length(SmoothedtracksBootCInoNA))) {
+ plot(
+   SmoothedtracksBootCInoNA[[i]]$mean ~ SmoothedtracksBootCInoNA[[i]]$frame,
+   type = "l",
+   ylab = names(SmoothedtracksBootCInoNA)[[i]],
+   xlab = "Time (frame)",
+   ylim = c(round(min(
+     c(
+       SmoothedtracksBootCInoNA[[i]]$`2.5\%`,
+       SmoothedtracksBootCInoNA[[i]]$`97.5\%`
+     ) ,
+     na.rm = T
+   ), digits = 5),
+   round(max(
+     c(
+       SmoothedtracksBootCInoNA[[i]]$`2.5\%`,
+       SmoothedtracksBootCInoNA[[i]]$`97.5\%`
+     ),
+     na.rm = T
+   ), digits = 5))
+ )
+ polygon(
+   x = c(
+     SmoothedtracksBootCInoNA[[i]]$frame,
+     rev(SmoothedtracksBootCInoNA[[i]]$frame)
+   ),
+   y = c(
+     SmoothedtracksBootCInoNA[[i]]$`2.5\%`,
+     rev(SmoothedtracksBootCInoNA[[i]]$`97.5\%`)
+   ),
+   col = rgb(1, 0, 0, 0.1),
+   border = NA,
+   density = NA
+ )
+}
 
 }

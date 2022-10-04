@@ -2,6 +2,7 @@
 
 export(ANND)
 export(actives1)
+export(actives2)
 export(analyseFrags)
 export(analyseTime)
 export(analyseTimeBoots)

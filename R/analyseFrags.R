@@ -46,7 +46,7 @@
 #'    customFunc = list(
 #'      # specify a first function to compute speed over each fragment (a modulus present within the MoveR package)
 #'      speed = function(x)
-#'        MovR::speed(
+#'        MoveR::speed(
 #'          x,
 #'          TimeCol = "frame",
 #'         scale = 1,
@@ -54,7 +54,7 @@
 #'        ),
 #'      # compute turning angle in radians over each fragment (a modulus present within the MoveR package)
 #'      TurnAngle = function(x)
-#'        MovR::turnAngle(x, unit = "radians"),
+#'        MoveR::turnAngle(x, unit = "radians"),
 #'      # convert the time expressed in frame in second using a conversion factor of 25 frame per second
 #'      TimeSec = function(x)
 #'        x[["frame"]] / 25,

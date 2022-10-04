@@ -1,4 +1,4 @@
 library(testthat)
-library(MovR)
+library(MoveR)
 
-test_check("MovR")
+test_check("MoveR")

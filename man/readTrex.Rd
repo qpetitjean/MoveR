@@ -23,7 +23,7 @@ and the second containing all the elements retrieved from the .npz files (see ra
 }
 \description{
 Given the path of a folder containing multiple Trex outputs (one .npz file per particle/individual),
-this function returns a list of 9 vectors classically used for further computations using MovR package:
+this function returns a list of 9 vectors classically used for further computations using MoveR package:
 \itemize{
 \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
 \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to X-axis.}
@@ -47,7 +47,7 @@ Also, by default the function mirror y coordinates to start on the bottom-left (
 
 Data <-
   readTrex(
-    system.file("sampleData/sample_1/TREXOutput", package = "MovR"),
+    system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
     mirrorY = T,
     imgHeight = 2160,
     rawDat = F
@@ -59,7 +59,7 @@ Data <-
 
 Data <-
   readTrex(
-    system.file("sampleData/sample_1/TREXOutput", package = "MovR"),
+    system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
     mirrorY = F,
     imgHeight = NULL,
     rawDat = T

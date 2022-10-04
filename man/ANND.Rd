@@ -2,7 +2,7 @@
 % Please edit documentation in R/ANND.R
 \name{ANND}
 \alias{ANND}
-\title{Compute Average Nearest Neighbour Distance among fragments}
+\title{Compute Average Nearest Neighbour Distance (ANND) among fragments}
 \usage{
 ANND(
   trackDat,
@@ -14,28 +14,43 @@ ANND(
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking informations for each fragment (including a timeline)}
+\item{trackDat}{A list of data frame containing tracking informations for each fragment (including a timeline).}
 
-\item{timeCol}{A character string specifying the name of the timeline column}
+\item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
 
 \item{Tinterval}{A vector containing two numeric values expressed in the timeline unit and
-specifying the time interval on which the computation is performed
-(default is null, meaning the computation will be performed on the whole timeline)}
+specifying the time window on which the computation is performed (default is null, meaning the computation will be performed on the whole timeline).}
 
-\item{sampling}{A numeric value expressed in the timeline unit and specifying a subsampling used to
-to perform the computation, allow to make computation faster, it hence determine the resolution of the
-returned results (e.g., 5000 mean that values will be computed every 5000 frames)}
+\item{sampling}{A numeric value expressed in the timeline unit and specifying the subsampling step used to
+to perform the computation (it allow to make computation faster). In other words, it determine the resolution of the
+returned results (e.g., a value of 5000 mean that values will be computed every 5000 time unit).}
 
-\item{bootn}{A numeric value corresponding to the number of bootstrap sampling to compute studentize 95\% CI}
+\item{bootn}{A numeric value corresponding to the number of bootstrap sampling used to compute studentize 95\% confidence interval (default = 0, meaning bootstrap will be not performed).}
 }
 \value{
-this function returns a list containing three sublist, the first sublist contains a dataframe with
-bootstrap results (mean ANND, CI 97.5\%, CI 2.5\%, Sd, number of detected individual
-and the resampled timeline according to timeCol argument),
-the second sublist contains raw neighbour distances computed across each time unit.
-The third list returns two sublists, the first one containing, containing dataframes
-with the fragments sampled over the bootstrap iterations, while the second contains the values of the nearest
-neighbour distance for each of the sampled fragments.
+this function returns a list containing three elements:
+\itemize{
+\item{"ANND": }{a data frame containing 6 columns:
+\itemize{
+\item{"ANNDmean": }{the averaged Nearest Neighbour Distance for each sampling step.}
+\item{"97.5\%": }{the upper limit of the confidence interval (97.5\%).}
+\item{"2.5\%": }{the lower limit of the confidence interval (97.5\%).}
+\item{"ANNDsd": }{the standard deviation of the Average Nearest Neighbour Distance for each sampling step.}
+\item{"nInd": }{the number of particules used to compute the Averaged Nearest Neighbour Distance for each sampling step.}
+\item{"timeCol": }{the sampling step, expressed in the same unit that the timeCol argument.}
+}}
+
+\item{"RawND": }{a list containing the raw neighbour distance computed among each particles across each time unit:
+\itemize{
+\item{"timeCol_index": }{a list of vector corresponding to the fragment identity containing the distance to each detected particles in the time unit.}
+}
+}
+\item{"BootSampling": }{a list of lists corresponding to each time unit sampled during the bootstrap and containing:
+\itemize{
+\item{"sampledFrags": }{the identity of the fragments sampled at each bootstrap sampling (the length of the list is equal to bootn argument).}
+\item{"sampledValues": }{the nearest neighbour distance values for each sampled fragment at each bootstrap sampling (the length of the list is equal to bootn argument).}
+}}
+}
 }
 \description{
 Given a list of data frames containing tracking informations for each fragment (including the timeline)
@@ -44,6 +59,62 @@ if bootn parameter is above 0, the function compute studentize 95 \% CI using bo
 }
 \examples{
 
-#TODO
+# generate some dummy fragments
+## start to specify some parameters to generate fragments
+Fragn <- 500 # the number of fragment to simulate
+FragL <- 100:1000 # the length of the fragments or a sequence to randomly sample fragment length
+
+fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
+ trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
+   data.frame(
+     x.pos = j$x - min(j$x),
+     y.pos = j$y - min(j$y),
+     frame = j$time
+   )), seq(Fragn))
+
+# compute the ANND
+ANNDRes <- ANND(fragsList, timeCol = "frame", sampling = 100, scale = 1, bootn = 500)
+
+# the results can be retrieved by accessing the "ANND" data frame
+str(ANNDRes[["ANND"]])
+
+# And hence you can plot it against the timeCol (here "frame")
+par(mfrow = c(1, 1))
+plot(
+ ANNDRes[["ANND"]]$ANNDmean ~ ANNDRes[["ANND"]]$frame,
+ type = "l",
+ ylim = c(0, signif(max(
+   ANNDRes[["ANND"]]$ANNDmean, na.rm = T
+ ), digits = 3)),
+ col = "red",
+ xlab = "Time (frame)",
+ ylab = "Average Nearest Neighbour Distance (ANND) and 95\% CI"
+)
+lines(ANNDRes[["ANND"]]$`97.5\%` ~ ANNDRes[["ANND"]]$frame)
+lines(ANNDRes[["ANND"]]$`2.5\%` ~ ANNDRes[["ANND"]]$frame)
+polygon(
+ x = c(ANNDRes[["ANND"]]$frame, rev(ANNDRes[["ANND"]]$frame)),
+ y = c(ANNDRes[["ANND"]]$`2.5\%`, rev(ANNDRes[["ANND"]]$`97.5\%`)),
+ col = rgb(1, 0, 0, 0.1),
+ border = NA
+ ,
+ density = NA
+)
+# It is also possible to add the number of individual on which ANND was computed across time on the plot
+par(new = TRUE)
+plot(
+ NULL,
+ yaxt = "n",
+ ylab = "",
+ xlab = "",
+ axes = FALSE,
+ xlim = c(0, max(ANNDRes[["ANND"]]$frame)),
+ ylim = c(0, signif(max(ANNDRes[["ANND"]]$nInd, na.rm=T), digits = 3)),
+)
+axis(side=4, at = c(0, round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))/4, round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))/2 , 
+                   round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))/4 + round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))/2, 
+                   round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))))
+
+lines(ANNDRes[["ANND"]]$nInd ~ ANNDRes[["ANND"]]$frame, col = "purple")
 
 }

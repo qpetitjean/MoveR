@@ -21,9 +21,9 @@
 #' @param timeWin  A list of one or several vector containing 2 numeric values separated by a comma
 #' corresponding to the time interval between which the fragments have to be drawn according to timeCol (optional).
 #'
-#' @param saveGraph TRUE or FALSE, if TRUE, the heatmap is saved as a .tiff file in the hardrive - within the working directory.
-#' if FALSE, the heatmap is only displayed. Alternatively, the user can specify the saving function and hence the extension and the 
-#' directory where the heatmap will be saved (see for instance grDevices::png(), grDevices::jpeg() or grDevices::tiff()).
+#' @param saveGraph A logical value indicating whether the heatmap should be saved as a .tiff file in the hardrive - within the working directory (default = FALSE).
+#' Alternatively, the user can specify the saving function and hence the extension and the
+#' directory where the heatmap should be saved (see for instance grDevices::png(), grDevices::jpeg() or grDevices::tiff()).
 #'
 #' @return displays an heatmap (i.e., hexbin plot) of the explored areas and returns the
 #'  total surface explored in a geometrically consistent and scalable manner
@@ -49,32 +49,33 @@
 #'
 #'# check the fragments
 #'
-#'drawFrags(fragsList,
-#'          imgRes = c(max(convert2list(fragsList)[["x.pos"]]),
-#'                     max(convert2list(fragsList)[["y.pos"]])),
+#'MoveR::drawFrags(fragsList,
+#'          imgRes = c(max(MoveR::convert2list(fragsList)[["x.pos"]]),
+#'                     max(MoveR::convert2list(fragsList)[["y.pos"]])),
 #'          timeCol = "frame")
-#'          
+#'
 #'# extract image resolution
-#'imgRes <- c(max(convert2list(fragsList)[["x.pos"]]), max(convert2list(fragsList)[["y.pos"]]))
-#'# compute the total surface explored and displays the heatmap for all fragments 
+#'imgRes <- c(max(MoveR::convert2list(fragsList)[["x.pos"]]), 
+#'            max(MoveR::convert2list(fragsList)[["y.pos"]]))
+#'# compute the total surface explored and displays the heatmap for all fragments
 #'# and save the plot in the working directory using user specified parameters (saveGraph argument)
-#'# if saveGraph is "TRUE", the plot is saved in the working directory as .png image
+#'# if saveGraph is "TRUE", the plot is saved in the working directory as .tiff image
 #'# if saveGraph is "FALSE", the plot is only displayed.
-#'exploredArea(fragsList, 
-#'             binRad = 8, 
+#'MoveR::exploredArea(fragsList,
+#'             binRad = 8,
 #'             imgRes = imgRes,
 #'             scale = 1,
 #'             timeCol = "frame",
-#'             timeWin = list(c(0, Inf)), 
+#'             timeWin = list(c(0, Inf)),
 #'             saveGraph = grDevices::tiff("exploredPlotTest.tiff",
 #'                                         width = 600,
 #'                                         height = 600
 #'             ))
 #'
 #'# compute the surface explored for each fragment and display (but do not save) the heatmap for each fragment
-#'# here by combining exploredArea and analyseFrags, the surface explored for each fragment will be appended to the data 
+#'# here by combining exploredArea and analyseFrags, the surface explored for each fragment will be appended to the data
 #'# of the corresponding fragment.
-#'analyseFrags(
+#'MoveR::analyseFrags(
 #'  fragsList,
 #'  customFunc = list(
 #'    exploredArea = function(x)
@@ -99,11 +100,11 @@ exploredArea <-
            timeCol = "frame",
            timeWin = list(c(0, Inf)),
            saveGraph = FALSE) {
-    if(is.null(binRad)){ 
+    if (is.null(binRad)) {
       stop(
         "binRad argument is missing, \na numeric value specifying the diameter of the cell a particle can explore is needed to compute the surface explored"
       )
-      }
+    }
     # Select only the part of the fragments parts included in the selected time Window
     if (!is.list(timeWin)) {
       stop(
@@ -134,21 +135,21 @@ exploredArea <-
     } else {
       timeWin = timeWin
     }
-
+    
     # select the part of the fragments that are included in timeWin
-      WhoWhen <- lapply(seq(length(timeWin)),
-             function(p)
-               cutFrags(
-                 trackDat,
-                 customFunc = function(x)
-                   x[[timeCol]] >= timeWin[[p]][[1]] &
-                   x[[timeCol]] <= timeWin[[p]][[2]]
-               ))
-      WhoWhen <- unlist(WhoWhen, recursive = FALSE)
+    WhoWhen <- lapply(seq(length(timeWin)),
+                      function(p)
+                        cutFrags(
+                          trackDat,
+                          customFunc = function(x)
+                            x[[timeCol]] >= timeWin[[p]][[1]] &
+                            x[[timeCol]] <= timeWin[[p]][[2]]
+                        ))
+    WhoWhen <- unlist(WhoWhen, recursive = FALSE)
     
     # Then, convert the list of fragment as an unique list (only in case there is several fragment in trackDat)
-      trackDatList <- convert2list(WhoWhen)
-  
+    trackDatList <- convert2list(WhoWhen)
+    
     # Compute the surface of a regular hexagon as follow: 3*side*apothem
     # where:
     # the apothem corresponds to binRad/2
@@ -202,18 +203,19 @@ exploredArea <-
     )
     print(Exploredplot)
     if (isTRUE(saveGraph)) {
-      for(i in seq(1e10)){
-        plotname <- paste(paste("Exploredplot", i, sep = "_"), "tiff", sep = ".")
-          if(isTRUE(file.exists(paste(getwd(), plotname, sep = "/")))){
-            next
-          }else{
-            break
-          }
+      for (i in seq(1e10)) {
+        plotname <-
+          paste(paste("Exploredplot", i, sep = "_"), "tiff", sep = ".")
+        if (isTRUE(file.exists(paste(getwd(), plotname, sep = "/")))) {
+          next
+        } else{
+          break
+        }
       }
       grDevices::tiff(plotname)
       print(Exploredplot)
       dev.off()
-    }else if(!isTRUE(saveGraph) & !isFALSE(saveGraph)){
+    } else if (!isTRUE(saveGraph) & !isFALSE(saveGraph)) {
       saveGraph
       print(Exploredplot)
       dev.off()

@@ -32,7 +32,7 @@ fragDat <- data.frame(
  frame = fragDatTemp[["time"]]
 )
 # compute the distance traveled between each point of the trajectory
-fragDat[["distTraveled"]] <- distTraveled(fragDat, Step = 1)
+fragDat[["distTraveled"]] <- distTraveled(fragDat, step = 1)
 
 # check the result
 str(fragDat)

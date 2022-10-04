@@ -1,7 +1,7 @@
 #' @title Load TrackR tracking output .csv file
 #'
 #' @description Given the path of the .csv file corresponding to TrackR output,
-#' this function returns a list of 9 vectors classically used for further computations using MovR package:
+#' this function returns a list of 9 vectors classically used for further computations using MoveR package:
 #' \itemize{
 #'    \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
 #'    \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to y-axis.}
@@ -45,7 +45,7 @@
 #'
 #' Data <-
 #'   readTrackR(
-#'     system.file("sampleData/sample_1/TrackROutput", package = "MovR"),
+#'     system.file("sampleData/sample_1/TrackROutput", package = "MoveR"),
 #'     mirrorY = T,
 #'     imgHeight = 2160,
 #'     rawDat = F
@@ -57,7 +57,7 @@
 #'
 #' Data <-
 #'   readTrackR(
-#'     system.file("sampleData/sample_1/TrackROutput", package = "MovR"),
+#'     system.file("sampleData/sample_1/TrackROutput", package = "MoveR"),
 #'     mirrorY = F,
 #'     imgHeight = NULL,
 #'     rawDat = T

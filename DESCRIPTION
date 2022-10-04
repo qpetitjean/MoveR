@@ -1,4 +1,4 @@
-Package: MovR
+Package: MoveR
 Type: Package
 Title: R Package For Movement Analysis
 Version: 0.0.0.9000
@@ -15,13 +15,13 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-5781-967X")))
 Description: A set of functions helping users to process (i.e., filter, clean, draw and analyse) movement datas provided by 
     tracking software.  
-URL: https://github.com/qpetitjean/MovR
-BugReports: https://github.com/qpetitjean/MovR/issues
+URL: https://github.com/qpetitjean/MoveR
+BugReports: https://github.com/qpetitjean/MoveR/issues
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Imports: 
     graphics (>= 4.1.0),
     grDevices (>= 4.1.0),

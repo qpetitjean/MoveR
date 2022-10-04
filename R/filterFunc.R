@@ -21,7 +21,7 @@
 #'# load the sample data
 #'Data <-
 #'  readTrex(
-#'    system.file("sampleData/sample_1/TREXOutput", package = "MovR"),
+#'    system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
 #'    mirrorY = T,
 #'    imgHeight = 2160,
 #'    rawDat = F
