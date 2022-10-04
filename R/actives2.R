@@ -356,7 +356,18 @@ actives2 <-
     minRadInact <-
       ellipseContourInact[c(which(ellipseContourInact[["y"]] == min(ellipseContourInact[["y"]])),
                             which(ellipseContourInact[["y"]] == max(ellipseContourInact[["y"]]))),]
-    
+    ### delimit (expend) inactive cluster to upper limit of the ellipse in y and lower in x
+    ### create the tresholds
+    #### for y, the threshold corresponds to the value of y for which x is minimum of the minor radius
+    minRadInact <-
+      minRadInact[!duplicated(minRadInact[["x"]]) &
+                    !duplicated(minRadInact[["y"]]),]
+    majRadInact <-
+      majRadInact[!duplicated(majRadInact[["x"]]) &
+                    !duplicated(majRadInact[["y"]]),]
+    YtreshInact <-  max(minRadInact[["y"]], na.rm = T)
+    #### for x, the threshold corresponds to the left limit of the ellipse (minimum x value of the major radius)
+    XtreshInact <- min(majRadInact[["x"]], na.rm = T)
     # clustering the data
     toClust <-
       data.frame(var2 = var2,
@@ -414,18 +425,8 @@ actives2 <-
       lines(minRadInact[["x"]], minRadInact[["y"]], col = "black")
       ## add centroid of each cluster
       points(centroids, col = "black", pch = 19)
-      
-      ### delimit (expend) inactive cluster to upper limit of the ellipse in y and lower in x
-      ### create the tresholds
-      #### for y, the threshold corresponds to the value of y for which x is minimum of the minor radius
-      minRadInact <-
-        minRadInact[!duplicated(minRadInact[["x"]]) &
-                      !duplicated(minRadInact[["y"]]),]
-      majRadInact <-
-        majRadInact[!duplicated(majRadInact[["x"]]) &
-                      !duplicated(majRadInact[["y"]]),]
-      YtreshInact <-  max(minRadInact[["y"]], na.rm = T)
-      ###### draw the threshold
+
+      ###### draw the Y threshold
       lines(
         x = c(minRadInact[["x"]][which(minRadInact[["y"]] == max(minRadInact[["y"]], na.rm = T))], ifelse(
           length(which(is.infinite(tempDf[["var2"]]))) > 0,
@@ -437,9 +438,8 @@ actives2 <-
         col = "black"
         
       )
-      #### for x, the threshold corresponds to the left limit of the ellipse (minimum x value of the major radius)
-      XtreshInact <- min(majRadInact[["x"]], na.rm = T)
-      ###### draw the threshold
+    
+      ###### draw the X threshold
       lines(
         x = rep(XtreshInact, 2),
         y = c(majRadInact[["y"]][which(majRadInact[["x"]] == min(majRadInact[["x"]], na.rm =
