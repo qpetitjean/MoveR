@@ -1,4 +1,4 @@
-#' @title Compute the Net square displacement (Turchin 1998)
+#' @title Compute the net square displacement (Turchin 1998)
 #'
 #' @description Given a list of data frames containing tracking informations and including the value of turning angles,
 #' distance traveled and behavioral states (either active or inactive), this function compute the Net square displacement value
@@ -14,7 +14,7 @@
 #'
 #' @param behavStates A character string indicating the name of the variable specifying behavioral states.
 #'
-#' @return this function returns the Net square displacement value used to infer populations spread according to Turchin (1998).
+#' @return this function returns the net square displacement value used to infer populations spread according to Turchin (1998).
 #'
 #' @authors Quentin PETITJEAN
 #'
@@ -28,7 +28,8 @@
 #'#' @export
 
 turchinD <-
-  function(turnAngle = NULL,
+  function(trackDat,
+           turnAngle = NULL,
            distTraveled = NULL,
            behavStates = NULL) {
     # retrieve var1 and var2 from the dataset and transform them if needed

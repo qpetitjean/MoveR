@@ -79,7 +79,9 @@ actives1 <- function (df, speedCol = NULL, minSpeed = NULL) {
       "minSpeed argument is missing: impossible to determine whether individual is active or not without a minimum speed treshold"
     )
   } else if (!is.null(minSpeed)) {
-    activesRes <- df[[speedCol]]  > minSpeed
+    activeRes <- rep(NA, nrow(df))
+    activeRes[which(df[[speedCol]] > minSpeed)] <- "active"
+    activeRes[which(df[[speedCol]] < minSpeed)] <- "inactive"
   }
-  return(activesRes)
+  return(activeRes)
 }
