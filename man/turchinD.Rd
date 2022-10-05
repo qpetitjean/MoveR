@@ -28,7 +28,6 @@ used to infer populations spread according to Turchin (1998).
 
 #TODO
 
-#' @export
 }
 \references{
 Turchin, P. (1998). Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants. Sinauer.

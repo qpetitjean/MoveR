@@ -25,7 +25,7 @@
 #'
 #' #TODO
 #'
-#'#' @export
+#' @export
 
 turchinD <-
   function(trackDat,
