@@ -56,7 +56,9 @@ turchinD <-
     
     # compute the mean activity
     act <-
-      length(which(behavStates == "active")) / length(behavStates[-c(which(is.na(behavStates)))]) * 100
+      length(which(behavStates == "active")) / ifelse(NA %in% behavStates,
+                                                      length(behavStates[-c(which(is.na(behavStates)))]),
+                                                      length(behavStates)) * 100
     
     # Compute corrected net square displacement according to Turchin 1998
     # the correction depends on the activity rate as follow: activityrate * (m2 + 2m1 * phi / (1-phi))
