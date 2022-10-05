@@ -60,6 +60,10 @@ Data <-
   )
 
 }
+\references{
+Romero-Ferrero, F., Bergomi, M.G., Hinz, R.C. et al. idtracker.ai: tracking all individuals in small or large collectives of unmarked animals. Nat Methods 16, 179–182 (2019). https://doi.org/10.1038/s41592-018-0295-5.
+\href{https://idtrackerai.readthedocs.io/en/latest/}{idtracker.ai}
+}
 \seealso{
 \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{mirrorYFunc}}
 }

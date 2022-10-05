@@ -61,5 +61,5 @@ hist(FragD2)
 
 }
 \seealso{
-\code{\link{trajr::TrajScale}}, \code{\link{trajr::TrajFromCoords}}
+\code{\link[trajr]{TrajScale}}, \code{\link[trajr]{TrajFromCoords}}
 }

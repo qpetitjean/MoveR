@@ -22,7 +22,7 @@ corresponding to the height of the image or video resolution (optional, only use
 
 \item{frameR}{A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video (optional, only used to compute timestamps).}
 
-\item{rawDat}{TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .csv file (see \link{https://swarm-lab.github.io/trackR}),
+\item{rawDat}{TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .csv file (see \href{https://swarm-lab.github.io/trackR}{trackR}),
 may drastically increase the size of the object returned by the function (default = FALSE).}
 }
 \value{
@@ -73,6 +73,9 @@ Data <-
     rawDat = T
   )
 
+}
+\references{
+\href{https://swarm-lab.github.io/trackR}{trackR}
 }
 \seealso{
 \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
