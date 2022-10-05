@@ -1,5 +1,5 @@
 #' @title Fragments analyses
-#'
+ test
 #'
 #' @description Given a list of data frames containing tracking informations for each fragment and
 #' a custom function, this function iterate trough the fragments lists to perform the specified computation 
