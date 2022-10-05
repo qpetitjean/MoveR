@@ -91,7 +91,7 @@
 #'
 #' @export
 
-analyseFrags <- function(trackDat, customFunc) {
+analyseTracks<- function(trackDat, customFunc) {
   if (is.null(customFunc)) {
     stop("customFunc argument is missing, a customFunc is needed to compute metric")
   }
