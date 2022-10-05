@@ -25,14 +25,16 @@
 #' @param frameR A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video 
 #' (optional, only used to compute timestamps).
 #'
-#'
 #' @return A list containing 9 elements classically used for further computations.
 #' Also, by default the function returns y coordinates starting on the bottom-left.
-#'
 #'
 #' @authors Quentin PETITJEAN
 #'
 #' @seealso \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{mirrorYFunc}}
+#'
+#' @references 
+#' Romero-Ferrero, F., Bergomi, M.G., Hinz, R.C. et al. idtracker.ai: tracking all individuals in small or large collectives of unmarked animals. Nat Methods 16, 179–182 (2019). https://doi.org/10.1038/s41592-018-0295-5.
+#' \href{https://idtrackerai.readthedocs.io/en/latest/}{idtracker.ai}
 #'
 #' @examples
 #'

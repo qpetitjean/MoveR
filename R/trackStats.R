@@ -42,7 +42,7 @@
 #'
 #' @authors Quentin PETITJEAN
 #'
-#' @seealso \code{\link{trajr::TrajScale}}, \code{\link{trajr::TrajFromCoords}}
+#' @seealso \code{\link[trajr]{TrajScale}}, \code{\link[trajr]{TrajFromCoords}}
 #' 
 #' @examples
 #'

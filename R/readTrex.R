@@ -25,7 +25,7 @@
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
 #' corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).
 #'
-#' @param rawDat TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .npz files (see \link{https://trex.run}),
+#' @param rawDat TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .npz files (see \href{https://trex.run}{trex.run}),
 #' may drastically increase the size of the object returned by the function (default = FALSE).
 #'
 #' @return A list containing either a list of 9 elements classically used for further computations or a list containing 2 sublists, the first corresponding to the one previously mentioned
@@ -35,6 +35,10 @@
 #' @authors Quentin PETITJEAN
 #'
 #' @seealso \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
+#'
+#' @references 
+#' Tristan Walter, Iain D Couzin (2021) TRex, a fast multi-animal tracking system with markerless identification, and 2D estimation of posture and visual fields eLife 10:e64000.
+#' \href{https://trex.run}{trex.run}
 #'
 #' @examples
 #'

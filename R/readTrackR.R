@@ -27,7 +27,7 @@
 #'
 #' @param frameR A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video (optional, only used to compute timestamps).
 #'
-#' @param rawDat TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .csv file (see \link{https://swarm-lab.github.io/trackR}),
+#' @param rawDat TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .csv file (see \href{https://swarm-lab.github.io/trackR}{trackR}),
 #' may drastically increase the size of the object returned by the function (default = FALSE).
 #'
 #' @return A list containing either a list of 9 elements classically used for further computations or a list containing 2 sublists, the first corresponding to the one previously mentioned
@@ -37,6 +37,9 @@
 #' @authors Quentin PETITJEAN
 #'
 #' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
+#'
+#' @references 
+#' \href{https://swarm-lab.github.io/trackR}{trackR}
 #'
 #' @examples
 #'
