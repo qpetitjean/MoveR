@@ -12,7 +12,15 @@ Authors@R: c(
            family  = "CALCAGNO",
            role    = c("aut"),
            email   = "vincent.calcagno@inrae.fr",
-           comment = c(ORCID = "0000-0002-5781-967X")))
+           comment = c(ORCID = "0000-0002-5781-967X")),
+           person(given   = "Silène",
+           family  = "LARTIGUE",
+           role    = c("aut"),
+           email   = "Silene.Lartigue@inrae.fr"),
+           person(given   = "Mélina",
+           family  = "COINTE",
+           role    = c("aut"),
+           email   = "melina.cointe@inrae.fr"))
 Description: A set of functions helping users to process (i.e., filter, clean, draw and analyse) movement datas provided by 
     tracking software.  
 URL: https://github.com/qpetitjean/MoveR
