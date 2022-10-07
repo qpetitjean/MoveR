@@ -33,11 +33,11 @@ turnAngle <- function(df, unit = c("radians", "degrees")) {
         atan2(df[j + 1,]$x.pos - df[j + 2,]$x.pos,
               df[j + 2,]$y.pos - df[j + 1,]$y.pos)
       turnAngle_temp <- angle2 - angle1
-      if (turnAngle_temp > pi) {
-        turnAngle_temp[turnAngle_temp < 0] = 2 * pi
-      } else if (turnAngle_temp <= -pi) {
-        turnAngle_temp[turnAngle_temp > 0] = 2 * pi
-      }
+      #if (turnAngle_temp > pi) {
+       # turnAngle_temp[turnAngle_temp < 0] = 2 * pi
+      #} else if (turnAngle_temp <= -pi) {
+       # turnAngle_temp[turnAngle_temp > 0] = 2 * pi
+      #}
       turnAngle <- c(turnAngle, turnAngle_temp)
       
     } else {
