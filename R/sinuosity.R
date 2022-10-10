@@ -8,21 +8,25 @@
 #'
 #' @param df  A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given fragment, as well as
 #' a column containing time information, whatever the unit, over the fragment.
-#' 
-#' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates. 
-#' (e.g., size in cm / size in pixels; see trajr::TrajScale()).
 #'
-#' @param unit The unit expected after scaling (e.g., "cm", "m", ...).
+#' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates.
+#' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.
 #'
 #' @param segL A numeric value expressed in the unit specified by user and corresponding
 #' to the length of the resampling step needed to discretize the input trajectory (optional)
-#' see trajr::TrajRediscretize()).
+#' see \code{\link[trajr]{TrajRediscretize}}.
 #'
 #' @param TimeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
 #'
-#' @return This function returns a value of sinuosity for a given fragment.
+#' @param compass.direction A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).
+#'
+#' @return This function returns a value of sinuosity for a given fragment according to TrajSinuosity2 function from trajR package.
 #'
 #' @authors Quentin PETITJEAN
+#'
+#' @seealso \code{\link[trajr]{TrajSinuosity2}}
+#'
+#' @references Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's path. Journal of Theoretical Biology, 229(2), 209-220. doi:10.1016/j.jtbi.2004.03.016.
 #'
 #' @examples
 #'
@@ -44,44 +48,45 @@
 
 sinuosity <- function(df,
                       scale = NULL,
-                      unit = NULL,
                       segL = NULL,
-                      TimeCol = NULL) {
-  if(is.null(listGet(df, "x.pos"))){
+                      TimeCol = NULL,
+                      compass.direction = NULL) {
+  if (is.null(MoveR::listGet(df, "x.pos"))) {
     stop(
       "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
     )
   }
-  if(is.null(listGet(df, "y.pos"))){
+  if (is.null(MoveR::listGet(df, "y.pos"))) {
     stop(
       "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
     )
   }
-  if (is.null(unit)) {
-    warning("the unit of the trajectory path after scaling is missing, default is pixels")
-    unit = "pixels"
-  }
-  if (is.null(TimeCol)) {
-    stop(
-      "TimeCol argument is missing: the name of the column carying time information is needed to compute sinuosity"
-    )}
-  if(is.null(listGet(df, TimeCol))){
-    stop(
-      "TimeCol argument is misspelled or is absent from the input df: the name of the column carying time information is needed to compute sinuosity"
-    )}
   if (is.null(scale)) {
-    (
+    warning(
       "the scaling factor to be applied to the trajectory coordinates is missing, default is 1/1"
     )
     scale = 1 / 1
   }
+  if (is.null(TimeCol)) {
+    stop(
+      "TimeCol argument is missing: the name of the column carying time information is needed to compute speed"
+    )
+  }
+  if (is.null(MoveR::listGet(df, TimeCol))) {
+    stop(
+      "TimeCol argument is misspelled or is absent from the input df: the name of the column carying time information is needed to compute speed"
+    )
+  }
+  
   trj <-
     trajr::TrajFromCoords(df[, c("x.pos", "y.pos", TimeCol)],
-                          spatialUnits = "pixels",
-                          timeCol = 3)
-  trj <- trajr::TrajScale(trj, scale, unit)
+                          timeCol = 3, 
+                          spatialUnits = "NA",
+                          timeUnits = "NA")
+  trj <- trajr::TrajScale(trj, scale, units = "NA")
   if (is.null(segL)) {
-    sinuosityRes <- trajr::TrajSinuosity2(trj)
+    sinuosityRes <-
+      trajr::TrajSinuosity2(trj, compass.direction = compass.direction)
   } else if (!is.null(segL)) {
     if (inherits(try(trajr::TrajRediscretize(trj, segL), silent = TRUE)
                  , "try-error")) {
@@ -90,7 +95,8 @@ sinuosity <- function(df,
     } else if (!inherits(try(trajr::TrajRediscretize(trj, segL), silent = TRUE)
                          , "try-error")) {
       discretized <- trajr::TrajRediscretize(trj, segL)
-      sinuosityRes <- trajr::TrajSinuosity2(trj)
+      sinuosityRes <-
+        trajr::TrajSinuosity2(trj, compass.direction = compass.direction)
     }
   }
   return(sinuosityRes)
