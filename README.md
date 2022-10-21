@@ -26,12 +26,13 @@ In a sack of flexibility, `MoveR` is mainly coded using base
 However it still relies on a few dependencies:
 
 <img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
- <a href="https://www.rdocumentation.org/packages/graphics/">graphics</a>,
+ 
+<a href="https://www.rdocumentation.org/packages/graphics/">graphics</a>,
 <a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a>
 and <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a>
 to load R functions for base graphics.</br>
 <img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
- <a href="https://github.com/r-lib/progress">progress</a> to display a
+  <a href="https://github.com/r-lib/progress">progress</a> to display a
 progress bar showing the advancement of the computations.</br>
 <img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
  <a href="https://www.rdocumentation.org/packages/reticulate">reticulate</a>
@@ -41,10 +42,10 @@ to import <a href="https://https://www.python.org/">Python</a> and
 <a href="https://mathworks.com/products/matlab.html">Matlab</a>
 formatted data.</br>
 <img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
- <a href="https://www.rdocumentation.org/packages/stats">stats</a> to
+  <a href="https://www.rdocumentation.org/packages/stats">stats</a> to
 load R functions for basic calculations.</br>
 <img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
- <a href="https://www.rdocumentation.org/packages/trajr">trajr</a> to
+  <a href="https://www.rdocumentation.org/packages/trajr">trajr</a> to
 load R functions to compute basic movement metrics (e.g., speed,
 sinuosity).</br>
 
