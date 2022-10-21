@@ -67,6 +67,13 @@ particles/animals movement data from video tracking software.</br>
 
 ### Main workflow steps
 
+################################## 
+
+<img src="man/figures/fa-icon-Scaret-White.svg#gh-dark-mode-only" height="20" align="middle"/>
+<img src="man/figures/fa-icon-Scaret-Black.svg##gh-light-mode-only" height="20" align="middle"/>
+
+################################## 
+
 More particularly, `MoveR` provides tools to:</br>
 <img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>IMPORT</strong>
 the raw data from various tracking software such as
@@ -100,17 +107,17 @@ given pattern set by the user.</br>
 
 ### Breakthrough
 
-Besides the high flexibility, the primary implementation brought by
+Besides the high flexibility, the primary implementations brought by
 `MoveR` is the possibility to:</br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>characterize
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>Characterize
 behavioral states</strong> (i.e., active vs. inactive momentum) using
 unsupervised learning methods (i.e., density-based clustering - see
 actives2 function).</br></br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>compute
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>Compute
 the Turchin’s net square displacement</strong>, a proxy of population
 dispersion assuming correlated random walk (see turchinD function).
 </br></br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>extract
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>Extract
 specified patterns</strong> of behavioral states, visited areas, or any
 other custom patterns.
 
