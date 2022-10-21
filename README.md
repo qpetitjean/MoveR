@@ -68,53 +68,51 @@ particles/animals movement data from video tracking software.</br>
 ### Main workflow steps
 
 More particularly, `MoveR` provides tools to:</br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
-  <strong>IMPORT</strong> the raw data from various tracking software
-such as <a href="https://trex.run">TRex</a>,
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>IMPORT</strong>
+the raw data from various tracking software such as
+<a href="https://trex.run">TRex</a>,
 <a href="https://swarm-lab.github.io/trackR">trackR</a>,
 <a href="https://ctrax.sourceforge.net/">Ctrax</a> and
 <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a>
 (other can be implemented on demand).</br></br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
-  <strong>CLEAN/FILTER</strong> the data according to custom functions
-specified by the user. For instance, it can easily remove suspected
-tracking errors based on expected particles’ size or speed. It is also
-possible to sample the particles’ tracks according to a specified time
-step or remove part of the tracks that are detected outside an arena or
-a given area.</br></br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
-  <strong>EVALUATE</strong> the quantity of data removed over the
-cleaning/filtering process and check the amount of true and false
-detection compared to manual annotations.</br></br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
-  <strong>VISUALIZE</strong> the tracks of all or specified particles
-over time.</br></br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
-  <strong>ANALYSE</strong> the data over tracks, time, or space. It is
-possible to compute low (basics) or high (advanced) level metrics over
-each track and temporal and spatial trends. In a nutshell, Low and
-High-level metrics return the results of a given computation over each
-track, while temporal trends functions return the results of a given
-calculation over time by averaging the value of each track. It is also
-possible to compute a studentized 95% confidence interval by
-bootstrapping over the tracks. Also, it is possible to extract specified
-spatial trends according to a given pattern set by the user.</br>
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>CLEAN/FILTER</strong>
+the data according to custom functions specified by the user. For
+instance, it can easily remove suspected tracking errors based on
+expected particles’ size or speed. It is also possible to sample the
+particles’ tracks according to a specified time step or remove part of
+the tracks that are detected outside an arena or a given area.</br></br>
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>EVALUATE</strong>
+the quantity of data removed over the cleaning/filtering process and
+check the amount of true and false detection compared to manual
+annotations.</br></br>
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>VISUALIZE</strong>
+the tracks of all or specified particles over time.</br></br>
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>ANALYSE</strong>
+the data over tracks, time, or space. It is possible to compute low
+(basics) or high (advanced) level metrics over each track and temporal
+and spatial trends. In a nutshell, Low and High-level metrics return the
+results of a given computation over each track, while temporal trends
+functions return the results of a given calculation over time by
+averaging the value of each track. It is also possible to compute a
+studentized 95% confidence interval by bootstrapping over the tracks.
+Also, it is possible to extract specified spatial trends according to a
+given pattern set by the user.</br>
 
 ### Breakthrough
 
 Besides the high flexibility, the primary implementation brought by
 `MoveR` is the possibility to:</br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
-  <strong>characterize behavioral states</strong> (i.e., active
-vs. inactive momentum) using unsupervised learning methods (i.e.,
-density-based clustering - see actives2 function).</br></br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
-  <strong>compute the Turchin’s net square displacement</strong>, a
-proxy of population dispersion assuming correlated random walk (see
-turchinD function). </br></br>
-<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" />
-  <strong>extract specified patterns</strong> of behavioral states,
-visited areas, or any other custom patterns.
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>characterize
+behavioral states</strong> (i.e., active vs. inactive momentum) using
+unsupervised learning methods (i.e., density-based clustering - see
+actives2 function).</br></br>
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>compute
+the Turchin’s net square displacement</strong>, a proxy of population
+dispersion assuming correlated random walk (see turchinD function).
+</br></br>
+<img src="man/figures/fa-icon-e8e2d1e4a7c20be153952db8488c61e1.svg" style="width:0.88em;height:1em" /> <strong>extract
+specified patterns</strong> of behavioral states, visited areas, or any
+other custom patterns.
 
 <img src="man/figures/WorkFlowMoveR.png" height="600" align="middle"/>
 
