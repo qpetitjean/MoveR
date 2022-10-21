@@ -16,7 +16,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# flowchart of the MoveR package
+flowchart of the MoveR package</br>
+<img src="man/figures/WorkFlowMoveR.png" height="600" align="middle"/>
+=========================================================
 
 # Load libraries 
 ```{r libraries, eval = FALSE}
@@ -421,10 +423,10 @@ hist(log10(trackDatL$speed),
 activTresh = -2.518466
 abline(v = activTresh, col = "red")
 
-## For simple determination of the Thigmotactism:
+## For simple determination of the Thigmotaxis:
 ## find the distance treshold above which individuals will be considered at the edge of the arena (TRUE) or at the center (FALSE)
 
-### in the case of the Thrigramma the reaction distance (perception) of an individual is considered as about 4 mm (see Wajnberg and Colazza 1998), an individual can hence perceive the arena edge from 4 mm distance.
+### in the case of the Trichogramma the reaction distance (perception) of an individual is considered as about 4 mm (see Wajnberg and Colazza 1998), an individual can hence perceive the arena edge from 4 mm distance.
 TrichPerceptDist <- 4
 
 ### compute the radius of the circular arena in pixels

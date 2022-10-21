@@ -11,7 +11,7 @@
 #'
 #' @param unit A character string indicating whether the function should returns turning angle in radians or degrees.
 #'
-#' @param compass.direction A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).
+#' @param compass A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).
 #'
 #'
 #' @return This function returns a vector containing the value of turning angle computed along a given fragment.
@@ -41,9 +41,9 @@
 
 turnAngle <-
   function(df,
-           TimeCol,
+           TimeCol = NULL,
            unit = c("radians", "degrees"),
-           compass.direction = NULL,
+           compass = NULL,
            scale = NULL) {
     if (is.null(MoveR::listGet(df, "x.pos"))) {
       stop(
@@ -79,7 +79,7 @@ turnAngle <-
                             timeUnits = "NA")
     trj <- trajr::TrajScale(trj, scale, units = "NA")
     turnAngle <-
-      trajr::TrajAngles(trj, compass.direction = NULL, lag = 1)
+      trajr::TrajAngles(trj, compass.direction = compass, lag = 1)
     turnAngle <- base::append(turnAngle, NA, after = 0)
     turnAngle <-
       base::append(turnAngle, NA, after = length(turnAngle))

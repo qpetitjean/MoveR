@@ -4,7 +4,7 @@
 \alias{speed}
 \title{Compute particle speed over a trajectory}
 \usage{
-speed(df, scale = NULL, unit = NULL, TimeCol = NULL)
+speed(df, scale = NULL, TimeCol = NULL)
 }
 \arguments{
 \item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given fragment, as well as
@@ -13,9 +13,9 @@ a column containing time information, whatever the unit, over the fragment.}
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
 (e.g., size in cm / size in pixels; see trajr::TrajScale()).}
 
-\item{unit}{The unit expected after scaling (e.g., "cm", "m", ...).}
-
 \item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
+
+\item{unit}{The unit expected after scaling (e.g., "cm", "m", ...).}
 }
 \value{
 This function returns a vector containing the value of speed along a given fragment.
@@ -38,7 +38,7 @@ fragDat <- data.frame(
  frame = fragDatTemp[["time"]]
 )
 
-# compute the speed of the particle along its trajectory, here we consider that the space unit is the pixels, 
+# compute the speed of the particle along its trajectory, here we consider that the space unit is the pixels,
 # expressing the speed as pixels/frame
 fragDat[["speedFrame"]] <- speed(fragDat, scale = 1, TimeCol = "frame", unit = "pixels")
 

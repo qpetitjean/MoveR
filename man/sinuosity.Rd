@@ -4,25 +4,25 @@
 \alias{sinuosity}
 \title{Compute corrected rediscretized sinuosity index for a given fragment}
 \usage{
-sinuosity(df, scale = NULL, unit = NULL, segL = NULL, TimeCol = NULL)
+sinuosity(df, scale = NULL, segL = NULL, TimeCol = NULL, compass = NULL)
 }
 \arguments{
 \item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given fragment, as well as
 a column containing time information, whatever the unit, over the fragment.}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates.
-(e.g., size in cm / size in pixels; see trajr::TrajScale()).}
-
-\item{unit}{The unit expected after scaling (e.g., "cm", "m", ...).}
+(e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.}
 
 \item{segL}{A numeric value expressed in the unit specified by user and corresponding
 to the length of the resampling step needed to discretize the input trajectory (optional)
-see trajr::TrajRediscretize()).}
+see \code{\link[trajr]{TrajRediscretize}}.}
 
 \item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
+
+\item{compass.direction}{A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).}
 }
 \value{
-This function returns a value of sinuosity for a given fragment.
+This function returns a value of sinuosity for a given fragment according to TrajSinuosity2 function from trajR package.
 }
 \description{
 Given a data frames containing tracking informations for a given fragment,
@@ -45,4 +45,10 @@ y.pos = fragDatTemp[["y"]] - min(fragDatTemp[["y"]] ),
 # compute the sinuosity of the particle' trajectory, here we consider that the space unit is the pixels
 sinuosity(fragDat, scale = 1, TimeCol = "frame", unit = "pixels")
 
+}
+\references{
+Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's path. Journal of Theoretical Biology, 229(2), 209-220. doi:10.1016/j.jtbi.2004.03.016.
+}
+\seealso{
+\code{\link[trajr]{TrajSinuosity2}}
 }

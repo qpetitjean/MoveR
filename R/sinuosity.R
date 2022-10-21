@@ -50,7 +50,7 @@ sinuosity <- function(df,
                       scale = NULL,
                       segL = NULL,
                       TimeCol = NULL,
-                      compass.direction = NULL) {
+                      compass = NULL) {
   if (is.null(MoveR::listGet(df, "x.pos"))) {
     stop(
       "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
@@ -86,7 +86,7 @@ sinuosity <- function(df,
   trj <- trajr::TrajScale(trj, scale, units = "NA")
   if (is.null(segL)) {
     sinuosityRes <-
-      trajr::TrajSinuosity2(trj, compass.direction = compass.direction)
+      trajr::TrajSinuosity2(trj, compass.direction = compass)
   } else if (!is.null(segL)) {
     if (inherits(try(trajr::TrajRediscretize(trj, segL), silent = TRUE)
                  , "try-error")) {
@@ -96,7 +96,7 @@ sinuosity <- function(df,
                          , "try-error")) {
       discretized <- trajr::TrajRediscretize(trj, segL)
       sinuosityRes <-
-        trajr::TrajSinuosity2(trj, compass.direction = compass.direction)
+        trajr::TrajSinuosity2(trj, compass.direction = compass)
     }
   }
   return(sinuosityRes)

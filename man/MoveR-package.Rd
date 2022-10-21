@@ -23,6 +23,8 @@ Useful links:
 Authors:
 \itemize{
   \item Vincent CALCAGNO \email{vincent.calcagno@inrae.fr} (\href{https://orcid.org/0000-0002-5781-967X}{ORCID})
+  \item Silène LARTIGUE \email{Silene.Lartigue@inrae.fr}
+  \item Mélina COINTE \email{melina.cointe@inrae.fr}
 }
 
 }

@@ -4,22 +4,47 @@
 \alias{turnAngle}
 \title{Compute turning angle}
 \usage{
-turnAngle(df, unit = c("radians", "degrees"))
+turnAngle(
+  df,
+  TimeCol = NULL,
+  unit = c("radians", "degrees"),
+  compass = NULL,
+  scale = NULL
+)
 }
 \arguments{
-\item{df}{A data frame containing x, y coordinates columns named "x.pos", "y.pos" for a given fragment}
+\item{df}{A data frame containing x, y coordinates columns named "x.pos", "y.pos" for a given fragment.}
 
-\item{unit}{A character string indicating whether the function should returns turning angle in radians or degrees}
+\item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
+
+\item{unit}{A character string indicating whether the function should returns turning angle in radians or degrees.}
+
+\item{compass}{A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).}
 }
 \value{
-this function returns a vector containing the value of turning angle computed along a given fragment
+This function returns a vector containing the value of turning angle computed along a given fragment.
 }
 \description{
 Given a data frames containing tracking information for a particle,
-this function compute returns a vector containing the value of turning angle along the considered fragment
+this function returns a vector containing the value of turning angle along the considered fragment.
 }
 \examples{
 
-#TODO
+# generate a dummy fragment
+## start to specify some parameters to generate the fragment
+FragL <- 100 # the length of the fragment or a sequence to randomly sample fragment length
 
+fragDatTemp <- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)
+fragDat <- data.frame(
+ x.pos = fragDatTemp[["x"]] - min(fragDatTemp[["x"]]),
+y.pos = fragDatTemp[["y"]] - min(fragDatTemp[["y"]] ),
+ frame = fragDatTemp[["time"]]
+)
+
+# compute the turning angle over the particle' trajectory
+turnAngle(fragDat, TimeCol = "frame", unit = "radians")
+
+}
+\seealso{
+\code{\link[trajr]{TrajAngles}}
 }
