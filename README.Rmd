@@ -39,11 +39,11 @@ The `MoveR` `r fontawesome::fa("r-project", fill = "steelblue")` package aims to
 In a sack of flexibility, `MoveR` is mainly coded using base `r fontawesome::fa("r-project", fill = "steelblue")`.</br>
 However it still relies on a few dependencies:
 
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp;<a href="https://www.rdocumentation.org/packages/graphics/">graphics</a>, <a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a> and <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a> to load R functions for base graphics.</br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp;<a href="https://github.com/r-lib/progress">progress</a> to display a progress bar showing the advancement of the computations.</br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp;<a href="https://www.rdocumentation.org/packages/reticulate">reticulate</a> and <a href="https://www.rdocumentation.org/packages/R.matlab">R.matlab</a> to import <a href="https://https://www.python.org/">Python</a> and <a href="https://mathworks.com/products/matlab.html">Matlab</a> formatted data.</br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp;<a href="https://www.rdocumentation.org/packages/stats">stats</a> to load R functions for basic calculations.</br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp;<a href="https://www.rdocumentation.org/packages/trajr">trajr</a> to load R functions to compute basic movement metrics (e.g., speed, sinuosity).</br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp;<a href="https://www.rdocumentation.org/packages/graphics/">graphics</a>, <a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a> and <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a> to load R functions for base graphics.</br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp;<a href="https://github.com/r-lib/progress">progress</a> to display a progress bar showing the advancement of the computations.</br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp;<a href="https://www.rdocumentation.org/packages/reticulate">reticulate</a> and <a href="https://www.rdocumentation.org/packages/R.matlab">R.matlab</a> to import <a href="https://https://www.python.org/">Python</a> and <a href="https://mathworks.com/products/matlab.html">Matlab</a> formatted data.</br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp;<a href="https://www.rdocumentation.org/packages/stats">stats</a> to load R functions for basic calculations.</br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp;<a href="https://www.rdocumentation.org/packages/trajr">trajr</a> to load R functions to compute basic movement metrics (e.g., speed, sinuosity).</br>
 
 
 ## Installation
@@ -69,18 +69,18 @@ library("MoveR")
 ### Main workflow steps
 
 More particularly, `MoveR` provides tools to:</br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp; <strong>IMPORT</strong> the raw data from various tracking software such as <a href="https://trex.run">TRex</a>, <a href="https://swarm-lab.github.io/trackR">trackR</a>, <a href="https://ctrax.sourceforge.net/">Ctrax</a> and <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a> (other can be implemented on demand).</br></br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp; <strong>CLEAN/FILTER</strong> the data according to custom functions specified by the user. For instance, it can easily remove suspected tracking errors based on expected particles' size or speed. It is also possible to sample the particles' tracks according to a specified time step or remove part of the tracks that are detected outside an arena or a given area.</br></br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp; <strong>EVALUATE</strong> the quantity of data removed over the cleaning/filtering process and check the amount of true and false detection compared to manual annotations.</br></br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp; <strong>VISUALIZE</strong> the tracks of all or specified particles over time.</br></br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp; <strong>ANALYSE</strong> the data over tracks, time, or space. It is possible to compute low (basics) or high (advanced) level metrics over each track and temporal and spatial trends. In a nutshell, Low and High-level metrics return the results of a given computation over each track, while temporal trends functions return the results of a given calculation over time by averaging the value of each track. It is also possible to compute a studentized 95% confidence interval by bootstrapping over the tracks. Also, it is possible to extract specified spatial trends according to a given pattern set by the user.</br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp; <strong>IMPORT</strong> the raw data from various tracking software such as <a href="https://trex.run">TRex</a>, <a href="https://swarm-lab.github.io/trackR">trackR</a>, <a href="https://ctrax.sourceforge.net/">Ctrax</a> and <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a> (other can be implemented on demand).</br></br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp; <strong>CLEAN/FILTER</strong> the data according to custom functions specified by the user. For instance, it can easily remove suspected tracking errors based on expected particles' size or speed. It is also possible to sample the particles' tracks according to a specified time step or remove part of the tracks that are detected outside an arena or a given area.</br></br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp; <strong>EVALUATE</strong> the quantity of data removed over the cleaning/filtering process and check the amount of true and false detection compared to manual annotations.</br></br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp; <strong>VISUALIZE</strong> the tracks of all or specified particles over time.</br></br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp; <strong>ANALYSE</strong> the data over tracks, time, or space. It is possible to compute low (basics) or high (advanced) level metrics over each track and temporal and spatial trends. In a nutshell, Low and High-level metrics return the results of a given computation over each track, while temporal trends functions return the results of a given calculation over time by averaging the value of each track. It is also possible to compute a studentized 95% confidence interval by bootstrapping over the tracks. Also, it is possible to extract specified spatial trends according to a given pattern set by the user.</br>
 
 ### Breakthrough
 
 Besides the high flexibility, the primary implementation brought by `MoveR` is the possibility to:</br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp; characterize behavioral states (i.e., active vs. inactive momentum) using unsupervised learning methods (i.e., density-based clustering - see actives2 function).</br></br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp; compute the Turchin's net square displacement, a proxy of population dispersion assuming correlated random walk (see turchinD function). </br></br>
-`r fontawesome::fa("square-caret-right", fill = "#333333")` &ensp; extract specified patterns of behavioral states, visited areas, or any other custom patterns. 
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp; <strong>characterize behavioral states</strong> (i.e., active vs. inactive momentum) using unsupervised learning methods (i.e., density-based clustering - see actives2 function).</br></br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp; <strong>compute the Turchin's net square displacement</strong>, a proxy of population dispersion assuming correlated random walk (see turchinD function). </br></br>
+`r fontawesome::fa("square-caret-right", fill = "#333333", a11y = "sem")` &ensp; <strong>extract specified patterns</strong> of behavioral states, visited areas, or any other custom patterns. 
 
 <img src="man/figures/WorkFlowMoveR.png" height="600" align="middle"/>
 
