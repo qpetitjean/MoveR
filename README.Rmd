@@ -39,11 +39,11 @@ The `MoveR` `r fontawesome::fa("r-project", fill = "steelblue")` package aims to
 In a sack of flexibility, `MoveR` is mainly coded using base `r fontawesome::fa("r-project", fill = "steelblue")`.</br>
 However it still relies on a few dependencies:
 
-`r fontawesome::fa("square-caret-right", fill = "#ffffff", a11y = "sem")` &nbsp; <a href="https://www.rdocumentation.org/packages/graphics/">graphics</a>, <a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a> and <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a> to load R functions for base graphics.</br>
-`r fontawesome::fa("square-caret-right", fill = "#ffffff", a11y = "sem")` &nbsp; <a href="https://github.com/r-lib/progress">progress</a> to display a progress bar showing the advancement of the computations.</br>
-`r fontawesome::fa("square-caret-right", fill = "#ffffff", a11y = "sem")` &nbsp; <a href="https://www.rdocumentation.org/packages/reticulate">reticulate</a> and <a href="https://www.rdocumentation.org/packages/R.matlab">R.matlab</a> to import <a href="https://https://www.python.org/">Python</a> and <a href="https://mathworks.com/products/matlab.html">Matlab</a> formatted data.</br>
-`r fontawesome::fa("square-caret-right", fill = "#ffffff", a11y = "sem")` &nbsp; <a href="https://www.rdocumentation.org/packages/stats">stats</a> to load R functions for basic calculations.</br>
-`r fontawesome::fa("square-caret-right", fill = "#ffffff", a11y = "sem")` &nbsp; <a href="https://www.rdocumentation.org/packages/trajr">trajr</a> to load R functions to compute basic movement metrics (e.g., speed, sinuosity).</br>
+`r fontawesome::fa("square-caret-right", fill = "#ffffff", a11y = "sem")`&nbsp;<a href="https://www.rdocumentation.org/packages/graphics/">graphics</a>, <a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a> and <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a> to load R functions for base graphics.</br>
+`r fontawesome::fa("square-caret-right", fill = "#ffffff", a11y = "sem")`&nbsp;<a href="https://github.com/r-lib/progress">progress</a> to display a progress bar showing the advancement of the computations.</br>
+`r fontawesome::fa("square-caret-right", fill = "#ffffff", a11y = "sem")`&nbsp;<a href="https://www.rdocumentation.org/packages/reticulate">reticulate</a> and <a href="https://www.rdocumentation.org/packages/R.matlab">R.matlab</a> to import <a href="https://https://www.python.org/">Python</a> and <a href="https://mathworks.com/products/matlab.html">Matlab</a> formatted data.</br>
+`r fontawesome::fa("square-caret-right", fill = "#ffffff", a11y = "sem")`&nbsp;<a href="https://www.rdocumentation.org/packages/stats">stats</a> to load R functions for basic calculations.</br>
+`r fontawesome::fa("square-caret-right", fill = "#ffffff", a11y = "sem")`&nbsp;<a href="https://www.rdocumentation.org/packages/trajr">trajr</a> to load R functions to compute basic movement metrics (e.g., speed, sinuosity).</br>
 
 
 ## Installation
