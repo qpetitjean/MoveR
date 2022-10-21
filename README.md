@@ -69,8 +69,8 @@ particles/animals movement data from video tracking software.</br>
 
 ################################## 
 
-<img src="man/figures/fa-icon-Scaret-White.svg#gh-dark-mode-only" height="20" align="middle"/>
-<img src="man/figures/fa-icon-Scaret-Black.svg##gh-light-mode-only" height="20" align="middle"/>
+<img src="man/figures/fa-icon-Scaret-W.svg#gh-dark-mode-only" height="20" align="middle"/>
+<img src="man/figures/fa-icon-Scaret-B.svg#gh-light-mode-only" height="20" align="middle"/>
 
 ################################## 
 
