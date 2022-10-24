@@ -3,7 +3,8 @@
 #' @description Given a list of data frames containing tracking informations for each fragment (including the timeline)
 #' and a custom function, this function perform the computation specified by the custom function(s) across time
 #' and smooth it and returns a list containing as much data frame as the number of custom functions specified by
-#' the customFunc argument. Each data frame includes a column indicating the timeline and the result of the computation across time.
+#' the customFunc argument. Each data frame includes a column indicating the result of the computation, the corresponding timeline 
+#' as well as the number of fragment used for the computation.
 #'
 #'
 #' @param trackDat A list of data frame containing tracking informations for each fragment (including a timeline).
@@ -28,13 +29,11 @@
 #' @param wtd TRUE or FALSE, compute a weighed metric (TRUE) or not (FALSE) according to the length of the fragments (default is FALSE).
 #'
 #' @return this function returns a list containing as much data frame as the number of custom functions specified by
-#' the customFunc argument. Each dataframe includes a column indicating the timeline according to timeCol and sampling arguments 
-#' as well as the result of the computation performed according to the customFunc.
+#' the customFunc argument. Each dataframe includes a column indicating the timeline according to timeCol and sampling arguments,
+#' the result of the computation performed according to the customFunc and the number of fragment use for each computation.
 #'
 #'
 #' @author Quentin PETITJEAN
-#'
-#'
 #'
 #' @examples
 #'
@@ -199,8 +198,8 @@ analyseTime <-
     smoothed <- list()
     for (name in names(customFunc)) {
       temp_df <-
-        data.frame(matrix(NA, nrow = length(Newtimeline), ncol = 2))
-      colnames(temp_df) <- c(name, timeCol)
+        data.frame(matrix(NA, nrow = length(Newtimeline), ncol = 3))
+      colnames(temp_df) <- c(name, timeCol, "nbFrags")
       smoothed[[name]] <- temp_df
     }
     # initialize progress bar
@@ -241,7 +240,7 @@ analyseTime <-
         
         # select the fragment that are detected in the selected timeline part 
         WhoWhen <-
-          cutFrags(trackDat, function(x)
+          MoveR::cutFrags(trackDat, function(x)
             x[[timeCol]] >= min(selVal, na.rm = T) &
               x[[timeCol]] <= max(selVal, na.rm = T))
         
@@ -281,14 +280,22 @@ analyseTime <-
             lapply(Reslen, function(x)
               sum(x$len * x$Res) / sum(x$len))
         }
+        # in case there is no data at this time end the computation here (no fragment detected at this moment of the timeline)
+        if(length(WhoWhen)==0){
+          # append the results in the smoothed list
+          for (n in names(smoothed)) {
+            smoothed[[n]][which(Newtimeline == i), ] <- c(NA, i, 0)
+          }
+        }else{
         # append the results in the smoothed list
         for (n in names(smoothed)) {
-          smoothed[[n]][which(Newtimeline == i), ] <- c(smoothed_temp[[n]], i)
+          smoothed[[n]][which(Newtimeline == i), ] <- c(smoothed_temp[[n]], i, length(WhoWhen))
         }
+          }
       } else {
         # append the results in the smoothed list
         for (n in names(smoothed)) {
-          smoothed[[n]][which(Newtimeline == i), ] <- c(NA, i)
+          smoothed[[n]][which(Newtimeline == i), ] <- c(NA, i, 0)
         }
       }
       # progress bar

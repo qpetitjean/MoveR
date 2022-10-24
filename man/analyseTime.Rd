@@ -38,14 +38,15 @@ returned results (e.g., a value of 5000 mean that values will be computed every 
 }
 \value{
 this function returns a list containing as much data frame as the number of custom functions specified by
-the customFunc argument. Each dataframe includes a column indicating the timeline according to timeCol and sampling arguments
-as well as the result of the computation performed according to the customFunc.
+the customFunc argument. Each dataframe includes a column indicating the timeline according to timeCol and sampling arguments,
+the result of the computation performed according to the customFunc and the number of fragment use for each computation.
 }
 \description{
 Given a list of data frames containing tracking informations for each fragment (including the timeline)
 and a custom function, this function perform the computation specified by the custom function(s) across time
 and smooth it and returns a list containing as much data frame as the number of custom functions specified by
-the customFunc argument. Each data frame includes a column indicating the timeline and the result of the computation across time.
+the customFunc argument. Each data frame includes a column indicating the result of the computation, the corresponding timeline
+as well as the number of fragment used for the computation.
 }
 \examples{
 
