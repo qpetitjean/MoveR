@@ -1,4 +1,4 @@
-#' @title tracking statistics
+#' @title tracking statistics.
 #'
 #' @description Given a list of tracking fragments containing cartesian coordinates,
 #' this function returns 2 sublists containing a summary of video and fragments data:
@@ -10,8 +10,8 @@
 #'          \item{"videoDuration_s": }{the length of the video in seconds.}
 #'          \item{"frameR": }{the frame rate of the video as specified by the user.}
 #'          \item{"scale": }{the scaling factor applied to the trajectory coordinates as specifed by the user.}
-#'       }}
-#'    }
+#'       }
+#'      }
 #'
 #'    \item{"fragments_summary": }{a list containing 8 elements:
 #'       \itemize{
@@ -25,8 +25,7 @@
 #'          \item{"fragLength_unit": }{the length of each fragments in spatial unit as specified by the user (e.g., pixels, cm).}
 #'       }
 #'    }
-#' }
-#'
+#'  }
 #' @param trackDat A list of data frame containing tracking information for each fragment (i.e., x.pos, y.pos, frame).
 #'
 #' @param frameR A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video
@@ -40,7 +39,7 @@
 #' @return A summary of video and fragments data.
 #'
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @seealso \code{\link[trajr]{TrajScale}}, \code{\link[trajr]{TrajFromCoords}}
 #' 

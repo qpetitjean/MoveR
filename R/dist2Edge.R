@@ -1,5 +1,4 @@
-#' @title Compute distance to the edge of an object (e.g., the arena) along a trajectory
-#'
+#' @title Compute distance to the edge of an object (e.g., the arena) along a trajectory.
 #'
 #' @description Given a data frame containing tracking information for a given fragment and a data frame containing the 
 #' coordinates of an object edges, this function compute the euclidean distance between the edge of the object (e.g., the arena)
@@ -20,7 +19,7 @@
 #' trajectory and the closest point of the object edge.
 #'
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @examples # TODO with a circular arena and to complete with a polygaonal arena
 #'

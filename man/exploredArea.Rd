@@ -2,7 +2,7 @@
 % Please edit documentation in R/exploredArea.R
 \name{exploredArea}
 \alias{exploredArea}
-\title{Compute the total surface explored and display the corresponding heatmap}
+\title{Compute the total surface explored and display the corresponding heatmap.}
 \usage{
 exploredArea(
   trackDat,
@@ -103,4 +103,7 @@ MoveR::analyseFrags(
      ))
 )
 
+}
+\author{
+Quentin PETITJEAN
 }

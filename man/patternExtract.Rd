@@ -2,7 +2,7 @@
 % Please edit documentation in R/patternExtract.R
 \name{patternExtract}
 \alias{patternExtract}
-\title{Extract specified patterns from fragments}
+\title{Extract specified patterns from fragments.}
 \usage{
 patternExtract(trackDat, Bstate = NULL, pattern = NULL)
 }
@@ -28,4 +28,7 @@ the function extracts fragments part that contains the specified pattern.
 
 # TODO
 
+}
+\author{
+Quentin PETITJEAN
 }

@@ -1,4 +1,4 @@
-#' @title Draw tracking fragments
+#' @title Draw tracking fragments.
 #'
 #' @description Given a list of tracking fragments containing cartesian coordinates,
 #' this function returns a plot with fragments represented as a sequence of segments connecting
@@ -54,7 +54,7 @@
 #' @return A plot with all or only selected fragment paths colored according to time.
 #'
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #'
 #' @examples

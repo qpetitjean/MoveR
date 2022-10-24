@@ -2,7 +2,7 @@
 % Please edit documentation in R/filterFunc.R
 \name{filterFunc}
 \alias{filterFunc}
-\title{create and test a custom filter on tracking fragments}
+\title{create and test a custom filter on tracking fragments.}
 \usage{
 filterFunc(trackDat, toFilter = NULL, customFunc = NULL)
 }
@@ -47,4 +47,7 @@ filterFunc(trackDat, toFilter = "maj.ax", customFunc = function(x) x >= 1 & x <=
 }
 \seealso{
 \code{\link{filterFrags}}
+}
+\author{
+Quentin PETITJEAN
 }

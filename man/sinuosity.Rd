@@ -2,7 +2,7 @@
 % Please edit documentation in R/sinuosity.R
 \name{sinuosity}
 \alias{sinuosity}
-\title{Compute corrected rediscretized sinuosity index for a given fragment}
+\title{Compute corrected rediscretized sinuosity index for a given fragment.}
 \usage{
 sinuosity(df, scale = NULL, segL = NULL, TimeCol = NULL, compass = NULL)
 }
@@ -51,4 +51,7 @@ Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's path
 }
 \seealso{
 \code{\link[trajr]{TrajSinuosity2}}
+}
+\author{
+Quentin PETITJEAN
 }

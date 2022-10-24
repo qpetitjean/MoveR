@@ -1,4 +1,4 @@
-#' @title Resampling fragments
+#' @title Resampling fragments.
 #' 
 #' @description Given a list of data frame containing tracking informations for each fragment,
 #' this function returns a list of resampled fragments according to the length of the resampling 
@@ -13,7 +13,7 @@
 #' 
 #' @return A list of data frame containing the resampled fragments. 
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #'
 #' @examples

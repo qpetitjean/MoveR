@@ -1,4 +1,4 @@
-#' @title Extract specified patterns from fragments
+#' @title Extract specified patterns from fragments.
 #'
 #' @description Given a list of data frames containing tracking informations including a vector 
 #' containing behavioral patterns (e.g., behavioral states, location in areas) for each fragment, 
@@ -16,7 +16,7 @@
 #' The part of the fragments corresponding to the specified pattern are grouped into a list named according to the id of the original fragment 
 #' (e.g. the first detected pattern extracted from the first fragment is located in the sublist named frags_1 and is named frags_1.1).
 #' 
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @examples
 #'

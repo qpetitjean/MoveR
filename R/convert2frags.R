@@ -1,4 +1,4 @@
-#' @title Convert a list of variables to list of fragments
+#' @title Convert a list of variables to list of fragments.
 #'
 #' @description Given a list containing vectors corresponding to the various variable of tracking data 
 #' the function returns a list of data frames corresponding to the data for each fragment based on fragments identity.
@@ -9,7 +9,7 @@
 #'
 #' @return A list of data frames corresponding the the tracking data for each fragments.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @seealso \code{\link{convert2list}}
 #'

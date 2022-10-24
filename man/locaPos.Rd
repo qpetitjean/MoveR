@@ -2,7 +2,7 @@
 % Please edit documentation in R/locaPos.R
 \name{locaPos}
 \alias{locaPos}
-\title{Locate a particle position}
+\title{Locate a particle position.}
 \usage{
 locaPos(refDat = NULL, df = NULL, sep = NULL, dec = NULL)
 }
@@ -70,4 +70,7 @@ drawFrags(
  colId = "Position"
 )
 
+}
+\author{
+Quentin PETITJEAN
 }

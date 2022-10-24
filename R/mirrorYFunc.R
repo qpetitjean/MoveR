@@ -1,4 +1,4 @@
-#' @title Mirror y coordinates
+#' @title Mirror y coordinates.
 #'
 #' @description Given a vector containing the y coordinates of detected particles and image height,
 #' this function returns mirrored y coordinates.
@@ -11,7 +11,7 @@
 #'
 #' @return A vector containing mirrored Y coordinates.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @examples
 #'

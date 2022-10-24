@@ -1,4 +1,4 @@
-#' @title Convert a list of fragments to list of variables
+#' @title Convert a list of fragments to list of variables.
 #'
 #' @description Given a list containing 1 or more data frames corresponding to the data for each fragments
 #' the function reduce the list by concatenating fragments' data based on the variables present within each fragment data frame 
@@ -9,7 +9,7 @@
 #'
 #' @return A list of vectors corresponding to the variable retrieved from the fragments.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #' 
 #' @seealso \code{\link{convert2frags}}
 #'

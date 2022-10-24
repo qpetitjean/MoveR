@@ -2,7 +2,7 @@
 % Please edit documentation in R/resampleFrags.R
 \name{resampleFrags}
 \alias{resampleFrags}
-\title{Resampling fragments}
+\title{Resampling fragments.}
 \usage{
 resampleFrags(trackDat, Tstep = NULL, TimeCol = NULL)
 }
@@ -82,4 +82,7 @@ fragSize0.10S <- unlist(lapply(fragListSampled0.10S, function(x) nrow(x)))
 ## Compare the fragments size
 cbind(fragSize, fragSize1s, fragSize0.10S)
 
+}
+\author{
+Quentin PETITJEAN
 }

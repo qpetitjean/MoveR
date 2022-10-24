@@ -1,4 +1,4 @@
-#' @title Compute the distance traveled by a particle along a trajectory
+#' @title Compute the distance traveled by a particle along a trajectory.
 #'
 #' @description Given a data frames containing tracking information for a given fragment, 
 #' this function compute the euclidean distance along the trajectory according to a given step.
@@ -10,7 +10,7 @@
 #' @return this function returns a vector containing the distance between each points of the 
 #' trajectory according to the specified step.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @examples
 #'

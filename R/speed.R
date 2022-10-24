@@ -1,5 +1,4 @@
-#' @title Compute particle speed over a trajectory
-#'
+#' @title Compute particle speed over a trajectory.
 #'
 #' @description Given a data frames containing tracking informations for a given fragment,
 #' this function scale fragment path and returns a vector containing the value of
@@ -19,7 +18,7 @@
 #' @return This function returns a vector containing the value of speed along a given fragment.
 #'
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @examples
 #'

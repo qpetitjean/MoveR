@@ -2,7 +2,7 @@
 % Please edit documentation in R/cutFrags.R
 \name{cutFrags}
 \alias{cutFrags}
-\title{Cutting fragments}
+\title{Cutting fragments.}
 \usage{
 cutFrags(trackDat, customFunc)
 }
@@ -113,4 +113,7 @@ drawFrags(
  main = ""
 )
 
+}
+\author{
+Quentin PETITJEAN
 }

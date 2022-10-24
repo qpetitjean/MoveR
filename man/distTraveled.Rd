@@ -2,7 +2,7 @@
 % Please edit documentation in R/distTraveled.R
 \name{distTraveled}
 \alias{distTraveled}
-\title{Compute the distance traveled by a particle along a trajectory}
+\title{Compute the distance traveled by a particle along a trajectory.}
 \usage{
 distTraveled(df, step = 1)
 }
@@ -40,4 +40,7 @@ str(fragDat)
 # sum all the distance to compute the total distance traveled by the particle over the trajectory
 sum(fragDat[["distTraveled"]], na.rm = T)
 
+}
+\author{
+Quentin PETITJEAN
 }

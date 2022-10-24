@@ -1,4 +1,4 @@
-#' @title apply a custom filter on tracking fragments
+#' @title apply a custom filter on tracking fragments.
 #'
 #' @description  Given a list of data frame containing tracking information for each fragment and the result
 #' of a specified condition' test as returned by filterFunc this function remove the values that do not meet the condition
@@ -31,7 +31,7 @@
 #'          \item{"Cleaned_frags": }{a list of data frames containing the filtered fragments according to the condition test specified by filterFunc and "minDur" argument.}
 #'         }
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @seealso \code{\link{filterFunc}}
 #'

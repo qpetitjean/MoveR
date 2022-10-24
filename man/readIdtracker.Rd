@@ -2,7 +2,7 @@
 % Please edit documentation in R/readIdtracker.R
 \name{readIdtracker}
 \alias{readIdtracker}
-\title{Load idtracker.ai tracking output .npy file}
+\title{Load idtracker.ai tracking output .npy file.}
 \usage{
 readIdtracker(IdtrackerPath, mirrorY = TRUE, imgHeight = NULL, frameR = NULL)
 }
@@ -66,4 +66,7 @@ Romero-Ferrero, F., Bergomi, M.G., Hinz, R.C. et al. idtracker.ai: tracking all 
 }
 \seealso{
 \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{mirrorYFunc}}
+}
+\author{
+Quentin PETITJEAN
 }

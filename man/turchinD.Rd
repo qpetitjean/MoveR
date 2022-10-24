@@ -2,7 +2,7 @@
 % Please edit documentation in R/turchinD.R
 \name{turchinD}
 \alias{turchinD}
-\title{Compute the net square displacement (Turchin 1998)}
+\title{Compute the net square displacement (Turchin 1998).}
 \usage{
 turchinD(trackDat, turnAngle = NULL, distTraveled = NULL, behavStates = NULL)
 }
@@ -87,4 +87,7 @@ D
 }
 \references{
 Turchin, P. (1998). Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants. Sinauer.
+}
+\author{
+Quentin PETITJEAN
 }

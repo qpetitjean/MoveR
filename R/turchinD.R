@@ -1,4 +1,4 @@
-#' @title Compute the net square displacement (Turchin 1998)
+#' @title Compute the net square displacement (Turchin 1998).
 #'
 #' @description Given a list of data frames containing tracking informations and including the value of turning angles,
 #' distance traveled and behavioral states (either active or inactive), this function compute the Net square displacement value
@@ -16,7 +16,7 @@
 #'
 #' @return this function returns the net square displacement value used to infer populations spread according to Turchin (1998).
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @references
 #' Turchin, P. (1998). Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants. Sinauer.

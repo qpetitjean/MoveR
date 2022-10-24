@@ -2,7 +2,7 @@
 % Please edit documentation in R/dist2Edge.R
 \name{dist2Edge}
 \alias{dist2Edge}
-\title{Compute distance to the edge of an object (e.g., the arena) along a trajectory}
+\title{Compute distance to the edge of an object (e.g., the arena) along a trajectory.}
 \usage{
 dist2Edge(df, edge, customFunc)
 }
@@ -65,4 +65,7 @@ drawFrags(
 
 dist2Edge(trackDat[[1]])
 
+}
+\author{
+Quentin PETITJEAN
 }

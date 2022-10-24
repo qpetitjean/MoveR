@@ -2,7 +2,7 @@
 % Please edit documentation in R/readTrex.R
 \name{readTrex}
 \alias{readTrex}
-\title{Load Trex tracking output .npz files}
+\title{Load Trex tracking output .npz files.}
 \usage{
 readTrex(trexPath, mirrorY = TRUE, imgHeight = NULL, rawDat = FALSE)
 }
@@ -72,4 +72,7 @@ Tristan Walter, Iain D Couzin (2021) TRex, a fast multi-animal tracking system w
 }
 \seealso{
 \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
+}
+\author{
+Quentin PETITJEAN
 }

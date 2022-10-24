@@ -1,4 +1,4 @@
-#' @title create and test a custom filter on tracking fragments
+#' @title create and test a custom filter on tracking fragments.
 #'
 #' @description Given a list of data frames containing tracking information for each fragment, 
 #' this function returns a list of vector containing the result of a user defined condition test for each fragment.
@@ -12,7 +12,7 @@
 #' @return A list of vector of the same length than the fragments list containing
 #'  the result of a user specified condition test for each fragment.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #' 
 #' @seealso \code{\link{filterFrags}}
 #'

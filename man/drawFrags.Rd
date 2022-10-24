@@ -2,7 +2,7 @@
 % Please edit documentation in R/drawFrags.R
 \name{drawFrags}
 \alias{drawFrags}
-\title{Draw tracking fragments}
+\title{Draw tracking fragments.}
 \usage{
 drawFrags(
   trackDat,
@@ -165,4 +165,7 @@ drawFrags(
 )
 
 
+}
+\author{
+Quentin PETITJEAN
 }

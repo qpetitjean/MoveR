@@ -1,4 +1,4 @@
-#' @title Load Trex tracking output .npz files
+#' @title Load Trex tracking output .npz files.
 #'
 #' @description Given the path of a folder containing multiple Trex outputs (one .npz file per particle/individual),
 #' this function returns a list of 9 vectors classically used for further computations using MoveR package:
@@ -32,7 +32,7 @@
 #' and the second containing all the elements retrieved from the .npz files (see rawDat argument). Also, by default the function mirror y coordinates to start on the bottom-left.
 #'
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @seealso \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
 #'

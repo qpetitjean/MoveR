@@ -2,7 +2,7 @@
 % Please edit documentation in R/readCtrax.R
 \name{readCtrax}
 \alias{readCtrax}
-\title{Load Ctrax tracking output .mat file}
+\title{Load Ctrax tracking output .mat file.}
 \usage{
 readCtrax(ctraxPath, mirrorY = FALSE, imgHeight = NULL)
 }
@@ -63,4 +63,7 @@ Branson, K., Robie, A., Bender, J. et al. High-throughput ethomics in large grou
 }
 \seealso{
 \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
+}
+\author{
+Quentin PETITJEAN, Vincent CALCAGNO
 }

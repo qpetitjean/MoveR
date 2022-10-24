@@ -1,4 +1,4 @@
-#' @title Compute the sensitivity index of particles detection
+#' @title Compute the sensitivity index of particles detection.
 #'
 #' @description Given a list of tracking fragments containing cartesian coordinates of particles over time
 #' and a dataframe containing the "true" (i.e., manually detected) coordinates of the particles, this function
@@ -56,7 +56,7 @@
 #'          \item{"FalsePositive": }{the list of the false positive (i.e., the informations of the particles that have been detected by the tracking method but is not truly present (i.e., not detected via manual observation).}
 #'      }
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @examples
 #'

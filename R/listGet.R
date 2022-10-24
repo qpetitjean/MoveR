@@ -9,7 +9,7 @@
 #'
 #' @return The object to find or NULL whether the object have been not found.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @examples
 #'

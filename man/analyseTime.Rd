@@ -2,7 +2,7 @@
 % Please edit documentation in R/analyseTime.R
 \name{analyseTime}
 \alias{analyseTime}
-\title{perform analysis across fragments and time}
+\title{perform analysis across fragments and time.}
 \usage{
 analyseTime(
   trackDat,
@@ -115,4 +115,7 @@ par(mfrow = c(1, 2))
 plot(Smoothedtracks[["MeanSpeed"]]$MeanSpeed ~ Smoothedtracks[["MeanSpeed"]]$frame, type = "l")
 plot(Smoothedtracks[["MeanTurnAngle"]]$MeanTurnAngle ~ Smoothedtracks[["MeanTurnAngle"]]$frame, type = "l")
 
+}
+\author{
+Quentin PETITJEAN
 }

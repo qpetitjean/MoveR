@@ -2,7 +2,7 @@
 % Please edit documentation in R/slidWin.R
 \name{slidWin}
 \alias{slidWin}
-\title{Sliding window}
+\title{Sliding window.}
 \usage{
 slidWin(x, Tstep, customFunc)
 }
@@ -30,4 +30,7 @@ smoothVar <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) var(
 # compute smoothed sd
 smoothSd <- slidWin( x = rnorm(150), Tstep = 15, customFunc = function (x) sd(x, na.rm = T))
 
+}
+\author{
+Quentin PETITJEAN
 }

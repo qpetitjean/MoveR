@@ -1,5 +1,4 @@
-#' @title Compute euclidean distance between a particle and object(s)
-#'
+#' @title Compute euclidean distance between a particle and object(s).
 #'
 #' @description Given a dataframe containing tracking information for a particle as well as a dataframe containing
 #' the spatial coordinates of one or several objects or points of interest, this function returns a dataframe
@@ -16,7 +15,7 @@
 #' the euclidean distance between the object and the particle over the trajectory
 #'
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @seealso \code{\link{dist2Edge}}
 #'

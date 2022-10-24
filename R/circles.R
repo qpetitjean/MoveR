@@ -1,4 +1,4 @@
-#' @title Draw circles
+#' @title Draw circles.
 #'
 #' @description Given x and y coordinates as well as the circle radius, this function draw.
 #'
@@ -23,7 +23,7 @@
 #'
 #' @return draw the circles from center coordinates and value of the radius on an existing plot window or, if there is no active plot window, on a new plot window.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @seealso \code{\link{plot}}, \code{\link{points}}, \code{\link{points}}
 #'

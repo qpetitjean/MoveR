@@ -1,5 +1,4 @@
-#' @title perform analysis across fragments and time
-#'
+#' @title perform analysis across fragments and time.
 #'
 #' @description Given a list of data frames containing tracking informations for each fragment (including the timeline)
 #' and a custom function, this function perform the computation specified by the custom function across time
@@ -37,7 +36,7 @@
 #' containing a dataframe with values of weighed mean and sd computed over the bootstrap sampling.
 #'
 #'
-#' @authors Quentin Petitjean
+#' @author Quentin Petitjean
 #'
 #'
 #' @examples

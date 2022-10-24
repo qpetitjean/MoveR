@@ -1,4 +1,4 @@
-#' @title Cutting fragments
+#' @title Cutting fragments.
 #'
 #' @description Given a list of data frames containing tracking information for each fragments the function
 #' returns the fragments part(s) that meet the condition specified in the customFunc.
@@ -12,7 +12,7 @@
 #' the conditions specified by the customFunc argument.
 #'
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @examples
 #'

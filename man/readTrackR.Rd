@@ -2,7 +2,7 @@
 % Please edit documentation in R/readTrackR.R
 \name{readTrackR}
 \alias{readTrackR}
-\title{Load TrackR tracking output .csv file}
+\title{Load TrackR tracking output .csv file.}
 \usage{
 readTrackR(
   trackRPath,
@@ -79,4 +79,7 @@ Data <-
 }
 \seealso{
 \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
+}
+\author{
+Quentin PETITJEAN
 }

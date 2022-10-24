@@ -1,4 +1,4 @@
-#' @title Compute Average Nearest Neighbour Distance (ANND) among fragments
+#' @title Compute Average Nearest Neighbour Distance (ANND) among fragments.
 #'
 #' @description Given a list of data frames containing tracking informations for each fragment (including the timeline)
 #' this function returns the Average Nearest Neighbour Distance among fragments along a specified timeline. Also, 
@@ -42,7 +42,7 @@
 #'       }}
 #' }
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #'
 #' @examples

@@ -1,4 +1,4 @@
-#' @title Locate a particle position
+#' @title Locate a particle position.
 #'
 #' @description find the position of a particle along its trajectory according to a reference matrix indicating areas of interest.
 #'
@@ -15,7 +15,7 @@
 #' @return This function returns a vector containing the position of a particle according to a distance matrix to any object or 
 #' the location of one or several areas of interest along the particle's trajectory.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #'
 #' @examples

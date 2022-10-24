@@ -2,7 +2,7 @@
 % Please edit documentation in R/trackStats.R
 \name{trackStats}
 \alias{trackStats}
-\title{tracking statistics}
+\title{tracking statistics.}
 \usage{
 trackStats(trackDat, frameR = NULL, scale = NULL, units = NULL)
 }
@@ -21,7 +21,32 @@ trackStats(trackDat, frameR = NULL, scale = NULL, units = NULL)
 A summary of video and fragments data.
 }
 \description{
+Given a list of tracking fragments containing cartesian coordinates,
+this function returns 2 sublists containing a summary of video and fragments data:
 
+\itemize{
+\item{"Video_summary": }{a list containing 4 elements:
+\itemize{
+\item{"videoDuration_f": }{the length of the video in frames.}
+\item{"videoDuration_s": }{the length of the video in seconds.}
+\item{"frameR": }{the frame rate of the video as specified by the user.}
+\item{"scale": }{the scaling factor applied to the trajectory coordinates as specifed by the user.}
+}
+}
+
+\item{"fragments_summary": }{a list containing 8 elements:
+\itemize{
+\item{"fragnb": }{the total number of fragments over the video (i.e., trajectories).}
+\item{"totFragsDuration_f": }{the sum of the duration of all fragments in frames.}
+\item{"totFragsDuration_s": }{the sum of the duration of all fragments in seconds}
+\item{"totFragLength_unit": }{the sum of the length of all fragments in spatial unit as specified by the user (e.g., pixels, cm).}
+\item{"fragId": }{the fragment identity.}
+\item{"fragsDuration_f": }{the duration of each fragments in frames.}
+\item{"fragsDuration_s": }{the duration of each fragments in seconds.}
+\item{"fragLength_unit": }{the length of each fragments in spatial unit as specified by the user (e.g., pixels, cm).}
+}
+}
+}
 }
 \examples{
 
@@ -62,4 +87,7 @@ hist(FragD2)
 }
 \seealso{
 \code{\link[trajr]{TrajScale}}, \code{\link[trajr]{TrajFromCoords}}
+}
+\author{
+Quentin PETITJEAN
 }

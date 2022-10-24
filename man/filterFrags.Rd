@@ -2,7 +2,7 @@
 % Please edit documentation in R/filterFrags.R
 \name{filterFrags}
 \alias{filterFrags}
-\title{apply a custom filter on tracking fragments}
+\title{apply a custom filter on tracking fragments.}
 \usage{
 filterFrags(trackDat, filter, splitCond = TRUE, minDur = 1)
 }
@@ -117,4 +117,7 @@ str(trackDat_Size20_Dur10$Summary_filtering)
 }
 \seealso{
 \code{\link{filterFunc}}
+}
+\author{
+Quentin PETITJEAN
 }

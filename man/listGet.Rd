@@ -55,3 +55,6 @@ listGet(nlist, "identity")
 listGet(nnlist, "identity")
 
 }
+\author{
+Quentin PETITJEAN
+}

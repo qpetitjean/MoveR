@@ -1,4 +1,4 @@
-#' @title Load Ctrax tracking output .mat file
+#' @title Load Ctrax tracking output .mat file.
 #'
 #' @description Given the path of the .mat file corresponding to Ctrax output,
 #' this function returns a list of 9 vectors classically used for further computations using MoveR package:
@@ -27,7 +27,7 @@
 #' Also, by default the function returns y coordinates starting on the bottom-left.
 #'
 #'
-#' @authors Quentin PETITJEAN, Vincent CALCAGNO
+#' @author Quentin PETITJEAN, Vincent CALCAGNO
 #'
 #' @seealso \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
 #'

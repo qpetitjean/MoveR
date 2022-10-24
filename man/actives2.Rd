@@ -2,7 +2,7 @@
 % Please edit documentation in R/actives2.R
 \name{actives2}
 \alias{actives2}
-\title{Determine active or inactive states according to density based clustering method}
+\title{Determine active or inactive states according to density based clustering method.}
 \usage{
 actives2(
   trackDat,
@@ -154,4 +154,7 @@ fragsListV1Smoothed <- MoveR::actives2(
 \item{Christian Hennig (2020). fpc: Flexible Procedures for Clustering. R package version 2.2-9. \href{https://CRAN.R-project.org/package=fpc}{https://CRAN.R-project.org/package=fpc}}
 \item{Martin Ester, Hans-Peter Kriegel, Joerg Sander, Xiaowei Xu (1996). A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise. Institute for Computer Science, University of Munich. Proceedings of 2nd International Conference on Knowledge Discovery and Data Mining (KDD-96).}
 }
+}
+\author{
+Quentin PETITJEAN
 }

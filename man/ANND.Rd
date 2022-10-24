@@ -2,7 +2,7 @@
 % Please edit documentation in R/ANND.R
 \name{ANND}
 \alias{ANND}
-\title{Compute Average Nearest Neighbour Distance (ANND) among fragments}
+\title{Compute Average Nearest Neighbour Distance (ANND) among fragments.}
 \usage{
 ANND(
   trackDat,
@@ -117,4 +117,7 @@ axis(side=4, at = c(0, round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))/4, round(max(
 
 lines(ANNDRes[["ANND"]]$nInd ~ ANNDRes[["ANND"]]$frame, col = "purple")
 
+}
+\author{
+Quentin PETITJEAN
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/analyseTimeBoots.r
 \name{analyseTimeBoots}
 \alias{analyseTimeBoots}
-\title{perform analysis across fragments and time}
+\title{perform analysis across fragments and time.}
 \usage{
 analyseTimeBoots(
   trackDat,
@@ -159,4 +159,7 @@ for (i in seq(length(SmoothedtracksBootCInoNA))) {
  )
 }
 
+}
+\author{
+Quentin Petitjean
 }

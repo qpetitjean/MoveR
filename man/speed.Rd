@@ -2,7 +2,7 @@
 % Please edit documentation in R/speed.R
 \name{speed}
 \alias{speed}
-\title{Compute particle speed over a trajectory}
+\title{Compute particle speed over a trajectory.}
 \usage{
 speed(df, scale = NULL, TimeCol = NULL)
 }
@@ -62,4 +62,7 @@ sampledFragDat[["speed"]] <- speed(sampledFragDat, scale = 1/1, TimeCol = "frame
 
 str(sampledFragDat)
 
+}
+\author{
+Quentin PETITJEAN
 }

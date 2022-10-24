@@ -2,7 +2,7 @@
 % Please edit documentation in R/trackSensitiv.R
 \name{trackSensitiv}
 \alias{trackSensitiv}
-\title{Compute the sensitivity index of particles detection}
+\title{Compute the sensitivity index of particles detection.}
 \usage{
 trackSensitiv(
   trackDat,
@@ -146,4 +146,7 @@ drawFrags(
  )
 )
 
+}
+\author{
+Quentin PETITJEAN
 }

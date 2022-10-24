@@ -1,5 +1,4 @@
-#' @title perform analysis across fragments and time
-#'
+#' @title perform analysis across fragments and time.
 #'
 #' @description Given a list of data frames containing tracking informations for each fragment (including the timeline)
 #' and a custom function, this function perform the computation specified by the custom function(s) across time
@@ -33,7 +32,7 @@
 #' as well as the result of the computation performed according to the customFunc.
 #'
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #'
 #'

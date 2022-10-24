@@ -2,7 +2,7 @@
 % Please edit documentation in R/dist2Pt.R
 \name{dist2Pt}
 \alias{dist2Pt}
-\title{Compute euclidean distance between a particle and object(s)}
+\title{Compute euclidean distance between a particle and object(s).}
 \usage{
 dist2Pt(df, obj)
 }
@@ -69,4 +69,7 @@ DistList <- dist2Pt(fragDat, obj)
 }
 \seealso{
 \code{\link{dist2Edge}}
+}
+\author{
+Quentin PETITJEAN
 }

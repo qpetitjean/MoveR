@@ -2,7 +2,7 @@
 % Please edit documentation in R/turnAngle.R
 \name{turnAngle}
 \alias{turnAngle}
-\title{Compute turning angle}
+\title{Compute turning angle.}
 \usage{
 turnAngle(
   df,
@@ -47,4 +47,7 @@ turnAngle(fragDat, TimeCol = "frame", unit = "radians")
 }
 \seealso{
 \code{\link[trajr]{TrajAngles}}
+}
+\author{
+Quentin PETITJEAN
 }

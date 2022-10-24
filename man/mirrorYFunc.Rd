@@ -2,7 +2,7 @@
 % Please edit documentation in R/mirrorYFunc.R
 \name{mirrorYFunc}
 \alias{mirrorYFunc}
-\title{Mirror y coordinates}
+\title{Mirror y coordinates.}
 \usage{
 mirrorYFunc(YCoords, imgHeight = NA)
 }
@@ -53,4 +53,7 @@ drawFrags(
   imgRes = c(max(trackDatList[["x.pos"]], na.rm = T), imgHeight), 
   colFrag = T)
 
+}
+\author{
+Quentin PETITJEAN
 }

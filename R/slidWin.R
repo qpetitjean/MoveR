@@ -1,4 +1,4 @@
-#' @title Sliding window
+#' @title Sliding window.
 #' 
 #' @description Given a vector containing numeric data, this function returns a vector of smoothed data 
 #' by performing the specified computation along a centered sliding window.
@@ -12,7 +12,7 @@
 #'
 #' @return A vector containing smoothed data.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @examples
 #' 

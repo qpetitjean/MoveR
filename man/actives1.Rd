@@ -2,7 +2,7 @@
 % Please edit documentation in R/actives1.R
 \name{actives1}
 \alias{actives1}
-\title{Determine active or inactive states according to the speed of a particles along its trajectory}
+\title{Determine active or inactive states according to the speed of a particles along its trajectory.}
 \usage{
 actives1(df, speedCol = NULL, minSpeed = NULL)
 }
@@ -58,4 +58,7 @@ add2It = list(
         cex = 1.5))
 )
 
+}
+\author{
+Quentin PETITJEAN
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/convert2frags.R
 \name{convert2frags}
 \alias{convert2frags}
-\title{Convert a list of variables to list of fragments}
+\title{Convert a list of variables to list of fragments.}
 \usage{
 convert2frags(trackDatList, by = NULL)
 }
@@ -42,4 +42,7 @@ trackDat <- convert2frags(trackDatList, by = "fragsId")
 }
 \seealso{
 \code{\link{convert2list}}
+}
+\author{
+Quentin PETITJEAN
 }

@@ -1,5 +1,4 @@
-#' @title Compute turning angle
-#'
+#' @title Compute turning angle.
 #'
 #' @description Given a data frames containing tracking information for a particle,
 #' this function returns a vector containing the value of turning angle along the considered fragment.
@@ -17,7 +16,7 @@
 #' @return This function returns a vector containing the value of turning angle computed along a given fragment.
 #'
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @seealso \code{\link[trajr]{TrajAngles}}
 #'

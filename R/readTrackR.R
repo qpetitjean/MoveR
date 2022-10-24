@@ -1,4 +1,4 @@
-#' @title Load TrackR tracking output .csv file
+#' @title Load TrackR tracking output .csv file.
 #'
 #' @description Given the path of the .csv file corresponding to TrackR output,
 #' this function returns a list of 9 vectors classically used for further computations using MoveR package:
@@ -34,7 +34,7 @@
 #' and the second containing all the elements retrieved from the .csv file (see rawDat argument). Also, by default the function returns y coordinates starting on the bottom-left.
 #'
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
 #'

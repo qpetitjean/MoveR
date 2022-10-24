@@ -1,5 +1,4 @@
-#' @title Compute corrected rediscretized sinuosity index for a given fragment
-#'
+#' @title Compute corrected rediscretized sinuosity index for a given fragment.
 #'
 #' @description Given a data frames containing tracking informations for a given fragment,
 #' this function rediscretize fragment path and returns a vector containing the value of
@@ -22,7 +21,7 @@
 #'
 #' @return This function returns a value of sinuosity for a given fragment according to TrajSinuosity2 function from trajR package.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @seealso \code{\link[trajr]{TrajSinuosity2}}
 #'

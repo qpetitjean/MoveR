@@ -2,7 +2,7 @@
 % Please edit documentation in R/analyseFrags.R
 \name{analyseFrags}
 \alias{analyseFrags}
-\title{Fragments analyses}
+\title{Fragments analyses.}
 \usage{
 analyseFrags(trackDat, customFunc)
 }
@@ -93,4 +93,7 @@ circular::rose.diag(
  ticks = TRUE
 )
 
+}
+\author{
+Quentin PETITJEAN
 }

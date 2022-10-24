@@ -1,4 +1,4 @@
-#' @title Compute the total surface explored and display the corresponding heatmap
+#' @title Compute the total surface explored and display the corresponding heatmap.
 #'
 #' @description Given a list of tracking fragments containing cartesian coordinates, and a value of
 #'  reaction distance this function displays an heatmap (i.e., hexbin plot) of the explored areas and returns the
@@ -29,7 +29,7 @@
 #'  total surface explored in a geometrically consistent and scalable manner
 #'
 #'
-#' @authors Quentin PETITJEAN, Vincent CALCAGNO
+#' @author Quentin PETITJEAN
 #'
 #'
 #' @examples

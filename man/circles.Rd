@@ -2,7 +2,7 @@
 % Please edit documentation in R/circles.R
 \name{circles}
 \alias{circles}
-\title{Draw circles}
+\title{Draw circles.}
 \usage{
 circles(
   x = NULL,
@@ -73,4 +73,7 @@ circles(
 }
 \seealso{
 \code{\link{plot}}, \code{\link{points}}, \code{\link{points}}
+}
+\author{
+Quentin PETITJEAN
 }

@@ -1,5 +1,4 @@
-#' @title Determine active or inactive states according to the speed of a particles along its trajectory
-#'
+#' @title Determine active or inactive states according to the speed of a particles along its trajectory.
 #'
 #' @description Given a data frames containing tracking informations for a given fragment including speed, 
 #' this function return a vector containing TRUE or FALSE when individual is active or not respectively.
@@ -14,7 +13,7 @@
 #'
 #' @return This function returns a vector containing TRUE or FALSE when individual is active or not respectively.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @examples
 #'

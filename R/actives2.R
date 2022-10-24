@@ -1,4 +1,4 @@
-#' @title Determine active or inactive states according to density based clustering method
+#' @title Determine active or inactive states according to density based clustering method.
 #'
 #' @description Given a list of data frames containing tracking informations and two variable of interest the function use 
 #' density based clustering as introduced in Ester et al. (1996) and according to the DBSCAN method from Hennig (2020) 
@@ -26,7 +26,7 @@
 #' @return This function returns the results of the classification (actives vs. inactives) appended to 
 #' the original list of data frame containing tracking informations for each fragment.
 #'
-#' @authors Quentin PETITJEAN
+#' @author Quentin PETITJEAN
 #'
 #' @references
 #' \itemize{
