@@ -280,7 +280,7 @@ analyseTime <-
             lapply(Reslen, function(x)
               sum(x$len * x$Res) / sum(x$len))
         }
-        # in case there is no data at this time end the computation here (no fragment detected at this moment of the timeline)
+        # in case there is no data at this time, end the computation here (no fragment detected at this moment of the timeline)
         if(length(WhoWhen)==0){
           # append the results in the smoothed list
           for (n in names(smoothed)) {

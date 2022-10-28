@@ -20,7 +20,7 @@
 #'
 #' @param trexPath The path of the Trex output folder where .npz files are stored.
 #'
-#' @param mirrorY TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = TRUE).
+#' @param mirrorY TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = FALSE).
 #'
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
 #' corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).
@@ -68,7 +68,7 @@
 #' @export
 
 readTrex = function(trexPath,
-                    mirrorY = TRUE,
+                    mirrorY = FALSE,
                     imgHeight = NULL,
                     rawDat = FALSE) {
   if (mirrorY == TRUE & is.null(imgHeight)) {
@@ -150,17 +150,13 @@ readTrex = function(trexPath,
   ## compute number of missing particle per frame
   ntargets_temp$indiv_numb <-
     rep(length(unique(missing_track$identity)))
-  ntargets <-
-    unname(as.matrix(ntargets_temp$indiv_numb - ntargets_temp$ntargets_temp))
+  ntargets <- ntargets_temp$indiv_numb - ntargets_temp$ntargets_temp
   ## create identity df
   identity_temp <-
     data.frame(gsub("_missing", "", missing_track$identity))
   names(identity_temp)[1] <- "identity"
   ## keep the id of particle only
-  identity <-
-    as.matrix(unname(as.numeric(
-      gsub("indiv", "", identity_temp$identity)
-    )))
+  identity <- as.numeric(gsub("indiv", "", identity_temp$identity))
   
   # merge the data of all particle in a list of df containing data for each measure
   ## create a vector with variable names ordered by decreasing number of character
@@ -187,49 +183,44 @@ readTrex = function(trexPath,
   # if mirrorY = TRUE, mirror the Y coordinates according to image height
   if (mirrorY == TRUE) {
     metricList[["Y#wcentroid"]] <-
-      mirrorYFunc(metricList[["Y#wcentroid"]], imgHeight = imgHeight)
-    metricList$Y <- mirrorYFunc(metricList$Y, imgHeight = imgHeight)
+      MoveR::mirrorYFunc(metricList[["Y#wcentroid"]], imgHeight = imgHeight)
+    metricList$Y <- MoveR::mirrorYFunc(metricList$Y, imgHeight = imgHeight)
     metricList$midline_y <-
-      mirrorYFunc(metricList$midline_y, imgHeight = imgHeight)
+      MoveR::mirrorYFunc(metricList$midline_y, imgHeight = imgHeight)
   }
   # add these variables to the output
   if (rawDat == FALSE) {
     Data_Trex_All <- list(
-      maj.ax = unname(as.matrix(metricList$midline_length)),
-      angle = unname(as.matrix(metricList$ANGLE)),
-      min.ax = as.numeric(rep(NA, dim(
-        metricList$midline_length
-      )[1])),
-      x.pos = unname(as.matrix(metricList[["X#wcentroid"]])),
-      y.pos = unname(as.matrix(metricList[["Y#wcentroid"]])),
+      maj.ax = metricList[["midline_length"]][[1]],
+      angle = metricList[["ANGLE"]][[1]],
+      min.ax = as.numeric(rep(NA, length(
+        metricList[["midline_length"]][[1]]
+      ))),
+      x.pos = metricList[["X#wcentroid"]][[1]],
+      y.pos = metricList[["Y#wcentroid"]][[1]],
       identity = identity,
-      frame = unname(as.matrix(metricList[["frame"]])),
+      frame = metricList[["frame"]][[1]],
       ntargets = ntargets,
-      timestamps = unname(as.matrix(
-        unique(metricList$timestamp / 1000000)
-      ))
+      timestamps = unique(metricList[["timestamp"]][[1]] / 1000000)
     )
   } else if (rawDat == TRUE) {
     Data_Trex_All <- list(
       Data_Trex = list(
-        maj.ax = unname(as.matrix(metricList$midline_length)),
-        angle = unname(as.matrix(metricList$ANGLE)),
-        min.ax = as.numeric(rep(NA, dim(
-          metricList$midline_length
-        )[1])),
-        x.pos = unname(as.matrix(metricList[["X#wcentroid"]])),
-        y.pos = unname(as.matrix(metricList[["Y#wcentroid"]])),
+        maj.ax = metricList[["midline_length"]][[1]],
+        angle = metricList[["ANGLE"]][[1]],
+        min.ax = as.numeric(rep(NA, length(
+          metricList[["midline_length"]][[1]]
+        ))),
+        x.pos = metricList[["X#wcentroid"]][[1]],
+        y.pos = metricList[["Y#wcentroid"]][[1]],
         identity = identity,
-        frame = unname(as.matrix(metricList[["frame"]])),
+        frame = metricList[["frame"]][[1]],
         ntargets = ntargets,
-        timestamps = unname(as.matrix(
-          unique(metricList$timestamp / 1000000)
-        ))
+        timestamps = unique(metricList[["timestamp"]][[1]] / 1000000)
       ),
       Data_Trex_Raw =
-        lapply(metricList, function (x)
-          unname(as.matrix(x)))
-    )
+        lapply(metricList, function (x) x[[1]])
+      )
   }
   return(Data_Trex_All)
 }

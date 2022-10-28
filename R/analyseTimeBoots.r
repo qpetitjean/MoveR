@@ -2,33 +2,33 @@
 #'
 #' @description Given a list of data frames containing tracking informations for each fragment (including the timeline)
 #' and a custom function, this function perform the computation specified by the custom function across time
-#' and smooth it before returning values
+#' and smooth it before returning values.
 #'
 #'
-#' @param trackDat A list of data frame containing tracking informations for each fragment (including a timeline)
+#' @param trackDat A list of data frame containing tracking informations for each fragment (including a timeline).
 #'
-#' @param timeCol A character string specifying the name of the timeline column
+#' @param timeCol A character string specifying the name of the timeline column.
 #'
-#' @param customFunc A function used to perform the computation across time
+#' @param customFunc A function used to perform the computation across time.
 #'
 #' @param Tinterval A vector containing two numeric values expressed in the timeline unit and
 #' specifying the time interval on which the computation is performed
-#' (default is null, meaning the computation will be performed on the whole timeline)
+#' (default is null, meaning the computation will be performed on the whole timeline).
 #'
 #' @param Tstep A numeric value expressed in the timeline unit and specifying the size of the
-#' sliding window used to perform the computation
+#' sliding window used to perform the computation.
 #'
 #' @param sampling A numeric value expressed in the timeline unit and specifying a subsampling used to
 #' to perform the computation, allow to make computation faster, it hence determine the resolution of the
-#' returned results (e.g., 5000 mean that values will be computed every 5000 frames)
+#' returned results (e.g., 5000 mean that values will be computed every 5000 frames).
 #'
-#' @param bootn A numeric value corresponding to the number of bootstrap sampling to compute studentize 95%IC
+#' @param bootn A numeric value corresponding to the number of bootstrap sampling to compute studentize 95%IC.
 #'
-#' @param wtd TRUE or FALSE, compute a weighed metric (TRUE) or not (FALSE), (default is FALSE)
+#' @param wtd TRUE or FALSE, compute a weighed metric (TRUE) or not (FALSE), (default is FALSE).
 #'
 #'
 #' @return this function returns a list containing two sublist, the first sublist contains a dataframe with
-#' bootstrap results (CI 97.5%, CI 2.5%, mean and a the resampled timeline according to timeCol argument),
+#' bootstrap results (CI 97.5%, CI 2.5%, mean, the resampled timeline according to timeCol argument and the number of fragment sampled),
 #' the second sublist contains various results depending on wtd argument.
 #' If wtd is FALSE, the second list returns a list of the sampled time point (e.g., frame), each one
 #' containing a dataframe with values sampled over the bootstrap.
@@ -36,7 +36,7 @@
 #' containing a dataframe with values of weighed mean and sd computed over the bootstrap sampling.
 #'
 #'
-#' @author Quentin Petitjean
+#' @author Quentin PETITJEAN
 #'
 #'
 #' @examples
@@ -235,7 +235,7 @@ analyseTimeBoots <-
             strsplit(sub("\\(.*", "", deparse(x)), " ")[[2]])
         names(customFunc) <- unlist(VarName)
       }
-      # if customFunc is a function retrieve function names and transformed it to a named list
+      # if customFunc is a function retrieve function names and transform it to a named list
     } else if (is.function(customFunc)) {
       VarName <- strsplit(sub("\\(.*", "", deparse(customFunc)), " ")[[2]]
       customFunc <- list(customFunc)
@@ -246,8 +246,8 @@ analyseTimeBoots <-
     boot.ci.student <- list()
     for (name in names(customFunc)) {
       temp_df <-
-        data.frame(matrix(NA, nrow = length(Newtimeline), ncol = 4))
-      colnames(temp_df) <- c("97.5%", "2.5%", "mean", timeCol)
+        data.frame(matrix(NA, nrow = length(Newtimeline), ncol = 5))
+      colnames(temp_df) <- c("97.5%", "2.5%", "mean", timeCol, "nbFrags")
       boot.ci.student[[name]] <- temp_df
     }
     # initialize progress bar
@@ -287,7 +287,7 @@ analyseTimeBoots <-
         
         # select the fragment that are detected in the selected timeline part 
         WhoWhen <-
-          cutFrags(trackDat, function(x)
+          MoveR::cutFrags(trackDat, function(x)
             x[[timeCol]] >= min(selVal, na.rm = T) &
               x[[timeCol]] <= max(selVal, na.rm = T))
         # compute the metrics specified through customFunc on the selected fragment part
@@ -384,7 +384,7 @@ analyseTimeBoots <-
             warning(
               "At Time=",
               i,
-              ", All the custom functions returned NA for some fragments, \nfragment sampling is thus different among every customfunc.\ncheck in the BootSampling -> omitted.Frags sublist to see which fragments were omitted from the computation"
+              ", All the custom functions returned NA for some fragments, \nfragment sampling is thus different among the customfunc.\ncheck in BootSampling -> omitted.Frags sublist to see which fragments were omitted from the computation"
             )
           }
         } else if (!length(shorterMetric[which(shorterMetric == TRUE)]) > 0 &
@@ -396,6 +396,14 @@ analyseTimeBoots <-
           omittedFragsL <- NULL
           samplingList <- names(toSampleLen)[1]
         }
+        # in case there is no data at this time, end the computation here (no fragment detected at this moment of the timeline)
+        if(length(WhoWhen)==0){
+          # append the results (95%CI, mean and time) to the boot.ci.student list
+          for (name in names(customFunc)) {
+            boot.ci.student[[name]][which(Newtimeline == i), ] <-
+              c(NA, NA, NA, i, 0)
+          }
+        }else{
         # create a matrix to store the names of the sampled fragments
         bootsamples <- lapply(samplingList, function(x) {
           matrix(
@@ -528,7 +536,7 @@ analyseTimeBoots <-
           bootsamplesVal
         BootSampling[[paste(timeCol, as.character(i), sep = "_")]][["omitted.Frags"]] <-
           omittedFragsL
-        # compute the studentize CI 95%
+        # compute the studentized 95%CI 
         boot.ci.student_temp <-
           lapply(names(customFunc), function(z) {
             data.frame(t(c((
@@ -538,14 +546,15 @@ analyseTimeBoots <-
                 na.rm = T
               ) *
                 sdx[[z]] / sqrt(samplen[[z]])
-            ), meanBoot[[z]], i
+            ), meanBoot[[z]], i, length(WhoWhen)
             )))
           })
         names(boot.ci.student_temp) <- names(customFunc)
-        # append the results (CI 95%, mean and time) to the boot.ci.student list
+        # append the results (95%CI, mean and time) to the boot.ci.student list
         for (name in names(customFunc)) {
           boot.ci.student[[name]][which(Newtimeline == i), ] <-
             boot.ci.student_temp[[name]]
+        } 
         }
       } else {
         for (name in names(customFunc)) {
