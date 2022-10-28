@@ -101,15 +101,12 @@ readTrex = function(trexPath,
     Trex_ind_list[!grepl ("recognition", Trex_ind_list)]
   
   # create a vector containing the particles' id and replace fish or other by the generic name: "indiv"
-  Trex_ind_names <-
-    unlist(lapply(Trex_ind_list,
-                  function(i) {
-                    paste("indiv", unname(utils::tail(as.data.frame(
-                      unlist(regmatches(i, gregexpr(
-                        "[[:digit:]]+", i
-                      )))
-                    ), 1)), sep = "")
-                  }))
+  Trex_ind_names <- unlist(lapply(Trex_ind_list, function(i) {
+    indivDigits <- unlist(regmatches(i, gregexpr("[[:digit:]]+", i)))
+    Trex_ind <- paste("indiv", indivDigits[length(indivDigits)], sep = "")
+    return(Trex_ind)
+  }))
+  
   # load .npz files for all the particles detected in the tracking session in a list
   # and rename levels of the list according to particle's id
   indiv_list <- stats::setNames(lapply(Trex_ind_list, function(i) {
