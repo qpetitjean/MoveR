@@ -58,27 +58,33 @@ Then you can attach the package `MoveR`:
 ```{r eval = FALSE}
 library("MoveR")
 ```
+To update with the latest version, first remove the package:
 
+```{r eval = FALSE}
+detach("package:MoveR", unload=TRUE)
+remove.packages("MoveR")
+```
+and repeat the above installation commands.
 
 ## Overview
 
-`MoveR` is an R package allowing to import, clean/filter and analyze raw particles/animals movement data from video tracking software.</br>
+`MoveR` is an R package allowing to import, clean/filter and analyze raw particles/animal movement data obtained from video-tracking softwares.</br>
 
 ### Main workflow steps
 
 More particularly, `MoveR` provides tools to:</br>
-<img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>IMPORT</strong> the raw data from various tracking software such as <a href="https://trex.run">TRex</a>, <a href="https://swarm-lab.github.io/trackR">trackR</a>, <a href="https://ctrax.sourceforge.net/">Ctrax</a> and <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a> (other can be implemented on demand).</br></br>
+<img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>IMPORT</strong> the raw data from various tracking software such as <a href="https://trex.run">TRex</a>, <a href="https://swarm-lab.github.io/trackR">trackR</a>, <a href="https://ctrax.sourceforge.net/">Ctrax</a> and <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a> (other can be easily implemented if needed).</br></br>
 <img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>CLEAN/FILTER</strong> the data according to custom functions specified by the user. For instance, it can easily remove suspected tracking errors based on expected particles' size or speed. It is also possible to sample the particles' tracks according to a specified time step or remove part of the tracks that are detected outside an arena or a given area.</br></br>
 <img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>EVALUATE</strong> the quantity of data removed over the cleaning/filtering process and check the amount of true and false detection compared to manual annotations.</br></br>
 <img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>VISUALIZE</strong> the tracks of all or specified particles over time.</br></br>
 <img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>ANALYSE</strong> the data over tracks, time, or space. It is possible to compute low (basics) or high (advanced) level metrics over each track and temporal and spatial trends. In a nutshell, Low and High-level metrics return the results of a given computation over each track, while temporal trends functions return the results of a given calculation over time by averaging the value of each track. It is also possible to compute a studentized 95% confidence interval by bootstrapping over the tracks. Also, it is possible to extract specified spatial trends according to a given pattern set by the user.</br>
 
-### Breakthrough
+### Breakthroughs
 
-Besides the high flexibility, the primary implementations brought by `MoveR` is the possibility to:</br>
-<img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>Characterize behavioral states</strong> (i.e., active vs. inactive momentum) using unsupervised learning methods (i.e., density-based clustering - see actives2 function).</br></br>
-<img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>Compute the Turchin's net square displacement</strong>, a proxy of population dispersion assuming correlated random walk (see turchinD function). </br></br>
-<img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>Extract specified patterns</strong> of behavioral states, visited areas, or any other custom patterns. 
+Besides the high flexibility and unified environment, the primary innovations provided by `MoveR` are the possibility to:</br>
+<img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>Characterize behavioral states</strong> (i.e., active vs. inactive states) using unsupervised learning methods (i.e., density-based clustering - see actives2 function).</br></br>
+<img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>Compute the expected diffusion coefficient D</strong>, a proxy of population dispersal, assuming a correlated random walk model (from Turchin's 1998 result; see turchinD function). </br></br>
+<img src="man/figures/Scaret.png" height="15"/>&nbsp;<strong>identify and extract arbitrary patterns</strong>, in terms of changes among behavioral states, spatial regions or areas of interest, patch crosses, or any other patterns, using a very versatile regular-expression syntax. 
 
 <img src="man/figures/WorkFlowMoveR.png" height="600" align="middle"/>
 
