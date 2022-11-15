@@ -114,15 +114,14 @@ readTrex = function(trexPath,
   }),
   paste("data", Trex_ind_names, sep = "_"))
   
-  Variable_list <-  stats::setNames(mapply(
-    function(j, k) {
-      as.matrix(j[[k]])
-    },
-    indiv_list,
-    rep(indiv_list[[1]]$files, times = length(indiv_list))
-  ),
-  paste(Trex_ind_names, rep(indiv_list[[1]]$files, times = length(indiv_list)), sep =
-          "_"))
+  Variable_list <- unlist(lapply(seq(length(indiv_list)), function(x) {
+    stats::setNames(
+      lapply(seq(length(indiv_list[[1]]$files)), function(y) {
+        c(indiv_list[[x]][[indiv_list[[1]]$files[[y]]]])
+      }),
+      paste(Trex_ind_names[[x]], indiv_list[[1]]$files, sep =
+              "_"))
+  }), recursive = F)
   
   # create identity and ntargets dataframes (not in Raw output of Trex)
   ## retrieve the missing metric: 1/0 when indiv is missing for each frame, respectively
@@ -143,7 +142,7 @@ readTrex = function(trexPath,
   ntargets_temp <-
     stats::ave(missing_track$missingInd, missing_track$frameNumb, FUN = sum)
   ntargets_temp <-
-    unique(as.data.frame(cbind(ntargets_temp, frameNumb = missing_track$frameNumb)))
+    unique(data.frame(ntargets_temp, frameNumb = missing_track$frameNumb))
   ## compute number of missing particle per frame
   ntargets_temp$indiv_numb <-
     rep(length(unique(missing_track$identity)))
@@ -167,10 +166,10 @@ readTrex = function(trexPath,
   metricList <- list()
   for (i in seq(length(VarN))) {
     metricList[[VarN[i]]] <-
-      as.data.frame(do.call("rbind", mget(
+      unlist(mget(
         ls(pattern = VarN[i], envir = as.environment(Variable_list)),
         envir = as.environment(Variable_list)
-      )))
+      ), use.names = FALSE)
     ### suppress the appended variable from variable_list to avoid error during merging
     Variable_list <-
       Variable_list[-c(which(
@@ -188,36 +187,36 @@ readTrex = function(trexPath,
   # add these variables to the output
   if (rawDat == FALSE) {
     Data_Trex_All <- list(
-      maj.ax = metricList[["midline_length"]][[1]],
-      angle = metricList[["ANGLE"]][[1]],
+      maj.ax = metricList[["midline_length"]],
+      angle = metricList[["ANGLE"]],
       min.ax = as.numeric(rep(NA, length(
-        metricList[["midline_length"]][[1]]
+        metricList[["midline_length"]]
       ))),
-      x.pos = metricList[["X#wcentroid"]][[1]],
-      y.pos = metricList[["Y#wcentroid"]][[1]],
+      x.pos = metricList[["X#wcentroid"]],
+      y.pos = metricList[["Y#wcentroid"]],
       identity = identity,
-      frame = metricList[["frame"]][[1]],
+      frame = metricList[["frame"]],
       ntargets = ntargets,
-      timestamps = unique(metricList[["timestamp"]][[1]] / 1000000)
+      timestamps = unique(metricList[["timestamp"]] / 1000000)
     )
   } else if (rawDat == TRUE) {
     Data_Trex_All <- list(
       Data_Trex = list(
-        maj.ax = metricList[["midline_length"]][[1]],
-        angle = metricList[["ANGLE"]][[1]],
+        maj.ax = metricList[["midline_length"]],
+        angle = metricList[["ANGLE"]],
         min.ax = as.numeric(rep(NA, length(
-          metricList[["midline_length"]][[1]]
+          metricList[["midline_length"]]
         ))),
-        x.pos = metricList[["X#wcentroid"]][[1]],
-        y.pos = metricList[["Y#wcentroid"]][[1]],
+        x.pos = metricList[["X#wcentroid"]],
+        y.pos = metricList[["Y#wcentroid"]],
         identity = identity,
-        frame = metricList[["frame"]][[1]],
+        frame = metricList[["frame"]],
         ntargets = ntargets,
-        timestamps = unique(metricList[["timestamp"]][[1]] / 1000000)
+        timestamps = unique(metricList[["timestamp"]] / 1000000)
       ),
       Data_Trex_Raw =
-        lapply(metricList, function (x) x[[1]])
-      )
+        lapply(metricList, function (x) x)
+    )
   }
   return(Data_Trex_All)
 }
