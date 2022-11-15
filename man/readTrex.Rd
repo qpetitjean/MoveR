@@ -4,12 +4,12 @@
 \alias{readTrex}
 \title{Load Trex tracking output .npz files.}
 \usage{
-readTrex(trexPath, mirrorY = TRUE, imgHeight = NULL, rawDat = FALSE)
+readTrex(trexPath, mirrorY = FALSE, imgHeight = NULL, rawDat = FALSE)
 }
 \arguments{
 \item{trexPath}{The path of the Trex output folder where .npz files are stored.}
 
-\item{mirrorY}{TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = TRUE).}
+\item{mirrorY}{TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = FALSE).}
 
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
 corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).}

@@ -16,30 +16,30 @@ analyseTimeBoots(
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking informations for each fragment (including a timeline)}
+\item{trackDat}{A list of data frame containing tracking informations for each fragment (including a timeline).}
 
-\item{timeCol}{A character string specifying the name of the timeline column}
+\item{timeCol}{A character string specifying the name of the timeline column.}
 
-\item{customFunc}{A function used to perform the computation across time}
+\item{customFunc}{A function used to perform the computation across time.}
 
 \item{Tinterval}{A vector containing two numeric values expressed in the timeline unit and
 specifying the time interval on which the computation is performed
-(default is null, meaning the computation will be performed on the whole timeline)}
+(default is null, meaning the computation will be performed on the whole timeline).}
 
 \item{Tstep}{A numeric value expressed in the timeline unit and specifying the size of the
-sliding window used to perform the computation}
+sliding window used to perform the computation.}
 
 \item{sampling}{A numeric value expressed in the timeline unit and specifying a subsampling used to
 to perform the computation, allow to make computation faster, it hence determine the resolution of the
-returned results (e.g., 5000 mean that values will be computed every 5000 frames)}
+returned results (e.g., 5000 mean that values will be computed every 5000 frames).}
 
-\item{bootn}{A numeric value corresponding to the number of bootstrap sampling to compute studentize 95\%IC}
+\item{bootn}{A numeric value corresponding to the number of bootstrap sampling to compute studentize 95\%IC.}
 
-\item{wtd}{TRUE or FALSE, compute a weighed metric (TRUE) or not (FALSE), (default is FALSE)}
+\item{wtd}{TRUE or FALSE, compute a weighed metric (TRUE) or not (FALSE), (default is FALSE).}
 }
 \value{
 this function returns a list containing two sublist, the first sublist contains a dataframe with
-bootstrap results (CI 97.5\%, CI 2.5\%, mean and a the resampled timeline according to timeCol argument),
+bootstrap results (CI 97.5\%, CI 2.5\%, mean, the resampled timeline according to timeCol argument and the number of fragment sampled),
 the second sublist contains various results depending on wtd argument.
 If wtd is FALSE, the second list returns a list of the sampled time point (e.g., frame), each one
 containing a dataframe with values sampled over the bootstrap.
@@ -49,7 +49,7 @@ containing a dataframe with values of weighed mean and sd computed over the boot
 \description{
 Given a list of data frames containing tracking informations for each fragment (including the timeline)
 and a custom function, this function perform the computation specified by the custom function across time
-and smooth it before returning values
+and smooth it before returning values.
 }
 \examples{
 # generate some dummy fragments
@@ -161,5 +161,5 @@ for (i in seq(length(SmoothedtracksBootCInoNA))) {
 
 }
 \author{
-Quentin Petitjean
+Quentin PETITJEAN
 }
