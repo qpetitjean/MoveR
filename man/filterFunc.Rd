@@ -2,7 +2,7 @@
 % Please edit documentation in R/filterFunc.R
 \name{filterFunc}
 \alias{filterFunc}
-\title{create and test a custom filter on tracking fragments.}
+\title{Create and test a custom filter on tracking fragments.}
 \usage{
 filterFunc(trackDat, toFilter = NULL, customFunc = NULL)
 }

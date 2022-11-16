@@ -3,7 +3,7 @@ title: 'MoveR: an R package to ease animal movement analyses'
 author: "Quentin PETITJEAN"
 date: "05/07/2022"
 output: 
-  html_document:
+  bookdown::html_document2:
     keep_md: true
     toc: TRUE
     toc_depth: 3
@@ -36,110 +36,163 @@ if(require(foreach)) {
 library(foreach)
 ```
 
-# Load the exemple dataset (Trex tracker)
+# Download sample data and companion files (i.e., the distance matrix to the arena edge)
+
+The sample of data used here comes from an experiment exposing a group of 24 parasitic micro-wasp individuals (genus <i>Trichogramma</i>) to a steady increases in temperature from 18&#8451; to 45&#8451; followed by a steady decreases from 45&#8451; to 18&#8451; (temperature changing rate: 0.5&#8451; per minutes). Here we reduced the dataset by removing the movements recorded below 35&#8451;(see fig. \@ref(fig:ReducedData) below).
+
+```{r ReducedData, echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="65%", fig.cap="Temperature ramp over which movements of parasitic micro-wasp (genus <i>Trichogramma</i>) were recorded. The shaded area corresponds to the part of the data removed from the original dataset (moments where temperature was below 35&#8451;) while the white area correspond to the remaining data used in the following exemple."}
+knitr::include_graphics('https://github.com/qpetitjean/MoveR/blob/MoveRV1/man/figures/Sample2_ReducedData.png?raw=true')
+```
+
+```{r ddlSampleData}
+# download sample data from the "https://github.com/qpetitjean/MoveR_SampleData" github repository
+# here we will use the second sample of data named "sample_2"
+## get the file url
+url = "https://github.com/qpetitjean/MoveR_SampleData/archive/refs/heads/main.zip"
+## create a temporary directory
+td <- tempdir()
+## create the placeholder file
+tf <- tempfile(tmpdir = td, fileext = ".zip")
+## download the repository's files into the placeholder file
+download.file(url, tf)
+## unzip the file to the temporary directory
+unzip(tf, exdir = td, overwrite = TRUE)
+## remove the .zip file from the temp directory
+unlink(tf)
+
+# Retrieve the path
+## path to the sample data from the previously downloaded and unziped file
+path2F <- file.path(td, "MoveR_SampleData-main", "sample_2", "TREXOutput")
+
+## path to the distance matrix from the arena edge (generated using imageJ) from the previously downloaded and unziped file
+ArenaFile <- file.path(td, "MoveR_SampleData-main", "sample_2", "ReferenceData", "DistMatrixFromArenaEdge.txt")
+
+```
+
+# Load the exemple dataset (TRex tracking system)
 ```{r LoadDataset}
-# path to the video file (replace by the github repository - once open source)
-
-
-videoPath = "E:/Videos_comportement/Bidime_Trex_npzfiles/2021-03-01-ISA17150-chaud"
-# path to the arena border file (generated using imageJ) (replace by the github repository - once open source)
-ArenaFile = "D:/Postdoc_INRAE_SAM/Data_Bidime/Scale_IndCount_Bidime/Img_video/2021-03-01-ISA17150-chaud/DSC_8113.MOV_1.txt"
-
 # the scaling of the video - 1 cm represent 413.4 pixels
 scaling = 1 / 413.4
 
-# the frame rate of the video expressed in frame per second
-frameRate = 25
-
 # use the readTrex function from MoveR package to load the tracking results
-Data_Trex <- MoveR::readTrex(trexPath = videoPath,
+TRexDat <- MoveR::readTrex(trexPath = path2F,
                             imgHeight = 1080,
-                            mirrorY = TRUE)
-str(Data_Trex)
+                            mirrorY = TRUE,
+                            rawDat = F)
+str(TRexDat)
+
+# retrieve the frame rate of the video (fps)
+frameRate <- max(TRexDat[["frame"]], na.rm=T) / max(TRexDat[["timestamps"]], na.rm=T)
+
 ```
-Here, the results of the tracking software (i.e., Trex) are loaded using the "read" function (see readTrex(), readCtrax(), readIdtracker(), readTrackR()). The function load the bunch of .npz file, retrieve the useful informations and lay them in a list (for informations about the informations returned see ??readTrex()). Using the optional argument "rawDat", the user can have access to all the data stored into the .npz files (see ??readTrex()). Also, since Trex use the upper left corner of the image as origin, the x and y coordinates are mirrored to start at the lower left corner using the "mirrorY" argument.
+
+Here, the results of the tracking software (i.e., TRex) are loaded using the "read" function (see \code{\link{readTrex}}, \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}). The function load the bunch of .npz file, retrieve the useful informations and lay them in a list. Using the optional argument "rawDat", the user can have access to all the data stored into the .npz files (see \code{\link{readTrex}}). Also, since TRex use the upper left corner of the image as origin, the x and y coordinates can be mirrored to start at the lower left corner specifying "mirrorY = TRUE".
+
+<u>NB:</u> while the scaling of the video should be manually specified, the frame rate can be retrieved from the tracking results. For instance, by dividing the duration of the video expressed in frame (retrieved from the "frame" vector) by the duration of the video expressed in seconds (retrieved from the "timestamps" vector).
 
 ```{r ConvertDataset}
-# remove 40 last minutes of the video to accelerate computation
-Data_Trex_Sample <-
-  as.data.frame(Data_Trex[1:7])[which(Data_Trex[["frame"]] <= 60 * 60 * 25), ]
 
 # convert the data to a list of fragment
-trackDat <- MoveR::convert2frags(Data_Trex_Sample,
+trackDat <- MoveR::convert2frags(TRexDat[1:7],
                                 by = "identity")
 ```
-To ease further computation and graphical representation the data are then converted to a list of fragments (based on particle' identity), corresponding to the trajectory of all the particles detected over the tracking, using the "convert2frags" function. 
+To ease further computation and graphical representation the data are converted to a list of tracklets based on particles' identity using the "convert2frags" function. Here we use only the 7 first element of Data_Trex because the last two (i.e., ntargets and timestamps) do not carry the same amount of information and are not useful for the next steps of the tutorial.
 
 # first look at the trajectories
 
-```{r DrawfragsIni}
-drawFrags(
-  trackDat,
-  imgRes = c(1920, 1080),
-  timeCol = "frame"
-)
-```
-Using the drawFrags() function, it is easy to represent the trajectories included in the dataset.
-
-```{r DrawfragsIni10frags}
-drawFrags(
+Using the \code{\link{drawFrags}} function, it is easy to visualize the trajectories included in the dataset (see fig. \@ref(fig:DrawfragsIni)A below), or to focus on the trajectories described by only some fragments (here the tens' first) included in the dataset (see fig. \@ref(fig:DrawfragsIni)B below).
+```{r DrawfragsIni, echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. A. all trajectories are represented. B. only the first 10 tracklets are represented. The trajectories are colored according to the moments at which they are recorded."}
+par(mfrow = c(1, 2))
+MoveR::drawFrags(trackDat,
+                 imgRes = c(1920, 1080),
+                 timeCol = "frame")
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+MoveR::drawFrags(
   trackDat,
   selFrags = c(1:10),
   imgRes = c(1920, 1080),
   timeCol = "frame"
 )
+mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 ```
-Or to focus on the trajectories described by only some fragments (here the tens' first) included in the dataset.
 
-```{r DrawfragsIniTime}
+It is also possible to focus on the trajectories recorded within a given time intervals. For instance, between 41063 and 42063 frames (see fig. \@ref(fig:DrawfragsIniTime)A below) and between 41063 and 42063 frames and 80000, 81000 frames (see fig. \@ref(fig:DrawfragsIniTime)B below).
+
+<u>NB:</u> note that it is possible to represent specified fragments (selFrags argument) over given time window(s) (timeWin argument).
+```{r DrawfragsIniTime, echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Micro-wasps trajectories over specified part of the video timeline, expressed in frame. A. all trajectories are represented over a time window of 1000 frames (between 41063 and 42063 frames). B. all trajectories are represented over two time windows of 1000 frames duration (between 41063 and 42063 and 80000 and 81000 frames). The trajectories are colored according to the moments at which they are recorded."}
 par(mfrow=c(1,2))
-drawFrags(
+MoveR::drawFrags(
   trackDat,
-  timeWin = list(c(1, 1000)),
+  timeWin = list(c(41063, 42063)),
   imgRes = c(1920, 1080),
   timeCol = "frame"
 )
-drawFrags(
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+MoveR::drawFrags(
   trackDat,
-  timeWin = list(c(1, 1000), c(30000, 31000)),
+  timeWin = list(c(41063, 42063), c(80000, 81000)),
   imgRes = c(1920, 1080),
   timeCol = "frame"
 )
+mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+par(mfrow = c(1, 1))
 ```
-Or to focus on the trajectories made within a given time intervals between 1 and 1000 frames on the left panel and between between 1 and 1000 frames and 30000 and 31000 frames on the right panel.
 
 # clean the dataset 
 
-Once loaded, the data need to be cleaned to remove for instance, infinite values due to moments where particles were undetected, or the detection of spurious elements during the tracking. For this purpose, 2 main functions allow the user to define custom filters and apply them to the dataset.
+Once loaded, the data need to be cleaned to remove for instance:
+- infinite values corresponding to the moments where the particles were undetected, 
+- spurious elements detected by the tracking software. 
+For this purpose, 2 main functions, \code{\link{filterFunc}} and \code{\link{filterFrags}} allow to specify custom filters and apply them to the dataset, respectively.
 
 ## remove infinite values 
 
-Infinite values are added when the particles are temporarily undetected, the following code help to remove infinite value and split the fragment carrying them accordingly (when a particle is temporarily undetected we assume that the identity of the fragment is spurious, thus the function create a new fragment).
+Infinite values are added by TRex when the particles are temporarily undetected, the following code help to remove infinite value and split the trajectories carrying them accordingly. In other words, when a particle is temporarily undetected we assume that the identity of the fragment is spurious, thus the function create a new fragment with a new tracklet identity (fragsId) but the original identity of the particles is still conserved in the "identity" vector.
 
 ```{r InfClean}
-# define the filter to detected infinite values on "x.pos"
-filter.Inf <-
-  filterFunc(
+# specify the filter to detected infinite values on "x.pos"
+filter.InfX <-
+  MoveR::filterFunc(
     trackDat,
     toFilter = "x.pos",
     customFunc = function(x)
       is.infinite(x)
   )
 
-# filter infinite values according to the previously specified filter
-# NB: Since the dataset correspond to the tracking of particles over a period of 60 minutes, we remove the fragments that are shorter than 100 frames (about 1% of the total video duration) using "mindur" argument.
+# it is also possible to group two or more filter by using the \code{\link{filterMerge}} function
+# for instance by merging the result of several condition tests, here the detection of infinite value in "x.pos" and "y.pos".
+
+## first specify the second filter
+filter.InfY <-
+  MoveR::filterFunc(
+    trackDat,
+    toFilter = "y.pos",
+    customFunc = function(x)
+      is.infinite(x)
+  )
+
+## then merge the previously specifed filter
+filter.Inf <-
+  MoveR::filterMerge(filters = list(filter.InfX, filter.InfY),
+                     cond = TRUE)
+
+# filter infinite values according to the previously specified filters
+# NB: Since filtering the filtering process may result in splitted fragment with reduced duration, it is possible to add another filtering layer by removing short tracklet according to the "minDur" argument. 
+# Here, we arbitrarily choose to remove the fragments that are shorter than 25 frames (1 second).
 trackDat.Infilt <-
-  filterFrags(trackDat,
-              filter = filter.Inf,
-              splitCond = TRUE,
-              minDur = 100)
+  MoveR::filterFrags(trackDat,
+                     filter = filter.Inf,
+                     splitCond = TRUE,
+                     minDur = 25)
 
 # the output of the function correspond to a list, with information about the filtration process (see ??filterFrags())
+# while the second element of the list contains the list of filtered fragment which can be used for further computation
 str(trackDat.Infilt[[1]])
 
-# while the second element of the list contains the list of filtered fragment which can be used for further computation
-
 ```
+
+According to the summary of the filtering step, there is a lot of moments where the micro-wasps were undetected within the dataset. As results, the filtering step removed 64.7% (100-35.3) of the data corresponding to infinite values and then removed another 10.2% (35.3-25.1) because the resulting tracklets were shorter than 1 second (25 frames).
+We can now cleaning the data using a filter based on particles' size.
 
 ## Filter based on particles size 
 
@@ -147,8 +200,8 @@ Spurious particles can be detected during the tracking procedure. One cleaning s
 Here we keep only the moments where a particle' size is included within the 95% confidence interval based on the distribution of the particle' size over the dataset.
 
 ```{r SizeClean}
-# convert the previously filtered data into a list to ease representation and computation of 95% IC of the particles' size distribution
-trackDat.InfiltList <- convert2list(trackDat.Infilt[[2]])
+# convert the previously filtered data into a list to ease representation and computation of 95% CI of the particles' size distribution
+trackDat.InfiltList <-  MoveR::convert2list(trackDat.Infilt[[2]])
 
 # compute IC
 ## transform particles' size in log10 to approximate the normal distribution
@@ -161,16 +214,18 @@ if (length(which(is.na(indLength)) > 0)) {
 }
 IC <- quantile(indLength, c(0.025, 0.975))
 
-# plot the resulting distribution and the 95% IC
+# plot the resulting distribution and the 95% CI
+par(mfrow=c(1,2))
 hist(log10(trackDat.InfiltList$maj.ax),
      breaks = 100,
-     main = "Indiv length (log10) and 95% IC")
+     main = "Indiv length (log10) and 95% CI \nbefore filtration")
 abline(v = c(IC[1], IC[2]))
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
 
 # the result seem satisfactory
-# hence, create the filter based on the computed IC values
+# hence, create the filter based on the computed CI values
 filter.length <-
-  filterFunc(
+  MoveR::filterFunc(
     trackDat.Infilt[[2]],
     toFilter = "maj.ax",
     customFunc = function(x)
@@ -179,18 +234,28 @@ filter.length <-
 
 # apply the filter on the data 
 trackDat.lenfilt <-
-  filterFrags(trackDat.Infilt[[2]],
+  MoveR::filterFrags(trackDat.Infilt[[2]],
               filter.length,
               splitCond = TRUE,
-              minDur = 100)
+              minDur = 25)
 
 # display the information about the filtration process (see ??filterFrags())
 str(trackDat.lenfilt[[1]])
+
+# plot the distribution of particles' size in log10 after the filtration
+hist(log10(MoveR::convert2list(trackDat.lenfilt[[2]])$maj.ax),
+     breaks = 100,
+     main = "Indiv length (log10) \nafter filtration")
+mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+par(mfrow=c(1,1))
 ```
+
+According to the summary of the filtering step based on particles' size, the amount of data removed by the filtering is reasonable with 5.3% of data considered above or below the size threshold (95% CI) but the filter splitted some tracklets in small part resulting in an additional 5.6% of data removed because their duration was shorter than 1 second.
+Another kind of filtering that could be commonly used is based on particles'speed.
 
 ## Filter based on particles speed 
 
-While the data can be filtered based data that already exist into the tracking result, it is also possible to compute new metrics and filter the dataset based on it.
+While the data can be filtered based data that already exist into the raw output of the tracking software, it is also possible to compute new metrics and filter the dataset based on it.
 For instance, particles' speed can be a good indicator of spurious detection or particle identification. Indeed, when the speed of a particle is too high (and have hence no biological meaning) it can be due to change in particle identity or more generally tracking artifact. 
 
 ```{r SpeedClean}
@@ -200,22 +265,20 @@ For instance, particles' speed can be a good indicator of spurious detection or 
 trackDat2 <- trackDat.lenfilt[[2]]
 
 # to compute particles' speed we use another function from the MoveR package, the "analyseFrags" function which is used to performed any computation (either manually specified by the user or using already existing modulus such as speed()) along each fragment present in the dataset. 
-# here we use the "speed()" modulus to compute the speed of every particles' trajectories
+# here we use the "speed()" modulus to compute the speed of each particles over its trajectory
 trackDat2 <-
-  analyseFrags(trackDat2,
+  MoveR::analyseFrags(trackDat2,
                customFunc = list(
                  speed = function(x)
                    MoveR::speed(
                      x,
-                     scale = scaling,
-                     unit = "cm",
                      TimeCol = "frame"
                    )
                ))
 
 # compute the 999th quantile 
 # convert the previously filtered data into a list to ease representation and computation of 999th quantile of the particles' speed distribution
-trackDat.speedfiltList <- convert2list(trackDat2)
+trackDat.speedfiltList <- MoveR::convert2list(trackDat2)
 
 ## transform particles' speed in log10 to approximate the normal distribution
 indSpeed <- log10(trackDat.speedfiltList$speed)
@@ -231,10 +294,10 @@ quant999th <- quantile(indSpeed, c(0.999))
 hist(indSpeed, breaks = 100, main = "Indiv speed (log10) and 999th quantile")
 abline(v = quant999th)
 
-# the result seem satisfactory
+# the result seem satisfactory since with this threshold we will remove only the few moments where particles reach a speed above 16 pixels per frame while we conserve the bimodal distribution of the particles' speed.
 # hence, create the filter base on the computed 999th quantile 
 filter.speed <-
-  filterFunc(
+  MoveR::filterFunc(
     trackDat2,
     toFilter = "speed",
     customFunc = function(x)
@@ -243,23 +306,25 @@ filter.speed <-
 
 # apply the filter on the data 
 trackDat.speedfilt <-
-  filterFrags(trackDat2,
+  MoveR::filterFrags(trackDat2,
               filter.speed,
               splitCond = TRUE,
-              minDur = 100)
+              minDur = 25)
 
 # display the information about the filtration process (see ??filterFrags())
 str(trackDat.speedfilt[[1]])
 
 ```
 
+According to the summary of the filtering step based on particles' speed, the amount of data removed by the filtering is reasonable with 0.1% of data considered above the speed threshold, which is consistent with our approach since we wanted to remove only extremes values (999Th quantile). Also, the filter splitted anly few tracklets in small part resulting in an additional 0.7% of data removed because their duration was shorter than 1 second.
+Finally, it seems interesting to remove the particles that are detected outside of the arena since it should be due to tracking artifact, or more generally to unintended particles' detection and movements
+
 ## Filter based on particle detection outside the arena
 
-Sometimes particles can be detected outside the arena, either because an individual as escaped from an arena or because the background has changed over the video recording (tracking artifact). To solve this issue, it is possible to remove the particles that have been detected outside the arena.
+Indeed, sometimes particles can be detected outside the arena, either because an individual as escaped from an arena or because the background has changed over the video recording (tracking artifact). To solve this issue, it is possible to remove the particles that have been detected outside the arena. For this we have generated a distance matrix to the arena edge using using simple color tresholding in imageJ. 
 
 ```{r edgeClean}
 # define filter based on the presence of individual outside the arena
-
 # load gradient to the edge of the arena (a distance matrix generated using color tresholding in imageJ) 
 arenaGrad <- read.delim(ArenaFile)
 
@@ -357,7 +422,7 @@ trackDat.outfilt <-
   filterFrags(trackDat3,
               filter.out,
               splitCond = TRUE,
-              minDur = 100)
+              minDur = 25)
 
 # display the information about the filtration process (see ??filterFrags())
 str(trackDat.outfilt[[1]])

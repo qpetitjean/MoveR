@@ -1,4 +1,4 @@
-#' @title apply a custom filter on tracking fragments.
+#' @title Apply a custom filter on tracking fragments.
 #'
 #' @description  Given a list of data frame containing tracking information for each fragment and the result
 #' of a specified condition' test as returned by filterFunc this function remove the values that do not meet the condition
@@ -111,7 +111,7 @@
 #'
 #' @export
 
-filterFrags = function(trackDat,
+filterFrags <- function(trackDat,
                        filter,
                        splitCond = TRUE,
                        minDur = 1) {

@@ -1,4 +1,4 @@
-#' @title create and test a custom filter on tracking fragments.
+#' @title Create and test a custom filter on tracking fragments.
 #'
 #' @description Given a list of data frames containing tracking information for each fragment, 
 #' this function returns a list of vector containing the result of a user defined condition test for each fragment.
@@ -41,7 +41,7 @@
 #'
 #' @export
 
-filterFunc = function(trackDat,
+filterFunc <- function(trackDat,
                       toFilter = NULL,
                       customFunc = NULL) {
   filter <- list()
