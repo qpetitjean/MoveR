@@ -11,23 +11,23 @@
 #'  the merged result of user specified condition tests for each fragment.
 #'
 #' @author Quentin PETITJEAN
-#' 
+#'
 #' @seealso \code{\link{filterFunc}}, \code{\link{filterFrags}}
 #'
 #' @examples
-#' 
+#'
 #' # create 3 filters, i.e., 3 lists containing the results of a condition tests (TRUE or FALSE) as returned by \code{\link{filterFunc}}
 #' A = list("1" = c(TRUE, FALSE, FALSE), "2" = c(TRUE, TRUE, FALSE))
 #' B = list("1" = c(FALSE, TRUE, FALSE), "2" = c(FALSE, TRUE, FALSE))
 #' C = list("1" = c(FALSE, FALSE, TRUE), "2" = c(TRUE, FALSE, FALSE))
-#' 
+#'
 #' # merge the filters
 #' filterMerge(filters = list(A, B, C), cond = TRUE)
 #'
 #' @export
 
 filterMerge <- function(filters = list(NULL),
-                    cond = TRUE) {
+                        cond = TRUE) {
   if (length(filters) == 0) {
     stop("filter argument is NULL, a list of 2 or more filters to merge are needed.")
   }
