@@ -140,12 +140,12 @@ locaPos <-
       refDat <- refDat
     }
     # find the position of the particle along its trajectory according to the reference matrix
-    Res <- unlist(sapply(seq(nrow(trackDat[[i]])), function(y) {
+    Res <- unlist(sapply(seq(nrow(df[[i]])), function(y) {
       if (!is.null(Fun)) {
         temp <-
-          ArenaGrad[Fun(trackDat[[i]]$y.pos[y]), Fun(trackDat[[i]]$x.pos[y])]
+          ArenaGrad[Fun(df[[i]]$y.pos[y]), Fun(df[[i]]$x.pos[y])]
       } else{
-        temp <- ArenaGrad[trackDat[[i]]$y.pos[y], trackDat[[i]]$x.pos[y]]
+        temp <- ArenaGrad[df[[i]]$y.pos[y], df[[i]]$x.pos[y]]
       }
       if (length(temp) == 0) {
         temp <- NA
@@ -153,9 +153,9 @@ locaPos <-
         warning(
           paste(
             "locaPos returned NA for some values: y.pos = ",
-            trackDat[[i]]$y.pos[y],
+            df[[i]]$y.pos[y],
             ", x.pos = ",
-            trackDat[[i]]$x.pos[y],
+            df[[i]]$x.pos[y],
             ", these values have been not found in refDat.",
             sep = ""
           )
