@@ -4,7 +4,7 @@
 \alias{locaPos}
 \title{Locate a particle position.}
 \usage{
-locaPos(refDat = NULL, df = NULL, sep = NULL, dec = NULL)
+locaPos(refDat = NULL, df = NULL, sep = NULL, dec = NULL, Fun = NULL)
 }
 \arguments{
 \item{refDat}{A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or
@@ -15,6 +15,8 @@ the location of one or several areas of interest (e.g., create a distance map us
 \item{sep}{The field separator character, the values on each line of the file are separated by this character (optional, needed only if refDat is a path).}
 
 \item{dec}{The character used in the file for decimal points (optional, needed only if refDat is a path).}
+
+\item{Fun}{A custom function used to transform the data from df (e.g., round, ceiling, log).}
 }
 \value{
 This function returns a vector containing the position of a particle according to a distance matrix to any object or
@@ -36,7 +38,7 @@ Data <-
 # convert it to a list of fragments
 trackDat <- convert2frags(Data[1:7], by = "identity")
 
-# load the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or 
+# load the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or
 # the location of one or several areas of interest (here we have created a distance map using ImageJ)
 refDat <-
  as.matrix(read.delim(
@@ -47,9 +49,9 @@ refDat <-
 arenaEdge <- data.frame(which(refDat == 1, arr.ind=T))
 arenaCenter <- data.frame(which(refDat == 254, arr.ind=T))
 
-## then specify that all values above 254 are considered as the center  
+## then specify that all values above 254 are considered as the center
 refDat[which(as.numeric(refDat) > 254)] <- "center"
-## rather all values above 0 and below or equal to 254 are considered as within the border  
+## rather all values above 0 and below or equal to 254 are considered as within the border
 refDat[which(as.numeric(refDat) >= 0 & as.numeric(refDat) <= 254)] <- "edge"
 
 # retrieve the area where the particles
@@ -58,7 +60,7 @@ trackDat <- analyseFrags(trackDat,
                         customFunc = list(
                           Position = function(x)
                             locaPos(refDat, x)))
-# draw the result, with fragments part that are on the edge of the arena colored in red 
+# draw the result, with fragments part that are on the edge of the arena colored in red
 # and those at the center in black
 drawFrags(
  trackDat,
