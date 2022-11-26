@@ -347,7 +347,9 @@ actives2 <-
         break
       }
     }
-    
+    if(!exists("inactivClust", inherits = FALSE)){
+      stop("failed to identify active and inactive cluster: no cluster identified, perhaps eps and minPts arguments should be modified.")
+    }
     names(inactivClust) <-
       c('X_values', 'Y_values', 'response')
     names(activClust) <-
