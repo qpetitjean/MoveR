@@ -269,6 +269,11 @@ actives2 <-
       Cold = which(mdf3[["value"]] <= hotLim,
                    arr.ind = TRUE)
       mdf3[["spots"]][Cold] <- "Cold"
+      if(length(which(mdf3[["spots"]] == "Hot")) == 0){
+        print(
+          "failed to identify active and inactive cluster: no cluster identified")
+        next
+      }
       ## identify the peaks drawed by hotspots using density based clustering
       db <-
         fpc::dbscan(scale(mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y")], center = T),
@@ -308,11 +313,7 @@ actives2 <-
           mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y", "value")][db[["cluster"]] == centroids[which(centroids[["x"]] == min(centroids[["x"]])), "dbclust"], ]
       } else if (nrow(centroids) > 2) {
         print(
-          paste(
-            "failed to identify active and inactive cluster: more than 2 clusters identified",
-            sep = " "
-          )
-        )
+          "failed to identify active and inactive cluster: more than 2 clusters identified")
         next
       }
       if (min(XRanges) == min(inactivClust[["x"]])) {
