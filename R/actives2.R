@@ -194,11 +194,11 @@ actives2 <-
         na.omit(trackDatSmoothed)
     }
     # in case there is infinite values remove them
-    if (length(which(is.infinite(tempDf[["var1"]])) > 0)) {
+    if (length(which(is.infinite(tempDf[["var1"]]))) > 0) {
       tempDf <- tempDf[-c(which(is.infinite(tempDf[["var1"]]))), ]
       warning("var1 contains infinite values, these values has been removed")
     }
-    if (length(which(is.infinite(tempDf[["var2"]])) > 0)) {
+    if (length(which(is.infinite(tempDf[["var2"]]))) > 0) {
       tempDf <- tempDf[-c(which(is.infinite(tempDf[["var2"]]))), ]
       warning("var1 contains infinite values, these values has been removed")
     }
