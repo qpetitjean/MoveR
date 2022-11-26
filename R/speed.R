@@ -9,7 +9,7 @@
 #' a column containing time information, whatever the unit, over the fragment.
 #'
 #' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-#' (e.g., size in cm / size in pixels; see trajr::TrajScale()).
+#' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.
 #'
 #' @param unit The unit expected after scaling (e.g., "cm", "m", ...).
 #'
@@ -19,6 +19,8 @@
 #'
 #'
 #' @author Quentin PETITJEAN
+#' 
+#' @seealso \code{\link[trajr]{TrajDerivatives}}
 #'
 #' @examples
 #'

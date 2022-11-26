@@ -11,7 +11,7 @@ speed(df, scale = NULL, TimeCol = NULL)
 a column containing time information, whatever the unit, over the fragment.}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-(e.g., size in cm / size in pixels; see trajr::TrajScale()).}
+(e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.}
 
 \item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
 
@@ -62,6 +62,9 @@ sampledFragDat[["speed"]] <- speed(sampledFragDat, scale = 1/1, TimeCol = "frame
 
 str(sampledFragDat)
 
+}
+\seealso{
+\code{\link[trajr]{TrajDerivatives}}
 }
 \author{
 Quentin PETITJEAN

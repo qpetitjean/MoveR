@@ -18,6 +18,12 @@
 #'
 #' @param nbins A numeric value indicating the number of bins in both vertical and horizontal directions (default = 100).
 #'
+#' @param eps A numeric value specifying the reachability distance (Ester et al., 1996), which correspond to the maximum distance around cluster's members (see \code{\link[fpc]{dbscan}}).
+#' 
+#' @param minPts A numeric value specifying the reachability minimum no. of points (Ester et al., 1996), which correspond to the minimum number of point per cluster (see \code{\link[fpc]{dbscan}}).
+#' 
+#' @param scale A logical value indicating whether the data should be centered (substracting the mean) and scaled (dividing the standard deviation to the centered data).
+#' 
 #' @param na.rm A logical value indicating whether NA values should be stripped before the computation proceeds (default = TRUE).
 #'
 #' @param graph A logical value indicating whether the various diagnostics plots should be displayed or not (default = TRUE).
@@ -27,6 +33,8 @@
 #' the original list of data frame containing tracking informations for each fragment.
 #'
 #' @author Quentin PETITJEAN
+#' 
+#' @seealso \code{\link[fpc]{dbscan}}
 #'
 #' @references
 #' \itemize{
@@ -136,6 +144,9 @@
 #'  var1T = log10,
 #'  var2T = NULL,
 #'  nbins = 100,
+#'  eps = 0.15,
+#'  minPts = 5,
+#'  scale = TRUE, 
 #'  na.rm = TRUE,
 #'  graph = TRUE
 #') 
@@ -150,6 +161,9 @@ actives2 <-
            var1T = NULL,
            var2T = NULL,
            nbins = NULL,
+           eps = NULL,
+           minPts = NULL,
+           scale = TRUE,
            na.rm = TRUE,
            graph = TRUE) {
     
@@ -188,6 +202,14 @@ actives2 <-
         "var1 and var2 must contain the same amount of data."
       )
     }
+    # if minPts or eps argument are null return an error
+    if(is.null(eps)){
+      stop("eps argument is missing, specifying a maximum distance around cluster's members is needed.")
+    }
+    if(is.null(minPts)){
+      stop("minPts argument is missing, specifying a minimum number of point per cluster is needed.")
+    }
+
     # if na.rm argument is TRUE, remove the lines containing NA in the dataframe containing var1 and var2
     if (isTRUE(na.rm)) {
       tempDf <-
@@ -276,9 +298,12 @@ actives2 <-
       }
       ## identify the peaks drawed by hotspots using density based clustering
       db <-
-        fpc::dbscan(scale(mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y")], center = T),
-                    eps = 0.15,
-                    MinPts = 5)
+        fpc::dbscan(mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y")],
+                    eps = eps,
+                    MinPts = minPts,
+                    scale = scale,
+                    method = "hybrid"
+                    )
       ## extract the border of the clusters (rectangular)
       if (length(unique(db[["cluster"]])[grepl("0", unique(db[["cluster"]]))]) > 0) {
         dbclust <-
@@ -299,7 +324,7 @@ actives2 <-
                                      function(i)
                                        apply(mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y")][db[["cluster"]] == i, ], 2,
                                              mean, na.rm = T))))
-      # reorder the centroids according to x axis to ensure that active is clust 1, Otherain is clust 2 (when detected) and inactive is clust 3
+      # reorder the centroids according to x axis to ensure that active is clust 1, and inactive is clust 2
       centroids <- cbind(centroids, dbclust)
       if (nrow(centroids) < 2) {
         next

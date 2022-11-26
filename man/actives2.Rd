@@ -11,6 +11,9 @@ actives2(
   var1T = NULL,
   var2T = NULL,
   nbins = NULL,
+  eps = NULL,
+  minPts = NULL,
+  scale = TRUE,
   na.rm = TRUE,
   graph = TRUE
 )
@@ -28,6 +31,12 @@ containing behavioral patterns (e.g., behavioral states, location in areas).}
 \item{var2T}{A function used to transform var2 (e.g., log, sqrt - optional).}
 
 \item{nbins}{A numeric value indicating the number of bins in both vertical and horizontal directions (default = 100).}
+
+\item{eps}{A numeric value specifying the reachability distance (Ester et al., 1996), which correspond to the maximum distance around cluster's members (see \code{\link[fpc]{dbscan}}).}
+
+\item{minPts}{A numeric value specifying the reachability minimum no. of points (Ester et al., 1996), which correspond to the minimum number of point per cluster (see \code{\link[fpc]{dbscan}}).}
+
+\item{scale}{A logical value indicating whether the data should be centered (substracting the mean) and scaled (dividing the standard deviation to the centered data).}
 
 \item{na.rm}{A logical value indicating whether NA values should be stripped before the computation proceeds (default = TRUE).}
 
@@ -144,6 +153,9 @@ fragsListV1Smoothed <- MoveR::actives2(
  var1T = log10,
  var2T = NULL,
  nbins = 100,
+ eps = 0.15,
+ minPts = 5,
+ scale = TRUE, 
  na.rm = TRUE,
  graph = TRUE
 ) 
@@ -154,6 +166,9 @@ fragsListV1Smoothed <- MoveR::actives2(
 \item{Christian Hennig (2020). fpc: Flexible Procedures for Clustering. R package version 2.2-9. \href{https://CRAN.R-project.org/package=fpc}{https://CRAN.R-project.org/package=fpc}}
 \item{Martin Ester, Hans-Peter Kriegel, Joerg Sander, Xiaowei Xu (1996). A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise. Institute for Computer Science, University of Munich. Proceedings of 2nd International Conference on Knowledge Discovery and Data Mining (KDD-96).}
 }
+}
+\seealso{
+\code{\link[fpc]{dbscan}}
 }
 \author{
 Quentin PETITJEAN
