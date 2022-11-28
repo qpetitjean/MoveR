@@ -109,6 +109,8 @@ stateSeq <-
                         paste0(x,
                                ".",
                                seq(length(Positions[[x]]))))
-      }), names(Positions)) 
+      }), names(Positions))
+    # remove empty list before returning the result
+    stateSeq <- lapply(stateSeq, function(x) Filter(nrow, x))
     return(stateSeq)
   }
