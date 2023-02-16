@@ -2,7 +2,7 @@ citHeader("To cite MoveR in publications use:")
 
 bibentry(
   bibtype = "Manual",
-  title   = "MoveR: {An} {R} package to ease animal movement analyses.",
+  title   = "MoveR: {An} {R} package to ease animal movement analyses",
   author  = c(person("PETITJEAN Quentin")),
   year    = "2021",
   note    = "R package version 0.0.0.9000",
