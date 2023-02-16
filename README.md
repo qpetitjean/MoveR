@@ -74,7 +74,7 @@ the raw data from various tracking software such as
 <a href="https://swarm-lab.github.io/trackR">trackR</a>,
 <a href="https://ctrax.sourceforge.net/">Ctrax</a> and
 <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a>
-(other can be implemented on demand).</br></br>
+(other can be implemented later).</br></br>
 <img src="man/figures/Scaret.png" height="15"/> <strong>CLEAN/FILTER</strong>
 the data according to custom functions specified by the user. For
 instance, it can easily remove suspected tracking errors based on
