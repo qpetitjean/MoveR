@@ -67,9 +67,7 @@
 #'        MoveR::speed(
 #'          x,
 #'          TimeCol = "frame",
-#'          scale = 1,
-#'          unit = "pixels"
-#'        ),
+#'          scale = 1),
 #'      # compute turning angle in radians over each fragment (a modulus present within the MoveR package)
 #'      TurnAngle = function(x)
 #'        MoveR::turnAngle(x, unit = "radians"),

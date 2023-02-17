@@ -27,7 +27,7 @@ and coordinates of the particle along its trajectory. The function then returns 
 trajectory and the closest point to the object edge.
 }
 \examples{
-# TODO with a circular arena and to complete with a polygaonal arena
+# TODO with a circular arena and to complete with a polygonal arena
 
 # Exemple 1: With a circular arena
 
@@ -36,7 +36,7 @@ trajectory and the closest point to the object edge.
 
 # load the sample data
 Data <-
- readTrex("https://github.com/qpetitjean/MoveR/tree/MovRV1/sampleData/sample_1/TREXOutput",
+ readTrex("https://github.com/qpetitjean/MoveR/tree/MovRV1/inst/sampleData/sample_1/TREXOutput",
    mirrorY = T,
    imgHeight = 2160,
   rawDat = F

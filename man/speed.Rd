@@ -14,8 +14,6 @@ a column containing time information, whatever the unit, over the fragment.}
 (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.}
 
 \item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
-
-\item{unit}{The unit expected after scaling (e.g., "cm", "m", ...).}
 }
 \value{
 This function returns a vector containing the value of speed along a given fragment.
@@ -38,9 +36,9 @@ fragDat <- data.frame(
  frame = fragDatTemp[["time"]]
 )
 
-# compute the speed of the particle along its trajectory, here we consider that the space unit is the pixels,
+# compute the speed of the particle along its trajectory,
 # expressing the speed as pixels/frame
-fragDat[["speedFrame"]] <- speed(fragDat, scale = 1, TimeCol = "frame", unit = "pixels")
+fragDat[["speedFrame"]] <- speed(fragDat, scale = 1, TimeCol = "frame")
 
 # to compute the speed according to another time unit, a new column containing the new timeline is needed
 
@@ -48,7 +46,7 @@ fragDat[["second"]] <- fragDat[["frame"]]/25 # here we consider that the frame r
 
 # then compute the speed of the particle along its trajectory according to the new time unit
 
-fragDat[["speedSec"]] <- speed(fragDat, scale = 1/1, TimeCol = "second", unit = "pixels")
+fragDat[["speedSec"]] <- speed(fragDat, scale = 1/1, TimeCol = "second")
 
 str(fragDat)
 
@@ -58,7 +56,7 @@ sampledFragDat <- resampleFrags(fragDat, TimeCol = "frame",  Tstep = 10)
 
 # and then compute the speed of the particle along its trajectory
 
-sampledFragDat[["speed"]] <- speed(sampledFragDat, scale = 1/1, TimeCol = "frame", unit = "pixels")
+sampledFragDat[["speed"]] <- speed(sampledFragDat, scale = 1/1, TimeCol = "frame")
 
 str(sampledFragDat)
 

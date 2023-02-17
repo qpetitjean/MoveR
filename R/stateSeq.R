@@ -112,5 +112,6 @@ stateSeq <-
       }), names(Positions))
     # remove empty list before returning the result
     stateSeq <- lapply(stateSeq, function(x) Filter(nrow, x))
+    stateSeq <- Filter(length, stateSeq)
     return(stateSeq)
   }

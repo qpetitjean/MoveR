@@ -2,7 +2,7 @@
 % Please edit documentation in R/circles.R
 \name{circles}
 \alias{circles}
-\title{Draw circles.}
+\title{Draw circle(s).}
 \usage{
 circles(
   x = NULL,
@@ -40,7 +40,7 @@ circles(
 draw the circles from center coordinates and value of the radius on an existing plot window or, if there is no active plot window, on a new plot window.
 }
 \description{
-Given x and y coordinates as well as the circle radius, this function draw.
+Given x and y coordinates as well as the circle radius, this function draw circle(s).
 }
 \examples{
 

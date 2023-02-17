@@ -47,9 +47,10 @@
 #'
 #' @examples
 #'
+#'set.seed(2028)
 #'# generate some dummy fragments
 #'## start to specify some parameters to generate fragments
-#'Fragn <- 500 # the number of fragment to simulate
+#'Fragn <- 100 # the number of fragment to simulate
 #'FragL <- 100:1000 # the length of the fragments or a sequence to randomly sample fragment length
 #'
 #'fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
@@ -88,7 +89,8 @@
 #'  ,
 #'  density = NA
 #')
-#'# It is also possible to add the number of individual on which ANND was computed across time on the plot
+#'# It is also possible to add the number of particles on which ANND was computed across time on the plot
+#'# here we can see that the less particles detected, the higher the ANND which make sense.
 #'par(new = TRUE)
 #'plot(
 #'  NULL,

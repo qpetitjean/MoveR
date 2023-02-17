@@ -78,8 +78,7 @@
 #'  behavStates = "behavStates"
 #')
 #'
-#'# check the net square displacement value
-#'D
+#'# check the net square displacement value D
 #'
 #' @export
 

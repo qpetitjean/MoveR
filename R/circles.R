@@ -1,6 +1,6 @@
-#' @title Draw circles.
+#' @title Draw circle(s).
 #'
-#' @description Given x and y coordinates as well as the circle radius, this function draw.
+#' @description Given x and y coordinates as well as the circle radius, this function draw circle(s).
 #'
 #' @param x a coordinate vector of circles to plot.
 #'

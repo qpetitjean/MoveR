@@ -38,7 +38,6 @@ this function returns a list of 9 vectors classically used for further computati
 
 Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above
 and the second containing all the elements retrieved from the .npz files (see rawDat argument).
-Also, by default the function mirror y coordinates to start on the bottom-left (see mirrorY argument).
 }
 \examples{
 

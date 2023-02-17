@@ -24,6 +24,7 @@ this function return a vector containing TRUE or FALSE when individual is active
 }
 \examples{
 
+set.seed(2028)
 # generate a dummy fragment
 ## start to specify some parameters to generate the fragment
 FragL <- 100 # the length of the fragment or a sequence to randomly sample fragment length
@@ -35,24 +36,24 @@ fragDat <- data.frame(
  frame = fragDatTemp[["time"]]
 )
 
-# compute the speed of the particle along its trajectory, here we consider that the space unit is the pixels, 
-# expressing the speed as pixels/frame
-fragDat[["speed"]] <- speed(fragDat, scale = 1, TimeCol = "frame", unit = "pixels/frame")
+# compute the speed of the particle along its trajectory
+fragDat[["speed"]] <- speed(fragDat, scale = 1, TimeCol = "frame")
 
 # we can then define the speed treshold above which the particle is considered actives using quantiles
 # here we use the 0.025 quantile to find the minimum speed treshold
 hist(log10(fragDat[["speed"]][-is.na(fragDat[["speed"]])]))
 tresh <- quantile(log10(fragDat[["speed"]][-is.na(fragDat[["speed"]])]), 0.025)
+abline(v = tresh)
 
-actives1(fragDat, speedCol = "speed", minSpeed = tresh[[1]])
+fragDat[["active_1"]] <- actives1(fragDat, speedCol = "speed", minSpeed = 10^tresh)
 
 # draw the particle' trajectory and spot the inactive moments using red dots
 drawFrags(
 list(fragDat),
 imgRes = c(max(fragDat[["x.pos"]]), max(fragDat[["y.pos"]])),
 add2It = list(
- points(fragDat[["x.pos"]][which(fragDat[["active_1"]] == FALSE)],
-        fragDat[["y.pos"]][which(fragDat[["active_1"]] == FALSE)],
+ points(fragDat[["x.pos"]][which(fragDat[["active_1"]] == "inactive")],
+        fragDat[["y.pos"]][which(fragDat[["active_1"]] == "inactive")],
         col = "red", 
         pch = 19,
         cex = 1.5))
