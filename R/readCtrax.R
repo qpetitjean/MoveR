@@ -1,4 +1,4 @@
-#' @title Load Ctrax tracking output .mat file.
+#' @title Import Ctrax tracking output .mat file.
 #'
 #' @description Given the path of the .mat file corresponding to Ctrax output,
 #' this function returns a list of 9 vectors classically used for further computations using MoveR package:
@@ -37,7 +37,7 @@
 #'
 #' @examples
 #'
-#' # Load the list containing the 9 vectors classically used for further computation
+#' # Import the list containing the 9 vectors classically used for further computation
 #' # and mirror Y coordinates to start on the top-left
 #'
 #' Data <-
@@ -47,7 +47,7 @@
 #'     imgHeight = 2160
 #'   )
 #'
-#' # Load the list containing the 9 vectors classically used for further computation
+#' # Import the list containing the 9 vectors classically used for further computation
 #' # and do not mirror Y coordinates to start on the bottom-left
 #'
 #' Data <-

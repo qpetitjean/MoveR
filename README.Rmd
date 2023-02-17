@@ -101,7 +101,6 @@ Please cite this package as:
 package to ease animal movement analyses. R package version 0.0.0.9000.
 
 
-
 ## Code of Conduct
 
 Please note that the `MoveR` project is released with a 

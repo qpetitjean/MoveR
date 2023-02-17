@@ -2,7 +2,7 @@
 % Please edit documentation in R/readCtrax.R
 \name{readCtrax}
 \alias{readCtrax}
-\title{Load Ctrax tracking output .mat file.}
+\title{Import Ctrax tracking output .mat file.}
 \usage{
 readCtrax(ctraxPath, mirrorY = FALSE, imgHeight = NULL)
 }
@@ -36,7 +36,7 @@ Also, the function can mirror y coordinates (see mirrorY argument).
 }
 \examples{
 
-# Load the list containing the 9 vectors classically used for further computation
+# Import the list containing the 9 vectors classically used for further computation
 # and mirror Y coordinates to start on the top-left
 
 Data <-
@@ -46,7 +46,7 @@ Data <-
     imgHeight = 2160
   )
 
-# Load the list containing the 9 vectors classically used for further computation
+# Import the list containing the 9 vectors classically used for further computation
 # and do not mirror Y coordinates to start on the bottom-left
 
 Data <-

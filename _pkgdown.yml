@@ -1,3 +1,9 @@
+title: MoveR
+url: TODO
+
+development:
+  mode: auto
+  
 template:
   bootstrap: 5
   bootswatch: flatly
@@ -5,3 +11,75 @@ template:
     base_font: {google: "Roboto"}
     heading_font: {google: "Roboto Slab"}
     code_font: {google: "JetBrains Mono"}
+    
+reference:
+  - title: Import
+    desc: Import raw data from various video tracking software into R env.
+    contents:
+      - '`readCtrax`'
+      - '`readIdtracker`'
+      - '`readTrackR`'
+      - '`readTrex`'
+
+  - title: Clean/Filter
+    desc: Create custom filter to either clean/remove spurious track parts or filter/resample the dataset.
+    contents:
+      - '`cutFrags`'
+      - '`filterFunc`'
+      - '`filterFrags`'
+      - '`filterMerge`'
+      - '`resampleFrags`'
+
+  - title: Evaluate
+    desc: Evaluate the quantity of data removed over the cleaning/filtering process and perform sensitivity analysis between video tracking and manual detection.
+    contents:
+      - '`trackSensitiv`'
+      - '`trackStats`'     
+ 
+  - title: Visualize
+    desc: Visualize the tracks of all or specified particles over time.
+    contents:
+      - '`drawFrags`'       
+
+  - title: Low Level Metrics
+    desc: Performed simple computation over each tracks. 
+    contents:
+      - '`actives1`'
+      - '`dist2Edge`'
+      - '`dist2Pt`'
+      - '`distTraveled`'
+      - '`sinuosity`'   
+      - '`speed`'
+      - '`turnAngle`'
+
+  - title: High Level Metrics
+    desc: Performed more advanced computation over each tracks. 
+    contents:
+      - '`actives2`'
+      - '`analyseFrags`'
+      - '`ANND`'
+      - '`exploredArea`'
+      - '`turchinD`'       
+   
+  - title: Temporal Trends
+    desc: Analyse temporal trends for a given computation over time by averaging the value of each track and compute a studentized 95% confidence interval (bootstrap).
+    contents:
+      - '`analyseTime`'
+      - '`analyseTimeBoots`'
+
+  - title: Spatial Trends
+    desc: Analyse spatial trends over tracks according to custom pattern (e.g., displacement across area).
+    contents:
+      - '`stateSeq`'
+      
+  - title: Utilities
+    desc: Some utilities functions helping to either import sample data, convert it or locate particles' position.
+    contents:
+      - '`circles`'
+      - '`convert2frags`'
+      - '`convert2list`'
+      - '`dlSampleDat`'
+      - '`listGet`'
+      - '`locaPos`' 
+      - '`mirrorYFunc`' 
+      - '`slidWin`' 

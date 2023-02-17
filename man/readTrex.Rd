@@ -2,7 +2,7 @@
 % Please edit documentation in R/readTrex.R
 \name{readTrex}
 \alias{readTrex}
-\title{Load Trex tracking output .npz files.}
+\title{Import Trex tracking output .npz files.}
 \usage{
 readTrex(trexPath, mirrorY = FALSE, imgHeight = NULL, rawDat = FALSE)
 }
@@ -41,7 +41,7 @@ and the second containing all the elements retrieved from the .npz files (see ra
 }
 \examples{
 
-# Load the list containing the 9 vectors classically used for further computation
+# Import the list containing the 9 vectors classically used for further computation
 # and mirror Y coordinates to start on the bottom-left
 
 Data <-
@@ -52,7 +52,7 @@ Data <-
     rawDat = F
   )
 
-# Load the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
+# Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
 # and the second list containing all the elements retrieved from .npz files,
 # also do not mirror Y coordinates (start on the top-left)
 

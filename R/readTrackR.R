@@ -1,4 +1,4 @@
-#' @title Load TrackR tracking output .csv file.
+#' @title Import TrackR tracking output .csv file.
 #'
 #' @description Given the path of the .csv file corresponding to TrackR output,
 #' this function returns a list of 9 vectors classically used for further computations using MoveR package:
@@ -43,7 +43,7 @@
 #'
 #' @examples
 #'
-#' # Load the list containing the 9 vectors classically used for further computation
+#' # Import the list containing the 9 vectors classically used for further computation
 #' # and mirror Y coordinates to start on the top-left
 #'
 #' Data <-
@@ -54,7 +54,7 @@
 #'     rawDat = F
 #'   )
 #'
-#' # Load the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
+#' # Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
 #' # and the second list containing all the elements retrieved from .csv file,
 #' # also do not mirror Y coordinates (start on the bottom-left)
 #'

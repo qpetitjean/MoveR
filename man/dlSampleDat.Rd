@@ -12,7 +12,7 @@ dlSampleDat(dataSet = c(1, 2), dir = NA)
 \item{dir}{The path to the directory where the sample dataset is saved, by default, the function will save it in a temporary directory (optional).}
 }
 \value{
-This function returns a vector containing the path to the sample dataset (raw tracking data) and the distance matrix from the border of the arena (performed using ImageJ).
+This function returns a vector containing the path to the sample dataset (raw tracking data), the distance matrix from the border of the arena (performed using ImageJ) and the reference data, a .csv file containing particles location (manually detected) over several frames to perform sensitivity analyses.
 }
 \description{
 Given the id of the dataset, this function download or retrieve the sample dataset used as example

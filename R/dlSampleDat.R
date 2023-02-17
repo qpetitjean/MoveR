@@ -7,7 +7,7 @@
 #'
 #' @param dir The path to the directory where the sample dataset is saved, by default, the function will save it in a temporary directory (optional).
 #'
-#' @return This function returns a vector containing the path to the sample dataset (raw tracking data) and the distance matrix from the border of the arena (performed using ImageJ).
+#' @return This function returns a vector containing the path to the sample dataset (raw tracking data), the distance matrix from the border of the arena (performed using ImageJ) and the reference data, a .csv file containing particles location (manually detected) over several frames to perform sensitivity analyses.
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -67,16 +67,33 @@ dlSampleDat <- function(dataSet = c(1, 2), dir = NA) {
   # here we will use the sample of data given by sampleData argument
   ## path to the sample data from the previously downloaded and unziped file
   path2F <-
-    file.path(td, "MoveR_SampleData-main", sampleData, "TREXOutput")
+    paste(td, "MoveR_SampleData-main", sampleData, "TREXOutput", sep = "\\")
   
   ## path to the distance matrix from the arena edge (generated using imageJ) from the previously downloaded and unziped file
   ArenaFile <-
-    file.path(
+    paste(
       td,
       "MoveR_SampleData-main",
       sampleData,
       "ReferenceData",
-      "DistMatrixFromArenaEdge.txt"
+      "DistMatrixFromArenaEdge.txt",
+      sep = "\\"
     )
-  return(c(path2F, ArenaFile))
+  ## path to the reference data, a .csv file containing particles location (manually detected) over several frames to perform sensitivity analyses
+  ### find whether RefDat file exist
+  RefDat <- list.files("D:/Postdoc_INRAE_SAM/MoveR_SampleData/sample_1/ReferenceData", "RefDat")
+  if(length(RefDat) > 0){
+    refDatPath <-
+      paste(
+        td,
+        "MoveR_SampleData-main",
+        sampleData,
+        "ReferenceData",
+        RefDat,
+        sep = "\\"
+      )
+  }else{
+    refDatPath <- NULL
+  }
+  return(c(path2F, ArenaFile, refDatPath))
 }

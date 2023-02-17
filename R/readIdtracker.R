@@ -1,4 +1,4 @@
-#' @title Load idtracker.ai tracking output .npy file.
+#' @title Import idtracker.ai tracking output .npy file.
 #'
 #' @description Given the path of the .npy file corresponding to idtracker output,
 #' this function returns a list of 9 vectors classically used for further computations using MoveR package:
@@ -38,7 +38,7 @@
 #'
 #' @examples
 #'
-#' # Load the list containing the 9 vectors classically used for further computation
+#' # Import the list containing the 9 vectors classically used for further computation
 #' # and mirror Y coordinates to start on the bottom-left
 #'
 #' Data <-
@@ -48,7 +48,7 @@
 #'     imgHeight = 2160
 #'   )
 #'
-#' # Load the list containing the 9 vectors classically used for further computation
+#' # Import the list containing the 9 vectors classically used for further computation
 #' # and do not mirror Y coordinates to start on the top-left
 #'
 #' Data <-

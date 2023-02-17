@@ -1,6 +1,25 @@
-# Load data
+---
+title: "Import Data"
+description: "A tutorial about how to import raw tracking data into R env. using the MoveR package."
+author:
+  - name: Quentin PETITJEAN
+    url: "https://qpetitjean.github.io/qpetitjean_distill/index.html"
+    affiliation: Institut Sophia Agrobiotech, UMR5254 ISA, INRAE, CNRS, Université Côte d’Azur, Sophia-Antipolis, France.
+    affiliation_url: https://www6.paca.inrae.fr/institut-sophia-agrobiotech
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    base_format: rmarkdown::html_vignette
+    fig_caption: yes
+    toc: true
+    toc_depth: 3
+pkgdown:
+  as_is: true
+---
 
-We are starting with a basic example of loading raw data from tracking software.
+# Import data
+
+We are starting with a basic example of importing raw data from tracking software.
 
 ## Download sample data from github.
 
@@ -8,7 +27,7 @@ For this example we are selecting the first sample of data available in the <a h
 
 Briefly, this dataset come from the video recording (image resolution: 3840x2160) of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena for 8 minutes at 25 fps and tracked using <a href="https://trex.run">TRex</a> (see below). 
 
-<img src="D:/Postdoc_INRAE_SAM/MoveR_SampleData/2602_ISA3080_Low_5.mov_3600.png" height="720" align="middle"/>
+<img src="https://github.com/qpetitjean/MoveR_SampleData/raw/main/sample_1/2602_ISA3080_Low_5.mov_3600.png" height="540" align="middle"/>
 
 Now let's download the data.
 ```{r dlSampleData, echo=TRUE}
@@ -19,20 +38,20 @@ Path2Data
 
 ```
 
-The function download the data from the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository and returns a vector containing the path to the raw data and the distance matrix helping to locate the edge of the arena (this will be useful in another tutorial).
+The function download the data from the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository and returns a vector containing the path to the raw data and the distance matrix helping to locate the edge of the arena and the reference data corresponding to the location particles (manually detected) over several frames (the latters will be useful in another tutorial).
 
-Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the "dir" argument from the `r \code{\link[MoveR]{dlSampleDat}}` function. 
+Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the "dir" argument from the <em>dlSampleDat</em> function. 
 In any case, the function look for previous occurrence of the sample data to avoid multiple downloading.
 
-## Load sample data into R environment.
+## Import sample data into R environment.
 
-Once the sample data has been downloaded or retrieved we use the function `r \code{\link[MoveR]{readTrex}}` to load the data into `r fontawesome::fa("r-project", fill = "steelblue")` environment.<br />
-Note that the same result can be achieved trough the use of `r \code{\link[MoveR]{readCtrax}}`, `r \code{\link[MoveR]{readIdtracker}}` or `r \code{\link[MoveR]{readTrackR}}` depending on the input data. 
+Once the sample data has been downloaded or retrieved we use the function <em>readTrex</em> to import the data into `r fontawesome::fa("r-project", fill = "steelblue")` environment.<br />
+Note that the same result can be achieved trough the use of <em>readCtrax</em>, <em>readIdtracker</em> or <em>readTrackR</em> depending on the input data. 
 
 Here the raw tracking data are located in the ./MoveR_SampleData-main/sample_1/TREXOutput directory which is the first element of the Path2Data vector.
 
-```{r LoadShortDat, echo=TRUE}
-# load the sample data
+```{r ImportShortDat, echo=TRUE}
+# Import the sample data
 Data <-
   MoveR::readTrex(Path2Data[[1]])
 
@@ -40,12 +59,12 @@ str(Data)
 
 ```
 
-The function load the data as a list of 9 elements that are the most useful and further used by various functions of the MoveR package. 
+The function import the data as a list of 9 elements that are the most useful and further used by various functions of the MoveR package. 
 
-Note that output of the various "read" functions is standardized. However, it is also possible to load the output as returned by the tracking software by specifying rawDat = TRUE.
+Note that output of the various "read" functions is standardized. However, it is also possible to import the output as returned by the tracking software by specifying rawDat = TRUE.
 
-```{r LoadFullDat, echo=TRUE}
-# load the sample data
+```{r ImportFullDat, echo=TRUE}
+# Import the sample data
 DataFull <-
   MoveR::readTrex(Path2Data[[1]],
                   rawDat = TRUE)
@@ -56,13 +75,13 @@ str(DataFull)
 
 In this case, the output of the function returns a list containing 2 sublists, the first corresponding to the one mentioned above and the second containing all the elements as returned by the tracking software.
 
-Also, the argument mirrorY, can be used to revert the y coordinates. Indeed some tracking software sets the origin of the y axis on the bottom-left while other use the upper-left corner of the video (see the  `r \code{\link[MoveR]{readTrex}}` for more insight).
+Also, the argument mirrorY, can be used to revert the y coordinates. Indeed some tracking software sets the origin of the y axis on the bottom-left while other use the upper-left corner of the video (see the  `r <em>readTrex</em> for more insight).
 
 ## Convert the data to a list of particles tracks (tracklets).
 
 In order to ease the readability and computation performed on tracking data, the list of elements describing the tracking output need to be converted as a list of particles tracks called tracklets. 
 
-To ease further computation, graphical representation and manual inspection the data are converted to a list of tracklets based on particles' identity using the `r \code{\link[MoveR]{convert2frags}}` function. 
+To ease further computation, graphical representation and manual inspection the data are converted to a list of tracklets based on particles' identity using the <em>convert2frags</em> function. 
 Here we use only the 7 first element of Data because the last two (i.e., ntargets and timestamps) do not carry the same amount of information and are not useful for the next steps of this tutorial.
 
 ```{r Convert, echo=TRUE}
@@ -86,16 +105,16 @@ It is then easy to look at the particles trajectories.
 
 ## First look at the trajectories
 
-Using the `r \code{\link[MoveR]{drawFrags}}` function, it is easy to visualize the trajectories included in the dataset (see fig. \@ref(fig:DrawfragsIni)A below), or to focus on the trajectories described only by some particles, here the tens' first (see fig. \@ref(fig:DrawfragsIni)B below).
+Using the <em>drawFrags</em>` function, it is easy to visualize the trajectories included in the dataset (see fig. \@ref(fig:DrawfragsIni)A below), or to focus on the trajectories described only by some particles, here the tens' first (see fig. \@ref(fig:DrawfragsIni)B below).
 
-Note that `r \code{\link[MoveR]{drawFrags}}` needs an argument specifying the timeline of the video (here "frame") and the resolution of the video (see the brief description of the dataset above).
+Note that <em>drawFrags</em> needs an argument specifying the timeline of the video (here "frame") and the resolution of the video (see the brief description of the dataset above).
 
 ```{r Drawfrags1, echo=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. A. all trajectories are represented. B. only the first 10 tracklets are represented. The trajectories are colored according to the moments at which they are recorded."}
 # create a vector containing the resolution of the video
 imgRes = c(3840, 2160)
 
 # split the graphical window in two parts
-par(mfrow = c(1, 2))
+par(mfrow = c(2, 1))
 
 # draw the trajectories of all particles
 MoveR::drawFrags(trackDat,
@@ -123,7 +142,7 @@ Note that it is possible to represent specified fragments (selFrags argument) ov
 
 ```{r Drawfrags2, echo=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.cap="Micro-wasps trajectories over specified part of the video timeline, expressed in frame. A. all trajectories are represented over a time window of 1000 frames (between 41063 and 42063 frames). B. all trajectories are represented over two time windows of 1000 frames duration (between 41063 and 42063 and 80000 and 81000 frames). The trajectories are colored according to the moments at which they are recorded."}
 # split the graphical window in two parts
-par(mfrow=c(1,2))
+par(mfrow=c(2,1))
 
 # draw the trajectories over a time window of 1000 frames (between 1 and 999 frames)
 MoveR::drawFrags(

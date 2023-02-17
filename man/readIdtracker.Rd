@@ -2,7 +2,7 @@
 % Please edit documentation in R/readIdtracker.R
 \name{readIdtracker}
 \alias{readIdtracker}
-\title{Load idtracker.ai tracking output .npy file.}
+\title{Import idtracker.ai tracking output .npy file.}
 \usage{
 readIdtracker(IdtrackerPath, mirrorY = TRUE, imgHeight = NULL, frameR = NULL)
 }
@@ -39,7 +39,7 @@ Also, by default the function mirror y coordinates to start on the bottom-left (
 }
 \examples{
 
-# Load the list containing the 9 vectors classically used for further computation
+# Import the list containing the 9 vectors classically used for further computation
 # and mirror Y coordinates to start on the bottom-left
 
 Data <-
@@ -49,7 +49,7 @@ Data <-
     imgHeight = 2160
   )
 
-# Load the list containing the 9 vectors classically used for further computation
+# Import the list containing the 9 vectors classically used for further computation
 # and do not mirror Y coordinates to start on the top-left
 
 Data <-
