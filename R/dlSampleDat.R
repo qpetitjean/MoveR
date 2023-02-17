@@ -46,10 +46,10 @@ dlSampleDat <- function(dataSet = c(1, 2), dir = NA) {
   TargetDirList <- dirList[grepl("MoveR_SampleData-main", dirList)]
   # if data has already been dl, retrieve the path, else dl it in temp dir
   if (length(TargetDirList) > 0) {
-    dataPath <-
-      dirname(TargetDirList[which.min(lengths(regmatches(
+    td <-
+      gsub("/", "\\\\", dirname(TargetDirList[which.min(lengths(regmatches(
         TargetDirList, gregexpr("/", TargetDirList)
-      )))])
+      )))]))
   } else{
     # download sample data from the "https://github.com/qpetitjean/MoveR_SampleData" github repository
     ## get the file url
