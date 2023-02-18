@@ -56,7 +56,7 @@ for the x and y axis respectively (default = 0).}
 
 \item{lwd}{Line width of fragment path (default = 1).}
 
-\item{main}{Primary title of the plot (default = "Fragments").}
+\item{main}{Primary title of the plot (default = "").}
 
 \item{xlab}{X-axis label (default = "Video width (pixels)").}
 
@@ -134,7 +134,7 @@ drawFrags(
  imgRes = c(max(trackDatList$x.pos), max(trackDatList$y.pos)),
  timeWin = list(c(1, 100), c(800, 900)),
  timeCol = "frame",
- colFrag = TRUE
+ colId = "identity"
 )
 
 # Exemple 5: draw fragments according to time interval (interval 1 to 100)

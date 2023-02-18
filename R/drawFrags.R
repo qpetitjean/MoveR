@@ -33,7 +33,7 @@
 #'
 #' @param lwd Line width of fragment path (default = 1).
 #'
-#' @param main Primary title of the plot (default = "Fragments").
+#' @param main Primary title of the plot (default = "").
 #'
 #' @param xlab X-axis label (default = "Video width (pixels)").
 #'
@@ -109,7 +109,7 @@
 #'  imgRes = c(max(trackDatList$x.pos), max(trackDatList$y.pos)),
 #'  timeWin = list(c(1, 100), c(800, 900)),
 #'  timeCol = "frame",
-#'  colFrag = TRUE
+#'  colId = "identity"
 #')
 #'
 #'# Exemple 5: draw fragments according to time interval (interval 1 to 100)
@@ -358,6 +358,10 @@ drawFrags <- function(trackDat,
         cex = cex.leg
       )
     } else{
+      colValNum <- as.numeric(gsub("[^[:digit:]]", "", colVal))
+      names(colValNum) <- seq_along(colValNum)
+      colVal <- colVal[as.numeric(names(sort(colValNum)))]
+      
       graphics::legend(
         x = max(ScaleX) + (15 * max(ScaleX) / 100),
         y = max(ScaleY) - (1 * max(ScaleY) / 100),
@@ -370,7 +374,7 @@ drawFrags <- function(trackDat,
         text.font = 1,
         cex = cex.leg,
         xpd = TRUE,
-        ncol = ceiling(length(colVal[!is.na(colVal)]) / 10)
+        ncol = floor(length(colVal[!is.na(colVal)]) / 10)
       )
     }
   }
@@ -421,7 +425,7 @@ drawFrags <- function(trackDat,
   }
   
   coloration <-
-    data.frame(colors = coloration, colVal = as.numeric(colVal))
+    data.frame(colors = coloration, colVal = colVal)
   
   # plot all fragments according to timeWin
   if (is.null(selFrags)) {
@@ -430,7 +434,6 @@ drawFrags <- function(trackDat,
     pb <-
       progress::progress_bar$new(format = "fragments drawing [:bar] :current/:total (:percent)", total = total)
     pb$tick(0)
-    Sys.sleep(0.001)
     
     for (f in seq(length(NewfragsList))) {
       NewfragsList[[f]]$colorpal <-
@@ -454,10 +457,8 @@ drawFrags <- function(trackDat,
           lwd = lwd
         )
       )
-      
       # progress bar
       pb$tick(1)
-      Sys.sleep(0.001)
     }
   } else {
     # plot only the selected fragments according to timeWin color
@@ -466,7 +467,6 @@ drawFrags <- function(trackDat,
     pb <-
       progress::progress_bar$new(format = "fragments drawing [:bar] :current/:total (:percent)", total = total)
     pb$tick(0)
-    Sys.sleep(0.001)
     
     for (f in selFrags) {
       NewfragsList[[f]]$colorpal <-
@@ -492,7 +492,6 @@ drawFrags <- function(trackDat,
       )
       # progress bar
       pb$tick(1)
-      Sys.sleep(0.001)
     }
   }
 }
