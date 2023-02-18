@@ -11,8 +11,6 @@ output:
   bookdown::html_document2:
     base_format: rmarkdown::html_vignette
     fig_caption: yes
-    toc: true
-    toc_depth: 3
 pkgdown:
   as_is: true
 ---
@@ -25,9 +23,14 @@ We are starting with a basic example of importing raw data from tracking softwar
 
 For this example we are selecting the first sample of data available in the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository. 
 
-Briefly, this dataset come from the video recording (image resolution: 3840x2160) of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena for 8 minutes at 25 fps and tracked using <a href="https://trex.run">TRex</a> (see below). 
+Briefly, this dataset come from the video recording (image resolution: 3840x2160) of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena for 8 minutes at 25 fps and tracked using <a href="https://trex.run">TRex</a> (see fig. \@ref(fig:VideoPics) below). 
 
-<img src="https://github.com/qpetitjean/MoveR_SampleData/raw/main/sample_1/2602_ISA3080_Low_5.mov_3600.png" height="540" align="middle"/>
+```{r VideoPics, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.cap="Frame extracted from a video recording of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena."}
+knitr::include_graphics(
+  "https://github.com/qpetitjean/MoveR_SampleData/raw/main/sample_1/2602_ISA3080_Low_5.mov_3600.png"
+)
+
+```
 
 Now let's download the data.
 ```{r dlSampleData, echo=TRUE}
@@ -105,51 +108,66 @@ It is then easy to look at the particles trajectories.
 
 ## First look at the trajectories
 
-Using the <em>drawFrags</em>` function, it is easy to visualize the trajectories included in the dataset (see fig. \@ref(fig:DrawfragsIni)A below), or to focus on the trajectories described only by some particles, here the tens' first (see fig. \@ref(fig:DrawfragsIni)B below).
+Using the <em>drawFrags</em>` function, it is easy to visualize the trajectories included in the dataset (see fig. \@ref(fig:Drawfrags1)A below), or to focus on the trajectories described only by some particles, here the tens' first (see fig. \@ref(fig:Drawfrags1)B below).
 
 Note that <em>drawFrags</em> needs an argument specifying the timeline of the video (here "frame") and the resolution of the video (see the brief description of the dataset above).
 
-```{r Drawfrags1, echo=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. A. all trajectories are represented. B. only the first 10 tracklets are represented. The trajectories are colored according to the moments at which they are recorded."}
+```{r Drawfrags1, echo=TRUE, fig.show="hold", fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=5, dpi = 300, fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. A. all trajectories are represented. B. only the first 10 tracklets are represented. The trajectories are colored according to the moments at which they are recorded."}
+# split the graphical window in 2 columns
+par(mfrow = c(1, 2))
+
 # create a vector containing the resolution of the video
 imgRes = c(3840, 2160)
-
-# split the graphical window in two parts
-par(mfrow = c(2, 1))
 
 # draw the trajectories of all particles
 MoveR::drawFrags(trackDat,
                  imgRes = imgRes,
-                 timeCol = "frame")
+                 timeCol = "frame",
+                 cex.leg = 0.75)
 
 # add a letter identifying the plot to the upper left corner of the first plot
-mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+mtext(
+  substitute(paste(bold("A"))),
+  side = 3,
+  line = 0,
+  adj = 0,
+  padj = -0.5
+)
 
 # draw the trajectories only for the tens' first particles
 MoveR::drawFrags(
   trackDat,
   selFrags = c(1:10),
   imgRes = imgRes,
-  timeCol = "frame"
+  timeCol = "frame",
+  cex.leg = 0.75
 )
 
 # add a letter identifying the plot to the upper left corner of the second plot
-mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+mtext(
+  substitute(paste(bold("B"))),
+  side = 3,
+  line = 0,
+  adj = 0,
+  padj = -0.5
+)
 ```
 
-otherwise, it is possible to focus on the trajectories recorded within a given time intervals. For instance, between 1 and 999 frames (see fig. \@ref(fig:DrawfragsIniTime)A below) and between 6000 and 6999 frames and 11000, 11999 frames (see fig. \@ref(fig:DrawfragsIniTime)B below).
+otherwise, it is possible to focus on the trajectories recorded within a given time intervals. For instance, between 1 and 999 frames (see fig. \@ref(fig:Drawfrags2)A below) and between 6000 and 6999 frames and 11000, 11999 frames (see fig. \@ref(fig:Drawfrags2)B below).
 
 Note that it is possible to represent specified fragments (selFrags argument) over given time window(s) (timeWin argument).
 
-```{r Drawfrags2, echo=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.cap="Micro-wasps trajectories over specified part of the video timeline, expressed in frame. A. all trajectories are represented over a time window of 1000 frames (between 41063 and 42063 frames). B. all trajectories are represented over two time windows of 1000 frames duration (between 41063 and 42063 and 80000 and 81000 frames). The trajectories are colored according to the moments at which they are recorded."}
-# split the graphical window in two parts
-par(mfrow=c(2,1))
+```{r Drawfrags2, echo=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=5, dpi = 300, fig.cap="Micro-wasps trajectories over specified part of the video timeline, expressed in frame. A. all trajectories are represented over a time window of 1000 frames (between 1 and 999 frames). B. all trajectories are represented over two time windows of 1000 frames duration (between 6000 and 6999 and 11000 and 11999 frames). The trajectories are colored according to the moments at which they are recorded."}
+# split the graphical window in 2 columns
+par(mfrow=c(1,2))
 
 # draw the trajectories over a time window of 1000 frames (between 1 and 999 frames)
 MoveR::drawFrags(
   trackDat,
   timeWin = list(c(1, 999)),
   imgRes = imgRes,
-  timeCol = "frame"
+  timeCol = "frame",
+  cex.leg = 0.75
 )
 
 # add a letter identifying the plot to the upper left corner of the first plot
@@ -160,7 +178,8 @@ MoveR::drawFrags(
   trackDat,
   timeWin = list(c(6000, 6999), c(11000, 11999)),
   imgRes = imgRes,
-  timeCol = "frame"
+  timeCol = "frame",
+  cex.leg = 0.75
 )
 
 # add a letter identifying the plot to the upper left corner of the second plot
@@ -168,6 +187,6 @@ mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 ```
 
 That's all for this first introduction to the MoveR package. 
-For more insight check the next tutorials. 
+For more insight on how to clean/filer the dataset as well as perform further computations check the next tutorials. 
 
-Enjoy coding.
+<strong>Enjoy coding.</strong>

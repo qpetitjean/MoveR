@@ -10,8 +10,8 @@
 #' @param selFrags A vector of either numeric values or character strings,
 #' the number or the id of the selFrags to plot (optional).
 #'
-#' @param imgRes A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot
-#'  (i.e., the number of pixels in image width and height, default = 1920 x 1080).
+#' @param imgRes A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
+#' If imgRes is unspecified, the function retrieve it using x and y maximum values + 5%.
 #'
 #' @param timeWin  A list of one or several vector containing 2 numeric values separated by a comma
 #' corresponding to the time interval between which selFrags have to be drawn in frame (optional).
@@ -144,7 +144,7 @@
 
 drawFrags <- function(trackDat,
                       selFrags = NULL,
-                      imgRes = c(1920, 1080),
+                      imgRes = c(NA, NA),
                       timeWin = list(c(0, Inf)),
                       timeCol = "frame",
                       colGrad = c(
@@ -163,7 +163,7 @@ drawFrags <- function(trackDat,
                       add2It = NULL,
                       srt = 0,
                       lwd = 1,
-                      main = "Fragments",
+                      main = "",
                       xlab = "Video width (pixels)",
                       ylab = "Video height (pixels)",
                       legend = TRUE,
@@ -183,9 +183,26 @@ drawFrags <- function(trackDat,
   # compute the duration of the video according to timeCol argument
   viDur <-
     max(unlist(lapply(trackDat, function(x)
-      max(listGet(x, timeCol),
+      max(MoveR::listGet(x, timeCol),
           na.rm = T))))
-  
+  # if imgRes is unspecified retrieve it approximately using the maximum value in x and y coordinates
+  if (TRUE %in% is.na(imgRes)) {
+    xCoords <- unlist(lapply(trackDat, function(x)
+      MoveR::listGet(x, "x.pos")))
+    if (length(which(is.infinite(xCoords)) > 0)) {
+      xCoords <- xCoords[!is.infinite(xCoords)]
+    }
+    width <- round(max(xCoords) + 5 * max(xCoords) / 100, 0)
+    
+    yCoords <- unlist(lapply(trackDat, function(x)
+      MoveR::listGet(x, "y.pos")))
+    if (length(which(is.infinite(yCoords)) > 0)) {
+      yCoords <- yCoords[!is.infinite(yCoords)]
+    }
+    height <- round(max(yCoords) + 5 * max(yCoords) / 100, 0)
+    
+    imgRes <- c(width, height)
+  }
   # if colId argument is NULL, set it to timeCol as default
   if (is.null(colId)) {
     colId <- timeCol
@@ -193,7 +210,7 @@ drawFrags <- function(trackDat,
   # define color ramp according to colId argument
   Pal <- grDevices::colorRampPalette(c(colGrad))
   colVal <- unique(unlist(lapply(trackDat, function(x)
-    listGet(x, colId))))
+    MoveR::listGet(x, colId))))
   colVal <- colVal[order(colVal)]
   coloration <- Pal(length(colVal[!is.na(colVal)]))
   
@@ -314,9 +331,9 @@ drawFrags <- function(trackDat,
             ScaleLegtemp
           ))))
       }
-      if(max(nchar(ScaleVal)) >= 5){
+      if (max(nchar(ScaleVal)) >= 5) {
         ScaleVal <- format(ScaleVal, scientific = TRUE)
-      }else{
+      } else{
         ScaleVal <- format(ScaleVal, scientific = FALSE)
       }
       ScaleLeg <-
@@ -335,14 +352,14 @@ drawFrags <- function(trackDat,
         min(ScaleY) + (5 * max(ScaleY) / 100)
       )
       graphics::text(
-        x = max(ScaleX) + (15 * max(ScaleX) / 100),
+        x = max(ScaleX) + (20 * max(ScaleX) / 100),
         y = ScaleLeg,
         labels =  ScaleVal,
         cex = cex.leg
       )
     } else{
       graphics::legend(
-        x = max(ScaleX) + (5 * max(ScaleX) / 100),
+        x = max(ScaleX) + (15 * max(ScaleX) / 100),
         y = max(ScaleY) - (1 * max(ScaleY) / 100),
         legend = colVal[!is.na(colVal)],
         pch = 22,
@@ -393,7 +410,7 @@ drawFrags <- function(trackDat,
     ## cut the fragments to draw only the specified part
     NewfragsList <- lapply(seq(length(timeWin)),
                            function(p)
-                             cutFrags(
+                             MoveR::cutFrags(
                                trackDat,
                                customFunc = function(x)
                                  x[[timeCol]] >= timeWin[[p]][[1]] &
@@ -417,7 +434,8 @@ drawFrags <- function(trackDat,
     
     for (f in seq(length(NewfragsList))) {
       NewfragsList[[f]]$colorpal <-
-        coloration[match(as.character(listGet(NewfragsList[[f]], colId)), as.character(coloration[["colVal"]][!is.na(colVal)])), "colors"]
+        coloration[match(as.character(MoveR::listGet(NewfragsList[[f]], colId)),
+                         as.character(coloration[["colVal"]][!is.na(colVal)])), "colors"]
       graphics::points(
         NewfragsList[[f]]$x.pos[1],
         NewfragsList[[f]]$y.pos[1],
@@ -428,8 +446,8 @@ drawFrags <- function(trackDat,
       with(
         NewfragsList[[f]],
         graphics::segments(
-          head(x.pos,-1),
-          head(y.pos,-1),
+          head(x.pos, -1),
+          head(y.pos, -1),
           x.pos[-1],
           y.pos[-1],
           NewfragsList[[f]]$colorpal,
@@ -452,7 +470,8 @@ drawFrags <- function(trackDat,
     
     for (f in selFrags) {
       NewfragsList[[f]]$colorpal <-
-        coloration[match(as.character(listGet(NewfragsList[[f]], colId)), as.character(coloration[["colVal"]][!is.na(colVal)])), "colors"]
+        coloration[match(as.character(MoveR::listGet(NewfragsList[[f]], colId)),
+                         as.character(coloration[["colVal"]][!is.na(colVal)])), "colors"]
       graphics::points(
         NewfragsList[[f]]$x.pos[1],
         NewfragsList[[f]]$y.pos[1],
@@ -463,8 +482,8 @@ drawFrags <- function(trackDat,
       with(
         NewfragsList[[f]],
         graphics::segments(
-          head(x.pos,-1),
-          head(y.pos,-1),
+          head(x.pos, -1),
+          head(y.pos, -1),
           x.pos[-1],
           y.pos[-1],
           NewfragsList[[f]]$colorpal,
