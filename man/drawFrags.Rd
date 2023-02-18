@@ -7,7 +7,7 @@
 drawFrags(
   trackDat,
   selFrags = NULL,
-  imgRes = c(1920, 1080),
+  imgRes = c(NA, NA),
   timeWin = list(c(0, Inf)),
   timeCol = "frame",
   colGrad = c("#000000", "#999999", "#6600CC", "#9999FF", "#33CCFF", "#0066CC",
@@ -16,7 +16,7 @@ drawFrags(
   add2It = NULL,
   srt = 0,
   lwd = 1,
-  main = "Fragments",
+  main = "",
   xlab = "Video width (pixels)",
   ylab = "Video height (pixels)",
   legend = TRUE,
@@ -33,8 +33,8 @@ drawFrags(
 \item{selFrags}{A vector of either numeric values or character strings,
 the number or the id of the selFrags to plot (optional).}
 
-\item{imgRes}{A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot
-(i.e., the number of pixels in image width and height, default = 1920 x 1080).}
+\item{imgRes}{A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
+If imgRes is unspecified, the function retrieve it using x and y maximum values + 5\%.}
 
 \item{timeWin}{A list of one or several vector containing 2 numeric values separated by a comma
 corresponding to the time interval between which selFrags have to be drawn in frame (optional).}
