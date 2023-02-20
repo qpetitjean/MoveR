@@ -20,6 +20,7 @@ video tracking solutions in a reproducible, reliable and open framework.
 
 In a sack of flexibility, `MoveR` is mainly coded using base .<br />
 However it still relies on a few dependencies:<br />
+
 <ul>
 <li>
 <a href="https://www.rdocumentation.org/packages/graphics/">graphics</a>,
@@ -89,6 +90,7 @@ softwares.<br />
 ### Main workflow steps
 
 More particularly, `MoveR` provides tools to:<br />
+
 <ul>
 <li>
 <strong>IMPORT</strong> the raw data from various tracking software such
@@ -137,6 +139,7 @@ spatial trends according to a given pattern set by the user.
 
 Besides the high flexibility and unified environment, the primary
 innovations provided by `MoveR` are the possibility to:<br />
+
 <ul>
 <li>
 <strong>Characterize behavioral states</strong> (i.e., active
@@ -159,10 +162,6 @@ regular-expression syntax.
 </ul>
 
 <img src="man/figures/WorkFlowMoveR.png" height="600" text-align="center"/>
-
-## Working example
-
-<strong>IN PROGRESS</strong>
 
 ## Citation
 

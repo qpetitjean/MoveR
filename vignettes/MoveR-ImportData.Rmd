@@ -1,16 +1,13 @@
 ---
 title: "Import Data"
 description: "A tutorial about how to import raw tracking data into R env. using the MoveR package."
-author:
-  - name: Quentin PETITJEAN
-    url: "https://qpetitjean.github.io/qpetitjean_distill/index.html"
-    affiliation: Institut Sophia Agrobiotech, UMR5254 ISA, INRAE, CNRS, Université Côte d’Azur, Sophia-Antipolis, France.
-    affiliation_url: https://www6.paca.inrae.fr/institut-sophia-agrobiotech
 date: "`r Sys.Date()`"
-header-includes:
-  - \usepackage{distill}
 output: 
-  distill::distill_article:
+  bookdown::html_document2:
+    fig_caption: true
+    number_sections: false
+    global_numbering: false
+    link-citations: yes
 pkgdown:
   as_is: true
 ---
