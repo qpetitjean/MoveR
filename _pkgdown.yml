@@ -1,5 +1,5 @@
 title: MoveR
-url: TODO
+url: qpetitjean.github.io/MoveR
 
 development:
   mode: auto
@@ -12,6 +12,30 @@ template:
     heading_font: {google: "Roboto Slab"}
     code_font: {google: "JetBrains Mono"}
     
+authors:
+  firstname lastname: c(Quentin PETITJEAN, Vincent CALCAGNO)
+  href: c(https://qpetitjean.github.io/qpetitjean_distill/index.html, https://vcalcagnoresearch.wordpress.com/)
+  
+navbar:
+  title: httptest
+  type: default
+  left:
+  - text: Reference
+    href: reference/
+  - text: Tutorials
+    menu:
+    - text: Import Data
+      href: articles/MoveR-ImportData.html
+    - text: Clean/Filter Data
+      href: articles/MoveR-Clean-FilterData.html
+    - text: Compute some metrics
+      href: articles/MoveR-ComputeMetrics.html
+  - text: Changelog
+    href: NEWS.md
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/qpetitjean/MoveR/
+  
 reference:
   - title: Import
     desc: Import raw data from various video tracking software into R env.

@@ -363,7 +363,7 @@ drawFrags <- function(trackDat,
       colVal <- colVal[as.numeric(names(sort(colValNum)))]
       
       graphics::legend(
-        x = max(ScaleX) + (15 * max(ScaleX) / 100),
+        x = max(ScaleX) + (5 * max(ScaleX) / 100),
         y = max(ScaleY) - (1 * max(ScaleY) / 100),
         legend = colVal[!is.na(colVal)],
         pch = 22,

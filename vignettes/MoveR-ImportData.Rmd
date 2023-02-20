@@ -7,10 +7,10 @@ author:
     affiliation: Institut Sophia Agrobiotech, UMR5254 ISA, INRAE, CNRS, Université Côte d’Azur, Sophia-Antipolis, France.
     affiliation_url: https://www6.paca.inrae.fr/institut-sophia-agrobiotech
 date: "`r Sys.Date()`"
+header-includes:
+  - \usepackage{distill}
 output: 
-  bookdown::html_document2:
-    base_format: rmarkdown::html_vignette
-    fig_caption: yes
+  distill::distill_article:
 pkgdown:
   as_is: true
 ---
@@ -27,12 +27,13 @@ Briefly, this dataset come from the video recording (image resolution: 3840x2160
 
 ```{r VideoPics, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.cap="Frame extracted from a video recording of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena."}
 knitr::include_graphics(
-  "https://github.com/qpetitjean/MoveR_SampleData/raw/main/sample_1/2602_ISA3080_Low_5.mov_3600.png"
+  "https://github.com/qpetitjean/MoveR_SampleData/raw/main/sample_1/2602_ISA3080_Low_5_Compressed.gif"
 )
 
 ```
 
 Now let's download the data.
+
 ```{r dlSampleData, echo=TRUE}
 # dl the first dataset from the sample data repository
 Path2Data <- MoveR::dlSampleDat(dataSet = 1)
@@ -108,11 +109,11 @@ It is then easy to look at the particles trajectories.
 
 ## First look at the trajectories
 
-Using the <em>drawFrags</em>` function, it is easy to visualize the trajectories included in the dataset (see fig. \@ref(fig:Drawfrags1)A below), or to focus on the trajectories described only by some particles, here the tens' first (see fig. \@ref(fig:Drawfrags1)B below).
+Using the <em>drawFrags</em>` function, it is easy to visualize the trajectories included in the dataset (see fig. \@ref(fig:Drawfrags1)A below), or to focus on the trajectories described only by some particles, here the fifth' first (see fig. \@ref(fig:Drawfrags1)B below).
 
 Note that <em>drawFrags</em> needs an argument specifying the timeline of the video (here "frame"). One can also specify the resolution of the video to set x and y limits of the plot but as default, the imgRes argument use the maximum values recorded in x and y + 5% to set the plots limits (see drawFrags documentation).
 
-```{r Drawfrags1, echo=TRUE, fig.show="hold", fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=5, dpi = 300, fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. A. all trajectories are represented. B. only the first 10 tracklets are represented. The trajectories are colored according to the moments at which they are recorded."}
+```{r Drawfrags1, echo=TRUE, fig.show="hold", fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=5, dpi = 300, fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. A. all trajectories are represented. B. only the first 5 tracklets are represented. The trajectories are colored according to the moments at which they are recorded."}
 # split the graphical window in 2 columns
 par(mfrow = c(1, 2))
 
@@ -129,10 +130,10 @@ mtext(
   padj = -0.5
 )
 
-# draw the trajectories only for the tens' first particles
+# draw the trajectories only for the first five particles
 MoveR::drawFrags(
   trackDat,
-  selFrags = c(1:10),
+  selFrags = c(1:5),
   timeCol = "frame"
 )
 
@@ -176,7 +177,8 @@ mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 Note that it is also possible to represent specified tracklets over given time window(s) by combining the selFrags argument and timeWin argument respectively.
 
 Finally, drawFrags allow to color the particles' tracks according to categorical variable, such as the identity of the particle (see fig. \@ref(fig:Drawfrags3)A below). 
-However, here the identity of the particles is a numerical variable, we hence need to convert it to a factor, for instance by appending "Tricho" in front of each id. For this purpose, the easiest way is to use the convert2list utility, transform the identity variable then convert back the data as a list of tracklet using convert2frags as follow: 
+
+However, here the identity of the particles is a numerical variable, we hence need to convert it to a factor, for instance by appending "Tricho" (i.e., part of the micro-wasps genus name) in front of each id. For this purpose, the easiest way is to use the convert2list utility, transform the identity variable then convert back the data as a list of tracklet using convert2frags as follow: 
 
 ```{r convertId}
 trackDatList <- MoveR::convert2list(trackDat)
@@ -187,7 +189,9 @@ str(trackDat)
 
 As previously noted, the various arguments from the drawFrags function can be combined to emphasize the behavior of particular tracklets over a specified time window (see fig. \@ref(fig:Drawfrags3)B below).
 
-```{r Drawfrags3, echo=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=5, dpi = 300, fig.cap="Micro-wasps trajectories A. over the whole video timeline, and B. over a time window of 1000 frames (between 1 and 999 frames). Here the trajectories are colored according to the identity of the particle."}
+The drawFrags function also have various arguments helping to customize the graphical representation, see the function documentation for further information.
+
+```{r Drawfrags3, echo=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.width=14, fig.height=6, dpi = 300, fig.cap="Micro-wasps trajectories A. over the whole video timeline, and B. over a time window of 1000 frames (between 1 and 999 frames). Here the trajectories are colored according to the identity of the particle."}
 # split the graphical window in 2 columns
 par(mfrow=c(1,2))
 
@@ -213,9 +217,23 @@ MoveR::drawFrags(
 mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 ```
 
-The drawFrags function also have various arguments helping to customize the graphical representation, see the function documentation for further information.
+By looking at the fig. \@ref(fig:Drawfrags3)B, we can see that some particles' tracks are interrupted. This is particularly obvious for Tricho_7 or Tricho_11, let's take a closer look. 
 
-That's all for this first introduction to the MoveR package. 
-For more insight on how to clean/filer the dataset as well as perform further computations check the next tutorials. 
+```{r Drawfrags4, echo=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width="50%", fig.width=7, fig.height=5, dpi = 300, fig.cap="Micro-wasps trajectories for Tricho_7 and Tricho_11 over the whole video timeline."}
+# restore the graphical window as default
+par(mfrow=c(1,1))
 
-<strong>Enjoy coding.</strong>
+# draw the trajectories over the whole video timeline and color it according to particles' identity
+MoveR::drawFrags(
+  trackDat,
+  timeCol = "frame",
+  colId = "identity",
+  selFrags = c("Tricho_7","Tricho_11")
+)
+```
+
+Indeed, on the fig. \@ref(fig:Drawfrags4) the track of these two individuals are clearly interrupted at multiple location. It indicate that the tracking software have lost or perhaps switched the identity of some animals over the tracking session. The dataset hence need to cleaned/filtered to remove as much artifacts as possible. 
+
+For more insight how to use MoveR to clean and filter your dataset and then run further computation check the next tutorials. 
+
+<strong>Meanwhile enjoy coding.</strong>

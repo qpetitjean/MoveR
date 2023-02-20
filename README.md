@@ -82,7 +82,7 @@ and repeat the above installation commands.
 
 ## Overview
 
-`MoveR` is an R package allowing to import, clean/filter and analyze raw
+`MoveR` is an package allowing to import, clean/filter and analyze raw
 particles/animal movement data obtained from video-tracking
 softwares.<br />
 
@@ -158,7 +158,7 @@ regular-expression syntax.
 </li>
 </ul>
 
-<img src="man/figures/WorkFlowMoveR.png" height="600" align="middle"/>
+<img src="man/figures/WorkFlowMoveR.png" height="600" text-align="center"/>
 
 ## Working example
 
