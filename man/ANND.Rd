@@ -2,7 +2,7 @@
 % Please edit documentation in R/ANND.R
 \name{ANND}
 \alias{ANND}
-\title{Compute Average Nearest Neighbour Distance (ANND) among fragments.}
+\title{Compute Average Nearest Neighbour Distance (ANND) among tracklets.}
 \usage{
 ANND(
   trackDat,
@@ -10,11 +10,12 @@ ANND(
   Tinterval = NULL,
   sampling = NULL,
   scale = NULL,
-  bootn = 0
+  bootn = 0,
+  progress = TRUE
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking informations for each fragment (including a timeline).}
+\item{trackDat}{A list of data frame containing tracking information for each tracklet (including a timeline).}
 
 \item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
 
@@ -26,6 +27,8 @@ to perform the computation (it allow to make computation faster). In other words
 returned results (e.g., a value of 5000 mean that values will be computed every 5000 time unit).}
 
 \item{bootn}{A numeric value corresponding to the number of bootstrap sampling used to compute studentize 95\% confidence interval (default = 0, meaning bootstrap will be not performed).}
+
+\item{progress}{A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
 }
 \value{
 this function returns a list containing three elements:
@@ -42,81 +45,101 @@ this function returns a list containing three elements:
 
 \item{"RawND": }{a list containing the raw neighbour distance computed among each particles across each time unit:
 \itemize{
-\item{"timeCol_index": }{a list of vector corresponding to the fragment identity containing the distance to each detected particles in the time unit.}
+\item{"timeCol_index": }{a list of vector corresponding to the tracklet identity containing the distance to each detected particles in the time unit.}
 }
 }
 \item{"BootSampling": }{a list of lists corresponding to each time unit sampled during the bootstrap and containing:
 \itemize{
-\item{"sampledFrags": }{the identity of the fragments sampled at each bootstrap sampling (the length of the list is equal to bootn argument).}
-\item{"sampledValues": }{the nearest neighbour distance values for each sampled fragment at each bootstrap sampling (the length of the list is equal to bootn argument).}
+\item{"sampledTracks": }{the identity of the tracklet sampled at each bootstrap iteration (the length of the list is equal to bootn argument).}
+\item{"sampledValues": }{the nearest neighbour distance values for each sampled tracklet at each bootstrap iteration (the length of the list is equal to bootn argument).}
 }}
 }
 }
 \description{
-Given a list of data frames containing tracking informations for each fragment (including the timeline)
-this function returns the Average Nearest Neighbour Distance among fragments along a specified timeline. Also,
-if bootn parameter is above 0, the function compute studentize 95 \% CI using bootstrapping method
+Given a list of data frames containing tracking information for each tracklet (including the timeline)
+this function returns the Average Nearest Neighbour Distance among tracklets along a specified timeline. Also,
+if bootn parameter is above 0, the function compute studentize 95 \% CI using bootstrapping method.
 }
 \examples{
 
-set.seed(2028)
-# generate some dummy fragments
-## start to specify some parameters to generate fragments
-Fragn <- 100 # the number of fragment to simulate
-FragL <- 100:1000 # the length of the fragments or a sequence to randomly sample fragment length
+set.seed(2023)
+# generate some dummy tracklets
+## start to specify some parameters to generate tracklets
+TrackN <- 50 # the number of tracklet to simulate
+TrackL <-
+  100:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
+id <- 0
+TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+  trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
+    id <<- id + 1
+    data.frame(
+      x.pos = j$x - min(j$x),
+      y.pos = j$y - min(j$y),
+      frame = j$time,
+      identity = paste("Tracklet", id, sep = "_")
+    )
+  }), seq(TrackN))
 
-fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
-   data.frame(
-     x.pos = j$x - min(j$x),
-     y.pos = j$y - min(j$y),
-     frame = j$time
-   )), seq(Fragn))
-
-# compute the ANND
-ANNDRes <- ANND(fragsList, timeCol = "frame", sampling = 100, scale = 1, bootn = 500)
+# compute the ANND with a sampling of 100 time unit
+ANNDRes <-
+  MoveR::ANND(
+    TrackList,
+    timeCol = "frame",
+    sampling = 100,
+    scale = 1,
+    bootn = 500
+  )
 
 # the results can be retrieved by accessing the "ANND" data frame
 str(ANNDRes[["ANND"]])
 
 # And hence you can plot it against the timeCol (here "frame")
-par(mfrow = c(1, 1))
+## remove the NA to avoid problem when plotting the confidence interval
+ANNDRes[["ANND"]] <-
+  ANNDRes[["ANND"]][!is.na(ANNDRes[["ANND"]]$ANNDmean), ]
 plot(
- ANNDRes[["ANND"]]$ANNDmean ~ ANNDRes[["ANND"]]$frame,
- type = "l",
- ylim = c(0, signif(max(
-   ANNDRes[["ANND"]]$ANNDmean, na.rm = T
- ), digits = 3)),
- col = "red",
- xlab = "Time (frame)",
- ylab = "Average Nearest Neighbour Distance (ANND) and 95\% CI"
+  ANNDRes[["ANND"]]$ANNDmean ~ ANNDRes[["ANND"]]$frame,
+  type = "l",
+  ylim = c(0, signif(max(
+    ANNDRes[["ANND"]]$`2.5\%`, na.rm = T
+  ), digits = 3)),
+  col = "red",
+  xlab = "Time (frame)",
+  ylab = "Average Nearest Neighbour Distance (ANND) and 95\% CI"
 )
 lines(ANNDRes[["ANND"]]$`97.5\%` ~ ANNDRes[["ANND"]]$frame)
 lines(ANNDRes[["ANND"]]$`2.5\%` ~ ANNDRes[["ANND"]]$frame)
 polygon(
- x = c(ANNDRes[["ANND"]]$frame, rev(ANNDRes[["ANND"]]$frame)),
- y = c(ANNDRes[["ANND"]]$`2.5\%`, rev(ANNDRes[["ANND"]]$`97.5\%`)),
- col = rgb(1, 0, 0, 0.1),
- border = NA
- ,
- density = NA
+  x = c(ANNDRes[["ANND"]]$frame, rev(ANNDRes[["ANND"]]$frame)),
+  y = c(ANNDRes[["ANND"]]$`2.5\%`, rev(ANNDRes[["ANND"]]$`97.5\%`)),
+  col = rgb(1, 0, 0, 0.1),
+  border = NA,
+  density = NA
 )
+
 # It is also possible to add the number of particles on which ANND was computed across time on the plot
 # here we can see that the less particles detected, the higher the ANND which make sense.
 par(new = TRUE)
 plot(
- NULL,
- yaxt = "n",
- ylab = "",
- xlab = "",
- axes = FALSE,
- xlim = c(0, max(ANNDRes[["ANND"]]$frame)),
- ylim = c(0, signif(max(ANNDRes[["ANND"]]$nInd, na.rm=T), digits = 3)),
+  NULL,
+  yaxt = "n",
+  ylab = "",
+  xlab = "",
+  axes = FALSE,
+  xlim = c(0, max(ANNDRes[["ANND"]]$frame)),
+  ylim = c(0, signif(max(
+    ANNDRes[["ANND"]]$nInd, na.rm = T
+  ), digits = 3)),
 )
-axis(side=4, at = c(0, round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))/4, round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))/2 , 
-                   round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))/4 + round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))/2, 
-                   round(max(ANNDRes[["ANND"]]$nInd, na.rm=T))))
-
+axis(side = 4,
+     at = c(
+       0,
+      round(max(ANNDRes[["ANND"]]$nInd, na.rm = T)) / 4,
+       round(max(ANNDRes[["ANND"]]$nInd, na.rm = T)) / 2 ,
+       round(max(ANNDRes[["ANND"]]$nInd, na.rm = T)) / 4 + round(max(ANNDRes[["ANND"]]$nInd, na.rm =
+                                                                       T)) / 2,
+       round(max(ANNDRes[["ANND"]]$nInd, na.rm = T))
+     ))
 lines(ANNDRes[["ANND"]]$nInd ~ ANNDRes[["ANND"]]$frame, col = "purple")
 
 }

@@ -28,7 +28,7 @@ MoveR <img src="man/figures/hexsticker.png" height="120" align="right"/>
 <img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/qpetitjean/MoveR/MoveRV1">
 <!-- badges: end -->
 
-The `MoveR` `r fontawesome::fa("r-project", fill = "steelblue")` package aims to help users analyze the output of automated video tracking solutions in a reproducible, reliable and open framework.
+The `MoveR` `r fontawesome::fa("r-project", fill = "steelblue")` package aims to help users analyze the output of automated video-tracking solutions in a reproducible, reliable and open framework.
 
 ## Dependencies
 
@@ -74,11 +74,11 @@ and repeat the above installation commands.
 More particularly, `MoveR` provides tools to:<br />
 
 <ul>
-<li><strong>IMPORT</strong> the raw data from various tracking software such as <a href="https://trex.run">TRex</a>, <a href="https://swarm-lab.github.io/trackR">trackR</a>, <a href="https://ctrax.sourceforge.net/">Ctrax</a> and <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a> (other can be easily implemented if needed).</li><br />
-<li><strong>CLEAN/FILTER</strong> the data according to custom functions specified by the user. For instance, it can easily remove suspected tracking errors based on expected particles' size or speed. It is also possible to sample the particles' tracks according to a specified time step or remove part of the tracks that are detected outside an arena or a given area.</li><br />
+<li><strong>IMPORT</strong> the raw data from various video-tracking software such as <a href="https://trex.run">TRex</a>, <a href="https://swarm-lab.github.io/trackR">trackR</a>, <a href="https://ctrax.sourceforge.net/">Ctrax</a> and <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a> (other can be easily implemented if needed).</li><br />
+<li><strong>CLEAN/FILTER</strong> the data according to custom functions specified by the user. For instance, it can easily remove suspected tracking errors based on expected particles' size or speed. It is also possible to sample particles' tracklets (i.e., a fragment of particle's trajectory) according to a specified time step or split tracklets' and remove parts that are detected outside an arena or a given area.</li><br />
 <li><strong>EVALUATE</strong> the quantity of data removed over the cleaning/filtering process and check the amount of true and false detection compared to manual annotations.</li><br />
-<li><strong>VISUALIZE</strong> the tracks of all or specified particles over time.</li><br />
-<li><strong>ANALYSE</strong> the data over tracks, time, or space. It is possible to compute low (basics) or high (advanced) level metrics over each track and temporal and spatial trends. In a nutshell, Low and High-level metrics return the results of a given computation over each track, while temporal trends functions return the results of a given calculation over time by averaging the value of each track. It is also possible to compute a studentized 95% confidence interval by bootstrapping over the tracks. Also, it is possible to extract specified spatial trends according to a given pattern set by the user.</li><br />
+<li><strong>VISUALIZE</strong> the tracklets of all or specified particles over time.</li><br />
+<li><strong>ANALYSE</strong> the data over tracklets, time, or space. It is possible to compute low (basics) or high (advanced) level metrics over each tracklet and temporal and spatial trends. In a nutshell, Low and High-level metrics return the results of a given computation over each tracklet, while temporal trends functions return the results of a given calculation over time by averaging the value of each tracklet. It is also possible to compute a studentized 95% confidence interval by bootstrapping over the tracklets. Also, it is possible to extract specified spatial trends according to a given pattern set by the user.</li><br />
 </ul>
 ### Breakthroughs
 

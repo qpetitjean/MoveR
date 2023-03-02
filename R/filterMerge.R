@@ -1,14 +1,13 @@
-#' @title Merge the results of several condition tests (i.e., the outputs of filterFunc).
+#' @title Merge condition tests (i.e., \code{\link{filterFunc}} outputs).
 #'
-#' @description Given several lists containing the results of a condition test (TRUE or FALSE) as returned by \code{\link{filterFunc}}
+#' @description Given several lists containing the results of a condition test (i.e., TRUE or FALSE) as returned by \code{\link{filterFunc}}
 #' this function merge the results of the condition tests for further use in \code{\link{filterFrags}}.
 #'
-#' @param filters A list of list containing the results of a condition test (TRUE or FALSE) as returned by \code{\link{filterFunc}}.
+#' @param filters A list of lists containing the results of a condition test (TRUE or FALSE) as returned by \code{\link{filterFunc}}.
 #'
-#' @param cond A bloolean (i.e., TRUE or FALSE), specifying when the value does not follow the rules of the condition test.
+#' @param cond A Boolean (i.e., TRUE or FALSE) specifying whether the value does follow the rules of the condition test or not.
 #'
-#' @return A list of vector of the same length than the fragments list containing
-#'  the merged result of user specified condition tests for each fragment.
+#' @return A list of vector of the same length than the tracklets list containing the merged result of user specified condition tests for each tracklet.
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -16,7 +15,7 @@
 #'
 #' @examples
 #'
-#' # create 3 filters, i.e., 3 lists containing the results of a condition tests (TRUE or FALSE) as returned by \code{\link{filterFunc}}
+#' # create 3 filters, i.e., 3 lists containing the results of a condition tests (TRUE or FALSE) as returned by \code{\link{filterFunc}} for two tracklets (i.e., 1 and 2)
 #' A = list("1" = c(TRUE, FALSE, FALSE), "2" = c(TRUE, TRUE, FALSE))
 #' B = list("1" = c(FALSE, TRUE, FALSE), "2" = c(FALSE, TRUE, FALSE))
 #' C = list("1" = c(FALSE, FALSE, TRUE), "2" = c(TRUE, FALSE, FALSE))

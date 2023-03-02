@@ -17,9 +17,9 @@
 #' Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above
 #' and the second containing all the elements retrieved from the .npz files (see rawDat argument).
 #'
-#' @param trexPath The path of the Trex output folder where .npz files are stored.
+#' @param trexPath The path of the TRex output folder where .npz files are stored.
 #'
-#' @param mirrorY TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = FALSE).
+#' @param mirrorY A Boolean (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the bottom-left (default = FALSE).
 #'
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
 #' corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).
@@ -41,28 +41,26 @@
 #'
 #' @examples
 #'
+#' # Download the first dataset from the sample data repository
+#' Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TRex")
+#' Path2Data
+#'
 #' # Import the list containing the 9 vectors classically used for further computation
 #' # and mirror Y coordinates to start on the bottom-left
-#'
-#' Data <-
-#'   readTrex(
-#'     system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
-#'     mirrorY = T,
-#'     imgHeight = 2160,
-#'     rawDat = F
-#'   )
+#' Data <- MoveR::readTrex(Path2Data[[1]],
+#'                mirrorY = T,
+#'                imgHeight = 2160,
+#'                rawDat = F
+#'         )
+#' str(Data)
 #'
 #' # Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
 #' # and the second list containing all the elements retrieved from .npz files,
 #' # also do not mirror Y coordinates (start on the top-left)
-#'
-#' Data <-
-#'   readTrex(
-#'     system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
-#'     mirrorY = F,
-#'     imgHeight = NULL,
-#'     rawDat = T
-#'   )
+#' DataFull <- MoveR::readTrex(Path2Data[[1]],
+#'                    rawDat = T
+#'             )
+#' str(DataFull)
 #'
 #' @export
 

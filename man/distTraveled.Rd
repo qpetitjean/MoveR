@@ -2,43 +2,49 @@
 % Please edit documentation in R/distTraveled.R
 \name{distTraveled}
 \alias{distTraveled}
-\title{Compute the distance traveled by a particle along a trajectory.}
+\title{Compute the distance traveled by a particle over a trajectory.}
 \usage{
 distTraveled(df, step = 1)
 }
 \arguments{
-\item{df}{A data frame containing at x, y coordinates named "x.pos", "y.pos", for a fragment.}
+\item{df}{A data frame containing at x, y coordinates named "x.pos", "y.pos", for a tracklet.}
 
-\item{step}{A numeric value specifying the number of time unit or records between the two positions from which distance will be computed.}
+\item{step}{A numeric value specifying the number of time unit or records between the two positions from which distance should be computed.}
 }
 \value{
-this function returns a vector containing the distance between each points of the
+This function returns a vector containing the distance between each points of the
 trajectory according to the specified step.
 }
 \description{
-Given a data frames containing tracking information for a given fragment,
+Given a data frames containing tracking information for a given tracklet,
 this function compute the euclidean distance along the trajectory according to a given step.
 }
 \examples{
 
-# generate a dummy fragment
-## start to specify some parameters to generate the fragment
-FragL <- 100 # the length of the fragment or a sequence to randomly sample fragment length
+set.seed(2023)
+# generate a dummy tracklet
+## start to specify some parameters to generate the tracklet
+TrackL <-
+  100 # the length of the tracklet or a sequence to randomly sample tracklet's length
 
-fragDatTemp <- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)
-fragDat <- data.frame(
- x.pos = fragDatTemp[["x"]] - min(fragDatTemp[["x"]]),
- y.pos = fragDatTemp[["y"]] - min(fragDatTemp[["y"]] ),
- frame = fragDatTemp[["time"]]
+TrackDatTemp <-
+  trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)
+TrackDat <- list(
+  data.frame(
+    x.pos = TrackDatTemp[["x"]] - min(TrackDatTemp[["x"]]),
+    y.pos = TrackDatTemp[["y"]] - min(TrackDatTemp[["y"]]),
+    frame = TrackDatTemp[["time"]]
+  )
 )
 # compute the distance traveled between each point of the trajectory
-fragDat[["distTraveled"]] <- distTraveled(fragDat, step = 1)
+TrackDat[[1]][["distTraveled"]] <-
+  MoveR::distTraveled(TrackDat[[1]], step = 1)
 
 # check the result
-str(fragDat)
+str(TrackDat)
 
 # sum all the distance to compute the total distance traveled by the particle over the trajectory
-sum(fragDat[["distTraveled"]], na.rm = T)
+#' sum(TrackDat[[1]][["distTraveled"]], na.rm = T)
 
 }
 \author{

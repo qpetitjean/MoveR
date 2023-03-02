@@ -13,11 +13,12 @@
 #'    \item{'ntargets': }{the number of particle tracked over each frame.}
 #'    \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 #' }
+#' 
 #' Also, the function can mirror y coordinates (see mirrorY argument).
 #'
 #' @param ctraxPath The full path of the Ctrax output file (.mat).
 #'
-#' @param mirrorY TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the top-left (default = FALSE).
+#' @param mirrorY A Boolean (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).
 #'
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
 #' corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).
@@ -37,26 +38,15 @@
 #'
 #' @examples
 #'
-#' # Import the list containing the 9 vectors classically used for further computation
-#' # and mirror Y coordinates to start on the top-left
-#'
-#' Data <-
-#'   readCtrax(
-#'     system.file("sampleData/sample_1/CtraxOutput", package = "MoveR"),
-#'     mirrorY = T,
-#'     imgHeight = 2160
-#'   )
+#' # Download the first dataset from the sample data repository
+#' Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "Ctrax")
+#' Path2Data
 #'
 #' # Import the list containing the 9 vectors classically used for further computation
 #' # and do not mirror Y coordinates to start on the bottom-left
-#'
-#' Data <-
-#'   readCtrax(
-#'     system.file("sampleData/sample_1/CtraxOutput", package = "MoveR"),
-#'     mirrorY = F,
-#'     imgHeight = NULL
-#'   )
-#'
+#' Data <- MoveR::readCtrax(Path2Data[[1]])
+#' str(Data)
+#'                          
 #' @export
 
 readCtrax <-

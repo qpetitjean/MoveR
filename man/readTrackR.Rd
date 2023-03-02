@@ -15,7 +15,7 @@ readTrackR(
 \arguments{
 \item{trackRPath}{The full path of the TrackR output file (.csv).}
 
-\item{mirrorY}{TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the top-left (default = FALSE).}
+\item{mirrorY}{A Boolean (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).}
 
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
 corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).}
@@ -50,28 +50,30 @@ Also, the function can mirror y coordinates (see mirrorY argument).
 }
 \examples{
 
+# Download the first dataset from the sample data repository
+Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TrackR")
+Path2Data
+
 # Import the list containing the 9 vectors classically used for further computation
 # and mirror Y coordinates to start on the top-left
-
 Data <-
-  readTrackR(
-    system.file("sampleData/sample_1/TrackROutput", package = "MoveR"),
-    mirrorY = T,
-    imgHeight = 2160,
-    rawDat = F
+  MoveR::readTrackR(Path2Data[[1]],
+         mirrorY = T,
+         imgHeight = 2160,
+         rawDat = F
   )
+str(Data)
 
 # Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
 # and the second list containing all the elements retrieved from .csv file,
 # also do not mirror Y coordinates (start on the bottom-left)
 
-Data <-
-  readTrackR(
-    system.file("sampleData/sample_1/TrackROutput", package = "MoveR"),
-    mirrorY = F,
-    imgHeight = NULL,
+DataFull <-
+  MoveR::readTrackR(Path2Data[[1]],
     rawDat = T
   )
+
+str(DataFull)
 
 }
 \references{

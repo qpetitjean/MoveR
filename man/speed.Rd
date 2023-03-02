@@ -2,13 +2,13 @@
 % Please edit documentation in R/speed.R
 \name{speed}
 \alias{speed}
-\title{Compute particle speed over a trajectory.}
+\title{Compute particle's speed over a trajectory.}
 \usage{
 speed(df, scale = NULL, TimeCol = NULL)
 }
 \arguments{
-\item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given fragment, as well as
-a column containing time information, whatever the unit, over the fragment.}
+\item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet, as well as
+a column containing time information, whatever the unit, over the trajectory.}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
 (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.}
@@ -16,49 +16,54 @@ a column containing time information, whatever the unit, over the fragment.}
 \item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
 }
 \value{
-This function returns a vector containing the value of speed along a given fragment.
+This function returns a vector containing the values of speed over a trajectory.
 }
 \description{
-Given a data frames containing tracking informations for a given fragment,
-this function scale fragment path and returns a vector containing the value of
-speed along this fragment.
+Given a data frames containing tracking information for a given tracklet,
+this function scale tracklet path and returns a vector containing the value of
+speed along this tracklet.
 }
 \examples{
 
-# generate a dummy fragment
-## start to specify some parameters to generate the fragment
-FragL <- 100 # the length of the fragment or a sequence to randomly sample fragment length
+set.seed(2023)
+# generate a dummy tracklet
+## start to specify some parameters to generate the tracklet
+TrackL <-
+  100 # the length of the tracklet or a sequence to randomly sample tracklet's length
 
-fragDatTemp <- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)
-fragDat <- data.frame(
- x.pos = fragDatTemp[["x"]] - min(fragDatTemp[["x"]]),
- y.pos = fragDatTemp[["y"]] - min(fragDatTemp[["y"]] ),
- frame = fragDatTemp[["time"]]
-)
+TrackDatTemp <-
+  trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)
+TrackDat <-
+  data.frame(
+    x.pos = TrackDatTemp[["x"]] - min(TrackDatTemp[["x"]]),
+    y.pos = TrackDatTemp[["y"]] - min(TrackDatTemp[["y"]]),
+    frame = TrackDatTemp[["time"]]
+  )
 
 # compute the speed of the particle along its trajectory,
 # expressing the speed as pixels/frame
-fragDat[["speedFrame"]] <- speed(fragDat, scale = 1, TimeCol = "frame")
+TrackDat[["speedFrame"]] <-
+  MoveR::speed(TrackDat, scale = 1, TimeCol = "frame")
 
 # to compute the speed according to another time unit, a new column containing the new timeline is needed
+# here we consider that the frame rate is 25 frame per second
+TrackDat[["second"]] <- TrackDat[["frame"]] / 25
 
-fragDat[["second"]] <- fragDat[["frame"]]/25 # here we consider that the frame rate is 25 frame per second
+# then compute the speed of the particle over its trajectory according to the new time unit
+TrackDat[["speedSec"]] <-
+  MoveR::speed(TrackDat, scale = 1, TimeCol = "second")
 
-# then compute the speed of the particle along its trajectory according to the new time unit
+str(TrackDat)
 
-fragDat[["speedSec"]] <- speed(fragDat, scale = 1/1, TimeCol = "second")
+# it is also possible to resample the tracklet before computing speed, here every 10 time unit (i.e., frame)
+sampledFragDat <-
+  MoveR::resampleFrags(TrackDat, TimeCol = "frame",  Tstep = 10)
 
-str(fragDat)
+# and then compute the speed of the particle over its trajectory
+sampledFragDat[["speed"]] <-
+  MoveR::speed(sampledFragDat, scale = 1, TimeCol = "frame")
 
-# it is also possible to resample the fragment before computing speed, here every 10 time unit (i.e., frame)
-
-sampledFragDat <- resampleFrags(fragDat, TimeCol = "frame",  Tstep = 10)
-
-# and then compute the speed of the particle along its trajectory
-
-sampledFragDat[["speed"]] <- speed(sampledFragDat, scale = 1/1, TimeCol = "frame")
-
-str(sampledFragDat)
+str(sampledFragDat) 
 
 }
 \seealso{

@@ -2,69 +2,112 @@
 % Please edit documentation in R/dist2Edge.R
 \name{dist2Edge}
 \alias{dist2Edge}
-\title{Compute distance to the edge of an object (e.g., the arena) along a trajectory.}
+\title{Compute the distance from the particle to the edge of an object (e.g., the arena) over its trajectory.}
 \usage{
 dist2Edge(df, edge, customFunc)
 }
 \arguments{
-\item{df}{A data frame containing at x, y coordinates named "x.pos", "y.pos", for a fragment.}
+\item{df}{A data frame containing at x, y coordinates named "x.pos", "y.pos", for a tracklet.}
 
-\item{edge}{A data frame containing x, y coordinates named "x.pos", "y.pos" and specifiyng the location of the
+\item{edge}{A data frame containing x, y coordinates named "x.pos", "y.pos" specifiyng the location of the
 arena or any object edge.}
 
-\item{customFunc}{A function used to specify the formula allowing to compute the
-distance between a given object or arena edge and the particle along its trajectory
+\item{customFunc}{A function used to specify the formula allowing to compute the distance between a given object or arena edge and the particle over its trajectory.
 It is possible to call already implemented methods for Circular arena by calling customFunc = "CircularArena".}
 }
 \value{
 This function returns a vector containing the distance between each points of the
-trajectory and the closest point of the object edge.
+trajectory and the closest point of the object edge. Negative values indicate increasing distance
+from the edge of the object in the direction of its center (the particle is considered inside) and vice versa.
 }
 \description{
-Given a data frame containing tracking information for a given fragment and a data frame containing the
+Given a data frame containing tracking information for a given tracklet and a data frame containing the
 coordinates of an object edges, this function compute the euclidean distance between the edge of the object (e.g., the arena)
-and coordinates of the particle along its trajectory. The function then returns the distance between each points of the
+and the coordinates of the particle over its trajectory. The function then returns the distance between each points of the particle's
 trajectory and the closest point to the object edge.
 }
 \examples{
-# TODO with a circular arena and to complete with a polygonal arena
 
 # Exemple 1: With a circular arena
+
+set.seed(2023)
+# generate a dummy tracklet
+## start to specify some parameters to generate the tracklet
+TrackL <-
+  100 # the length of the tracklet or a sequence to randomly sample tracklet's length
+
+TrackDatTemp <-
+  trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)
+TrackDat <- list(
+  data.frame(
+    x.pos = TrackDatTemp[["x"]] - min(TrackDatTemp[["x"]]),
+    y.pos = TrackDatTemp[["y"]] - min(TrackDatTemp[["y"]]),
+    frame = TrackDatTemp[["time"]]
+  )
+)
+
+# simulate an arena edge centered on the center of the particle trajectory and of 20 pixels radius
+arenaEdge <-  circles(mean(TrackDat[[1]][["x.pos"]]),
+                      mean(TrackDat[[1]][["y.pos"]]),
+                      radius = 20,
+                      draw = T)
+str(arenaEdge)
+
+# draw the tracklet and the arena edge
+MoveR::drawFrags(TrackDat,
+                 imgRes = c(80, 80),
+                 add2It = list(points(
+                   x = arenaEdge[["x.pos"]], y = arenaEdge[["y.pos"]], cex = 0.1
+                 )))
+
+# Compute the distance to the closest part of the edge based on the form of the arena (here circular)
+# Negative values indicate increasing distance from the edge of the object in the direction of its center (the particle is considered inside) and vice versa.
+MoveR::dist2Edge(TrackDat[[1]],
+                 edge = arenaEdge[[1]],
+                 customFunc = "CircularArena")
 
 
 # Exemple 2: With a a polygonal arena, using a distance matrix to avoid tough computation
 
-# load the sample data
-Data <-
- readTrex("https://github.com/qpetitjean/MoveR/tree/MovRV1/inst/sampleData/sample_1/TREXOutput",
-   mirrorY = T,
-   imgHeight = 2160,
-  rawDat = F
- )
-# convert it to a list of fragments
-trackDat <- convert2frags(Data[1:7], by = "identity")
-# load the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or 
-# the location of one or several areas of interest (here we have created a distance map using ImageJ)
-refDat <-
- as.matrix(read.delim("https://github.com/qpetitjean/MoveR/blob/MovRV1/sampleData/sample_1/ReferenceData/ImgTresholding_2602_ISA3080_Low_5.mov_1800.txt",
-   dec = "."
- ))
+# Download the first dataset from the sample data repository
+Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TRex")
+Path2Data
+
+# Import the list containing the 9 vectors classically used for further computation
+Data <- MoveR::readTrex(Path2Data[[1]])
+
+# convert it to a list of tracklets
+trackDat <- MoveR::convert2frags(Data[1:7], by = "identity")
+
+# load the distance matrix to the arena edge, an object or the location of one or several areas of interest (here we have created a distance map using ImageJ)
+distMat <-
+  as.matrix(read.delim(Path2Data[[2]],
+                       dec = "."))
+
 #  retrieve the value of the edge limit (1) and of the center limit (254) to plot them
-arenaEdge <- data.frame(which(refDat == 1, arr.ind=T))
-arenaCenter <- data.frame(which(refDat == 254, arr.ind=T))
+arenaEdge <-
+  stats::setNames(data.frame(which(distMat == 1, arr.ind = T)),
+                  c("y.pos", "x.pos"))
+arenaCenter <-
+  stats::setNames(data.frame(which(distMat == 254, arr.ind = T)),
+                  c("y.pos", "x.pos"))
 
-# draw only the first fragment
-drawFrags(
- trackDat,
- selFrags = 1,
- imgRes = c(3840, 2160),
- add2It = list(
-  points(x = arenaEdge[, 2], y = arenaEdge[, 1], cex = 0.1)
-)
-)
+# draw only the first tracklet
+MoveR::drawFrags(trackDat,
+                 selFrags = 1,
+                 add2It = list(points(
+                   x = arenaEdge[["x.pos"]], y = arenaEdge[["y.pos"]], cex = 0.1
+                 )))
 
-dist2Edge(trackDat[[1]])
+# Retrieve the distance from the edge using the distance matrix,
+# because it is tough to compute the distance to the closest part of the arena edge in this case
+# we can use another sister function helping to retrieve the distance to the edge from the distance
+# matrix
+cbind(trackDat[[1]], MoveR::locaPos(distMat, trackDat[[1]]))[950:1000, ]
 
+}
+\seealso{
+\code{\link{dist2Pt}}, \code{\link{locaPos}}
 }
 \author{
 Quentin PETITJEAN

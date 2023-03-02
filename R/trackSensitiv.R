@@ -1,19 +1,19 @@
-#' @title Compute the sensitivity index of particles detection.
+#' @title Compute sensitivity index for particles detection.
 #'
-#' @description Given a list of tracking fragments containing cartesian coordinates of particles over time
+#' @description Given a list of tracklets containing cartesian coordinates of particles over time
 #' and a dataframe containing the "true" (i.e., manually detected) coordinates of the particles, this function
 #' compare the location of the particles performed manually and by the tracking software to return a list of
 #' informations related to sensitivity analysis:
 #'
 #' \itemize{
-#'    \item{"Sensitivity_Stats": }{a dataframe containing 4 columns summarizing the sensitivity analysis results:
+#'    \item{"SensitivityStats": }{a dataframe containing 4 columns summarizing the sensitivity analysis results:
 #'       \itemize{
 #'          \item{"mean": }{the mean sensitivity index (if particles positions are compared to manual detection over several time units).}
 #'          \item{"n": }{the number of sensitivity index performed.}
 #'          \item{"sd": }{the standard deviation of the mean sensitivity index.}
 #'          \item{"se": }{the standard error of the mean sensitivity index.}
 #'       }}
-#'    \item{"sensitivity_Details": }{a dataframe containing 2 columns which gives the detailed results of the sensitivity analyses:
+#'    \item{"SensitivityDetails": }{a dataframe containing 2 columns which gives the detailed results of the sensitivity analyses:
 #'       \itemize{
 #'          \item{"sensitivity": }{the sensitivity indices computed over each time unit).}
 #'          \item{"timeCol": }{the time unit at which each sensitivty index have been computed.}
@@ -34,24 +34,26 @@
 #'    }
 #' }
 #'
-#' @param trackDat A list of data frame containing tracking information for each fragment (i.e., x.pos, y.pos, frame).
+#' @param trackDat A list of data frame containing tracking information for each tracklet (i.e., x.pos, y.pos, frame).
 #'
 #' @param refDat A dataframe containing "true" x and y coordinates of the particles (e.g., manually detected using imageJ)
 #' as well as a column specifying the time (e.g., frame). In case the the particles are located over several time unit
-#'  (i.e., location of individuals for several frames), sensitivity index is averaged and Sd, Se and n are returned.
+#'  (i.e., location of particles for several frames), sensitivity index is averaged and Sd, Se and n are returned.
 #'
 #' @param radius A numeric value expressed in the same unit than x and y and corresponding to the radius of the circles
 #' used to determine whether values are considered similar to those within the refDat or not (default = 20).
 #'
-#' @param imgRes A vector of 2 numeric values, resolution of the video used as x and y limit of the plot
-#'  (e.g., the number of pixels in image width and height, default = 1920 x 1080).
+#' @param imgRes A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
+#' If imgRes is unspecified, the function retrieve it using x and y maximum values + 5%.
 #'
 #' @param timeCol A character string corresponding to the name of the column containing time information (default = "frame")
 #'
+#' @param progess A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#'
 #' @return A list of dataframes summarizing the results of the sensitivity analysis:
 #' \itemize{
-#'          \item{"Sensitivity_Stats": }{sensitivity index, n, standard deviation, standard error (sd, se are only computed if refDat contains particle's position over several time units).}
-#'          \item{"sensitivity_Details": }{a data frame containing detailed sensitivity index and time units on which test have been performed.}
+#'          \item{"SensitivityStats": }{sensitivity index, n, standard deviation, standard error (sd, se are only computed if refDat contains particle's position over several time units).}
+#'          \item{"SensitivityDetails": }{a data frame containing detailed sensitivity index and time units on which test have been performed.}
 #'          \item{"FalseNegative": }{the list of the False negative (i.e., manually detected particle's that have not been detected by the tracking method.}
 #'          \item{"FalsePositive": }{the list of the false positive (i.e., the informations of the particles that have been detected by the tracking method but is not truly present (i.e., not detected via manual observation).}
 #'      }
@@ -60,78 +62,85 @@
 #'
 #' @examples
 #'
-#'# load the sample data
-#'Data <-
-#'  readTrex(
-#'    system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
-#'    mirrorY = T,
-#'    imgHeight = 2160,
-#'    rawDat = F
-#'  )
-#'# convert it to a list of fragments
-#'trackDat <- convert2frags(Data[1:7], by = "identity")
-#'
-#'# load the reference dataset (a dataframe containing manually detected position of the particle's over time unit)
-#'refDat <-
-#'  read.csv(
-#'    system.file("sampleData/sample_1/ReferenceData", package = "MoveR"),
-#'    dec = ".",
-#'    sep = ";"
-#'  )
-#'
-#'# perform the sensitivity analysis
-#'sensitivity <- trackSensitiv(
-#'  refDat = refDat,
-#'  trackDat = trackDat,
-#'  radius = 50,
-#'  imgRes = c(3840, 2160),
-#'  timeCol = "frame"
-#')
-#'
-#'# Draw the particle detected by the tracking method
-#'# and add the position of the good detections (darkgreen),
-#'# false negative and positive (red and blue, respectively)
-#'# at a given time unit (here the frame 2700)
-#'TimeU <- 2700
-#'
-#'drawFrags(
-#'  trackDat,
-#'  imgRes = c(3840, 2160),
-#'  timeWin = list(c(TimeU, TimeU)),
-#'  add2It = list(
-#'    circles(
-#'     refDat[which(refDat[["frame"]] == TimeU), "x.pos"],
-#'      refDat[which(refDat[["frame"]] == TimeU), "y.pos"],
-#'      border = "darkgreen",
-#'      radius = 50,
-#'      Res = 1000,
-#'      lwd = 1.5,
-#'      lty = 1
-#'    ),
-#'    if (length(sensitivity$FalseNegative$x[sensitivity$FalseNegative$frame == TimeU]) > 0) {
-#'      circles(
-#'        x = sensitivity$FalseNegative$x[sensitivity$FalseNegative$frame == TimeU],
-#'        y = sensitivity$FalseNegative$y[sensitivity$FalseNegative$frame == TimeU],
-#'        border = "red",
-#'        radius = 50,
-#'        Res = 1000,
-#'        lwd = 1.5,
-#'        lty = 1
-#'      )
-#'    },
-#'    if (length(sensitivity$FalsePositive$x.pos[sensitivity$FalsePositive$frame == TimeU]) > 0) {
-#'      circles(
-#'        x = sensitivity$FalsePositive$x.pos[sensitivity$FalsePositive$frame == TimeU],
-#'        y = sensitivity$FalsePositive$y.pos[sensitivity$FalsePositive$frame == TimeU],
-#'        border = "blue",
-#'        radius = 50,
-#'        Res = 1000,
-#'        lwd = 1.5,
-#'        lty = 1
-#'      )
-#'    }
-#'  )
-#')
+#' # Download the first dataset from the sample data repository
+#' Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TRex")
+#' Path2Data
+#' 
+#' # Import the list containing the 9 vectors classically used for further computation
+#' Data <- MoveR::readTrex(Path2Data[[1]],
+#'                         mirrorY = T,
+#'                         imgHeight = 2160)
+#' 
+#' # convert it to a list of tracklets
+#' trackDat <- MoveR::convert2frags(Data[1:7], by = "identity")
+#' 
+#' # load the reference dataset (a dataframe containing manually detected position of the particle's over time unit)
+#' refDat <-
+#'   read.csv(Path2Data[[3]],
+#'            dec = ".",
+#'            sep = ";")
+#' 
+#' # perform the sensitivity analysis
+#' sensitivity <- MoveR::trackSensitiv(
+#'   refDat = refDat,
+#'   trackDat = trackDat,
+#'   radius = 50,
+#'   imgRes = c(3840, 2160),
+#'   timeCol = "frame"
+#' )
+#' 
+#' # Draw the particle detected by the tracking method
+#' # and add the position of the good detections (darkgreen),
+#' # false negative and positive (red and blue, respectively)
+#' # at a given time unit
+#' 
+#' ## retrieve the frame at which the analysis has been performed
+#' TimeF <- unique(refDat[["frame"]])
+#' 
+#' # display the results
+#' par(mfrow = c(2, 2))
+#' for (i in seq_along(TimeF)) {
+#'   MoveR::drawFrags(
+#'     trackDat,
+#'     timeWin = list(c(TimeF[[i]], TimeF[[i]])),
+#'     main = paste("frame", TimeF[[i]], sep = " "),
+#'     add2It = list(
+#'       MoveR::circles(
+#'         refDat[which(refDat[["frame"]] == TimeF[[i]]), "x.pos"],
+#'         refDat[which(refDat[["frame"]] == TimeF[[i]]), "y.pos"],
+#'         border = "darkgreen",
+#'         radius = 50,
+#'         Res = 1000,
+#'         lwd = 1.5,
+#'         lty = 1
+#'       ),
+#'       if (length(sensitivity$FalseNegative$x[sensitivity$FalseNegative$frame == TimeF[[i]]]) > 0) {
+#'         MoveR::circles(
+#'           x = sensitivity$FalseNegative$x[sensitivity$FalseNegative$frame == TimeF[[i]]],
+#'           y = sensitivity$FalseNegative$y[sensitivity$FalseNegative$frame == TimeF[[i]]],
+#'           border = "red",
+#'           radius = 50,
+#'           Res = 1000,
+#'           lwd = 1.5,
+#'           lty = 1
+#'         )
+#'       },
+#'       if (length(sensitivity$FalsePositive$x.pos[sensitivity$FalsePositive$frame == TimeF[[i]]]) > 0) {
+#'         MoveR::circles(
+#'           x = sensitivity$FalsePositive$x.pos[sensitivity$FalsePositive$frame == TimeF[[i]]],
+#'           y = sensitivity$FalsePositive$y.pos[sensitivity$FalsePositive$frame == TimeF[[i]]],
+#'           border = "blue",
+#'           radius = 50,
+#'           Res = 1000,
+#'           lwd = 1.5,
+#'           lty = 1
+#'         )
+#'       }
+#'     )
+#'   )
+#' }
+#' 
+#' str(sensitivity)
 #'
 #' @export
 
@@ -139,11 +148,31 @@ trackSensitiv <-
   function(trackDat,
            refDat,
            radius = 20,
-           imgRes = c(1920, 1080),
-           timeCol = "frame") {
+           imgRes = c(NA, NA),
+           timeCol = "frame",
+           progess = TRUE) {
     # transform refDat to a list of dataframe according to timeCol
     if (is.data.frame(refDat)) {
       refDat <- split(refDat, refDat[[timeCol]])
+    }
+    
+    # if imgRes is unspecified retrieve it approximately using the maximum value in x and y coordinates
+    if (TRUE %in% is.na(imgRes)) {
+      xCoords <- unlist(lapply(trackDat, function(x)
+        MoveR::listGet(x, "x.pos")))
+      if (length(which(is.infinite(xCoords)) > 0)) {
+        xCoords <- xCoords[!is.infinite(xCoords)]
+      }
+      width <- round(max(xCoords) + 5 * max(xCoords) / 100, 0)
+      
+      yCoords <- unlist(lapply(trackDat, function(x)
+        MoveR::listGet(x, "y.pos")))
+      if (length(which(is.infinite(yCoords)) > 0)) {
+        yCoords <- yCoords[!is.infinite(yCoords)]
+      }
+      height <- round(max(yCoords) + 5 * max(yCoords) / 100, 0)
+      
+      imgRes <- c(width, height)
     }
     
     # initialize the dataframe and vector to retrieve the results
@@ -155,13 +184,13 @@ trackSensitiv <-
       ))
     FalsePId <- c()
     FalseNId <- c()
-    
-    # initialize progress bar
-    total = length(refDat)
-    pb <-
-      progress::progress_bar$new(format = "reference data processing [:bar] :current/:total (:percent)", total = total)
-    pb$tick(0)
-    Sys.sleep(0.001)
+    if (isTRUE(progess)) {
+      # initialize progress bar
+      total = length(refDat)
+      pb <-
+        progress::progress_bar$new(format = "reference data processing [:bar] :current/:total (:percent)", total = total)
+      pb$tick(0)
+    }
     
     for (h in seq(length(refDat))) {
       # if x.pos, y,pos, and timeCol are not found
@@ -201,7 +230,7 @@ trackSensitiv <-
           h,
           " in refDat:",
           "\nframe column contains multiple frame numbers, refDat must be a list of df where each df is
-       the location of individuals in a single frame"
+       the location of particles in a single frame"
         )
       } else if (length(unique(refDat[[h]][[timeCol]])) == 1) {
         # 1- create a caneva based on pixels values and extract values included in radius
@@ -220,20 +249,20 @@ trackSensitiv <-
         ## the reference point coordinates as center and size given by radius
         refVal <- apply(dist2Pt(locTabDf, refDat[[h]]), 2,
                         function(k)
-                          locTab[as.matrix(locTabDf[k < radius,])])
+                          locTab[as.matrix(locTabDf[k < radius, ])])
         
-        # 2- check whether the fragments pass through reference point or not
+        # 2- check whether the tracklets pass through reference point or not
         
         ## subsetting trackDat according to the time (timeCol) were true position were recorded
-        FragsT <- as.data.frame(convert2list(trackDat))
-        FragsTsub <-
-          FragsT[FragsT[[timeCol]] == unique(refDat[[h]][[timeCol]]),]
+        trackT <- as.data.frame(convert2list(trackDat))
+        trackTsub <-
+          trackT[trackT[[timeCol]] == unique(refDat[[h]][[timeCol]]), ]
         
         area <- data.frame(matrix(ncol = length(refVal),
-                                  nrow = nrow(FragsTsub)))
-        for (j in seq(nrow(FragsTsub))) {
+                                  nrow = nrow(trackTsub)))
+        for (j in seq(nrow(trackTsub))) {
           indLoc <-
-            locTab[round(FragsTsub[["y.pos"]][j]), round(FragsTsub[["x.pos"]][j])]
+            locTab[round(trackTsub[["y.pos"]][j]), round(trackTsub[["x.pos"]][j])]
           for (k in seq(length(refVal))) {
             if (indLoc %in% refVal[[k]]) {
               area[j, k] = TRUE
@@ -245,8 +274,8 @@ trackSensitiv <-
           }
         }
         
-        # 3 - compute index of sensitivity
-        ## Which reference has been not found in fragments (False negative = 1)
+        # 3- compute index of sensitivity
+        ## Which reference has been not found in tracklets (False negative = 1)
         FalseN <- c(rep(NA, ncol(area)))
         for (l in seq(ncol(area))) {
           if (!TRUE %in% area[, l]) {
@@ -255,19 +284,19 @@ trackSensitiv <-
             FalseN[[l]] <- 0
           }
         }
-        FalseNId_temp <- refDat[[h]][which(FalseN == 1), ]
+        FalseNId_temp <- refDat[[h]][which(FalseN == 1),]
         FalseNId <- rbind(FalseNId, FalseNId_temp)
         
-        ## which fragments has been not found in reference (False positive = 1)
+        ## which tracklets has been not found in reference (False positive = 1)
         FalseP <- c(rep(NA, nrow(area)))
         for (m in seq(nrow(area))) {
-          if (!TRUE %in% area[m, ]) {
+          if (!TRUE %in% area[m,]) {
             FalseP[[m]] <- 1
           } else {
             FalseP[[m]] <- 0
           }
         }
-        FalsePId_temp <- FragsTsub[which(FalseP == 1), ]
+        FalsePId_temp <- trackTsub[which(FalseP == 1),]
         FalsePId <- rbind(FalsePId, FalsePId_temp)
         
         ## count the number of false positive and false negative
@@ -285,25 +314,24 @@ trackSensitiv <-
                                                               FalseNcount[FalseNcount[["FalseN"]] == 1, 2])
         }
       }
-      
-      # progress bar
-      pb$tick(1)
-      Sys.sleep(1 / 1000)
+      if (isTRUE(progess)) {
+        # progress bar
+        pb$tick(1)
+      }
     }
     
-    # 4 return the summary of the analysis
+    # 4- return the summary of the analysis
     SensitivRes <- list(
-      Sensitivity_Stats =
+      SensitivityStats =
         data.frame(
           mean = mean(sensitiv$sensitivity),
           n = nrow(sensitiv),
           sd = sd(sensitiv$sensitivity),
           se = sd(sensitiv$sensitivity) / sqrt(nrow(sensitiv))
         ),
-      sensitivity_Details = sensitiv,
+      SensitivityDetails = sensitiv,
       FalseNegative = FalseNId,
       FalsePositive = FalsePId
     )
-    str(SensitivRes)
     return(SensitivRes)
   }

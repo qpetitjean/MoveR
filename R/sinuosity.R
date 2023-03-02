@@ -1,14 +1,14 @@
-#' @title Compute corrected rediscretized sinuosity index for a given fragment.
+#' @title Compute corrected rediscretized sinuosity index for a given tracklet.
 #'
-#' @description Given a data frames containing tracking informations for a given fragment,
-#' this function rediscretize fragment path and returns a vector containing the value of
-#' sinuosity along this fragment.
+#' @description Given a data frames containing tracking information for a given tracklet,
+#' this function rediscretize the tracklet and returns a vector containing the value of
+#' sinuosity along the trajectory.
 #'
 #'
-#' @param df  A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given fragment, as well as
-#' a column containing time information, whatever the unit, over the fragment.
+#' @param df  A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet, as well as
+#' a column containing time information, whatever the unit, over the tracklet.
 #'
-#' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates.
+#' @param scale A ratio corresponding to the scaling factor which should be applied to the trajectory coordinates.
 #' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.
 #'
 #' @param segL A numeric value expressed in the unit specified by user and corresponding
@@ -19,7 +19,7 @@
 #'
 #' @param compass.direction A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).
 #'
-#' @return This function returns a value of sinuosity for a given fragment according to TrajSinuosity2 function from trajR package.
+#' @return This function returns a value of sinuosity for a given tracklet according to \code{\link[trajr]{TrajSinuosity2}} from the \code{\link[trajr]{trajr}} package.
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -29,19 +29,23 @@
 #'
 #' @examples
 #'
-#'# generate a dummy fragment
-#'## start to specify some parameters to generate the fragment
-#'FragL <- 100 # the length of the fragment or a sequence to randomly sample fragment length
-#'
-#'fragDatTemp <- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)
-#'fragDat <- data.frame(
-#'  x.pos = fragDatTemp[["x"]] - min(fragDatTemp[["x"]]),
-#' y.pos = fragDatTemp[["y"]] - min(fragDatTemp[["y"]] ),
-#'  frame = fragDatTemp[["time"]]
-#')
-#'
-#'# compute the sinuosity of the particle' trajectory, here we consider that the space unit is the pixels
-#'sinuosity(fragDat, scale = 1, TimeCol = "frame", unit = "pixels")
+#' set.seed(2023)
+#' # generate a dummy tracklet
+#' ## start to specify some parameters to generate the tracklet
+#' TrackL <-
+#'   100 # the length of the tracklet or a sequence to randomly sample tracklet's length
+#' 
+#' TrackDatTemp <-
+#'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)
+#' TrackDat <-
+#'   data.frame(
+#'     x.pos = TrackDatTemp[["x"]] - min(TrackDatTemp[["x"]]),
+#'     y.pos = TrackDatTemp[["y"]] - min(TrackDatTemp[["y"]]),
+#'     frame = TrackDatTemp[["time"]]
+#'   )
+#' 
+#' # compute the sinuosity of the particle' trajectory
+#' MoveR::sinuosity(TrackDat, scale = 1, TimeCol = "frame")
 #'
 #' @export
 
@@ -90,7 +94,7 @@ sinuosity <- function(df,
     if (inherits(try(trajr::TrajRediscretize(trj, segL), silent = TRUE)
                  , "try-error")) {
       sinuosityRes <- NA
-      warning("The fragment is shorter than segL, sinuosity returned NA, segL might be to high")
+      warning("The tracklet is shorter than segL, sinuosity returned NA, segL might be to high")
     } else if (!inherits(try(trajr::TrajRediscretize(trj, segL), silent = TRUE)
                          , "try-error")) {
       discretized <- trajr::TrajRediscretize(trj, segL)

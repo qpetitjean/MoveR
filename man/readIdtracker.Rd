@@ -9,7 +9,7 @@ readIdtracker(IdtrackerPath, mirrorY = TRUE, imgHeight = NULL, frameR = NULL)
 \arguments{
 \item{IdtrackerPath}{The full path of the idtrackerai output file (.npy).}
 
-\item{mirrorY}{TRUE or FALSE, set the origin of y coordinates, if TRUE y coordinates are mirrored to start on the bottom-left (default = TRUE).}
+\item{mirrorY}{A Boolean (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).}
 
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
 corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).}
@@ -35,29 +35,23 @@ this function returns a list of 9 vectors classically used for further computati
 \item{'ntargets': }{the number of particle tracked over each frame.}
 \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 }
+
 Also, by default the function mirror y coordinates to start on the bottom-left (see mirrorY argument).
 }
 \examples{
 
+# Download the first dataset from the sample data repository
+Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "IdTracker")
+Path2Data
+
 # Import the list containing the 9 vectors classically used for further computation
 # and mirror Y coordinates to start on the bottom-left
-
 Data <-
-  readIdtracker(
-    system.file("sampleData/sample_1/IdTrackerOutput", package = "MoveR"),
-    mirrorY = T,
-    imgHeight = 2160
+  MoveR::readIdtracker(Path2Data[[1]],
+         mirrorY = T,
+         imgHeight = 2160
   )
-
-# Import the list containing the 9 vectors classically used for further computation
-# and do not mirror Y coordinates to start on the top-left
-
-Data <-
-  readIdtracker(
-    system.file("sampleData/sample_1/IdTrackerOutput", package = "MoveR"),
-    mirrorY = F,
-    imgHeight = NULL
-  )
+str(Data)
 
 }
 \references{

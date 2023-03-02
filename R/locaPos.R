@@ -143,9 +143,9 @@ locaPos <-
     Res <- unlist(sapply(seq(nrow(df)), function(y) {
       if (!is.null(Fun)) {
         temp <-
-          ArenaGrad[Fun(df[["y.pos"]][y]), Fun(df[["x.pos"]][y])]
+          refDat[Fun(df[["y.pos"]][y]), Fun(df[["x.pos"]][y])]
       } else{
-        temp <- ArenaGrad[df[["y.pos"]][y], df[["x.pos"]][y]]
+        temp <- refDat[df[["y.pos"]][y], df[["x.pos"]][y]]
       }
       if (length(temp) == 0) {
         temp <- NA

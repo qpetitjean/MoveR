@@ -139,7 +139,7 @@ analyseTime <-
     TimelineStep <- unique(unlist(lapply(trackDat, function (w)
       apply(w[timeCol], 2, function(x) signif(diff(x), 4))
     )))
-    ## in case the time step is not constant used the minimum value and print a warning message
+    ## in case the time step is not constant use the minimum value and print a warning message
     if(length(TimelineStep) == 1){
       TimeLStep <- TimelineStep
     }else if(length(TimelineStep) > 1) {

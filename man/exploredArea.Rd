@@ -7,101 +7,92 @@
 exploredArea(
   trackDat,
   binRad = NULL,
-  imgRes = c(1920, 1080),
+  imgRes = c(NA, NA),
   scale = 1,
   timeCol = "frame",
   timeWin = list(c(0, Inf)),
+  graph = TRUE,
   saveGraph = FALSE
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking informations for each fragment (including a timeline)
-or a data frame containing tracking information for one fragment.}
+\item{trackDat}{A list of data frame containing tracking information for each tracklet (including a timeline)
+or a data frame containing tracking information for one tracklet.}
 
 \item{binRad}{A numeric value corresponding to the diameter of the typical surface a particle can "explore" around its position
 For instance, the reaction distance of a Trichograms (i.e., a parasitoid micro-wasp) is about 4 mm, in this case, a reasonable value is of order 16 mm^2,
 the diameter of such a cell is hence about 8 mm.}
 
-\item{imgRes}{A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot
-(i.e., the number of pixels in image width and height, e.g., 1920 x 1080).}
+\item{imgRes}{A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
+If imgRes is unspecified, the function retrieve it using x and y maximum values + 5\%.}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates (optional).}
 
 \item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
 
 \item{timeWin}{A list of one or several vector containing 2 numeric values separated by a comma
-corresponding to the time interval between which the fragments have to be drawn according to timeCol (optional).}
+corresponding to the time interval between which the tracklets have to be drawn according to timeCol (optional).}
+
+\item{graph}{A Boolean indicating whether the various diagnostics plots should be displayed or not (default = TRUE).}
 
 \item{saveGraph}{A logical value indicating whether the heatmap should be saved as a .tiff file in the hardrive - within the working directory (default = FALSE).
 Alternatively, the user can specify the saving function and hence the extension and the
-directory where the heatmap should be saved (see for instance grDevices::png(), grDevices::jpeg() or grDevices::tiff()).}
+directory where the heatmap should be saved (see for instance \code{\link[grDevices]{png}}, \code{\link[grDevices]{jpeg}} or \code{\link[grDevices]{tiff}}.}
 }
 \value{
-displays an heatmap (i.e., hexbin plot) of the explored areas and returns the
-total surface explored in a geometrically consistent and scalable manner
+This function returns the total surface explored in a geometrically consistent and scalable manner and if
+graph argument is TRUE, it displays an heatmap (i.e., hexbin plot) of the explored areas.
 }
 \description{
-Given a list of tracking fragments containing cartesian coordinates, and a value of
+Given a list of tracking tracklets containing cartesian coordinates, and a value of
 reaction distance this function displays an heatmap (i.e., hexbin plot) of the explored areas and returns the
 total surface explored in a geometrically consistent and scalable manner.
 }
 \examples{
 
-# generate some dummy fragments
-## start to specify some parameters to generate fragments
-Fragn <- 20 # the number of fragment to simulate
-FragL <- 100:1000 # the length of the fragments or a sequence to randomly sample fragment length
+set.seed(2023)
+# generate some dummy tracklets
+## start to specify some parameters to generate tracklets
+TrackN <- 40 # the number of tracklet to simulate
+TrackL <-
+  1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
+id <- 0
+TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+  trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
+    id <<- id + 1
+    data.frame(
+      x.pos = j$x - min(j$x),
+      y.pos = j$y - min(j$y),
+      frame = j$time,
+      identity = paste("Tracklet", id, sep = "_")
+    )
+  }), seq(TrackN))
 
-fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
-   data.frame(
-     x.pos = j$x - min(j$x),
-     y.pos = j$y - min(j$y),
-     frame = j$time
-   )), seq(Fragn))
+# check the tracklets
+MoveR::drawFrags(TrackList,
+                 timeCol = "frame")
 
-# check the fragments
+# compute the total surface explored and displays the heatmap for all tracklets
+# NB: Plot can be displayed and/or saved using graph and saveGraph arguments
+MoveR::exploredArea(TrackList,
+                    binRad = 8,
+                    scale = 1,
+                    timeCol = "frame")
 
-MoveR::drawFrags(fragsList,
-         imgRes = c(max(MoveR::convert2list(fragsList)[["x.pos"]]),
-                    max(MoveR::convert2list(fragsList)[["y.pos"]])),
-         timeCol = "frame")
-
-# extract image resolution
-imgRes <- c(max(MoveR::convert2list(fragsList)[["x.pos"]]), 
-           max(MoveR::convert2list(fragsList)[["y.pos"]]))
-# compute the total surface explored and displays the heatmap for all fragments
-# and save the plot in the working directory using user specified parameters (saveGraph argument)
-# if saveGraph is "TRUE", the plot is saved in the working directory as .tiff image
-# if saveGraph is "FALSE", the plot is only displayed.
-MoveR::exploredArea(fragsList,
-            binRad = 8,
-            imgRes = imgRes,
-            scale = 1,
-            timeCol = "frame",
-            timeWin = list(c(0, Inf)),
-            saveGraph = grDevices::tiff("exploredPlotTest.tiff",
-                                        width = 600,
-                                        height = 600
-            ))
-
-# compute the surface explored for each fragment and display (but do not save) the heatmap for each fragment
-# here by combining exploredArea and analyseFrags, the surface explored for each fragment will be appended to the data
-# of the corresponding fragment.
-MoveR::analyseFrags(
- fragsList,
- customFunc = list(
-   exploredArea = function(x)
-     exploredArea(
-       x,
-       binRad = 8,
-       imgRes = imgRes,
-       scale = 1,
-       timeCol = "frame",
-       timeWin = list(c(0, Inf)),
-       saveGraph = FALSE
-     ))
-)
+# compute the surface explored for each tracklet and display (but do not save) the heatmap for the 2 first tracklets
+# by combining exploredArea and analyseFrags, the surface explored for each tracklet is appended to the data
+# of the corresponding tracklets.
+ExplorTest <- MoveR::analyseFrags(TrackList[1:2],
+                                  customFunc = list(
+                                    exploredArea = function(x)
+                                      exploredArea(
+                                        x,
+                                        binRad = 8,
+                                        scale = 1,
+                                        timeCol = "frame"
+                                      )
+                                  ))
+str(ExplorTest)
 
 }
 \author{

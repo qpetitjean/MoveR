@@ -2,7 +2,7 @@
 % Please edit documentation in R/circles.R
 \name{circles}
 \alias{circles}
-\title{Draw circle(s).}
+\title{Generate points located on circles contour and draw circle(s).}
 \usage{
 circles(
   x = NULL,
@@ -13,34 +13,38 @@ circles(
   col = NULL,
   border = "black",
   lwd = 1,
-  lty = 1
+  lty = 1,
+  draw = T
 )
 }
 \arguments{
-\item{x}{a coordinate vector of circles to plot.}
+\item{x}{A coordinate vector of circles to plot.}
 
-\item{y}{a coordinate vector of circles to plot.}
+\item{y}{A coordinate vector of circles to plot.}
 
-\item{radius}{a single numeric value or a vector specifying the radius of the circles to plot.}
+\item{radius}{A single numeric value or a vector specifying the radius of the circles to plot.}
 
-\item{Res}{a numeric value corresponding to the resolution of the circles (i.e., the number of points used to draw the circles contour, default = 500).}
+\item{Res}{A numeric value corresponding to the resolution of the circles (i.e., the number of points used to draw the circles contour, default = 500).}
 
-\item{center}{either TRUE or a single integers or a vector of integers specifying the symbol(s) or a single character to be used to represent the circle center
+\item{center}{Either TRUE or a single integers or a vector of integers specifying the symbol(s) or a single character to be used to represent the circle center
 (see points for possible values and their interpretation).}
 
-\item{col}{the color or a vector of colors for filling the circles, the default leave polygons unfilled.}
+\item{col}{The color or a vector of colors for filling the circles, the default leave polygons unfilled.}
 
-\item{border}{the color or a vector of colors to draw the border of the circles (default = "black").}
+\item{border}{The color or a vector of colors to draw the border of the circles (default = "black").}
 
-\item{lwd}{the value of line width or a vector of line width of the circles border (default = 1).}
+\item{lwd}{The value of line width or a vector of line width of the circles border (default = 1).}
 
-\item{lty}{an integer or a vector of integer corresponding to line type to be used for drawing circles border, as in par (default = 1).}
+\item{lty}{An integer or a vector of integer corresponding to line type to be used for drawing circles border, as in par (default = 1).}
+
+\item{draw}{A Boolean (i.e., TRUE or FALSE) indicating whether the circle(s) should be drawn or not (default = TRUE).}
 }
 \value{
-draw the circles from center coordinates and value of the radius on an existing plot window or, if there is no active plot window, on a new plot window.
+Draw the circles from center coordinates and value of the radius on an existing plot window or, if there is no active plot window, on a new plot window.
+It also returns the coordinates of the points simulated to draw the contour of the circle(s).
 }
 \description{
-Given x and y coordinates as well as the circle radius, this function draw circle(s).
+Given x and y coordinates as well as the circle radius, this function draw circle(s) and returns the coordinates of the points simulated to draw the contour of the circle.
 }
 \examples{
 

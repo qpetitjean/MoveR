@@ -1,27 +1,30 @@
-#' @title Draw circle(s).
+#' @title Generate points located on circles contour and draw circle(s).
 #'
-#' @description Given x and y coordinates as well as the circle radius, this function draw circle(s).
+#' @description Given x and y coordinates as well as the circle radius, this function draw circle(s) and returns the coordinates of the points simulated to draw the contour of the circle.
 #'
-#' @param x a coordinate vector of circles to plot.
+#' @param x A coordinate vector of circles to plot.
 #'
-#' @param y a coordinate vector of circles to plot.
+#' @param y A coordinate vector of circles to plot.
 #'
-#' @param radius a single numeric value or a vector specifying the radius of the circles to plot.
+#' @param radius A single numeric value or a vector specifying the radius of the circles to plot.
 #'
-#' @param Res a numeric value corresponding to the resolution of the circles (i.e., the number of points used to draw the circles contour, default = 500).
+#' @param Res A numeric value corresponding to the resolution of the circles (i.e., the number of points used to draw the circles contour, default = 500).
 #'
-#' @param center either TRUE or a single integers or a vector of integers specifying the symbol(s) or a single character to be used to represent the circle center
+#' @param center Either TRUE or a single integers or a vector of integers specifying the symbol(s) or a single character to be used to represent the circle center
 #' (see points for possible values and their interpretation).
 #'
-#' @param col the color or a vector of colors for filling the circles, the default leave polygons unfilled.
+#' @param draw A Boolean (i.e., TRUE or FALSE) indicating whether the circle(s) should be drawn or not (default = TRUE).
 #'
-#' @param border the color or a vector of colors to draw the border of the circles (default = "black").
+#' @param col The color or a vector of colors for filling the circles, the default leave polygons unfilled.
 #'
-#' @param lwd the value of line width or a vector of line width of the circles border (default = 1).
+#' @param border The color or a vector of colors to draw the border of the circles (default = "black").
 #'
-#' @param lty an integer or a vector of integer corresponding to line type to be used for drawing circles border, as in par (default = 1).
+#' @param lwd The value of line width or a vector of line width of the circles border (default = 1).
 #'
-#' @return draw the circles from center coordinates and value of the radius on an existing plot window or, if there is no active plot window, on a new plot window.
+#' @param lty An integer or a vector of integer corresponding to line type to be used for drawing circles border, as in par (default = 1).
+#'
+#' @return Draw the circles from center coordinates and value of the radius on an existing plot window or, if there is no active plot window, on a new plot window.
+#' It also returns the coordinates of the points simulated to draw the contour of the circle(s).
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -66,7 +69,8 @@ circles <-
            col = NULL,
            border = "black",
            lwd = 1,
-           lty = 1) {
+           lty = 1,
+           draw = T) {
     if (is.null(x)) {
       stop("x argument is missing, 2 coordinate vectors are needed to draw the circles")
     }
@@ -144,53 +148,61 @@ circles <-
         length(y)
       )
     }
-    if (is.null(dev.list())) {
-      graphics::plot.new()
-      plot(
-        NULL,
-        xlim = c(
-          min(x, na.rm = T) - max(radius,  na.rm = T),
-          max(x, na.rm = T) + max(radius,  na.rm = T)
-        ),
-        ylim = c(
-          min(y, na.rm = T) - max(radius,  na.rm = T),
-          max(y, na.rm = T) + max(radius,  na.rm = T)
-        ),
-        xlab = "x",
-        ylab = "y",
-      )
-    }
-    theta <- seq(0, 2 * pi, length = Res)
-    for (i in seq(length(x))) {
-      graphics::polygon(
-        x = radius[i] * cos(theta) + x[i],
-        y = radius[i] * sin(theta) + y[i],
-        col = col[i],
-        border = border[i],
-        lwd = lwd[i],
-        lty = lty[i]
-      )
-      if (!is.null(center)) {
-        if (length(center) == 1) {
-          center <- rep(center, length(x))
-        }
-        else if (length(center) > 1 & length(center) != length(x)) {
-          stop(
-            "center, x and y arguments has different length: ",
-            length(center),
-            ", ",
-            length(x),
-            ", ",
-            length(y)
-          )
-        }
-        graphics::points(
-          x[i],
-          y[i],
-          pch = ifelse(isTRUE(center[i]), "+", center[i]),
-          col = border[i],
-          cex = radius[i] / 6
+      if (isTRUE(draw) & is.null(dev.list())) {
+        graphics::plot.new()
+        plot(
+          NULL,
+          xlim = c(
+            min(x, na.rm = T) - max(radius,  na.rm = T),
+            max(x, na.rm = T) + max(radius,  na.rm = T)
+          ),
+          ylim = c(
+            min(y, na.rm = T) - max(radius,  na.rm = T),
+            max(y, na.rm = T) + max(radius,  na.rm = T)
+          ),
+          xlab = "x",
+          ylab = "y",
         )
       }
+    theta <- seq(0, 2 * pi, length = Res)
+    circleList <- list()
+    for (i in seq(length(x))) {
+      xtemp <- radius[i] * cos(theta) + x[i]
+      ytemp <- radius[i] * sin(theta) + y[i]
+      if (isTRUE(draw)) {
+        graphics::polygon(
+          x = xtemp,
+          y = ytemp,
+          col = col[i],
+          border = border[i],
+          lwd = lwd[i],
+          lty = lty[i]
+        )
+        if (!is.null(center)) {
+          if (length(center) == 1) {
+            center <- rep(center, length(x))
+          }
+          else if (length(center) > 1 & length(center) != length(x)) {
+            stop(
+              "center, x and y arguments has different length: ",
+              length(center),
+              ", ",
+              length(x),
+              ", ",
+              length(y)
+            )
+          }
+          graphics::points(
+            x[i],
+            y[i],
+            pch = ifelse(isTRUE(center[i]), "+", center[i]),
+            col = border[i],
+            cex = radius[i] / 6
+          )
+        }
+      }
+      circleList <-
+        append(circleList, list(data.frame(x.pos = xtemp, y.pos = ytemp)))
     }
+    return(circleList)
   }

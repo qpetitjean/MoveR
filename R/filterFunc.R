@@ -1,4 +1,4 @@
-#' @title Create and test a custom filter on tracking fragments.
+#' @title Create and test a custom filter on tracklets.
 #'
 #' @description Given a list of data frames containing tracking information for each fragment, 
 #' this function returns a list of vector containing the result of a user defined condition test for each fragment.
@@ -9,8 +9,7 @@
 #' 
 #' @param customFunc A custom function containing condition(s) to be applied to toFilter argument.
 #'
-#' @return A list of vector of the same length than the fragments list containing
-#'  the result of a user specified condition test for each fragment.
+#' @return A list of vector of the same length than the tracklets list containing the result of a user specified condition test for each fragment.
 #'
 #' @author Quentin PETITJEAN
 #' 
@@ -18,26 +17,21 @@
 #'
 #' @examples
 #' 
-#'# load the sample data
-#'Data <-
-#'  readTrex(
-#'    system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
-#'    mirrorY = T,
-#'    imgHeight = 2160,
-#'    rawDat = F
-#'  )
-#'# convert it to a list of fragments
-#'trackDat <- convert2frags(Data[1:7], by = "identity")
+#' # Download the first dataset from the sample data repository
+#' Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TRex")
+#' Path2Data
 #'
-#'## Exemple 1: test for the presence of infinite value in x.pos,
-#'   # if infinite values are detected, the result is TRUE 
-#'  
-#' filterFunc(trackDat, toFilter = "x.pos", customFunc = function(x) is.infinite(x))
+#' # Import the list containing the 9 vectors classically used for further computation
+#' Data <- MoveR::readTrex(Path2Data[[1]])
 #'
-#'## Exemple 2: test for the length of the individuals, 
-#' # if individual size is ranging between 1 and 20 pixels, the result is TRUE 
-#'  
-#' filterFunc(trackDat, toFilter = "maj.ax", customFunc = function(x) x >= 1 & x <= 20)
+#' # convert it to a list of tracklets
+#' trackDat <- MoveR::convert2frags(Data[1:7], by = "identity")
+#'
+#' # example 1: test for the presence of infinite value in x.pos, if infinite values are detected, the result is TRUE 
+#' MoveR::filterFunc(trackDat, toFilter = "x.pos", customFunc = function(x) is.infinite(x))
+#'
+#' # example 2: test for the length of the particles, if particles size is ranging between 1 and 20 pixels, the result is TRUE 
+#' MoveR::filterFunc(trackDat, toFilter = "maj.ax", customFunc = function(x) x >= 1 & x <= 20)
 #'
 #' @export
 

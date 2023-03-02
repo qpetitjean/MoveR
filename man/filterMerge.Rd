@@ -2,26 +2,25 @@
 % Please edit documentation in R/filterMerge.R
 \name{filterMerge}
 \alias{filterMerge}
-\title{Merge the results of several condition tests (i.e., the outputs of filterFunc).}
+\title{Merge condition tests (i.e., \code{\link{filterFunc}} outputs).}
 \usage{
 filterMerge(filters = list(NULL), cond = TRUE)
 }
 \arguments{
-\item{filters}{A list of list containing the results of a condition test (TRUE or FALSE) as returned by \code{\link{filterFunc}}.}
+\item{filters}{A list of lists containing the results of a condition test (TRUE or FALSE) as returned by \code{\link{filterFunc}}.}
 
-\item{cond}{A bloolean (i.e., TRUE or FALSE), specifying when the value does not follow the rules of the condition test.}
+\item{cond}{A Boolean (i.e., TRUE or FALSE) specifying whether the value does follow the rules of the condition test or not.}
 }
 \value{
-A list of vector of the same length than the fragments list containing
-the merged result of user specified condition tests for each fragment.
+A list of vector of the same length than the tracklets list containing the merged result of user specified condition tests for each tracklet.
 }
 \description{
-Given several lists containing the results of a condition test (TRUE or FALSE) as returned by \code{\link{filterFunc}}
+Given several lists containing the results of a condition test (i.e., TRUE or FALSE) as returned by \code{\link{filterFunc}}
 this function merge the results of the condition tests for further use in \code{\link{filterFrags}}.
 }
 \examples{
 
-# create 3 filters, i.e., 3 lists containing the results of a condition tests (TRUE or FALSE) as returned by \code{\link{filterFunc}}
+# create 3 filters, i.e., 3 lists containing the results of a condition tests (TRUE or FALSE) as returned by \code{\link{filterFunc}} for two tracklets (i.e., 1 and 2)
 A = list("1" = c(TRUE, FALSE, FALSE), "2" = c(TRUE, TRUE, FALSE))
 B = list("1" = c(FALSE, TRUE, FALSE), "2" = c(FALSE, TRUE, FALSE))
 C = list("1" = c(FALSE, FALSE, TRUE), "2" = c(TRUE, FALSE, FALSE))

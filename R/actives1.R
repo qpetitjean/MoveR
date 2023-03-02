@@ -1,56 +1,59 @@
 #' @title Determine active or inactive states according to the speed of a particles along its trajectory.
 #'
-#' @description Given a data frames containing tracking informations for a given fragment including speed, 
-#' this function return a vector containing TRUE or FALSE when individual is active or not respectively.
+#' @description Given a data frames containing tracking information for a given tracklet including speed, 
+#' this function return a vector containing character strings indicating whether the particle is "active" or "inactive".
 #'
-#' @param df A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given fragment, as well as 
-#' a column containing the speed of the particle, whatever the unit, over the fragment.
+#' @param df A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet, as well as 
+#' a column containing the speed of the particle, whatever the unit, over the tracklet.
 #' 
-#' @param speedCol A character string corresponding to the name of the column containing the speed values of the particles along the fragment, whatever the unit.
+#' @param speedCol A character string corresponding to the name of the column containing the speed of the particles over the tracklet, whatever the unit.
 #' 
-#' @param minSpeed A numeric value expressed in the same unit than speed, corresponding to the threshold above which individual 
+#' @param minSpeed A numeric value expressed in the same unit than speed, corresponding to the threshold above which the particle 
 #' is considered as active.
 #'
-#' @return This function returns a vector containing TRUE or FALSE when individual is active or not respectively.
+#' @return This function returns a vector containing character strings indicating whether the particle is "active" or "inactive".
 #'
 #' @author Quentin PETITJEAN
 #'
 #' @examples
 #'
-#'set.seed(2028)
-#'# generate a dummy fragment
-#'## start to specify some parameters to generate the fragment
-#'FragL <- 100 # the length of the fragment or a sequence to randomly sample fragment length
-#'
-#'fragDatTemp <- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)
-#'fragDat <- data.frame(
-#'  x.pos = fragDatTemp[["x"]] - min(fragDatTemp[["x"]]),
-#'  y.pos = fragDatTemp[["y"]] - min(fragDatTemp[["y"]] ),
-#'  frame = fragDatTemp[["time"]]
-#')
-#'
-#'# compute the speed of the particle along its trajectory
-#'fragDat[["speed"]] <- speed(fragDat, scale = 1, TimeCol = "frame")
-#'
-#'# we can then define the speed treshold above which the particle is considered actives using quantiles
-#'# here we use the 0.025 quantile to find the minimum speed treshold
-#'hist(log10(fragDat[["speed"]][-is.na(fragDat[["speed"]])]))
-#'tresh <- quantile(log10(fragDat[["speed"]][-is.na(fragDat[["speed"]])]), 0.025)
-#'abline(v = tresh)
-#'
-#'fragDat[["active_1"]] <- actives1(fragDat, speedCol = "speed", minSpeed = 10^tresh)
-#'
-#'# draw the particle' trajectory and spot the inactive moments using red dots
-#'drawFrags(
-#'list(fragDat),
-#'imgRes = c(max(fragDat[["x.pos"]]), max(fragDat[["y.pos"]])),
-#'add2It = list(
-#'  points(fragDat[["x.pos"]][which(fragDat[["active_1"]] == "inactive")],
-#'         fragDat[["y.pos"]][which(fragDat[["active_1"]] == "inactive")],
-#'         col = "red", 
-#'         pch = 19,
-#'         cex = 1.5))
-#')
+#' set.seed(2023)
+#' # generate a dummy tracklet
+#' ## start to specify some parameters to generate the tracklet
+#' TrackL <-
+#'   100 # the length of the tracklet or a sequence to randomly sample tracklet's length
+#' 
+#' TrackDatTemp <-
+#'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)
+#' TrackDat <- data.frame(
+#'   x.pos = TrackDatTemp[["x"]] - min(TrackDatTemp[["x"]]),
+#'   y.pos = TrackDatTemp[["y"]] - min(TrackDatTemp[["y"]]),
+#'   frame = TrackDatTemp[["time"]]
+#' )
+#' 
+#' # compute the speed of the particle along its trajectory
+#' TrackDat[["speed"]] <-
+#'   MoveR::speed(TrackDat, scale = 1, TimeCol = "frame")
+#' 
+#' # we can then define the speed treshold above which the particle is considered actives using quantiles
+#' # here we use the 0.025 quantile to find the minimum speed treshold
+#' hist(log10(TrackDat[["speed"]][-is.na(TrackDat[["speed"]])]))
+#' tresh <-
+#'   quantile(log10(TrackDat[["speed"]][-is.na(TrackDat[["speed"]])]), 0.025)
+#' abline(v = tresh)
+#' 
+#' TrackDat[["actives1"]] <-
+#'   MoveR::actives1(TrackDat, speedCol = "speed", minSpeed = 10 ^ tresh)
+#' 
+#' # draw the particle' trajectory and spot the inactive moments using red dots
+#' MoveR::drawFrags(list(TrackDat),
+#'                  add2It = list(points(
+#'                    TrackDat[["x.pos"]][which(TrackDat[["actives1"]] == "inactive")],
+#'                    TrackDat[["y.pos"]][which(TrackDat[["actives1"]] == "inactive")],
+#'                    col = "red",
+#'                    pch = 19,
+#'                    cex = 1.5
+#'                  )))
 #'
 #' @export
 
@@ -75,7 +78,7 @@ actives1 <- function (df, speedCol = NULL, minSpeed = NULL) {
     )}
   if (is.null(minSpeed)) {
     stop(
-      "minSpeed argument is missing: impossible to determine whether individual is active or not without a minimum speed treshold"
+      "minSpeed argument is missing: impossible to determine whether the particle is active or not without a minimum speed treshold"
     )
   } else if (!is.null(minSpeed)) {
     activeRes <- rep(NA, nrow(df))

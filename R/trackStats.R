@@ -1,32 +1,32 @@
-#' @title tracking statistics.
+#' @title Summary statistics of the tracking data.
 #'
-#' @description Given a list of tracking fragments containing cartesian coordinates,
-#' this function returns 2 sublists containing a summary of video and fragments data:
+#' @description Given a list of tracking tracklets containing cartesian coordinates,
+#' this function returns 2 sublists containing a summary of video and tracklets data:
 #'
 #' \itemize{
-#'    \item{"Video_summary": }{a list containing 4 elements:
+#'    \item{"VideoSummary": }{a list containing 4 elements:
 #'       \itemize{
-#'          \item{"videoDuration_f": }{the length of the video in frames.}
-#'          \item{"videoDuration_s": }{the length of the video in seconds.}
+#'          \item{"videoDuration_f": }{the length of the video expressed in frames.}
+#'          \item{"videoDuration_s": }{the length of the video expressed in seconds.}
 #'          \item{"frameR": }{the frame rate of the video as specified by the user.}
 #'          \item{"scale": }{the scaling factor applied to the trajectory coordinates as specifed by the user.}
 #'       }
 #'      }
 #'
-#'    \item{"fragments_summary": }{a list containing 8 elements:
+#'    \item{"TrackletSummary": }{a list containing 8 elements:
 #'       \itemize{
-#'          \item{"fragnb": }{the total number of fragments over the video (i.e., trajectories).}
-#'          \item{"totFragsDuration_f": }{the sum of the duration of all fragments in frames.}
-#'          \item{"totFragsDuration_s": }{the sum of the duration of all fragments in seconds}
-#'          \item{"totFragLength_unit": }{the sum of the length of all fragments in spatial unit as specified by the user (e.g., pixels, cm).}
-#'          \item{"fragId": }{the fragment identity.}
-#'          \item{"fragsDuration_f": }{the duration of each fragments in frames.}
-#'          \item{"fragsDuration_s": }{the duration of each fragments in seconds.}
-#'          \item{"fragLength_unit": }{the length of each fragments in spatial unit as specified by the user (e.g., pixels, cm).}
+#'          \item{"trackNb": }{the total number of tracklets over the video (i.e., trajectories).}
+#'          \item{"totTrackDuration_f": }{the sum of the duration of all tracklets expressed in frames.}
+#'          \item{"totTrackDuration_s": }{the sum of the duration of all tracklets expressed in seconds}
+#'          \item{"totTrackLength_unit": }{the sum of the length of all tracklets in spatial unit as specified by the user (e.g., pixels, cm).}
+#'          \item{"trackId": }{the tracklets identity.}
+#'          \item{"trackDuration_f": }{the duration of each tracklets expressed in frames.}
+#'          \item{"trackDuration_s": }{the duration of each tracklets expressed in seconds.}
+#'          \item{"trackLength_unit": }{the length of each tracklets in spatial unit as specified by the user (e.g., pixels, cm).}
 #'       }
 #'    }
 #'  }
-#' @param trackDat A list of data frame containing tracking information for each fragment (i.e., x.pos, y.pos, frame).
+#' @param trackDat A list of data frame containing tracking information for each tracklet (i.e., x.pos, y.pos, frame).
 #'
 #' @param frameR A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video
 #' (optional).
@@ -36,60 +36,62 @@
 #'
 #' @param units A character string specifying the spatial unit of the coordinates after scaling (default = "pixels").
 #'
-#' @return A summary of video and fragments data.
+#' @param progess A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#'
+#' @return A summary of video and tracklets data.
 #'
 #'
 #' @author Quentin PETITJEAN
 #'
 #' @seealso \code{\link[trajr]{TrajScale}}, \code{\link[trajr]{TrajFromCoords}}
-#' 
+#'
 #' @examples
 #'
-#'# generate some dummy fragments
-#' ## start to specify some parameters to generate fragments
-#'Fragn <- 500 # the number of fragment to simulate
-#'FragL <- 1:1000 # the length of the fragments or a sequence to randomly sample fragment length
-#'
-#'fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
-#'  trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
-#'    data.frame(
-#'      x.pos = j$x - min(j$x),
-#'      y.pos = j$y - min(j$y),
-#'      frame = j$time
-#'    )), seq(Fragn))
-#'
-#'# compute and display tracking summary
-#'TrackSumary <- trackStats(fragsList,
-#'                          frameR = 25,
-#'                         scale = 1,
-#'                         units = "pixels")
-#'
-#'# retrieve the fragLength and duration in frame from the summary "manually"
-#'FragL <- TrackSumary[["fragments_summary"]][["fragLength_pixels"]]
-#'FragD <- TrackSumary[["fragments_summary"]][["fragsDuration_f"]]
-#'
-#'# or using listGet utility
-#'FragL2 <- listGet(TrackSumary, "fragLength_pixels")
-#'FragD2 <- listGet(TrackSumary, "fragsDuration_f")
-#'
-#'# plot the distribution of fragments length and duration
-#'par(mfrow = c(2, 2))
-#'hist(FragL)
-#'hist(FragD)
-#'hist(FragL2)
-#'hist(FragD2)
+#' set.seed(2023)
+#' # generate some dummy tracklets
+#' ## start to specify some parameters to generate tracklets
+#' TrackN <- 500 # the number of tracklet to simulate
+#' TrackL <- 1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
+#' 
+#' TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+#'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j)
+#'     data.frame(
+#'       x.pos = j$x - min(j$x),
+#'       y.pos = j$y - min(j$y),
+#'       frame = j$time
+#'     )), seq(TrackN))
+#' 
+#' # compute and display tracking summary
+#' TrackSummary <- MoveR::trackStats(TrackList,
+#'                                   frameR = 25,
+#'                                   scale = 1,
+#'                                   units = "pixels")
+#' 
+#' # retrieve the TrackLength and duration in frame from the summary "manually"
+#' TrackL <- TrackSummary[["TrackletSummary"]][["trackLength_pixels"]]
+#' TrackD <- TrackSummary[["TrackletSummary"]][["trackDuration_f"]]
+#' 
+#' # or using listGet utility
+#' TrackL2 <- listGet(TrackSummary, "trackLength_pixels")
+#' TrackD2 <- listGet(TrackSummary, "trackDuration_f")
+#' 
+#' # plot the distribution of tracklets length and duration
+#' par(mfrow = c(2, 2))
+#' hist(TrackL)
+#' hist(TrackD)
+#' hist(TrackL2)
+#' hist(TrackD2)
 #'
 #' @export
 
 trackStats = function(trackDat,
                       frameR = NULL,
                       scale = NULL,
-                      units = NULL) {
+                      units = NULL,
+                      progress = TRUE) {
   if (is.null(units)) {
     units <- "pixels"
-    warning(
-      "units argument is missing, default value is pixels"
-    )
+    warning("units argument is missing, default value is pixels")
   }
   if (is.null(scale)) {
     scale <- 1
@@ -109,26 +111,27 @@ trackStats = function(trackDat,
   ## compute the duration of the video in second
   videoDuration_s <- videoDuration_f / frameR
   
-  # compute some basic summary about fragments
-  ## compute the number of fragments
-  frags <- names(trackDat)
-  nbFrag <- length(trackDat)
-  ## compute the duration of each fragment in frame
-  fragsDuration_f <- unname(unlist(lapply(trackDat, function (x)
+  # compute some basic summary about tracklets
+  ## compute the number of tracklets
+  Tracks <- names(trackDat)
+  nbTrack <- length(trackDat)
+  ## compute the duration of each tracklet in frame
+  TrackDuration_f <- unname(unlist(lapply(trackDat, function (x)
     nrow(x))))
-  ## compute the duration of each fragment in second
-  fragsDuration_s <- unname(fragsDuration_f / frameR)
-  ## compute total frags duration in frame
-  totFragsDuration_f <- sum(fragsDuration_f)
-  ## compute total frags duration in second
-  totFragsDuration_s <- sum(fragsDuration_s)
-  ## compute frags length in the specified units for each fragment
-  ### initialize progress bar
-  total = length(trackDat)
-  pb <-
-    progress::progress_bar$new(format = "fragments processing [:bar] :current/:total (:percent)", total = total)
-  pb$tick(0)
-  Sys.sleep(0.001)
+  ## compute the duration of each tracklet in second
+  TrackDuration_s <- unname(TrackDuration_f / frameR)
+  ## compute total tracks duration in frame
+  totTrackDuration_f <- sum(TrackDuration_f)
+  ## compute total tracks duration in second
+  totTrackDuration_s <- sum(TrackDuration_s)
+  ## compute tracks length in the specified units for each tracklet
+  if (isTRUE(progess)) {
+    ### initialize progress bar
+    total = length(trackDat)
+    pb <-
+      progress::progress_bar$new(format = "tracklets processing [:bar] :current/:total (:percent)", total = total)
+    pb$tick(0)
+  }
   
   trjList <- list()
   for (i in seq(length(trackDat))) {
@@ -136,17 +139,18 @@ trackStats = function(trackDat,
       trajr::TrajFromCoords(trackDat[[i]][, c("x.pos", "y.pos", "frame")], timeCol = 3)
     trjList[[names(trackDat)[i]]] <-
       trajr::TrajScale(trjTemp, scale, units)
-    # progress bar
-    pb$tick(1)
-    Sys.sleep(1 / 1000)
+    if (isTRUE(progess)) {
+      # progress bar
+      pb$tick(1)
+    }
   }
-  fragLength_unit <- paste("fragLength", units, sep = "_")
-  fragLength <- unname(unlist(lapply(trjList, function(x)
+  TrackLength_u <- paste("trackLength", units, sep = "_")
+  TrackLength <- unname(unlist(lapply(trjList, function(x)
     trajr::TrajLength(x))))
   
-  ## compute total frags length in the specified units
-  totFragLength <- sum(unlist(fragLength))
-  totFragLength_unit <- paste("totFragLength", units, sep = "_")
+  ## compute total tracks length in the specified units
+  totTrackLength <- sum(unlist(TrackLength))
+  totTrackLength_u <- paste("totTrackLength", units, sep = "_")
   
   # some checking for Inf and NA values
   InfCheck <-
@@ -156,7 +160,7 @@ trackStats = function(trackDat,
           length(z))) > 0))
   if (length(InfCheck) > 0) {
     warning(
-      "Infinite values have been found in x.pos for the fragments reported below; \nthis could produce a biased summary; \nconsider using filterFrags",
+      "Infinite values have been found in x.pos for the tracklets reported below; \nthis could produce a biased summary; \nconsider using filterFrags",
       ": \n",
       paste(InfCheck, collapse = ", ")
     )
@@ -171,33 +175,33 @@ trackStats = function(trackDat,
   
   if (length(NACheck) > 0) {
     warning(
-      "NA values have been found in x.pos for the fragments reported below; \nthis could produce a biased summary; \nconsider using filterFrags",
+      "NA values have been found in x.pos for the tracklets reported below; \nthis could produce a biased summary; \nconsider using filterFrags",
       ": \n",
       paste(NACheck, collapse = ", ")
     )
   }
   
   Summary <- c(list(
-    Video_summary = list(
+    VideoSummary = list(
       videoDuration_f = videoDuration_f,
       videoDuration_s = videoDuration_s,
       frameR = frameR,
       scale = scale
     ),
-    fragments_summary = list(
-      fragnb = nbFrag,
-      totFragsDuration_f = totFragsDuration_f,
-      totFragsDuration_s = totFragsDuration_s,
-      totFragLength_unit = totFragLength,
-      fragId = frags,
-      fragsDuration_f = fragsDuration_f,
-      fragsDuration_s = fragsDuration_s,
-      fragLength_unit = fragLength
+    TrackletSummary = list(
+      trackNb = nbTrack,
+      totTrackDuration_f = totTrackDuration_f,
+      totTrackDuration_s = totTrackDuration_s,
+      totTrackLength_u = totTrackLength,
+      trackId = Tracks,
+      trackDuration_f = TrackDuration_f,
+      trackDuration_s = TrackDuration_s,
+      trackLength_u = TrackLength
     )
     
   ))
-  names(Summary$fragments_summary)[[4]] <- totFragLength_unit
-  names(Summary$fragments_summary)[[8]] <- fragLength_unit
+  names(Summary$TrackletSummary)[[4]] <- totTrackLength_u
+  names(Summary$TrackletSummary)[[8]] <- TrackLength_u
   # display the summary
   str(Summary)
   return(Summary)

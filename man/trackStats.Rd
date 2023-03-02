@@ -2,12 +2,18 @@
 % Please edit documentation in R/trackStats.R
 \name{trackStats}
 \alias{trackStats}
-\title{tracking statistics.}
+\title{Summary statistics of the tracking data.}
 \usage{
-trackStats(trackDat, frameR = NULL, scale = NULL, units = NULL)
+trackStats(
+  trackDat,
+  frameR = NULL,
+  scale = NULL,
+  units = NULL,
+  progress = TRUE
+)
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking information for each fragment (i.e., x.pos, y.pos, frame).}
+\item{trackDat}{A list of data frame containing tracking information for each tracklet (i.e., x.pos, y.pos, frame).}
 
 \item{frameR}{A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video
 (optional).}
@@ -16,73 +22,76 @@ trackStats(trackDat, frameR = NULL, scale = NULL, units = NULL)
 (e.g., size in cm / size in pixels, (default = 1).}
 
 \item{units}{A character string specifying the spatial unit of the coordinates after scaling (default = "pixels").}
+
+\item{progess}{A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
 }
 \value{
-A summary of video and fragments data.
+A summary of video and tracklets data.
 }
 \description{
-Given a list of tracking fragments containing cartesian coordinates,
-this function returns 2 sublists containing a summary of video and fragments data:
+Given a list of tracking tracklets containing cartesian coordinates,
+this function returns 2 sublists containing a summary of video and tracklets data:
 
 \itemize{
-\item{"Video_summary": }{a list containing 4 elements:
+\item{"VideoSummary": }{a list containing 4 elements:
 \itemize{
-\item{"videoDuration_f": }{the length of the video in frames.}
-\item{"videoDuration_s": }{the length of the video in seconds.}
+\item{"videoDuration_f": }{the length of the video expressed in frames.}
+\item{"videoDuration_s": }{the length of the video expressed in seconds.}
 \item{"frameR": }{the frame rate of the video as specified by the user.}
 \item{"scale": }{the scaling factor applied to the trajectory coordinates as specifed by the user.}
 }
 }
 
-\item{"fragments_summary": }{a list containing 8 elements:
+\item{"TrackletSummary": }{a list containing 8 elements:
 \itemize{
-\item{"fragnb": }{the total number of fragments over the video (i.e., trajectories).}
-\item{"totFragsDuration_f": }{the sum of the duration of all fragments in frames.}
-\item{"totFragsDuration_s": }{the sum of the duration of all fragments in seconds}
-\item{"totFragLength_unit": }{the sum of the length of all fragments in spatial unit as specified by the user (e.g., pixels, cm).}
-\item{"fragId": }{the fragment identity.}
-\item{"fragsDuration_f": }{the duration of each fragments in frames.}
-\item{"fragsDuration_s": }{the duration of each fragments in seconds.}
-\item{"fragLength_unit": }{the length of each fragments in spatial unit as specified by the user (e.g., pixels, cm).}
+\item{"trackNb": }{the total number of tracklets over the video (i.e., trajectories).}
+\item{"totTrackDuration_f": }{the sum of the duration of all tracklets expressed in frames.}
+\item{"totTrackDuration_s": }{the sum of the duration of all tracklets expressed in seconds}
+\item{"totTrackLength_unit": }{the sum of the length of all tracklets in spatial unit as specified by the user (e.g., pixels, cm).}
+\item{"trackId": }{the tracklets identity.}
+\item{"trackDuration_f": }{the duration of each tracklets expressed in frames.}
+\item{"trackDuration_s": }{the duration of each tracklets expressed in seconds.}
+\item{"trackLength_unit": }{the length of each tracklets in spatial unit as specified by the user (e.g., pixels, cm).}
 }
 }
 }
 }
 \examples{
 
-# generate some dummy fragments
-## start to specify some parameters to generate fragments
-Fragn <- 500 # the number of fragment to simulate
-FragL <- 1:1000 # the length of the fragments or a sequence to randomly sample fragment length
+set.seed(2023)
+# generate some dummy tracklets
+## start to specify some parameters to generate tracklets
+TrackN <- 500 # the number of tracklet to simulate
+TrackL <- 1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 
-fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
-   data.frame(
-     x.pos = j$x - min(j$x),
-     y.pos = j$y - min(j$y),
-     frame = j$time
-   )), seq(Fragn))
+TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+  trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j)
+    data.frame(
+      x.pos = j$x - min(j$x),
+      y.pos = j$y - min(j$y),
+      frame = j$time
+    )), seq(TrackN))
 
 # compute and display tracking summary
-TrackSumary <- trackStats(fragsList,
-                         frameR = 25,
-                        scale = 1,
-                        units = "pixels")
+TrackSummary <- MoveR::trackStats(TrackList,
+                                  frameR = 25,
+                                  scale = 1,
+                                  units = "pixels")
 
-# retrieve the fragLength and duration in frame from the summary "manually"
-FragL <- TrackSumary[["fragments_summary"]][["fragLength_pixels"]]
-FragD <- TrackSumary[["fragments_summary"]][["fragsDuration_f"]]
+# retrieve the TrackLength and duration in frame from the summary "manually"
+TrackL <- TrackSummary[["TrackletSummary"]][["trackLength_pixels"]]
+TrackD <- TrackSummary[["TrackletSummary"]][["trackDuration_f"]]
 
 # or using listGet utility
-FragL2 <- listGet(TrackSumary, "fragLength_pixels")
-FragD2 <- listGet(TrackSumary, "fragsDuration_f")
+TrackL2 <- listGet(TrackSummary, "trackLength_pixels")
+TrackD2 <- listGet(TrackSummary, "trackDuration_f")
 
-# plot the distribution of fragments length and duration
+# plot the distribution of tracklets length and duration
 par(mfrow = c(2, 2))
-hist(FragL)
-hist(FragD)
-hist(FragL2)
-hist(FragD2)
+hist(TrackL)
+hist(TrackD)
+hist(TrackL2)
+hist(TrackD2)
 
 }
 \seealso{

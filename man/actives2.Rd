@@ -19,8 +19,7 @@ actives2(
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking informations for each fragment, including a vector
-containing behavioral patterns (e.g., behavioral states, location in areas).}
+\item{trackDat}{A list of data frame containing tracking information for each tracklet.}
 
 \item{var1}{A character string indicating the name of the variable to use as the first dimension.}
 
@@ -36,127 +35,131 @@ containing behavioral patterns (e.g., behavioral states, location in areas).}
 
 \item{minPts}{A numeric value specifying the reachability minimum no. of points (Ester et al., 1996), which correspond to the minimum number of point per cluster (see \code{\link[fpc]{dbscan}}).}
 
-\item{scale}{A logical value indicating whether the data should be centered (substracting the mean) and scaled (dividing the standard deviation to the centered data).}
+\item{scale}{A Boolean indicating whether the data should be centered (i.e., values minus the mean) and scaled (divided by the standard deviation) (default = TRUE).}
 
-\item{na.rm}{A logical value indicating whether NA values should be stripped before the computation proceeds (default = TRUE).}
+\item{na.rm}{A Boolean indicating whether NA values should be stripped before the computation proceeds (default = TRUE).}
 
-\item{graph}{A logical value indicating whether the various diagnostics plots should be displayed or not (default = TRUE).}
+\item{graph}{A Boolean indicating whether the various diagnostics plots should be displayed or not (default = TRUE).}
 }
 \value{
 This function returns the results of the classification (actives vs. inactives) appended to
-the original list of data frame containing tracking informations for each fragment.
+the original list of data frame containing tracking information for each tracklet.
 }
 \description{
-Given a list of data frames containing tracking informations and two variable of interest the function use
-density based clustering as introduced in Ester et al. (1996) and according to the DBSCAN method from Hennig (2020)
-to discriminate actives and inactives states in a 2d space.
+Given a list of data frames containing tracking information and two variable of interest the function use
+density based clustering as introduced in Ester et al. (1996). Also, the function use the DBSCAN method from Hennig (2020) to discriminate active and inactive states in a 2d space.
 }
 \examples{
 
-# Load the sample dataset
-Data <-
- MoveR::readTrex(
-   system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
-   mirrorY = T,
-   imgHeight = 2160,
-   rawDat = F
- )
+# Download the first dataset from the sample data repository
+Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TRex")
+Path2Data
 
-# convert it to a list of fragments
+# Import the list containing the 9 vectors classically used for further computation
+Data <- MoveR::readTrex(Path2Data[[1]])
+
+# convert it to a list of tracklets
 trackDat <- MoveR::convert2frags(Data[1:7], by = "identity")
 
 # infinite values that are present in the tracking output should be removed
 ## define the filter
 filter.Inf <-
- MoveR::filterFunc(
-   trackDat,
-   toFilter = "x.pos",
-   customFunc = function(x)
+  MoveR::filterFunc(
+    trackDat,
+    toFilter = "x.pos",
+    customFunc = function(x)
      is.infinite(x)
- )
+  )
 
 ### filter Infinite values
 trackDat.Infilt <-
- MoveR::filterFrags(
-   trackDat,
-   filter = filter.Inf,
-   splitCond = TRUE,
-   minDur = 100
- )
+  MoveR::filterFrags(trackDat,
+                     filter = filter.Inf,
+                     splitCond = TRUE,
+                     minDur = 100)
 
-### remove some fragment to speed up the computation
+### remove some tracklet to speed up the computation
 trackdat2 <- trackDat.Infilt[[2]][1:75]
 
-# check the fragments
+# check the tracklet
 MoveR::drawFrags(trackdat2,
-               imgRes = c(max(MoveR::convert2list(trackDat.Infilt[[2]])[["x.pos"]]),
-                          max(MoveR::convert2list(trackDat.Infilt[[2]])[["y.pos"]])),
-               timeCol = "frame")
+                 timeCol = "frame")
 
-# add some metric to the dataset (speed and turning angle) and time unit conversion
-fragsListV1 <-
- MoveR::analyseFrags(
-   trackdat2,
-   customFunc = list(
-     # specify a first function to compute speed over each fragment (a modulus present within the MoveR package)
-     speed = function(x)
-       MoveR::speed(
-         x,
-         TimeCol = "frame",
-         scale = 1),
-     # compute turning angle in radians over each fragment (a modulus present within the MoveR package)
-     TurnAngle = function(x)
-       MoveR::turnAngle(x, unit = "radians")
-   )
- )
-
-# smooth the computed metric by computing the mean value over a 10 frames' sliding window 
-fragsListV1Smoothed <-
- MoveR::analyseFrags(
-   fragsListV1,
-   customFunc = list(
-     # smooth variance of turning angles
-     SlideVarAngle = function (y)
-       MoveR::slidWin(y$TurnAngle,
-                     Tstep = 10, function (x)
-                       circular::var(
-                         circular::circular(
-                           x,
-                           type = "angle",
-                           units = "radians",
-                           zero = 0
-                         ),
-                         na.rm = T
-                       )),
-     # smooth speed
-     SlidemeanSpeed = function (y)
-       MoveR::slidWin(y$speed,
-                     Tstep = 10, function (x)
-                       mean(x, na.rm = T))
-   )
-)
+# add some metric to the dataset to perform 2d clustering (speed and turning angle)
+# and smooth them by computing the mean value over a 10 frames' sliding window
+Tstep = 10
+trackdat3 <-
+  MoveR::analyseFrags(
+    trackdat2,
+    customFunc = list(
+      # specify a first function to compute speed over each tracklet (a modulus present within the MoveR package)
+      speed = function(x)
+        MoveR::speed(x,
+                     TimeCol = "frame",
+                     scale = 1),
+      # compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
+      TurnAngle = function(x)
+        MoveR::turnAngle(
+          x,
+          TimeCol = "frame",
+          unit = "radians",
+          scale = 1
+        ),
+      # smooth variance of turning angles
+      SlideVarAngle = function (y)
+        MoveR::slidWin(y$TurnAngle,
+                       Tstep = Tstep, function (x)
+                         circular::var(
+                           circular::circular(
+                             x,
+                             type = "angle",
+                             units = "radians",
+                             zero = 0
+                           ),
+                           na.rm = T
+                         )),
+      # smooth speed
+      SlidemeanSpeed = function (y)
+        MoveR::slidWin(y$speed,
+                       Tstep = Tstep, function (x)
+                         mean(x, na.rm = T))
+    )
+  )
 
 # use density based clustering to classify actives and inactives states in a 2 dimension array (here the speed and the angle variance)
-# when graph = TRUE, several graphical output are displayed: 
+# when graph = TRUE, several graphical output are displayed:
 # - the distribution of inactives states
 # - the resuls of the density based clustering with the two groups displayed
-# - a similar representation but as hexbinplot, with the count 
+# - a similar representation but as hexbinplot, with the count
 # - the final representation of the 2d clustering with the increasing size of the dot representing the increasing number of count
 # - a pie chart representing the proportion of actives vs inactives states
 
-fragsListV1Smoothed <- MoveR::actives2(
- fragsListV1Smoothed,
- var1 = "SlidemeanSpeed",
- var2 = "SlideVarAngle",
- var1T = log10,
- var2T = NULL,
- nbins = 100,
- eps = 0.15,
- minPts = 5,
- scale = TRUE, 
- na.rm = TRUE,
- graph = TRUE
-) 
+trackdat3 <- MoveR::actives2(
+  trackdat3,
+  var1 = "SlidemeanSpeed",
+  var2 = "SlideVarAngle",
+  var1T = log10,
+  var2T = NULL,
+  nbins = 100,
+  eps = 0.15,
+  minPts = 5,
+  scale = TRUE,
+  na.rm = TRUE,
+  graph = TRUE
+)
+
+# draw the particle' trajectory and spot the inactive moments using red dots
+MoveR::drawFrags(trackdat3,
+          cex.start = 0.1,
+          add2It = list(for (i in seq_along(trackdat3)) {
+            points(
+              trackdat3[[i]][["x.pos"]][which(trackdat3[[i]][["actives2"]] == "inactive")],
+              trackdat3[[i]][["y.pos"]][which(trackdat3[[i]][["actives2"]] == "inactive")],
+              col = "red",
+              pch = 19,
+              cex = 1.5
+            )
+          }))
 
 }
 \references{
