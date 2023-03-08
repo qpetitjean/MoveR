@@ -28,10 +28,12 @@
 #' trackDat <- MoveR::convert2frags(Data[1:7], by = "identity")
 #'
 #' # example 1: test for the presence of infinite value in x.pos, if infinite values are detected, the result is TRUE 
-#' MoveR::filterFunc(trackDat, toFilter = "x.pos", customFunc = function(x) is.infinite(x))
-#'
+#' CondTest1 <- MoveR::filterFunc(trackDat, toFilter = "x.pos", customFunc = function(x) is.infinite(x))
+#' str(CondTest1)
+#' 
 #' # example 2: test for the length of the particles, if particles size is ranging between 1 and 20 pixels, the result is TRUE 
-#' MoveR::filterFunc(trackDat, toFilter = "maj.ax", customFunc = function(x) x >= 1 & x <= 20)
+#' CondTest2 <- MoveR::filterFunc(trackDat, toFilter = "maj.ax", customFunc = function(x) x >= 1 & x <= 20)
+#' str(CondTest1)
 #'
 #' @export
 

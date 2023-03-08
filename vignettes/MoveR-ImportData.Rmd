@@ -33,7 +33,7 @@ Now let's download the data.
 
 ```{r dlSampleData, echo=TRUE}
 # dl the first dataset from the sample data repository
-Path2Data <- MoveR::dlSampleDat(dataSet = 1)
+Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TRex")
 
 Path2Data
 
@@ -86,11 +86,11 @@ To ease further computation, graphical representation and manual inspection the 
 Here we use only the 7 first element of Data because the last two (i.e., ntargets and timestamps) do not carry the same amount of information and are not useful for the next steps of this tutorial.
 
 ```{r Convert, echo=TRUE}
-# convert the data to a list of fragment
+# convert the data to a list of tracklets
 # NB: remove ntargets and timestamps because their length is lower than other variables
 trackDat <- MoveR::convert2frags(Data[1:7], by = "identity")
 
-str(trackDat)
+str(trackDat[1:3]) # display only the 3 first tracklets
 ```
 
 Now we can easily look at the trajectory for a given particle by selecting its identity.

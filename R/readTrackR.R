@@ -63,7 +63,8 @@
 #'
 #' DataFull <-
 #'   MoveR::readTrackR(Path2Data[[1]],
-#'     rawDat = T
+#'     rawDat = T,
+#'     frameR = 25
 #'   )
 #'
 #' str(DataFull)

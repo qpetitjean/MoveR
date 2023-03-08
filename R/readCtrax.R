@@ -72,7 +72,7 @@ readCtrax <-
     frame <- c()
     frame_out <- 0
     for (t in Ctrax_Raw[["ntargets"]]) {
-      frame <- c(allTimes, rep(frame_out, times = t))
+      frame <- c(frame, rep(frame_out, times = t))
       frame_out <-  frame_out + 1
     }
     

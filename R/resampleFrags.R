@@ -11,7 +11,7 @@
 #'
 #' @param Tstep A numeric value corresponding to the length of the resampling step according to the time unit used in TimeCol (e.g., frame).
 #'
-#' @param progess A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progress A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
 #'
 #' @return A list of data frame containing the resampled tracklets.
 #'
@@ -101,7 +101,7 @@ resampleFrags <-
     if (is.data.frame(trackDat)) {
       trackDat <- list(trackDat)
     }
-    if (isTRUE(progess)) {
+    if (isTRUE(progress)) {
       # initialize progress bar
       total = length(trackDat)
       pb <-
@@ -165,7 +165,7 @@ resampleFrags <-
       }
       trackDat[[i]] <- toKeep
       
-      if (isTRUE(progess)) {
+      if (isTRUE(progress)) {
         # progress bar
         pb$tick(1)
       }

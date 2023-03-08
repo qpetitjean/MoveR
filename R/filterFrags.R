@@ -60,8 +60,8 @@
 #' ## Check the summary of the filtering
 #' str(trackDatNoInf$SummaryFiltering)
 #'
-#' ## take a look at the filtered tracklets list
-#' str(trackDatNoInf$CleanedTracklets)
+#' ## take a look at the first filtered tracklet
+#' str(trackDatNoInf$CleanedTracklets[[1]])
 #'
 #' ## alternatively, we can only keep the tracklets with a duration above 10 (the number of record within each tracklet)
 #' ## by modifying the minDur argument
@@ -70,8 +70,8 @@
 #' ## Check the summary of the filtering
 #' str(trackDatNoInfDur10$SummaryFiltering)
 #'
-#' ## take a look at the filtered tracklets list
-#' str(trackDatNoInfDur10$CleanedTracklets)
+#' ## take a look at the first filtered tracklet
+#' str(trackDatNoInfDur10$CleanedTracklets[[1]])
 #'
 #' # example 2: test for the length of the particles:
 #' ## keep only particles with a size included between 1 and 20 pixels
@@ -85,8 +85,8 @@
 #' ## Check the summary of the filtering
 #' str(trackDatSize20$SummaryFiltering)
 #'
-#' ## take a look at the filtered tracklets list
-#' trackDatSize20$CleanedTracklets
+#' ## take a look at the first filtered tracklet
+#' str(trackDatSize20$CleanedTracklets[[1]])
 #'
 #' ## alternatively, we can only keep the tracklets with a duration above 10 (the number of record within each tracklet) by modifying the minDur argument
 #' trackDatSize20Dur10 <- MoveR::filterFrags(trackDat, filter = FiltSize, splitCond = TRUE, minDur = 10)
@@ -94,8 +94,8 @@
 #' ## Check the summary of the filtering
 #' str(trackDatSize20Dur10$SummaryFiltering)
 #'
-#' ## take a look at the filtered tracklets list
-#' trackDatSize20Dur10$CleanedTracklets
+#' ## take a look at the first filtered tracklet
+#' str(trackDatSize20Dur10$CleanedTracklets[[1]])
 #'
 #' @export
 

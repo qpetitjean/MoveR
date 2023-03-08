@@ -130,7 +130,6 @@
 #'   var1 = "SlidemeanSpeed",
 #'   var2 = "SlideVarAngle",
 #'   var1T = log10,
-#'   var2T = NULL,
 #'   nbins = 100,
 #'   eps = 0.15,
 #'   minPts = 5,
@@ -337,8 +336,6 @@ actives2 <-
         activClust <-
           mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y", "value")][db[["cluster"]] == centroids[which(centroids[["x"]] == min(centroids[["x"]])), "dbclust"], ]
       } else if (nrow(centroids) > 2) {
-        print(
-          "failed to identify active and inactive cluster: more than 2 clusters identified")
         next
       }
       if (min(XRanges) == min(inactivClust[["x"]])) {

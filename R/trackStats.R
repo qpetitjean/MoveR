@@ -36,7 +36,7 @@
 #'
 #' @param units A character string specifying the spatial unit of the coordinates after scaling (default = "pixels").
 #'
-#' @param progess A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progress A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
 #'
 #' @return A summary of video and tracklets data.
 #'
@@ -125,7 +125,7 @@ trackStats = function(trackDat,
   ## compute total tracks duration in second
   totTrackDuration_s <- sum(TrackDuration_s)
   ## compute tracks length in the specified units for each tracklet
-  if (isTRUE(progess)) {
+  if (isTRUE(progress)) {
     ### initialize progress bar
     total = length(trackDat)
     pb <-
@@ -139,7 +139,7 @@ trackStats = function(trackDat,
       trajr::TrajFromCoords(trackDat[[i]][, c("x.pos", "y.pos", "frame")], timeCol = 3)
     trjList[[names(trackDat)[i]]] <-
       trajr::TrajScale(trjTemp, scale, units)
-    if (isTRUE(progess)) {
+    if (isTRUE(progress)) {
       # progress bar
       pb$tick(1)
     }

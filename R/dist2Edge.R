@@ -41,11 +41,11 @@
 #'   )
 #' )
 #' 
-#' # simulate an arena edge centered on the center of the particle trajectory and of 20 pixels radius
+#' # simulate a circular arena of 20 pixels radius and centered on the particle trajectory
 #' arenaEdge <-  circles(mean(TrackDat[[1]][["x.pos"]]),
 #'                       mean(TrackDat[[1]][["y.pos"]]),
 #'                       radius = 20,
-#'                       draw = T)
+#'                       draw = F)
 #' str(arenaEdge)
 #' 
 #' # draw the tracklet and the arena edge
@@ -89,7 +89,7 @@
 #' 
 #' # draw only the first tracklet
 #' MoveR::drawFrags(trackDat,
-#'                  selFrags = 1,
+#'                  selTrack = 1,
 #'                  add2It = list(points(
 #'                    x = arenaEdge[["x.pos"]], y = arenaEdge[["y.pos"]], cex = 0.1
 #'                  )))

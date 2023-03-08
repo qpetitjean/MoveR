@@ -89,6 +89,10 @@
 #'   timeCol = "frame"
 #' )
 #' 
+#' # check the results
+#' str(sensitivity)
+#' 
+#' # visualize it
 #' # Draw the particle detected by the tracking method
 #' # and add the position of the good detections (darkgreen),
 #' # false negative and positive (red and blue, respectively)
@@ -98,12 +102,13 @@
 #' TimeF <- unique(refDat[["frame"]])
 #' 
 #' # display the results
-#' par(mfrow = c(2, 2))
 #' for (i in seq_along(TimeF)) {
 #'   MoveR::drawFrags(
 #'     trackDat,
 #'     timeWin = list(c(TimeF[[i]], TimeF[[i]])),
 #'     main = paste("frame", TimeF[[i]], sep = " "),
+#'     colGrad = "darkgrey",
+#'     legend = FALSE,
 #'     add2It = list(
 #'       MoveR::circles(
 #'         refDat[which(refDat[["frame"]] == TimeF[[i]]), "x.pos"],
@@ -139,8 +144,6 @@
 #'     )
 #'   )
 #' }
-#' 
-#' str(sensitivity)
 #'
 #' @export
 

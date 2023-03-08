@@ -31,7 +31,7 @@
 #' @param srt A value or a vector of two values specifying the orientation of the axes values
 #' for the x and y axis respectively (default = 0).
 #'
-#' @param lwd Line width of the tracklets (default = 1).
+#' @param lwd A numeric value, the line width of the tracklets (default = 1).
 #'
 #' @param main Primary title of the plot (default = "").
 #'
@@ -43,15 +43,17 @@
 #'
 #' @param legend.title The legend title.
 #'
-#' @param cex.axis Character size and expansion for axis and legend values (default = 1).
+#' @param cex.axis A numeric value, the character size and expansion for axis and legend values (default = 1).
 #'
-#' @param cex.main Character size and expansion for primary title (default = 1.25).
+#' @param cex.main A numeric value, the character size and expansion for primary title (default = 1.25).
 #'
-#' @param cex.lab Character size and expansion for axes label (default = 1).
+#' @param cex.lab A numeric value, the character size and expansion for axes label (default = 1).
 #'
-#' @param cex.leg Character size and expansion for the legend label (default = 1).
+#' @param cex.leg A numeric value, the character size and expansion for the legend label (default = 1).
+#' 
+#' @param ncol.leg A numeric value, the number of columns the legend should be displayed, only when colId is not continuous (default = 1)
 #'
-#' @param cex.start Dot size representing the start of the tracklets (default = 0.5).
+#' @param cex.start A numeric value, the size of the dot representing the start of the tracklets (default = 0.5).
 #'
 #' @param progress A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
 #'
@@ -96,7 +98,9 @@
 #' # and color the tracklets according to their Id instead of time elapsed
 #' MoveR::drawFrags(TrackList,
 #'                  timeWin = list(c(1, 100), c(800, 900)),
-#'                  colId = "identity")
+#'                  colId = "identity",
+#'                  cex.leg = 0.8,
+#'                  ncol.leg = 2)
 #'
 #' # example 5: draw tracklets according to time interval (interval 1 to 100) and add dummy points on the plot
 #' # (here we draw the starting and ending points of each fragments in blue and green respectively)
@@ -152,6 +156,7 @@ drawFrags <- function(trackDat,
                       cex.main = 1.25,
                       cex.lab = 1,
                       cex.leg = 1,
+                      ncol.leg = 1,
                       cex.start = 0.5,
                       progress = TRUE) {
   if (is.null(names(trackDat))) {
@@ -185,6 +190,12 @@ drawFrags <- function(trackDat,
   if (is.null(colId)) {
     colId <- timeCol
   }
+  
+  # FORCE the number of column in the legend if colVal is numeric
+  if (is.numeric(colVal[!is.na(colVal)])) {
+    ncol.leg = 1
+  }
+  
   # define color ramp according to colId argument
   Pal <- grDevices::colorRampPalette(c(colGrad))
   colVal <- unique(unlist(lapply(trackDat, function(x)
@@ -198,12 +209,19 @@ drawFrags <- function(trackDat,
   
   plot(
     NA,
-    xlim = ifelse(rep(isTRUE(legend), 2), c(0, max(ScaleX) + (ScaleX[2] - ScaleX[1])), c(0, max(ScaleX))),
+    xlim = ifelse(rep(isTRUE(legend), 2),
+                  c(
+                    0,
+                    max(ScaleX) + (ScaleX[2] - ScaleX[1]) * ncol.leg + (cex.leg * 1.5 / 100 *
+                                                                          (ScaleX[2] - ScaleX[1]))
+                  ),
+                  c(0, max(ScaleX))),
     ylim = c(0, max(ScaleY)),
     ylab = "",
     xlab = "",
     axes = FALSE
   )
+  
   ## add plot title
   graphics::mtext(
     main,
@@ -251,7 +269,7 @@ drawFrags <- function(trackDat,
     "-",
     xpd = TRUE,
     srt = 0,
-    adj = c(0.8, 0.2)
+    adj = c(0.8, 0.25)
   )
   ## draw x axis
   graphics::segments(
@@ -283,23 +301,6 @@ drawFrags <- function(trackDat,
   
   ## in case legend argument is TRUE, create a legend
   if (isTRUE(legend)) {
-    ### legend title (retrieve from colId)
-    graphics::text(
-      max(ScaleX) + (10 * max(ScaleX) / 100),
-      max(ScaleY) + (5 * max(ScaleY) / 100),
-      ifelse(
-        colId == timeCol,
-        ifelse(
-          is.null(legend.title),
-          paste("Time ", "(", timeCol, ")", sep = ""),
-          legend.title
-        ),
-        ifelse(is.null(legend.title), colId, legend.title)
-      ),
-      cex = cex.leg,
-      font = 1,
-      xpd = TRUE
-    )
     ### draw the legend as a gradient if colId is a continuous vector (numerical) or as category in case
     ### colId is a factor or character vector
     if (is.numeric(colVal[!is.na(colVal)])) {
@@ -319,7 +320,7 @@ drawFrags <- function(trackDat,
       }
       ScaleLeg <-
         as.integer(ScaleLegtemp * max(ScaleY) / max(ScaleLegtemp))
-      ScaleLeg[1] <- ScaleLeg[1] + (5 * max(ScaleY) / 100)
+      ScaleLeg[1] <- ScaleLeg[1] + (2.5 * max(ScaleY) / 100)
       ScaleLeg[length(ScaleLeg)] <-
         ScaleLeg[length(ScaleLeg)] - (5 * max(ScaleY) / 100)
       
@@ -327,13 +328,15 @@ drawFrags <- function(trackDat,
         grDevices::as.raster(matrix(coloration, ncol = 1))
       graphics::rasterImage(
         legend_image,
-        max(ScaleX) + (5 * max(ScaleX) / 100),
+        max(ScaleX) + (1 * max(ScaleX) / 100),
         max(ScaleY) - (5 * max(ScaleY) / 100),
-        max(ScaleX) + (10 * max(ScaleX) / 100),
-        min(ScaleY) + (5 * max(ScaleY) / 100)
+        max(ScaleX) + (5 * max(ScaleX) / 100),
+        min(ScaleY) + (1 * max(ScaleY) / 100)
       )
+      rasterW <-
+        (max(ScaleX) + (5 * max(ScaleX) / 100)) - (max(ScaleX) + (1 * max(ScaleX) / 100))
       graphics::text(
-        x = max(ScaleX) + (20 * max(ScaleX) / 100),
+        x = max(ScaleX) + rasterW + ceiling(max(strwidth(ScaleVal))),
         y = ScaleLeg,
         labels =  ScaleVal,
         cex = cex.leg
@@ -343,21 +346,43 @@ drawFrags <- function(trackDat,
       names(colValNum) <- seq_along(colValNum)
       colVal <- colVal[as.numeric(names(sort(colValNum)))]
       
-      graphics::legend(
-        x = max(ScaleX) + (5 * max(ScaleX) / 100),
+      legend_image <- graphics::legend(
+        x = max(ScaleX) + (1 * max(ScaleX) / 100),
         y = max(ScaleY) - (1 * max(ScaleY) / 100),
         legend = colVal[!is.na(colVal)],
         pch = 22,
         col = "black",
         pt.bg = coloration,
         bty = "n",
-        pt.cex = 2,
+        pt.cex = 1.5,
         text.font = 1,
         cex = cex.leg,
         xpd = TRUE,
-        ncol = floor(length(colVal[!is.na(colVal)]) / 20)
+        ncol = ncol.leg
       )
+      rasterW <- legend_image$rect$w
     }
+    ### legend title (retrieve from colId)
+    graphics::text(
+      max(ScaleX) + ifelse(is.numeric(colVal[!is.na(colVal)]),
+                           rasterW + ceiling(max(
+                             strwidth(ScaleVal)
+                           )),
+                           rasterW) / 2,
+      max(ScaleY) + (5 * max(ScaleY) / 100),
+      ifelse(
+        colId == timeCol,
+        ifelse(
+          is.null(legend.title),
+          paste("Time ", "(", timeCol, ")", sep = ""),
+          legend.title
+        ),
+        ifelse(is.null(legend.title), colId, legend.title)
+      ),
+      cex = cex.leg,
+      font = 1,
+      xpd = TRUE
+    )
   }
   
   # if an additional function (add2it argument) is added to drawFrags draw it
@@ -431,8 +456,8 @@ drawFrags <- function(trackDat,
       with(
         NewTrackList[[f]],
         graphics::segments(
-          head(x.pos, -1),
-          head(y.pos, -1),
+          head(x.pos,-1),
+          head(y.pos,-1),
           x.pos[-1],
           y.pos[-1],
           NewTrackList[[f]]$colorpal,
@@ -467,8 +492,8 @@ drawFrags <- function(trackDat,
       with(
         NewTrackList[[f]],
         graphics::segments(
-          head(x.pos, -1),
-          head(y.pos, -1),
+          head(x.pos,-1),
+          head(y.pos,-1),
           x.pos[-1],
           y.pos[-1],
           NewTrackList[[f]]$colorpal,

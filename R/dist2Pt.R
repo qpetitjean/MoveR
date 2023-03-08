@@ -25,7 +25,6 @@
 #' ## start to specify some parameters to generate the tracklet
 #' TrackL <-
 #'   100 # the length of the tracklet or a sequence to randomly sample tracklet's length
-#' 
 #' TrackDatTemp <-
 #'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)
 #' TrackDat <- list(

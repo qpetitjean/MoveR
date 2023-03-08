@@ -48,7 +48,8 @@
 #' Data <-
 #'   MoveR::readIdtracker(Path2Data[[1]],
 #'          mirrorY = T,
-#'          imgHeight = 2160
+#'          imgHeight = 2160,
+#'          frameR = 25
 #'   )
 #' str(Data)
 #' 
