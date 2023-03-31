@@ -1,0 +1,1191 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+flowchart of the MoveR package</br>
+<img src="https://github.com/qpetitjean/MoveR/blob/MoveRV1/man/figures/WorkFlowMoveR.png?raw=true" height="600" align="middle"/>
+=========================================================
+
+# Load libraries 
+```{r libraries, eval = FALSE}
+if(require(remotes)) {
+  install.packages("remotes")
+}
+library("remotes")
+if(require(MoveR)) {
+  remotes::install_github("qpetitjean/MoveR")
+}
+library("MoveR")
+if(require(foreach)) {
+  install.packages("foreach")
+}
+library(foreach)
+```
+
+# Exemple dataset 
+
+Here we will download sample data and companion files (i.e., the distance matrix to the arena edge).
+The sample of data used here comes from an experiment exposing a group of 24 parasitic micro-wasp individuals (genus <i>Trichogramma</i>) to a steady increases in temperature from 18&#8451; to 45&#8451; followed by a steady decreases from 45&#8451; to 18&#8451; (temperature changing rate: 0.5&#8451; per minutes). Here we reduced the dataset by removing the movements recorded below 35&#8451;(see fig. \@ref(fig:ReducedData) below).
+
+```{r ReducedData, echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="65%", fig.cap="Temperature ramp over which movements of parasitic micro-wasp (genus <i>Trichogramma</i>) were recorded. The shaded area corresponds to the part of the data removed from the original dataset (moments where temperature was below 35&#8451;) while the white area correspond to the remaining data used in the following exemple."}
+knitr::include_graphics('https://github.com/qpetitjean/MoveR/blob/MoveRV1/man/figures/Sample2_ReducedData.png?raw=true')
+```
+
+```{r ddlSampleData, message=FALSE, warning=FALSE,}
+# download sample data from the "https://github.com/qpetitjean/MoveR_SampleData" github repository
+# here we will use the second sample of data named "sample_2"
+## get the file url
+url = "https://github.com/qpetitjean/MoveR_SampleData/archive/refs/heads/main.zip"
+## create a temporary directory
+td <- tempdir()
+## create the placeholder file
+tf <- tempfile(tmpdir = td, fileext = ".zip")
+## download the repository's files into the placeholder file
+download.file(url, tf)
+## unzip the file to the temporary directory
+unzip(tf, exdir = td, overwrite = TRUE)
+## remove the .zip file from the temp directory
+unlink(tf)
+
+# Retrieve the path
+## path to the sample data from the previously downloaded and unziped file
+path2F <- file.path(td, "MoveR_SampleData-main", "sample_2", "TREXOutput")
+
+## path to the distance matrix from the arena edge (generated using imageJ) from the previously downloaded and unziped file
+ArenaFile <- file.path(td, "MoveR_SampleData-main", "sample_2", "ReferenceData", "DistMatrixFromArenaEdge.txt")
+```
+
+# Load the exemple dataset (TRex tracking system)
+
+```{r LoadDataset}
+# the scaling of the video - 1 cm represent 413.4 pixels
+scaling = 1 / 413.4
+
+# the resolution of the video
+imgRes = c(1920, 1080)
+
+# use the readTrex function from MoveR package to load the tracking results
+TRexDat <- MoveR::readTrex(trexPath = path2F,
+                           imgHeight = imgRes[2],
+                           mirrorY = FALSE,
+                           rawDat = T)
+str(TRexDat)
+
+# retrieve some data specifically related to the dataset (the timeline and related temperature stored in the Data_Trex_Raw sublist)
+TRexDat <- c(TRexDat[[1]], 
+             TRexDat[[2]]["runTimelinef"],  
+             TRexDat[[2]]["runTimelineS"],
+             TRexDat[[2]]["Measured_Temp_Deg_C"])
+
+# retrieve the frame rate of the video (fps)
+frameRate <- max(TRexDat[["runTimelinef"]], na.rm=T) / max(TRexDat[["timestamps"]], na.rm=T)
+
+```
+
+Here, the results of the tracking software (i.e., TRex) are loaded using the "read" function (see \code{\link{readTrex}}, \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}). The function load the bunch of .npz file, retrieve the useful informations and lay them in a list. Using the optional argument "rawDat", the user can have access to all the data stored into the .npz files (see \code{\link{readTrex}}). Also, since TRex use the upper left corner of the image as origin, the x and y coordinates can be mirrored to start at the lower left corner specifying "mirrorY = TRUE".
+
+<u>NB:</u> while the scaling of the video should be manually specified, the frame rate can be retrieved from the tracking results. For instance, by dividing the duration of the video expressed in frame (retrieved from the "frame" vector) by the duration of the video expressed in seconds (retrieved from the "timestamps" vector).
+
+```{r ConvertDataset}
+
+# convert the data to a list of fragment (remove ntargets and timestamps because their length is lower than other variables)
+trackDat <- MoveR::convert2frags(TRexDat[-which(names(TRexDat) == "ntargets" | names(TRexDat) == "timestamps")],
+                                 by = "identity")
+```
+To ease further computation and graphical representation the data are converted to a list of tracklets based on particles' identity using the "convert2frags" function. Here we use only the 7 first element of Data_Trex because the last two (i.e., ntargets and timestamps) do not carry the same amount of information and are not useful for the next steps of the tutorial.
+
+# First look at the trajectories
+
+Using the \code{\link{drawFrags}} function, it is easy to visualize the trajectories included in the dataset (see fig. \@ref(fig:DrawfragsIni)A below), or to focus on the trajectories described by only some fragments (here the tens' first) included in the dataset (see fig. \@ref(fig:DrawfragsIni)B below).
+```{r DrawfragsIni, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. A. all trajectories are represented. B. only the first 10 tracklets are represented. The trajectories are colored according to the moments at which they are recorded."}
+par(mfrow = c(1, 2))
+MoveR::drawFrags(trackDat,
+                 imgRes = imgRes,
+                 timeCol = "runTimelinef")
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+MoveR::drawFrags(
+  trackDat,
+  selFrags = c(1:10),
+  imgRes = imgRes,
+  timeCol = "runTimelinef"
+)
+mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+```
+
+It is also possible to focus on the trajectories recorded within a given time intervals. For instance, between 41063 and 42063 frames (see fig. \@ref(fig:DrawfragsIniTime)A below) and between 41063 and 42063 frames and 80000, 81000 frames (see fig. \@ref(fig:DrawfragsIniTime)B below). Also, we can see that while there is numerous trajectories drawn between 41063 and 42063 frame (black trajectories on fig. \@ref(fig:DrawfragsIniTime)A&B), the micro-wasps appear immobile between 80000 and 81000 frames (green dots on fig. \@ref(fig:DrawfragsIniTime)B).
+
+<u>NB:</u> note that it is possible to represent specified fragments (selFrags argument) over given time window(s) (timeWin argument).
+```{r DrawfragsIniTime, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Micro-wasps trajectories over specified part of the video timeline, expressed in frame. A. all trajectories are represented over a time window of 1000 frames (between 41063 and 42063 frames). B. all trajectories are represented over two time windows of 1000 frames duration (between 41063 and 42063 and 80000 and 81000 frames). The trajectories are colored according to the moments at which they are recorded."}
+par(mfrow=c(1,2))
+MoveR::drawFrags(
+  trackDat,
+  timeWin = list(c(41063, 42063)),
+  imgRes = imgRes,
+  timeCol = "runTimelinef"
+)
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+MoveR::drawFrags(
+  trackDat,
+  timeWin = list(c(41063, 42063), c(80000, 81000)),
+  imgRes = imgRes,
+  timeCol = "runTimelinef"
+)
+mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+par(mfrow = c(1, 1))
+```
+
+# Clean the dataset 
+
+Once loaded, the data need to be cleaned to remove for instance:
+- infinite values corresponding to the moments where the particles were undetected, 
+- spurious elements detected by the tracking software. 
+For this purpose, 2 main functions, \code{\link{filterFunc}} and \code{\link{filterFrags}} allow to specify custom filters and apply them to the dataset, respectively.
+
+## Remove infinite values 
+
+Infinite values are added by TRex when the particles are temporarily undetected, the following code help to remove infinite value and split the trajectories carrying them accordingly. In other words, when a particle is temporarily undetected we assume that the identity of the fragment is spurious, thus the function create a new fragment with a new tracklet identity (fragsId) but the original identity of the particles is still conserved in the "identity" vector.
+
+```{r InfClean}
+# specify the filter to detected infinite values on "x.pos"
+filter.InfX <-
+  MoveR::filterFunc(
+    trackDat,
+    toFilter = "x.pos",
+    customFunc = function(x)
+      is.infinite(x)
+  )
+
+# it is also possible to group two or more filter by using the \code{\link{filterMerge}} function
+# for instance by merging the result of several condition tests, here the detection of infinite value in "x.pos" and "y.pos".
+
+## first specify the second filter
+filter.InfY <-
+  MoveR::filterFunc(
+    trackDat,
+    toFilter = "y.pos",
+    customFunc = function(x)
+      is.infinite(x)
+  )
+
+## then merge the previously specifed filter
+filter.Inf <-
+  MoveR::filterMerge(filters = list(filter.InfX, filter.InfY),
+                     cond = TRUE)
+
+# filter infinite values according to the previously specified filters
+# NB: Since filtering the filtering process may result in splitted fragment with reduced duration, it is possible to add another filtering layer by removing short tracklet according to the "minDur" argument. 
+# Here, we arbitrarily choose to remove the fragments that are shorter than 25 frames (1 second).
+trackDat.Infilt <-
+  MoveR::filterFrags(trackDat,
+                     filter = filter.Inf,
+                     splitCond = TRUE,
+                     minDur = 25)
+
+# the output of the function correspond to a list, with information about the filtering process (see ??filterFrags())
+# while the second element of the list contains the list of filtered fragment which can be used for further computation
+str(trackDat.Infilt[[1]])
+```
+
+According to the summary of the filtering step, there is a lot of moments where the micro-wasps were undetected within the dataset. As results, the filtering step removed 64.7% (100-35.3) of the data corresponding to infinite values and then removed another 10.2% (35.3-25.1) because the resulting tracklets were shorter than 1 second (25 frames).
+We can now cleaning the data using a filter based on particles' size.
+
+## Filter based on particles size 
+
+Spurious particles can be detected during the tracking procedure. One cleaning step can consist on removing all the moment when a particles' size is lower or higher than a given threshold.
+Here we keep only the moments where a particle' size is included within the 95% confidence interval based on the distribution of the particle' size over the dataset.
+
+```{r SizeClean, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Histogram of the Log-transformed length of the particles and 95% CI (vertical lines) of the distribution before (A) and after the filtering process (B) removing the moments where the particles' length is below or above the 95% CI."}
+# convert the previously filtered data into a list to ease representation and computation of 95% CI of the particles' size distribution
+trackDat.InfiltList <-  MoveR::convert2list(trackDat.Infilt[[2]])
+
+# compute IC
+## transform particles' size in log10 to approximate the normal distribution
+indLength <- log10(trackDat.InfiltList$maj.ax)
+if (length(which(is.infinite(indLength)) > 0)) {
+  indLength <- indLength[-c(which(is.infinite(indLength)))]
+}
+if (length(which(is.na(indLength)) > 0)) {
+  indLength <- indLength[-c(which(is.na(indLength)))]
+}
+IC <- quantile(indLength, c(0.025, 0.975))
+
+# plot the resulting distribution and the 95% CI
+par(mfrow=c(1,2))
+hist(log10(trackDat.InfiltList$maj.ax),
+     breaks = 100,
+     main = "particles' length (log10) and 95% CI \nbefore filtering",
+     xlab = "particles' length (log10)")
+abline(v = c(IC[1], IC[2]), col = "#660000")
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+
+# the result seem satisfactory
+# hence, create the filter based on the computed CI values
+filter.length <-
+  MoveR::filterFunc(
+    trackDat.Infilt[[2]],
+    toFilter = "maj.ax",
+    customFunc = function(x)
+      x < 10 ^ IC[1] | x > 10 ^ IC[2]
+  )
+
+# apply the filter on the data 
+trackDat.lenfilt <-
+  MoveR::filterFrags(trackDat.Infilt[[2]],
+                     filter.length,
+                     splitCond = TRUE,
+                     minDur = 25)
+
+# display the information about the filtering process (see ??filterFrags())
+str(trackDat.lenfilt[[1]])
+
+# plot the distribution of particles' size in log10 after the filtering
+hist(log10(MoveR::convert2list(trackDat.lenfilt[[2]])$maj.ax),
+     breaks = 100,
+     main = "particles' length (log10) \nafter filtering",
+     xlab = "particles' length (log10)")
+mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+```
+
+According to the summary of the filtering step based on particles' size, the amount of data removed by the filtering is reasonable with 5.3% of data considered above or below the size threshold (95% CI) but the filter splitted some tracklets in small part resulting in an additional 5.6% of data removed because their duration was shorter than 1 second.
+Another kind of filtering that could be commonly used is based on particles'speed.
+
+## Filter based on particles speed 
+
+While the data can be filtered based data that already exist into the raw output of the tracking software, it is also possible to compute new metrics and filter the dataset based on it.
+For instance, particles' speed can be a good indicator of spurious detection or particle identification. Indeed, when the speed of a particle is too high (and have hence no biological meaning) it can be due to change in particle identity or more generally tracking artifact. 
+
+```{r SpeedClean, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Histogram of the Log-transformed speed of the particles and 999th quantile (vertical line) of the distribution before (A) and after the filtering process (B) removing the moments where the particles' speed is above the 999th quantile."}
+# define filters based on the 999th percentile of the individuals speed (not listed in the raw tracking data, need some computation)
+
+# retrieve the previously filtered data and used them to compute particles' speed
+trackDat2 <- trackDat.lenfilt[[2]]
+
+# to compute particles' speed we use another function from the MoveR package, the "analyseFrags" function which is used to performed any computation (either manually specified by the user or using already existing modulus such as speed()) along each fragment present in the dataset. 
+# here we use the "speed()" modulus to compute the speed of each particles over its trajectory
+trackDat2 <-
+  MoveR::analyseFrags(trackDat2,
+                      customFunc = list(
+                        speed = function(x)
+                          MoveR::speed(
+                            x,
+                            TimeCol = "runTimelinef"
+                          )
+                      ))
+
+# compute the 999th quantile 
+# convert the previously filtered data into a list to ease representation and computation of 999th quantile of the particles' speed distribution
+trackDat.speedfiltList <- MoveR::convert2list(trackDat2)
+
+## transform particles' speed in log10 to approximate the normal distribution
+indSpeed <- log10(trackDat.speedfiltList$speed)
+if (length(which(is.infinite(indSpeed)) > 0)) {
+  indSpeed <- indSpeed[-c(which(is.infinite(indSpeed)))]
+}
+if (length(which(is.na(indSpeed)) > 0)) {
+  indSpeed <- indSpeed[-c(which(is.na(indSpeed)))]
+}
+quant999th <- quantile(indSpeed, c(0.999))
+
+# plot the particles' speed (log10) distribution and the 999th quantile before filtering
+par(mfrow=c(1,2))
+hist(indSpeed, breaks = 100, main = "particles' speed (log10) and 999th quantile \nbefore filtering",
+     cex.main= 0.9,
+     xlab = "particles' speed (log10)")
+abline(v = quant999th, col = "#660000")
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+
+# the result seem satisfactory since with this threshold we will remove only the few moments where particles reach a speed above 16 pixels per frame while we conserve the bimodal distribution of the particles' speed.
+# hence, create the filter base on the computed 999th quantile 
+filter.speed <-
+  MoveR::filterFunc(
+    trackDat2,
+    toFilter = "speed",
+    customFunc = function(x)
+      x < 0 | x > 10 ^ quant999th
+  )
+
+# apply the filter on the data 
+trackDat.speedfilt <-
+  MoveR::filterFrags(trackDat2,
+                     filter.speed,
+                     splitCond = TRUE,
+                     minDur = 25)
+
+# display the information about the filtering process (see ??filterFrags())
+str(trackDat.speedfilt[[1]])
+
+# plot particles' speed (log10) distribution after the filtering
+hist(log10(MoveR::convert2list(trackDat.speedfilt[[2]])$speed),
+     breaks = 100,
+     main = "Particles' speed (log10) \nafter filtering",
+     cex.main= 0.9,
+     xlab = "Particles' speed (log10)")
+mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+```
+
+According to the summary of the filtering step based on particles' speed, the amount of data removed by the filtering is reasonable with 0.1% of data considered above the speed threshold, which is consistent with our approach since we wanted to remove only extremes values (999Th quantile, fig. \@ref(fig:SpeedClean)A&B). Also, the filter splitted only few tracklets in small part resulting in an additional 0.7% of data removed because their duration was shorter than 1 second.
+Finally, it seems interesting to remove the particles that are detected outside of the arena since it should be due to tracking artifact, or more generally to unintended particles' detection and movements.
+
+## Filter based on particles detection outside the arena
+
+Indeed, sometimes particles can be detected outside the arena, either because an individual as escaped from an arena or because the background has changed over the video recording (tracking artifact). To solve this issue, it is possible to remove the particles that have been detected outside the arena. For this we have generated a distance matrix to the arena edge using using simple color tresholding in imageJ. 
+
+```{r edgeDef, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of the distance matrix to the arena edge. The contour plot represent the decreasing distance from the edge to the centre of the arena (A). Arena centre and edge can be extracted from the distance matrix as the lowest value of distance matrix (i.e., 1) and the centre of the arena as the mean of the edge coordinates (B)."}
+# define filter based on the presence of individual outside the arena
+## load gradient to the edge of the arena (a distance matrix generated using color tresholding in imageJ) 
+arenaGrad <- read.delim(ArenaFile)
+
+## represent the gradient of distance to the arena edge
+par(mfrow=c(1,2))
+contour(as.matrix(arenaGrad),
+        main="Contour plot of the \ndistance to the arena edge",
+        cex.main = 0.9)
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+## The edge correspond to the lower value of the gradient (i.e., 1), 
+## we can hence extract the arena edge from the distance matrix as follow
+border = 1
+edge <- data.frame(which(arenaGrad == border, arr.ind = T))
+names(edge)[c(1, 2)] <- c("y.pos", "x.pos")
+plot(NULL, 
+     xlim = c(0, imgRes[1]), 
+     ylim = c(0, imgRes[2]),
+     xlab = "Video width (pixels)",
+     ylab = "Video height (pixels)",
+     main = "Edge and centre of the arena",
+     cex.main = 0.9)
+points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01)
+
+## As well as the center of the arena
+center = c(mean(edge[, "x.pos"]), mean(edge[, "y.pos"]))
+points(
+  x = center[1],
+  y = center[2],
+  col = "black",
+  pch = 3,
+  cex = 0.5
+)
+mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+```
+Here is the graphical representation of the distance matrix with decreasing distance from the centre to the edge of the represented by the contour line (fig. \@ref(fig:edgeDef)A). Accordingly, the lowest value (i.e., 1) corresponds to the edge of the arena (fig. \@ref(fig:edgeDef)B). We can then use this to clean the dataset by removing the particles detected outside the arena; either by computing the distance (in pixels) to the arena edge for each position of each particle (Method 1), or by retrieving the distance to the edge for each position of a particle's trajectory according to the distance matrix, which is particularly interesting when the arena have a complex shape (Method 2).
+
+### Method 1
+
+```{r edgeClean, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="METHOD 1: Histogram of the Log-transformed distance of the particles from the edge before (A) and after (B) the filtering process removing the moments where the particles are detected outside of the arena. The green area corresponds to the inside of the arena while the red area corresponds to the outside. Here the filtering process is based on distance to the edge computed using the shape of the arena and the dist2Edge function of the MoveR package."}
+## compute the distance to the edge using "analyseFrag" and the dist2edge modulus
+trackDat3 <- trackDat.speedfilt[[2]]
+trackDat3 <-
+  MoveR::analyseFrags(trackDat3,
+               customFunc = list(
+                 dist2Edge = function(x)
+                   MoveR::dist2Edge(x, edge,
+                                    customFunc = "CircularArena")
+               ))
+
+## represent the proportion of particles detected outside the arena
+## here we consider that a particle is outside when the distance to the egde is positive because 0 correspond to the border location.
+## extract the vector of distance to the edge
+dist2EdgeL <- MoveR::convert2list(trackDat3)$dist2Edge
+
+## plot particles' distance to the edge (log10) distribution before the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively
+par(mfrow=c(1,2))
+H <- hist(dist2EdgeL, 
+     breaks = 100, 
+     main = "Distance of the particles from the edge of \nthe arena before filtering",
+     xlab = "Particles' distance to the edge (log10)",
+     cex.main=0.9)
+abline(v = 0, col = "#660000")
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+polygon(c(min(dist2EdgeL, na.rm = T),
+          0,
+          0,
+          min(dist2EdgeL, na.rm = T)), 
+        c(0,
+          0,
+          max(H[["counts"]]),
+          max(H[["counts"]])), 
+        col = grDevices::adjustcolor("#336600", alpha.f = 0.25))
+polygon(c(0,
+          ifelse(max(dist2EdgeL, na.rm = T) < 0, 
+                 0, 
+                 max(dist2EdgeL, na.rm = T)),
+          ifelse(max(dist2EdgeL, na.rm = T) < 0, 
+                 0, 
+                 max(dist2EdgeL, na.rm = T)),
+          0), 
+        c(0,
+          0,
+          max(H[["counts"]]),
+          max(H[["counts"]])), 
+        col = grDevices::adjustcolor("#660000", alpha.f = 0.25))
+
+# create the filter accordingly
+filter.out <-
+  MoveR::filterFunc(
+    trackDat3,
+    toFilter = "dist2Edge",
+    customFunc = function(x)
+      x >= 0
+  )
+
+# apply the filter on the data 
+trackDat.borderfilt <-
+  MoveR::filterFrags(trackDat3,
+              filter.out,
+              splitCond = TRUE,
+              minDur = 25)
+
+# display the information about the filtering process (see ??filterFrags())
+str(trackDat.borderfilt[[1]])
+
+## plot particles' distance to the edge (log10) distribution after the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively (here, the red part should not exist because we have removed the particles detected outside the arena)
+dist2EdgeLFiltered <- MoveR::convert2list(trackDat.borderfilt[[2]])$dist2Edge
+hist(dist2EdgeLFiltered, 
+     breaks = 100, 
+     main = "Distance of the particles from the edge of \nthe arena after filtering",
+     xlab = "Particles' distance to the edge (log10)",
+     cex.main=0.9)
+abline(v = 0, col = "#660000")
+mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+polygon(c(min(dist2EdgeLFiltered, na.rm = T),
+          0,
+          0,
+          min(dist2EdgeLFiltered, na.rm = T)), 
+        c(0,
+          0,
+          max(H[["counts"]]),
+          max(H[["counts"]])), 
+        col = grDevices::adjustcolor("#336600", alpha.f = 0.25))
+polygon(c(0,
+          ifelse(max(dist2EdgeLFiltered, na.rm = T) < 0, 
+                 0, 
+                 max(dist2EdgeLFiltered, na.rm = T)),
+          ifelse(max(dist2EdgeLFiltered, na.rm = T) < 0, 
+                 0, 
+                 max(dist2EdgeLFiltered, na.rm = T)),
+          0), 
+        c(0,
+          0,
+          max(H[["counts"]]),
+          max(H[["counts"]])), 
+        col = grDevices::adjustcolor("#660000", alpha.f = 0.25))
+# rename the cleaned dataset for further use
+trackDat4 <- trackDat.borderfilt[[2]]
+```
+
+According to the summary of the filtering step based the location of the particles inside or outside the arena, the amount of data removed by the filtering is very low (<0.1%), confirming that there is few tracking artifact outside of the arena (values within the red area in fig. \@ref(fig:edgeClean)A). As expected these artifacts are removed by the filtering as shown on the fig. \@ref(fig:edgeClean)B, where there is no red areas anymore. Accordingly, the filter splitted only few tracklets in small part resulting in less than 0.1% of data removed because their duration was shorter than 1 second.
+
+While fig. \@ref(fig:edgeClean)A&B and the summary give a quantitative view of the amount of data removed by the filtering we can also want to have an idea of the spatio-temporal distribution of the removed data. For this we can use the \code{\link{drawFrags} function as follow:
+
+```{r edgeCleanBeforeAfter, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of the particles' trajectories before (A) and after the filtering process (B) removing the moments where the particles are detected outside of the arena."}
+# plot a sample of the trajectories before and after filtering for particles inside/out the arena
+# As the dataset is relatively large and because Rstudio is slow to display plot, 
+# we will represent a subset of the data
+
+## retrieve the maximum value of time within the dataset
+maxFrame <-
+  max(MoveR::convert2list(trackDat4)[["runTimelinef"]], na.rm = T)
+
+# display only a sixth of the data
+sixth <- signif(1/6*maxFrame, digits = 2)
+tenth <- signif(sixth/10)
+  
+## specify a custom timeline to draw 1000 frame every 5000 frames
+tempTimeline <-  lapply(sort(c(
+  seq(0, maxFrame / tenth)[seq(1, length(seq(maxFrame / tenth)), length.out = 10)],
+  seq(0, maxFrame / tenth)[seq(2, length(seq(maxFrame / tenth)), length.out = 10)]
+)), function(x)
+  c(x * tenth, (x + 1) * tenth))
+Timeline <-
+  lapply(seq(1, length(tempTimeline), by = 2), function(x)
+    tempTimeline[[x]])
+
+par(mfrow=c(1,2))
+MoveR::drawFrags(
+  trackDat3,
+  imgRes = c(imgRes[1], imgRes[2]),
+  timeWin = Timeline,
+  main = paste0("Particles' trajectories before \nfiltering parts outside the arena", 
+                "\n1/6 of the data are displayed: ", 
+                tenth, " frames every ", 
+                Timeline[[2]][1] - Timeline[[1]][2]),
+  cex.main = 0.9,
+  add2It = list(
+    points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01)
+  )
+)
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+MoveR::drawFrags(
+  trackDat4,
+  imgRes = c(imgRes[1], imgRes[2]),
+  timeWin = Timeline,
+  main = paste0("Particles' trajectories after \nfiltering parts outside the arena", 
+                "\n1/6 of the data are displayed: ", 
+                tenth, " frames every ", 
+                Timeline[[2]][1] - Timeline[[1]][2]),
+  cex.main = 0.9,
+  add2It = list(
+    points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01)
+  )
+)
+mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+```
+
+### Method 2
+
+Alternatively in case the arena have a complex shape for which it is difficult to find the shortest distance between the arena edge and a given particle, it is possible to use the distance matrix to the edge to retrieve distance to the edge for each position of a particle's trajectory (see the "Location" customFunc below). It is then possible to specify whether a particle is inside or outside the arena over its whole trajectory (see the "InOut" customFunc below).
+The following step are the same than previously (specify the filter using "filterFunc" and filter the data using "filterFrags").
+
+```{r edgeCleanAlternative, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="METHOD 2: Histogram of the Log-transformed distance of the particles from the edge before (A) and after (B) the filtering process removing the moments where the particles are detected outside of the arena. The green area corresponds to the inside of the arena while the red area corresponds to the outside. Here the filtering process is based on distance to the edge retrieved from the distance matrix (color thresholding using ImageJ)."}
+trackDat3 <- trackDat.speedfilt[[2]]
+trackDat3bis <- MoveR::analyseFrags(trackDat3,
+                                 customFunc = list(
+                                   dist2Edge = function(x) {
+                                     MoveR::locaPos(arenaGrad, df = x)
+                                   },
+                                   # extract the distance to the edge from the distance matrix and attribute it to each position from each trajectory.
+                                   InOut =  function(x) {
+                                     border <- border # specify the value of the border from the distance matrix
+                                     sapply(seq(nrow(x)), function(y)
+                                       if (x$dist2Edge[y] > 0) {
+                                         # if the particle is located at a distance above the border value, the particle is considered "In" the arena. 
+                                         "In"
+                                       } else if (x$dist2Edge[y] <= 0) {
+                                         # if the particle is located at a value of 0 or below, the particle is considered "Out" of the arena.
+                                         "Out"
+                                       })
+                                   }
+                                 ))
+
+## represent the proportion of particles detected outside the arena
+## here we consider that an individual is truly detected
+## outside when more than half of the mean body length is out of the arena
+## extract the vector of distance to the edge
+dist2EdgeL <- MoveR::convert2list(trackDat3bis)$dist2Edge
+
+## plot particles' distance to the edge (log10) distribution before the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively
+par(mfrow=c(1,2))
+H <- hist(dist2EdgeL, 
+     breaks = 100, 
+     main = "Distance of the particles from the edge of \nthe arena before filtering",
+     xlab = "Particles' distance to the edge (log10)",
+     cex.main=0.9)
+abline(v = 0, col = "#660000")
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+polygon(c(max(dist2EdgeL, na.rm = T),
+          0,
+          0,
+          max(dist2EdgeL, na.rm = T)), 
+        c(0,
+          0,
+          max(H[["counts"]]),
+          max(H[["counts"]])), 
+        col = grDevices::adjustcolor("#336600", alpha.f = 0.25))
+polygon(c(0,
+          ifelse(min(dist2EdgeL, na.rm = T) > 0, 
+                 0, 
+                 min(dist2EdgeL, na.rm = T)),
+          ifelse(min(dist2EdgeL, na.rm = T) > 0, 
+                 0, 
+                 min(dist2EdgeL, na.rm = T)),
+          0), 
+        c(0,
+          0,
+          max(H[["counts"]]),
+          max(H[["counts"]])), 
+        col = grDevices::adjustcolor("#660000", alpha.f = 0.25))
+
+## create the filter
+filter.outbis <-
+  MoveR::filterFunc(
+    trackDat3bis,
+    toFilter = "InOut",
+    customFunc = function(x)
+      x == "Out"
+  )
+
+## apply the filter on the data
+trackDat.borderfiltbis <-
+  MoveR::filterFrags(trackDat3bis,
+                     filter.outbis,
+                     splitCond = TRUE,
+                     minDur = 25)
+str(trackDat.borderfiltbis[[1]])
+
+## plot particles' distance to the edge (log10) distribution after the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively (here, the red part should not exist because we have removed the particles detected outside the arena)
+dist2EdgeLFiltered <- MoveR::convert2list(trackDat.borderfiltbis[[2]])$dist2Edge
+H <- hist(dist2EdgeLFiltered, 
+     breaks = 100, 
+     main = "Distance of the particles from the edge of \nthe arena before filtering",
+     xlab = "Particles' distance to the edge (log10)",
+     cex.main=0.9)
+abline(v = 0, col = "#660000")
+mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
+polygon(c(max(dist2EdgeLFiltered, na.rm = T),
+          0,
+          0,
+          max(dist2EdgeLFiltered, na.rm = T)), 
+        c(0,
+          0,
+          max(H[["counts"]]),
+          max(H[["counts"]])), 
+        col = grDevices::adjustcolor("#336600", alpha.f = 0.25))
+polygon(c(0,
+          ifelse(min(dist2EdgeLFiltered, na.rm = T) > 0, 
+                 0, 
+                 min(dist2EdgeLFiltered, na.rm = T)),
+          ifelse(min(dist2EdgeLFiltered, na.rm = T) > 0, 
+                 0, 
+                 min(dist2EdgeLFiltered, na.rm = T)),
+          0), 
+        c(0,
+          0,
+          max(H[["counts"]]),
+          max(H[["counts"]])), 
+        col = grDevices::adjustcolor("#660000", alpha.f = 0.25))
+
+# rename the cleaned dataset for further use (only if using the method 2)
+# trackDat4 <- trackDat.borderfiltbis[[2]]
+
+```
+Here, the distribution of the distance to the edge is different that from the method 1. This is mainly due to the fact that the distance matrix performed using color thresholding returns 0 for particles' detected outside the arena rather than a true distance from the edge. However, as expected the results of the filtering is the same for both methods.
+
+## Cleaning summary
+
+Once the filtering/cleaning steps are done, the various filter summary can be retrieved, easily grouped and saved.
+It is also possible to display a summary of the tracking information of both the initial dataset (i.e., trackDat) and the filtered/cleaned one (trackDat4) using the "trackStats" function to quickly compare them.
+
+```{r CleaningSummary}
+# create a summary of each filter results 
+FilterSummary <- do.call("cbind",
+                         list(
+                           data.frame(Infilt = unlist(trackDat.Infilt[[1]])),
+                           data.frame(lenfilt = unlist(trackDat.lenfilt[[1]])),
+                           data.frame(speedfilt = unlist(trackDat.speedfilt[[1]])),
+                           data.frame(outfilt = unlist(trackDat.borderfilt[[1]]))
+                         ))
+
+# compute and display a detailed summary of the tracking information before and after cleaning (see ??trackStats())
+Data_Trex_stats_before_filter <-
+  trackStats(trackDat,
+             frameR = frameRate,
+             scale = scaling,
+             unit = "cm")
+
+Data_Trex_stats_after_filter <-
+  trackStats(trackDat4,
+             frameR = frameRate,
+             scale = scaling,
+             unit = "cm")
+
+str(Data_Trex_stats_before_filter)
+str(Data_Trex_stats_after_filter)
+```
+
+By comparing the summary of the tracking information before and after the filtering process, we can see that video characteristics are unchanged. On the contrary, tracklets are more numerous and shorter after the filtering than before which is not surprising since we have removed biased data and splitted tracklets accordingly.  
+
+Now the filtering/cleaning process is achieved, we can move to data analysis through various metrics computations.
+
+# Compute metrics over tracklets
+
+As it was already showed for the computation of the particles' speed and distance to the edge, MoveR package make it easy to perform various intensive computation on relatively large dataset.
+
+Here, we will compute other metrics related to particles' movement that can be useful for further analyses, using the function \code{\link{analyseFrags}.
+
+While some metrics such as sinuosity, turning angle, the variance of the turning angle or the distance traveled do not need to specify additional parameters, the computation of the activity and the location of a particle at the edge or the centre of the arena need more parameters. For instance, the function actives1 need to specify a threshold based on speed distribution (see fig. \@ref(fig:MetricsParameters), below). Similarly, we need to specify a threshold to determine whether a particle is considered as attracted/near the arena edge (i.e., thigmotaxis) or move freely within the centre of the arena.
+
+```{r MetricsParameters, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Histogram of the Log-transformed speed of the particles and location of the valley within the bimodal distribution of particles' speed (vertical red line). The threshold symbolized by the vertical red line is used to determine whether particles are active (above the threshold) or not (below the threshold)."}
+
+# First, we need to define the parameters used by the various element of the custom function
+
+## For simple activity computation:
+### find the speed threshold above which individuals will be considered as active (TRUE) or not (FALSE).
+### For this, we draw the distribution of particles' speed and locate the valley within the bivariate distribution (the values above the valley correspond to active moments while the values below correspond to the inactive moments).
+
+### plot the distribution of particles' speed
+### using the locator() function or other automatic algorithms we can consider that the valley is detected at the threshold of 0.2333998
+par(mfrow=c(1,1))
+hist(log10(MoveR::convert2list(trackDat4)$speed),
+     breaks = 100,
+     main = "particles' speed (log10) distribution",
+     xlab = "particles' speed (log10)")
+activTresh = 0.2333998
+abline(v = activTresh, col = "#660000")
+
+## For simple determination of the Thigmotaxis:
+## find the distance threshold above which individuals will be considered at the edge of the arena (TRUE) or at the center (FALSE)
+
+### in the case of the Trichogramma's micro-wasps, the reaction distance (perception) of an individual is considered as about 4 mm (see Wajnberg and Colazza 1998), an individual can hence perceive the arena edge up to 4 mm.
+TrichPerceptDist <- 4
+
+### compute the radius of the circular arena in pixels
+radius <- mean(unlist(sqrt((center[1] - edge["x.pos"]) ^ 2 +
+                             (center[2] - edge["y.pos"]) ^ 2)), na.rm = T)
+
+### convert the arena radius in mm
+radiusmm <-
+  (round(radius, digits = -2) * scaling) * 10
+
+### compute the distance below which individuals perceive the arena edge in pixels
+edgeTresh <-
+  radius * TrichPerceptDist / radiusmm
+
+```
+
+Now that we have specified the various parameters used to compute the desired metrics, let's start the computation using the function \code{\link{analyseFrags}. For this, we will specify a batch of custom function grouped in a list which will be use by "customFunc" argument to run a batch of computation easily. Also, to increase the computation speed we will parallelize the process across several cores of the computer.
+
+```{r MetricsCompute, message=FALSE, warning=FALSE}
+# now we have all the element, we can specify the batch of functions to pass to the analyseFrags function for metric computation along particles' trajectories
+customFuncList = list(
+  # compute sinuosity (a modulus present within the MoveR package)
+  sinuosity = function(x)
+    MoveR::sinuosity(
+      x,
+      TimeCol = "runTimelinef"
+    ),
+  # compute turning angles (a modulus present within the MoveR package)
+  turnAngle = function(x)
+    MoveR::turnAngle(x,
+                     TimeCol = "runTimelinef",
+                     unit = "radians"),
+  # compute turning angle variance in radians
+  varAngle = function (x)
+    circular::var(
+      circular::circular(x$turnAngle,
+                         type = "angle",
+                         units = "radians"),
+      na.rm = T
+    ),
+  # compute simple activity (a modulus present within the MoveR package)
+  actives1 = function(x)
+    MoveR::actives1(x, minSpeed = 10 ^ activTresh, speedCol = "speed"),
+  # compute the distance traveled (a modulus present within the MoveR package)
+  distTraveled = function(x)
+    MoveR::distTraveled(x, step = 1),
+  # specify whether a particle is at the edge or at the center of the arena (using either the distance to the edge retrieved from the distance matrix or computed based on arena coordinates, see method 1 and 2 from section "Filter based on particles detection outside the arena") distance to the edge
+  Edge = function(x)
+    abs(x$dist2Edge) < edgeTresh
+)
+
+# then run the computation. To increase the speed of the process, the computation can easily be parallelized over several cores:
+## determine the total number of fragments
+Fragsn <- length(trackDat4)
+
+## determine the number of available cores
+nbCores <-
+  parallel::detectCores(all.tests = FALSE, logical = TRUE)
+
+## create the cluster for parallel computation (here we use 1/2 of the total resource of the computer : 8 cores)
+## !!! be careful of selecting the appropriate number of cores to use according to your hardware, the size of the dataset and the resources used by other process than R (parallel computation might use lot of RAM).
+CoresToUse <- floor(nbCores / 2)
+myCluster <-
+  parallel::makeCluster(CoresToUse, # number of cores to use
+                        type = "PSOCK")
+
+## Register the cluster
+doParallel::registerDoParallel(myCluster)
+
+## create a foreach loop to repeat the function on a given intervals of fragment
+toLoop <- seq(from = 1,
+              to = Fragsn,
+              by = Fragsn / CoresToUse)
+toLoop <- round(toLoop)
+if (!Fragsn %in% toLoop) {
+  toLoop <- c(toLoop, Fragsn)
+}
+
+## import the batch of functions, the parameters, and the dataset needed for the computation
+parallel::clusterExport(
+  myCluster,
+  c(
+    "analyseFrags",
+    "customFuncList",
+    "edgeTresh",
+    "activTresh",
+    "trackDat4"
+  )
+)
+
+trackDat5 <-
+  foreach::foreach(i = toLoop[1:length(toLoop) - 1], .combine = 'c') %dopar%
+  MoveR::analyseFrags(trackDat4[i:ifelse(i == toLoop[length(toLoop) - 1],
+                                         toLoop[length(toLoop)],
+                                         toLoop[which(toLoop == i) + 1] - 1)],
+                      customFunc = customFuncList)
+
+parallel::stopCluster(myCluster)
+
+# We can then check that the resulting metrics has been added to the dataset on the first fragment for instance: 
+head(trackDat5[["frags_1"]])
+
+```
+
+Well done, as displayed above for the first tracklet, the desired metrics has been added to the dataset.
+To go further, \code{\link{analyseFrags} also allow to smooth the data over the trajectories. 
+
+<u>NB1:</u> note that naming each function within the customFuncList allows to name the computed metrics accrodingly. In case no name is given, the function look for a generic name within the specified customFunc. For instance, for turnAngle(x, TimeCol = "runTimelinef", unit = "radians"), the function can retrieve "turnAngle" but the result can be unexpected in case of more complex function structure such as for circular::var(circular::circular(x$turnAngle, type = "angle", units = "radians"), na.rm = T), here the function will extract circular::var. 
+
+<u>NB2:</u> note that the output of the \code{\link{sinuosity} modulus is only one value for each trajectories, in this case, the value is repeated over the whole particle's trajectory.
+
+# Smooth the computed metrics over the fragments
+
+As previously, we need to specify a batch of function to pass to \code{\link{analyseFrags} but this time, we should combine it with the sliding window (i.e., \code{\link{slidWin}) modulus.
+Here, we use a step of 10 frames as sliding window to smooth the previously computed metrics over the particles' trajectories.
+
+<u>NB:</u> For this example, we have first computed some metrics and then smoothed it but we can also do it in a single step. For instance by combining the computation of the turning angle variance, speed variance or the maximum distance traveled within the \code{\link{slidWin} modulus as follow.
+
+```{r SmoothMetric, message=FALSE, warning=FALSE}
+
+# Specify the batch of function to pass to the analyseFrags function to smooth metrics along fragments: 
+customFuncList = list(
+  # smooth sinuosity
+  SlideMeanSinuos = function (y)
+    MoveR::slidWin(y$sinuosity,
+                   Tstep = 10, function (x)
+                     mean(x, na.rm = T)),
+  # smooth turning angles
+  SlideMeanAngle = function (y)
+    MoveR::slidWin(y$turnAngle,
+                   Tstep = 10, function (x)
+                     mean(x, na.rm = T)),
+  # smooth turning angles variance
+  SlideVarAngle = function (y)
+    MoveR::slidWin(y$turnAngle,
+                   Tstep = 10, function (x)
+                     circular::var(
+                       circular::circular(
+                         x,
+                         type = "angle",
+                         units = "radians",
+                         zero = 0
+                       ),
+                       na.rm = T
+                     )),
+  # smooth speed
+  SlideMeanSpeed = function (y)
+    MoveR::slidWin(y$speed,
+                   Tstep = 10, function (x)
+                     mean(x, na.rm = T)),
+  # smooth speed variance
+  SlideVarSpeed = function (y)
+    MoveR::slidWin(y$speed,
+                   Tstep = 10, function (x)
+                     var(x, na.rm = T)),
+  # smooth the distance to the edge
+  SlideMeanDist2Edge = function (y)
+    MoveR::slidWin(y$dist2Edge,
+                   Tstep = 10, function (x)
+                     mean(x, na.rm = T)),
+  # smooth traveled distance
+  SlideMeanTraveledDist = function (y)
+    MoveR::slidWin(y$distTraveled,
+                   Tstep = 10, function (x)
+                     mean(x, na.rm = T)),
+  # smooth maximum distance traveled
+  SlideMaxDist = function (y)
+    MoveR::slidWin(y$distTraveled,
+                   Tstep = 10, function (x)
+                     max(x, na.rm = T))
+)
+
+# Parallelizing analysefrags to make the analysis faster
+## determine total number of fragments
+Fragsn <- length(trackDat5)
+
+# create the cluster for parallel computation (here we use the half of the total resource of the computer : 8 cores)
+myCluster <-
+  parallel::makeCluster(CoresToUse, # number of cores to use
+                        type = "PSOCK")
+# Register the cluster
+doParallel::registerDoParallel(myCluster)
+# create a foreach loop to repeat the function on given time intervals
+toLoop <- seq(from = 1,
+              to = Fragsn,
+              by = Fragsn / CoresToUse)
+toLoop <- round(toLoop)
+if (!Fragsn %in% toLoop) {
+  toLoop <- c(toLoop, Fragsn)
+}
+# import function and dataset needed for the computation
+parallel::clusterExport(myCluster,
+                        c("analyseFrags",
+                          "customFuncList",
+                          "trackDat5"))
+
+trackDat6 <-
+  foreach::foreach(i = toLoop[1:length(toLoop) - 1], .combine = 'c') %dopar% 
+  MoveR::analyseFrags(
+    trackDat5[i:ifelse(i == toLoop[length(toLoop) - 1], 
+                       toLoop[length(toLoop)], 
+                       toLoop[which(toLoop == i) + 1] - 1)], 
+    customFunc = customFuncList)
+
+parallel::stopCluster(myCluster)
+
+# We can then check that the resulting metrics has been added to the dataset on the first fragment for instance: 
+head(trackDat6[["frags_1"]])
+
+```
+
+Well done, as displayed above for the first tracklet, the smoothed metrics has been added to the dataset.
+
+<u>NB:</u> As we choose a step of 10 for each sliding window, the first and last 5 values of the computed metrics return NA. 
+
+To summarize, it is easy to run relatively intensive computation on a large set of tracklet and even smooth the resulting metrics over each trajectories. To do that, the user only need one function \code{\link{analyseFrags} and some of the already implemented modulus (e.g., \code{\link{speed}, \code{\link{sinuosity}, \code{\link{tunrAngle}, \code{\link{actives1}, \code{\link{dist2Edge}, \code{\link{distTraveled}). Also, the function is flexible enough to accept any computation specified by the user within the "customFunc" argument.
+
+# Compute more advanced activity metric: the actives2 function
+
+We previously learnt to use \code{\link{analyseFrags} and the various modulus to easily compute some metrics over particles' trajectories. While the specification of the active or inactive state using \code{\link{actives1} is simple and based on one dimension (the speed), one could seek for more flexible method based on 2 dimensions non-hierarchical clustering.
+
+For this purpose, we have implemented the \code{\link{actives2} function, using density based clustering (Henning 2020; Ester et al., 1996) on two dimension array. Here, we will use the previously smoothed speed (log10) and angle variance as dimension to performed non-hierarchical clustering. 
+
+```{r actives2, echo=TRUE, message=FALSE, warning=FALSE}
+# use density based clustering to classify actives and inactives states in a 2 dimension array (here the speed and the angle variance)
+# when graph = TRUE, several graphical output are displayed: 
+# - the distribution of inactives states
+# - the resuls of the density based clustering with the two groups displayed
+# - a similar representation but as hexbinplot, with the count 
+# - the final representation of the 2d clustering with the increasing size of the dot representing the increasing number of count
+# - a pie chart representing the proportion of actives vs inactives states
+
+trackDat7 <-
+  MoveR::actives2(
+    trackDat = trackDat6,
+    var1 = "SlideMeanSpeed",
+    var2 = "SlideVarAngle",
+    var1T = log10,
+    var2T = NULL,
+    nbins = 100,
+    na.rm = TRUE,
+    graph = TRUE
+  )
+
+# We can then check that the resulting metrics has been added to the dataset on the first fragment for instance: 
+head(trackDat7[["frags_1"]])
+```
+
+
+
+# Smooth the metrics over the timeline
+
+```{r SmoothOnTime, echo=TRUE, message=FALSE, warning=FALSE}
+# create a list of function to compute sliding windows on the video timeline
+    customFuncList <- list(
+      # smooth sinuosity over time
+      sinuosity =
+        function(x) {
+          mean(x$SlideMeanSinuos, na.rm = T)
+        },
+      # smooth angle variance of active states over time
+      Varangle_active = function(x) {
+        ifelse(nrow(x[which(!is.na(x$actives2) &
+                              x$actives2 == "active"),]) == 0,
+               NA,
+               circular::var(x$SlideMeanAngle[which(!is.na(x$actives2) &
+                                                      x$actives2 == "active")], na.rm = T))
+      },
+      # smooth angle variance whatever the states over time
+      Varangle_all = function(x) {
+        circular::var(x$SlideMeanAngle, na.rm = T)
+      },
+      # smooth speed whatever of active states over time
+      speed_active =
+        function(x) {
+          ifelse(nrow(x[which(!is.na(x$actives2) &
+                                x$actives2 == "active"),]) == 0, NA,
+                 mean(x$SlideMeanSpeed[which(!is.na(x$actives2) &
+                                               x$actives2 == "active")], na.rm = T))
+        },
+      # smooth speed whatever the states over time
+      speed_all =
+        function(x) {
+          mean(x$SlideMeanSpeed, na.rm = T)
+        },
+      # smooth activity states over time
+      activity =
+        function(x) {
+          if (nrow(x[!is.na(x$actives2),]) == 0) {
+            NA
+          } else {
+            nrow(x[!is.na(x$actives2) &
+                     x$actives2 == "active",]) / nrow(x[!is.na(x$actives2),])
+          }
+        },
+      # smooth speed variance of active states over time
+      Varspeed_active =
+        function(x) {
+          ifelse(nrow(x[which(!is.na(x$actives2) &
+                                x$actives2 == "active"),]) == 0, NA,
+                 var(x$SlideMeanSpeed[which(!is.na(x$actives2) &
+                                              x$actives2 == "active")], na.rm = T))
+        },
+      # smooth speed variance whatever the states over time
+      Varspeed_all =
+        function(x) {
+          var(x$SlideMeanSpeed, na.rm = T)
+        },
+      # smooth the distance to the edge whatever the states over time
+      Dist2Edge =
+        function(x) {
+          mean(x$SlideMeanDist2Edge, na.rm = T)
+        },
+      # smooth the distance traveled whatever the states over time
+      TraveledDist =
+        function(x) {
+          mean(x$SlideMeanTraveledDist, na.rm = T)
+        },
+      # smooth the maximum traveled distance whatever the states over time
+      MaxtravelDist = function(x) {
+        mean(x$SlideMaxDist, na.rm = T)
+      },
+      # smooth the proportion of particles at the edge of the arena whatever the states over time
+      EdgeProp = function(x) {
+        nrow(x[!is.na(x$Edge) &
+                 x$Edge  == "TRUE",]) / nrow(x[!is.na(x$Edge),])
+      }
+    )
+
+ # Parallelizing the the computation to make analysis faster
+    ## determine time duration of the video in frame
+    finalDatList <- data.frame(MoveR::convert2list(trackDat7))
+    vidStart <- min(finalDatList[["runTimelinef"]], na.rm = T)
+    vidT <- max(finalDatList[["runTimelinef"]], na.rm = T)
+    # determine the number of available cores
+    nbCores <-
+      parallel::detectCores(all.tests = FALSE, logical = TRUE)
+    # create the cluster for parallel computation (here we use the half of the total resource of the computer : 8 cores)
+    myCluster <-
+      parallel::makeCluster(CoresToUse, # number of cores to use
+                            type = "PSOCK", 
+                            outfile = file.path(td, "parallelSmoothT.txt"))
+    # Register the cluster
+    doParallel::registerDoParallel(myCluster)
+    # create a foreach loop to repeat the function on given time intervals
+    ## specify the sampling value 
+    sampling = 5 * 25
+    toSampleTemp <-  seq(from = vidStart,
+                         to = vidT,
+                         by = sampling)
+    toLoop <-
+      toSampleTemp[c(1, cumsum(rep(ceiling(
+        length(toSampleTemp) / CoresToUse
+      ), CoresToUse)))]
+    if (is.na(toLoop[length(toLoop)])) {
+      toLoop[length(toLoop)] <- toSampleTemp[length(toSampleTemp)]
+    }
+    # import function and dataset needed for the computation
+    parallel::clusterExport(
+      myCluster,
+      c(
+        "analyseTime",
+        "customFuncList",
+        "trackDat7"
+      )
+    )
+    # run the computation
+    output.wtd_ALL <-
+      foreach::foreach(i = toLoop[1:length(toLoop) - 1], .combine = 'c') %dopar% 
+      MoveR::analyseTime(
+        trackDat = trackDat7,
+        timeCol = "runTimelinef",
+        customFunc = customFuncList,
+        Tinterval = c(i, ifelse(i == toLoop[length(toLoop) - 1],
+                                toLoop[length(toLoop)],
+                                toLoop[which(toLoop == i) + 1])),
+        Tstep = 25 *
+          90,
+        sampling = sampling,
+        wtd = TRUE
+      )
+    
+    parallel::stopCluster(myCluster)
+    
+     # group the output computed with different cores
+    SmoothedRes <- list()
+    for (n in names(customFuncList)) {
+      ResTemp <- output.wtd_ALL[which(names(output.wtd_ALL) == n)]
+      SmoothedResTemp <-
+        do.call("rbind", ResTemp)
+      SmoothedResTemp <- SmoothedResTemp[!duplicated(SmoothedResTemp),]
+      SmoothedRes[[n]] <-
+        data.frame(sapply(unique(names(
+          SmoothedResTemp
+        )), function(x)
+          unname(unlist(
+            SmoothedResTemp[, names(SmoothedResTemp) == x]
+          ))))
+      names(SmoothedRes[[n]]) <-
+        gsub("^.*\\.", "", names(SmoothedRes[[n]]))
+    }
+    
+    # transform the output as a DF
+    SmoothedResDf <- do.call("cbind", SmoothedRes)
+    # simplify column names
+    names(SmoothedResDf) <- gsub("^.*\\.", "", names(SmoothedResDf))
+    # remove duplicated column (runtimelinef)
+    SmoothedResDf <-
+      SmoothedResDf[, !duplicated(colnames(SmoothedResDf))]
+    # append temperature ramp
+    finalDatList <- finalDatList[order(finalDatList[["runTimelinef"]]), ]
+    SmoothedResDf$Temperature <-
+      as.numeric(finalDatList$Measured_Temp_Deg_C[match(SmoothedResDf$runTimelinef, finalDatList$runTimelinef)])
+    
+    # plot the results 
+        # A quick function to determine the number of digit in each smoothed variable
+    # (for source code see https://stackoverflow.com/questions/49730224/finding-the-number-of-significant-digits-versus-digits-after-decimal-in-r)
+    sigfigs <- function(x) {
+      orig_scipen <- getOption("scipen")
+      options(scipen = 999)
+      on.exit(options(scipen = orig_scipen))
+      
+      x <- as.character(x)
+      x <- sub("\\.", "", x)
+      x <- gsub("(^0+|0+$)", "", x)
+      nchar(x)
+    }
+    
+    par(mfrow = c(3, 3))
+    for (p in names(SmoothedResDf)[-which(names(SmoothedResDf) == "runTimelinef" | 
+                                          names(SmoothedResDf) == "nbFrags" |
+                                          names(SmoothedResDf) == "Temperature")]) {
+      plot(
+        NULL,
+        ylim = c(round(
+          min(SmoothedResDf[[p]][!is.infinite(SmoothedResDf[[p]]) &
+                                   !is.na(SmoothedResDf[[p]])], na.rm = T),
+          digits = max(sigfigs(SmoothedResDf[[p]][!is.infinite(SmoothedResDf[[p]]) &
+                                                    !is.na(SmoothedResDf[[p]])]), na.rm =
+                         T)
+        ),
+        round(
+          max(SmoothedResDf[[p]][!is.infinite(SmoothedResDf[[p]]) &
+                                   !is.na(SmoothedResDf[[p]])], na.rm = T),
+          digits = max(sigfigs(SmoothedResDf[[p]][!is.infinite(SmoothedResDf[[p]]) &
+                                                    !is.na(SmoothedResDf[[p]])]), na.rm =
+                         T)
+        )),
+        xlim = c(min(
+          SmoothedResDf$runTimelinef, na.rm = T 
+        ), max(
+          SmoothedResDf$runTimelinef, na.rm = T
+        )),
+        main = p
+      )
+      lines(SmoothedResDf[[p]] ~ SmoothedResDf$runTimelinef , col = "red")
+    }
+
+```
+
+# compute studentized 95% confidence interval using bootstrapping
+
+
+
+
+# References
+
+* Wajnberg, E. & Colazza, S. (1998). Genetic variability in the area searched by a parasitic wasp: analysis from automatic video tracking of the walking path. Journal of Insect Physiology, 44, 437–444. https://doi.org/10.1016/S0022-1910(98)00032-8.
+
+* Hennig, C. (2020). fpc: Flexible Procedures for Clustering. R package version 2.2-9. https://CRAN.R-project.org/package=fpc
+
+* Ester, M., Kriegel, HP., Sander, J., Xu, X. (1996). A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise. Institute for Computer Science, University of Munich. Proceedings of 2nd International Conference on Knowledge Discovery and Data Mining (KDD-96).

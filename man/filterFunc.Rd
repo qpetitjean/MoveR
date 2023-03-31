@@ -7,40 +7,42 @@
 filterFunc(trackDat, toFilter = NULL, customFunc = NULL)
 }
 \arguments{
-\item{trackDat}{A list of data frames containing tracking information for each fragment (e.g., x.pos, y.pos, frame).}
+\item{trackDat}{A list of data frames containing tracking information for each tracklet (e.g., x.pos, y.pos, frame).}
 
-\item{toFilter}{An element of the fragment's data frame (a column name) from which condition will be verified.}
+\item{toFilter}{An element of the tracklet's data frame (a column name) from which condition will be verified.}
 
 \item{customFunc}{A custom function containing condition(s) to be applied to toFilter argument.}
 }
 \value{
-A list of vector of the same length than the tracklets list containing the result of a user specified condition test for each fragment.
+A list of vector of the same length than the tracklets list containing the result of a user specified condition test for each tracklet.
 }
 \description{
-Given a list of data frames containing tracking information for each fragment,
-this function returns a list of vector containing the result of a user defined condition test for each fragment.
+Given a list of data frames containing tracking information for each tracklet,
+this function returns a list of vector containing the result of a user defined condition test for each tracklet.
 }
 \examples{
 
 # Download the first dataset from the sample data repository
-Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TRex")
+Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 Path2Data
 
 # Import the list containing the 9 vectors classically used for further computation
 Data <- MoveR::readTrex(Path2Data[[1]])
 
 # convert it to a list of tracklets
-trackDat <- MoveR::convert2frags(Data[1:7], by = "identity")
+trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
 
 # example 1: test for the presence of infinite value in x.pos, if infinite values are detected, the result is TRUE 
-MoveR::filterFunc(trackDat, toFilter = "x.pos", customFunc = function(x) is.infinite(x))
+CondTest1 <- MoveR::filterFunc(trackDat, toFilter = "x.pos", customFunc = function(x) is.infinite(x))
+str(CondTest1)
 
 # example 2: test for the length of the particles, if particles size is ranging between 1 and 20 pixels, the result is TRUE 
-MoveR::filterFunc(trackDat, toFilter = "maj.ax", customFunc = function(x) x >= 1 & x <= 20)
+CondTest2 <- MoveR::filterFunc(trackDat, toFilter = "maj.ax", customFunc = function(x) x >= 1 & x <= 20)
+str(CondTest1)
 
 }
 \seealso{
-\code{\link{filterFrags}}
+\code{\link{filterTracklets}}
 }
 \author{
 Quentin PETITJEAN

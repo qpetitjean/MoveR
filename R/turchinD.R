@@ -5,7 +5,7 @@
 #' used to infer populations spread according to Turchin (1998).
 #'
 #'
-#' @param trackDat A list of data frame containing tracking informations for each fragment, including a vector
+#' @param trackDat A list of data frame containing tracking informations for each tracklet, including a vector
 #' containing behavioral patterns (e.g., behavioral states, location in areas).
 #'
 #' @param turnAngle A character string indicating the name of the variable specifying the turning angles over each trajectories.
@@ -51,14 +51,14 @@
 #')
 #'
 #'# take a look at the simulated data (here we use list(sim) because the function expect a list of trajectories)
-#'MoveR::drawFrags(list(sim), imgRes = c(500,500))
+#'MoveR::drawTracklets(list(sim), imgRes = c(500,500))
 #'
 #'# compute the needed metric on the simulated dataset (here we use list(sim) because the function expect a list of trajectories)
 #'simComp <-
-#'  MoveR::analyseFrags(
+#'  MoveR::analyseTracklets(
 #'    list(sim),
 #'    customFunc = list(
-#'      ## compute turning angle in radians over each fragment (a modulus present within the MoveR package)
+#'      ## compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
 #'      TurnAngle = function(x)
 #'        MoveR::turnAngle(x, unit = "radians"),
 #'      ## compute distance traveled
@@ -88,7 +88,7 @@ turchinD <-
            distTraveled = NULL,
            behavStates = NULL) {
     # retrieve var1 and var2 from the dataset and transform them if needed
-    trackdatL <- MoveR::convert2list(trackDat)
+    trackdatL <- MoveR::convert2List(trackDat)
     turnAngle <- trackdatL[[turnAngle]]
     distTraveled <- trackdatL[[distTraveled]]
     behavStates <- trackdatL[[behavStates]]

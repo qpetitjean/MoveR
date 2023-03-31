@@ -1,0 +1,26 @@
+{
+    "id": "1829BF37",
+    "path": "D:/Postdoc_INRAE_SAM/MoveR/R/readTrex.R",
+    "project_path": "R/readTrex.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": true,
+    "created": 1667049655556.0,
+    "source_on_save": false,
+    "relative_order": 10,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "166,0",
+        "scrollLine": "156"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1666957019,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1667053289981,
+    "read_only": false,
+    "read_only_alternatives": []
+}

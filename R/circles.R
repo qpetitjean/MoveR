@@ -13,7 +13,7 @@
 #' @param center Either TRUE or a single integers or a vector of integers specifying the symbol(s) or a single character to be used to represent the circle center
 #' (see points for possible values and their interpretation).
 #'
-#' @param draw A Boolean (i.e., TRUE or FALSE) indicating whether the circle(s) should be drawn or not (default = TRUE).
+#' @param draw A logical value (i.e., TRUE or FALSE) indicating whether the circle(s) should be drawn or not (default = TRUE).
 #'
 #' @param col The color or a vector of colors for filling the circles, the default leave polygons unfilled.
 #'

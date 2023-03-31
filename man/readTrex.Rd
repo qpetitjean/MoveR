@@ -4,15 +4,15 @@
 \alias{readTrex}
 \title{Import Trex tracking output .npz files.}
 \usage{
-readTrex(trexPath, mirrorY = FALSE, imgHeight = NULL, rawDat = FALSE)
+readTrex(trexPath, flipY = FALSE, imgHeight = NULL, rawDat = FALSE)
 }
 \arguments{
 \item{trexPath}{The path of the TRex output folder where .npz files are stored.}
 
-\item{mirrorY}{A Boolean (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the bottom-left (default = FALSE).}
+\item{flipY}{A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the bottom-left (default = FALSE).}
 
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
-corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).}
+corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
 
 \item{rawDat}{TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .npz files (see \href{https://trex.run}{trex.run}),
 may drastically increase the size of the object returned by the function (default = FALSE).}
@@ -42,13 +42,13 @@ and the second containing all the elements retrieved from the .npz files (see ra
 \examples{
 
 # Download the first dataset from the sample data repository
-Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TRex")
+Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 Path2Data
 
 # Import the list containing the 9 vectors classically used for further computation
 # and mirror Y coordinates to start on the bottom-left
 Data <- MoveR::readTrex(Path2Data[[1]],
-               mirrorY = T,
+               flipY = T,
                imgHeight = 2160,
                rawDat = F
         )
@@ -68,7 +68,7 @@ Tristan Walter, Iain D Couzin (2021) TRex, a fast multi-animal tracking system w
 \href{https://trex.run}{trex.run}
 }
 \seealso{
-\code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
+\code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 }
 \author{
 Quentin PETITJEAN

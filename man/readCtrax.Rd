@@ -4,15 +4,15 @@
 \alias{readCtrax}
 \title{Import Ctrax tracking output .mat file.}
 \usage{
-readCtrax(ctraxPath, mirrorY = FALSE, imgHeight = NULL)
+readCtrax(ctraxPath, flipY = FALSE, imgHeight = NULL)
 }
 \arguments{
 \item{ctraxPath}{The full path of the Ctrax output file (.mat).}
 
-\item{mirrorY}{A Boolean (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).}
+\item{flipY}{A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).}
 
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
-corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).}
+corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
 }
 \value{
 A list containing 9 elements classically used for further computations.
@@ -33,12 +33,12 @@ this function returns a list of 9 vectors classically used for further computati
 \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 }
 
-Also, the function can mirror y coordinates (see mirrorY argument).
+Also, the function can mirror y coordinates (see flipY argument).
 }
 \examples{
 
 # Download the first dataset from the sample data repository
-Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "Ctrax")
+Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "Ctrax")
 Path2Data
 
 # Import the list containing the 9 vectors classically used for further computation
@@ -52,7 +52,7 @@ Branson, K., Robie, A., Bender, J. et al. High-throughput ethomics in large grou
 \href{https://ctrax.sourceforge.net/}{Ctrax: The Caltech Multiple Walking Fly Tracker}
 }
 \seealso{
-\code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
+\code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 }
 \author{
 Quentin PETITJEAN, Vincent CALCAGNO

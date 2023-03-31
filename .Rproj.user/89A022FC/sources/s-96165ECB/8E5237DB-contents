@@ -1,0 +1,640 @@
+library(MovR)
+
+######################################################################################################################
+# set parameters
+######################################################################################################################
+
+scaling = 1 / 404 # scaling of the video cm per pixels
+frameRate = 25 # Frame rate of the video
+
+# path of the tracking results
+videoPath = "C:/Users/quent/Desktop/Benchmark_tracking/Videos_Michela/Low_density/Ctrax/2021-03-31-SALA028-Chaud-DSC-8475-LOW_new.mat"
+# path of the distance to the arena border matrix
+ArenaFile = "C:/Users/quent/Desktop/Benchmark_tracking/Videos_Michela/Low_density/2021-03-31-SALA028-Chaud-DSC-8475-LOW_frames/2021-03-31-SALA028-Chaud-DSC-8475-LOW.mov_1.txt"
+######################################################################################################################
+
+####################
+#  Load Trex Data  #
+####################
+
+Data_Ctrax <-
+  readCtrax(ctraxPath = videoPath,
+           imgHeight = 1080,
+           mirrorY = FALSE)
+
+####################
+#     Cleaning     #
+####################
+
+
+# convert the tracking data to a nested list of df containing informations about fragments
+trackDat <-
+  convert2frags(Data_Ctrax[1:7], by = "identity")
+## check histogram of fragments length
+hist(log10(unlist(lapply(trackDat, function(x)
+  dim(x)[1]))), breaks = 100)
+
+## define filters based on the presence of infinite values
+filter.Inf <-
+  filterFunc(
+    trackDat,
+    toFilter = "x.pos",
+    customFunc = function(x)
+      is.infinite(x)
+  )
+
+### filter Infinite values 
+#### only needed for Trex since CTRAX does not include INf values
+trackDat.Infilt <-
+  filterFrags(trackDat,
+              filter = filter.Inf,
+              splitCond = TRUE,
+              minDur = 100)
+str(trackDat.Infilt[[1]])
+#### check histogram of fragments length
+hist(log10(unlist(
+  lapply(trackDat.Infilt[[2]], function(x)
+    dim(x)[1])
+)), breaks = 100)
+
+## define filters based on 95% IC of the individuals length (already listed in the raw tracking data)
+trackDat.InfiltList <- convert2list(trackDat.Infilt[[2]])
+hist(log10(trackDat.InfiltList$maj.ax), breaks = 100)
+indLength <- log10(trackDat.InfiltList$maj.ax)
+if (length(which(is.infinite(indLength)) > 0)) {
+  indLength <- indLength[-c(which(is.infinite(indLength)))]
+}
+if (length(which(is.na(indLength)) > 0)) {
+  indLength <- indLength[-c(which(is.na(indLength)))]
+}
+
+IC <- quantile(indLength, c(0.025, 0.975))
+abline(v = c(IC[1], IC[2]))
+
+filter.length <-
+  filterFunc(
+    trackDat.Infilt[[2]],
+    toFilter = "maj.ax",
+    customFunc = function(x)
+      x < 10 ^ IC[1] | x > 10 ^ IC[2]
+  )
+
+### filter individual length
+trackDat.lenfilt <-
+  filterFrags(trackDat.Infilt[[2]],
+              filter.length,
+              splitCond = TRUE,
+              minDur = 100)
+str(trackDat.lenfilt[[1]])
+#### check histogram of fragments length
+hist(log10(unlist(
+  lapply(trackDat.lenfilt[[2]], function(x)
+    dim(x)[1])
+)), breaks = 100)
+
+## define filters based on the 999th percentile of the individuals speed (not listed in the raw tracking data, need some computation)
+### first compute speed along each fragment
+trackDat2 <- trackDat.lenfilt[[2]]
+trackDat2 <-
+  analyseFrags(
+    trackDat2,
+    customFunc = function(x)
+      speed(x, scale = scaling,  unit = "cm")
+  )
+
+trackDat.speedfiltList <- convert2list(trackDat2)
+indSpeed <- log10(trackDat.speedfiltList$speed)
+hist(indSpeed, breaks = 100)
+if (length(which(is.infinite(indSpeed)) > 0)) {
+  indSpeed <- indSpeed[-c(which(is.infinite(indSpeed)))]
+}
+if (length(which(is.na(indSpeed)) > 0)) {
+  indSpeed <- indSpeed[-c(which(is.na(indSpeed)))]
+}
+
+quant999th <- quantile(indSpeed, c(0.999))
+abline(v = quant999th)
+
+filter.speed <-
+  filterFunc(
+    trackDat2,
+    toFilter = "speed",
+    customFunc = function(x)
+      x < 0 | x > 10 ^ quant999th
+  )
+
+### filter individual speed
+trackDat.speedfilt <-
+  filterFrags(trackDat2,
+              filter.speed,
+              splitCond = TRUE,
+              minDur = 100)
+str(trackDat.speedfilt[[1]])
+
+#### check histogram of fragments length
+hist(log10(unlist(
+  lapply(trackDat.speedfilt[[2]], function(x)
+    dim(x)[1])
+)), breaks = 100)
+
+## define filter based on the presence of individual outside the arena
+### load gradient to the edge of the arena (see imageJ macro: Manual_arena_detect.IJM)
+arenaGrad <- read.delim(ArenaFile)
+contour(as.matrix(arenaGrad))
+### find the border and draw it
+edge <- data.frame(which(arenaGrad==1, arr.ind=T))
+names(edge)[c(1,2)] <- c("y.pos", "x.pos")
+plot(NA, xlim=c(0,1920), ylim=c(0,1080))
+points(x=edge[,"x.pos"], y=edge[,"y.pos"], cex = 0.01)
+### find the center and draw it 
+center = c(mean(edge[,"x.pos"]), mean(edge[,"y.pos"]))
+points(x = center[1], y = center[2], col="black", pch = 3, cex = 0.5)
+maxFrame <- max(convert2list(trackDat.speedfilt[[2]])$frame, na.rm = T)
+
+### plot fragments with the arena to see whether some part are detected outside the arena
+#### it is also possible to draw fragments on a given time interval by using timeWin argument
+drawFrags(
+  trackDat.speedfilt[[2]],
+  imgRes = c(1920, 1080),
+  add2It = list(
+    points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01),
+    points(
+      x = center[1],
+      y = center[2],
+      col = "black",
+      pch = 3,
+      cex = 0.5
+    )
+  )
+)
+### compute the distance to the edge 
+trackDat2 <- trackDat.speedfilt[[2]]
+trackDat2 <-
+  analyseFrags(
+    trackDat2,
+    customFunc = list(dist2Edge = function(x)
+      MovR::dist2Edge(x, edge, 
+                      customFunc = "CircularArena")))
+
+indOut <- convert2list(trackDat2)$dist2Edge
+meanBodyL <- mean(convert2list(trackDat2)$maj.ax, na.rm = T)/2
+hist(indOut, breaks = 100, main = "Distance to the edge, \npositive values correspond to Indivs that are outside the arena")
+abline(v = meanBodyL)
+### create the filter (here we consider that an individual is truly detected 
+#### outside when more than half of the mean body length is out of the arena)
+filter.out <-
+  filterFunc(
+    trackDat2,
+    toFilter = "dist2Edge",
+    customFunc = function(x) x > meanBodyL/2)
+
+### filter individual speed
+trackDat.outfilt <-
+  filterFrags(trackDat2,
+              filter.out,
+              splitCond = TRUE,
+              minDur = 100)
+str(trackDat.outfilt[[1]])
+
+#### check histogram of fragments length
+hist(log10(unlist(
+  lapply(trackDat.outfilt[[2]], function(x)
+    dim(x)[1])
+)), breaks = 100, main = "Fragments length (log10)")
+
+# look at the video and fragments summary
+Data_Trex_stats_before_filter <-
+  trackStats(trackDat,
+             frameR = frameRate,
+             scale = scaling,
+             unit = "cm")
+str(Data_Trex_stats_before_filter)
+
+Data_Trex_stats_after_filter <-
+  trackStats(
+    trackDat.outfilt[[2]],
+    frameR = frameRate,
+    scale = scaling,
+    unit = "cm"
+  )
+str(Data_Trex_stats_after_filter)
+
+##########################
+#  Compute some metrics  #
+##########################
+
+str(trackDat.outfilt[[2]])
+trackDat3 <- trackDat.outfilt[[2]]
+# define parameter which will be used by the customFunc
+## find the distance treshold above which individuals will be considered as at the edge of the arena (TRUE) 
+## or at the center (False)
+TrichPerceptDist <- 4 # an individual can perceive the arena (about 4 mm, see Wajnberg and Colazza 1998)
+radius <- mean(unlist(sqrt((center[1] - edge["x.pos"]) ^ 2 +
+                             (center[2] - edge["y.pos"]) ^ 2)), na.rm = T)
+radiusmm <- (round(radius, digits=-2) * scaling) * 10 # convert the arena radius in mm 
+edgeTresh <- radius * TrichPerceptDist / radiusmm # compute the distance below which individuals perceive the arena edge
+
+# Specify the batch of function to pass to the analyseFrags function for metric computation along fragments
+customFuncList = list(
+  # compute sinuosity
+  sinuosity = function(x)
+    MovR::sinuosity(x, scale = scaling,  unit = "cm"),
+  # compute turning angles 
+  turnAngle = function(x)
+    MovR::turnAngle(x, unit = "radians"),
+  # compute distance traveled
+  distTraveled = function(x)
+    MovR::distTraveled(x, Step = 1), 
+  # compute the distance to the edge.Computation for circular arena is already implemented, in case your arena is not circular you need to 
+  # create a function to compute distance to the border of your specific arena or use distance matrix by 
+  # running the following function (Where refMat correspond to the distance matrix):
+  ## Location = function(x) {locaPos(RefMat = "D:/Postdoc_INRAE_SAM/Data_Bidime/Scale_IndCount_Bidime/Img_video/2021-04-16-BIO_XK-chaud/DSC_8668.MOV_1.txt", df = x)}
+  dist2Edge = function(x)
+    MovR::dist2Edge(x, edge, 
+                    customFunc = "CircularArena"), 
+  # compute proportion of individuals at the edge of the arena
+  Edge = function(x)
+    abs(x$dist2Edge) < edgeTresh
+)
+
+# run computations of every metrics listed in customFuncList simultaneously 
+# (it is easily possible to parallelize the computation to accelerate the process)
+trackDat4 <-
+  analyseFrags(trackDat3, customFunc = customFuncList)
+
+# check turning angle
+## plot density histogram of turning angle
+essai <- convert2list(trackDat4)
+Ht= circular::circular(essai$turnAngle, type="angle", units="radians", zero = 0)
+y = circular::rose.diag(Ht,bins=24, shrink=0.89, xlim=c(-1,1),ylim=c(-1,1), 
+                        prop=2, col="gray", border= "black", 
+                        units = 'radians', ticks = TRUE)
+
+hist(essai$turnAngle, breaks = 100)
+
+# quick visual check for 1 fragment
+plot(trackDat4$frags_1$turnAngle ~ trackDat4$frags_1$frame)
+points(trackDat4$frags_1$speed *100 ~ trackDat4$frags_1$frame, col = "red")
+drawFrags(
+  trackDat4,
+  imgRes = c(1920, 1080),
+  selFrags = c("frags_1"))
+
+
+##########################
+#      Smooth metrics    #
+##########################
+
+# As previously you can use several nested function when running analyseFrags for instance to smooth metrics
+# Specify the batch of function to pass to the analyseFrags function to smooth metrics along fragments
+customFuncList = list(
+  # smooth turning angle 
+  SlideMeanAngle = function (y)
+    MovR::slidWin(
+      y$turnAngle,
+      Tstep = 10, function (x)
+        mean(x, na.rm = T)
+    ),
+  # smooth variance of turning angles 
+  SlideVarAngle = function (y)
+    MovR::slidWin(y$turnAngle,
+                  Tstep = 10, function (x)
+                    circular::var(
+                      circular::circular(
+                        x,
+                        type = "angle",
+                        units = "radians",
+                        zero = 0
+                      ),
+                      na.rm = T
+                    )), 
+  # smooth speed
+  SlidemeanSpeed = function (y)
+    MovR::slidWin(
+      y$speed,
+      Tstep = 10, function (x)
+        mean(x, na.rm = T)
+    ),
+  # smooth the distance to the edge 
+  SlidemeanEdge = function (y)
+    MovR::slidWin(
+      y$Edge,
+      Tstep = 10, function (x)
+        mean(x, na.rm = T)
+    ), 
+  # smooth speed variance
+  SlideVarSpeed = function (y)
+    MovR::slidWin(
+      y$speed,
+      Tstep = 10, function (x)
+        var(x, na.rm = T)
+    ),
+  # smooth traveled distance
+  SlidemeanTraveledDist = function (y)
+    MovR::slidWin(
+      y$distTraveled,
+      Tstep = 10, function (x)
+        mean(x, na.rm = T)
+    ),
+  # smooth maximum distance traveled
+  SlideMaxDist = function (y)
+    MovR::slidWin(
+      y$distTraveled,
+      Tstep = 10, function (x)
+        max(x, na.rm = T)
+    )
+)
+
+# run computations of every metrics listed in customFuncList simultaneously 
+# (it is easily possible to parallelize the computation to accelerate the process)
+
+trackDat5 <-
+ analyseFrags(
+    trackDat4,
+    customFunc = customFuncList
+  )
+
+# Then you can represent some data (the mean speed)
+## exemple of plot 
+### define a color palette
+color_pallete_function <- colorRampPalette(
+  colors = c("red", "orange", "yellow", "green", "purple", "blue"),
+  space = "Lab" # Option used when colors do not represent a quantitative scale
+)
+num_colors <- length(trackDat5)
+diamond_color_colors <- color_pallete_function(num_colors)
+### plot data
+
+plot(NULL,
+     ylim = c(min(unlist(
+       lapply(trackDat5, function(x)
+         min(x$SlidemeanSpeed, na.rm = T))
+     ), na.rm = T), max(unlist(lapply(trackDat5, function(x)
+       max(x$SlidemeanSpeed, na.rm = T))), na.rm = T)) ,
+xlim = c(0, max(unlist(lapply(trackDat5, function(x)
+  max(x$frame, na.rm = T)))))
+)
+# with all the fragment its a bit messy then reduce the number of fragment plotted to 100 fragment taken randomly
+for(i in sample(seq(length(trackDat5)), 100)){
+  lines(trackDat5[[i]]$SlidemeanSpeed ~ trackDat5[[i]]$frame , col = diamond_color_colors[i])
+}
+
+# look to one fragment in particular (the longer one)
+fragL <- do.call("rbind", lapply(trackDat5, function(x) length(x$SlidemeanSpeed)))
+plot(
+  trackDat5[[names(fragL[which(fragL == max(fragL)), ])]]$SlidemeanSpeed ~ trackDat5[[names(fragL[which(fragL == max(fragL)), ])]]$frame,
+  type = "l",
+  ylim = c(0, max(trackDat5[[names(fragL[which(fragL == max(fragL)), ])]]$SlidemeanSpeed, na.rm = T)) ,
+  xlim = c(
+    min( trackDat5[[names(fragL[which(fragL == max(fragL)), ])]]$frame, na.rm = T),
+    max( trackDat5[[names(fragL[which(fragL == max(fragL)), ])]]$frame, na.rm = T)
+  )
+)
+
+# plot nbr of fragment over time
+trackDat5L <- convert2list(trackDat5)
+fragPt <- tapply(trackDat5L$frags_id, trackDat5L$frame/25/60, length)
+fragPtsmooth <- slidWin(fragPt, Tstep = 100 * 25, function (x)
+  mean(x, na.rm = T))
+plot(fragPtsmooth)
+
+########################################
+#      Smooth metrics across Time      #
+########################################
+
+
+# create a list of function to compute sliding windows on the video timeline
+customFuncList <- list(
+  Varangle = function(x) {
+           mean(x$SlideVarAngle, na.rm = T)
+  },
+  speed =
+    function(x) {
+             mean(x$SlidemeanSpeed, na.rm = T)
+    },
+  Varspeed =
+    function(x) {
+             mean(x$SlideVarSpeed, na.rm = T)
+    },
+  Dist2Edge =
+    function(x) {
+      mean(x$SlidemeanEdge, na.rm = T)
+    },
+  TraveledDist =
+    function(x) {
+      mean(x$SlidemeanTraveledDist, na.rm = T)
+    },
+  MaxtravelDist = function(x) {
+    mean(x$SlideMaxDist, na.rm = T)
+  },
+  EdgeProp = function(x) {
+    nrow(x[!is.na(x$Edge) &
+             x$Edge  == "TRUE",]) / nrow(x[!is.na(x$Edge),])
+  }
+)
+
+
+## sliding window on the metrics included in customFuncList, mean will be computed each 5 * 25 frame on a window of 25 * 90 frame
+## the mean is wheighted using fragment length (wtd = True)
+
+trackDatTime <-
+ analyseTime(
+    trackDat = trackDat5,
+    timeCol = "frame",
+    customFunc = customFuncList,
+    Tstep = 5*25,
+    sampling = 25 * 10,
+    wtd = TRUE
+  )
+
+# transform the output as a DF
+trackDatTimeDf <- do.call("cbind", trackDatTime)
+# simplify column names
+names(trackDatTimeDf) <- gsub("^.*\\.","", names(trackDatTimeDf))
+# remove duplicated column (frame)
+trackDatTimeDf <- trackDatTimeDf[ , !duplicated(colnames(trackDatTimeDf))] 
+
+
+# A quick function to determine the number of digit in each smoothed variable 
+# (for source code see https://stackoverflow.com/questions/49730224/finding-the-number-of-significant-digits-versus-digits-after-decimal-in-r)
+sigfigs <- function(x){
+  orig_scipen <- getOption("scipen")
+  options(scipen = 999)
+  on.exit(options(scipen = orig_scipen))
+  
+  x <- as.character(x)
+  x <- sub("//.", "", x)
+  x <- gsub("(^0+|0+$)", "", x)
+  nchar(x)
+}
+
+# plot the smoothed results
+par(mfrow = c(2, 4))
+for (p in names(trackDatTimeDf)) {
+  plot(
+    NULL,
+    ylim = c(round(
+      min(trackDatTimeDf[[p]][!is.infinite(trackDatTimeDf[[p]]) &
+                                !is.na(trackDatTimeDf[[p]])], na.rm = T), digits = max(sigfigs(trackDatTimeDf[[p]][!is.infinite(trackDatTimeDf[[p]]) &
+                                                                                                                      !is.na(trackDatTimeDf[[p]])]), na.rm =
+                                                                                           T)
+    ),
+    round(
+      max(trackDatTimeDf[[p]][!is.infinite(trackDatTimeDf[[p]]) &
+                                !is.na(trackDatTimeDf[[p]])], na.rm = T), digits = max(sigfigs(trackDatTimeDf[[p]][!is.infinite(trackDatTimeDf[[p]]) &
+                                                                                                                      !is.na(trackDatTimeDf[[p]])]), na.rm =
+                                                                                           T)
+    )),
+    xlim = c(0, max(trackDatTimeDf$frame, na.rm = T)),
+    main = p
+  )
+  lines(trackDatTimeDf[[p]] ~ trackDatTimeDf$frame , col = "red")
+}
+
+
+
+## sliding window on the metrics included in customFuncList, mean will be computed each 5 * 25 frame on a window of 25 * 90 frame
+## the mean is wheighted using fragment length (wtd = True) but here we will compute studentized 95%IC
+
+trackDatboot <- analyseTimeBoots(
+trackDat = trackDat5,
+timeCol = "frame",
+customFunc = customFuncList,
+Tstep = 5*25,
+sampling = 25 * 10,
+bootn = 500,
+wtd = TRUE)
+
+str(trackDatboot$BootCiStudent)
+
+# remove frame where NA and Inf are returned to draw the 95%IC  as an "envelope"
+SplittedIC <- list()
+for (p in names(trackDatboot$BootCiStudent)) {
+  splitTemp <-
+    data.frame(split(trackDatboot$BootCiStudent[[p]], is.na(trackDatboot$BootCiStudent[[p]][1]))["FALSE"])
+  if (nrow(splitTemp) > 0) {
+    splittedTemp <-
+      data.frame(split(splitTemp, is.infinite(splitTemp$`FALSE.2.5.`))["FALSE"])
+  } else{
+    splittedTemp <- data.frame()
+  }
+  if (nrow(splittedTemp) > 0) {
+    SplittedIC[[p]] <-
+      data.frame(split(
+        splittedTemp,
+        is.infinite(splittedTemp$`FALSE.FALSE.97.5.`)
+      )["FALSE"])
+  } else{
+    SplittedIC[[p]] <-  data.frame()
+  }
+  if (!nrow(SplittedIC[[p]]) > 0) {
+    SplittedIC[[p]] <-
+      data.frame(matrix(ncol = ncol(trackDatboot$BootCiStudent[[p]]), nrow = 1, NA))
+  }
+  names(SplittedIC[[p]]) <- names(trackDatboot$BootCiStudent[[p]])
+}
+
+# plot IC as an "envelope", wtd mean as black dots and previously smoothed data as red line
+
+par(mfrow = c(2, 4))
+for (p in names(SplittedIC)) {
+  if (nrow(SplittedIC[[p]]) <= 1 && is.na(SplittedIC[[p]][1, ])) {
+    plot(NULL,
+         ylim = c(0, 1),
+         xlim = c(0, 1) ,
+         main = p)
+    mtext("No IC", 1,-2)
+  } else{
+    plot(
+      NULL,
+      ylim = c(round(min(
+        c(SplittedIC[[p]]$`2.5%`, SplittedIC[[p]]$`97.5%`) , na.rm = T
+      ), digits = max(sigfigs(SplittedIC[[p]]$`97.5%`), na.rm =
+                        T)),
+      round(max(
+        c(SplittedIC[[p]]$`2.5%`, SplittedIC[[p]]$`97.5%`), na.rm = T
+      ), digits = max(sigfigs(SplittedIC[[p]]$`97.5%`), na.rm =
+                        T))),
+      xlim = c(0, max(SplittedIC[[p]]$frame, na.rm = T)),
+      main = p
+    )
+    lines(trackDatTimeDf[[p]] ~ trackDatTimeDf$frame , col = "red")
+    points(SplittedIC[[p]]$mean ~ SplittedIC[[p]]$frame,
+           pch = 19,
+           cex = 0.1)
+    lines(SplittedIC[[p]]$`97.5%` ~ SplittedIC[[p]]$frame)
+    lines(SplittedIC[[p]]$`2.5%` ~ SplittedIC[[p]]$frame)
+    polygon(x = c(SplittedIC[[p]]$frame, rev(SplittedIC[[p]]$frame)),
+            y = c(SplittedIC[[p]]$`2.5%`, rev(SplittedIC[[p]]$`97.5%`)), col=rgb(1, 0, 0,0.1), border=NA
+            , density = NA)
+  }
+}
+
+
+# compute ANND every 100 frame
+ANNDData <- ANND(
+  trackDat5,
+  timeCol = "frame",
+  Tinterval = NULL,
+  sampling = 100,
+  scale = scaling,
+  bootn = 500
+)
+
+## smooth ANND
+ANNDData$ANND$`mean.smoothed` <- slidWin(
+  ANNDData$ANND$ANNDmean,
+  20,
+  customFunc = function(x) {
+    mean(x)
+  }
+)
+ANNDData$ANND$`2.5%.smoothed` <- slidWin(
+  ANNDData$ANND$`2.5%`,
+  20,
+  customFunc = function(x) {
+    mean(x)
+  }
+)
+ANNDData$ANND$`97.5%.smoothed` <- slidWin(
+  ANNDData$ANND$`97.5%`,
+  20,
+  customFunc = function(x) {
+    mean(x)
+  }
+)
+ANNDData$ANND$`nInd.smoothed` <- slidWin(
+  ANNDData$ANND$`nInd`,
+  20,
+  customFunc = function(x) {
+    mean(x)
+  }
+)
+ANNDNoNA <- na.omit(ANNDData$ANND)
+
+##### plot it 
+par(mfrow = c(1, 1))
+plot(ANNDNoNA$mean.smoothed ~ ANNDNoNA$frame,
+     type = "l", ylim=c(0,1), col = "red")
+lines(ANNDNoNA$`97.5%.smoothed` ~ ANNDNoNA$frame)
+lines(ANNDNoNA$`2.5%.smoothed` ~ ANNDNoNA$frame)
+polygon(x = c(ANNDNoNA$frame, rev(ANNDNoNA$frame)),
+        y = c(ANNDNoNA$`2.5%.smoothed`, rev(ANNDNoNA$`97.5%.smoothed`)), col=rgb(1, 0, 0,0.1), border=NA
+        , density = NA)
+par(new = TRUE)
+plot(
+  NULL,
+  yaxt = "n",
+  ylab = "",
+  xlab = "",
+  axes = FALSE,
+  xlim = c(0, max(ANNDNoNA$frame)),
+  ylim = c(0, round(max(ANNDNoNA$'nInd.smoothed', na.rm=T))),
+)
+axis(side=4, at = c(0, round(max(ANNDNoNA$'nInd.smoothed', na.rm=T))/4, round(max(ANNDNoNA$'nInd.smoothed', na.rm=T))/2 , round(max(ANNDNoNA$'nInd.smoothed', na.rm=T))/4 + round(max(ANNDNoNA$'nInd.smoothed', na.rm=T))/2, round(max(ANNDNoNA$'nInd.smoothed', na.rm=T))))
+# append the number of individual on which ANND was computed across time
+lines(ANNDNoNA$'nInd.smoothed' ~ ANNDNoNA$frame, col = "purple")
+
+
+
+

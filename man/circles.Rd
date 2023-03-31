@@ -37,7 +37,7 @@ circles(
 
 \item{lty}{An integer or a vector of integer corresponding to line type to be used for drawing circles border, as in par (default = 1).}
 
-\item{draw}{A Boolean (i.e., TRUE or FALSE) indicating whether the circle(s) should be drawn or not (default = TRUE).}
+\item{draw}{A logical value (i.e., TRUE or FALSE) indicating whether the circle(s) should be drawn or not (default = TRUE).}
 }
 \value{
 Draw the circles from center coordinates and value of the radius on an existing plot window or, if there is no active plot window, on a new plot window.

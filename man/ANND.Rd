@@ -28,7 +28,7 @@ returned results (e.g., a value of 5000 mean that values will be computed every 
 
 \item{bootn}{A numeric value corresponding to the number of bootstrap sampling used to compute studentize 95\% confidence interval (default = 0, meaning bootstrap will be not performed).}
 
-\item{progress}{A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
+\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
 }
 \value{
 this function returns a list containing three elements:

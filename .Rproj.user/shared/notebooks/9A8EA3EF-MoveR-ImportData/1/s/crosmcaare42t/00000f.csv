@@ -1,0 +1,26 @@
+"0","if(require(remotes)) {"
+"0","  install.packages(""remotes"")"
+"0","}"
+"2","Le chargement a nécessité le package : remotes
+"
+"2","Avis : le package ‘remotes’ a été compilé avec la version R 4.1.1"
+"1","Error in "
+"1",""
+"1","install.packages"
+"1",""
+"1"," : "
+"1",""
+"1","Updating loaded packages"
+"1",""
+"1","
+"
+"0","library(""remotes"")"
+"0","if(require(MoveR)) {"
+"0","  remotes::install_github(""qpetitjean/MoveR"")"
+"0","}"
+"2","Le chargement a nécessité le package : MoveR
+"
+"2","Skipping install of 'MoveR' from a github remote, the SHA1 (64be36e3) has not changed since last install.
+  Use `force = TRUE` to force installation
+"
+"0","library(""MoveR"")"

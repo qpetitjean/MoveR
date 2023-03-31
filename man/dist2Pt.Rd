@@ -29,7 +29,6 @@ set.seed(2023)
 ## start to specify some parameters to generate the tracklet
 TrackL <-
   100 # the length of the tracklet or a sequence to randomly sample tracklet's length
-
 TrackDatTemp <-
   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)
 TrackDat <- list(
@@ -48,7 +47,7 @@ obj <- do.call("rbind", lapply(seq(Objn), function(i)
   )))
 
 # draw the trajectory and the objects (red dots)
-MoveR::drawFrags(TrackDat,
+MoveR::drawTracklets(TrackDat,
                  timeCol = "frame",
                  add2It = list(
                    points(

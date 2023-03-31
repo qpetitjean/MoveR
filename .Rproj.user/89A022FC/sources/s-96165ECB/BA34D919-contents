@@ -1,0 +1,386 @@
+# Load the sample dataset
+Data <-
+  MoveR::readTrex(
+    system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
+    mirrorY = T,
+    imgHeight = 2160,
+    rawDat = F
+  )
+
+# convert it to a list of fragments
+trackDat <- MoveR::convert2frags(Data[1:7], by = "identity")
+
+# infinite values that are present in the tracking output should be removed
+## define the filter
+filter.Inf <-
+  MoveR::filterFunc(
+    trackDat,
+    toFilter = "x.pos",
+    customFunc = function(x)
+      is.infinite(x)
+  )
+
+### filter Infinite values
+trackDat.Infilt <-
+  MoveR::filterFrags(
+    trackDat,
+    filter = filter.Inf,
+    splitCond = TRUE,
+    minDur = 100
+  )
+
+### remove some fragment to speed up the computation
+trackdat2 <- trackDat.Infilt[[2]][1:75]
+
+# check the fragments
+MoveR::drawFrags(trackdat2,
+          imgRes = c(max(MoveR::convert2list(trackDat.Infilt[[2]])[["x.pos"]]),
+                     max(MoveR::convert2list(trackDat.Infilt[[2]])[["y.pos"]])),
+          timeCol = "frame")
+
+# add some metric to the dataset (speed and turning angle) and time unit conversion
+fragsListV1 <-
+  MoveR::analyseFrags(
+    trackdat2,
+    customFunc = list(
+      # specify a first function to compute speed over each fragment (a modulus present within the MoveR package)
+      speed = function(x)
+        MoveR::speed(
+          x,
+          TimeCol = "frame",
+          scale = 1
+        ),
+      # compute turning angle in radians over each fragment (a modulus present within the MoveR package)
+      TurnAngle = function(x)
+        MoveR::turnAngle(x, 
+                         TimeCol = "frame",
+                         unit = "radians"),
+      # compute distance traveled
+      distTraveled = function(x)
+        MoveR::distTraveled(x, step = 1)
+    )
+  )
+
+# smooth the computed metric by computing the mean value over a 10 frames' sliding window 
+fragsListV1Smoothed <-
+  MoveR::analyseFrags(
+    fragsListV1,
+    customFunc = list(
+      # smooth variance of turning angles
+      SlideVarAngle = function (y)
+        MoveR::slidWin(y$TurnAngle,
+                      Tstep = 10, function (x)
+                        circular::var(
+                          circular::circular(
+                            x,
+                            type = "angle",
+                            units = "radians",
+                            zero = 0
+                          ),
+                          na.rm = T
+                        )),
+      # smooth speed
+      SlidemeanSpeed = function (y)
+        MoveR::slidWin(y$speed,
+                      Tstep = 10, function (x)
+                        mean(x, na.rm = T)),
+      # smooth traveled distance
+      SlidemeanTraveledDist = function (y)
+        MoveR::slidWin(y$distTraveled,
+                      Tstep = 10, function (x)
+                        mean(x, na.rm = T))
+    )
+  )
+
+# use density based clustering to classify actives and inactives states in a 2 dimension array (here the speed and the angle variance)
+# when graph = TRUE, several graphical output are displayed: 
+# - the distribution of inactives states
+# - the resuls of the density based clustering with the two groups displayed
+# - a similar representation but as hexbinplot, with the count 
+# - the final representation of the 2d clustering with the increasing size of the dot representing the increasing number of count
+# - a pie chart representing the proportion of actives vs inactives states
+
+fragsListV1Smoothed <- MoveR::actives2(
+  fragsListV1Smoothed,
+  var1 = "SlidemeanSpeed",
+  var2 = "SlideVarAngle",
+  var1T = log10,
+  var2T = NULL,
+  nbins = 100,
+  na.rm = TRUE,
+  graph = TRUE
+) 
+
+####### test Turchin D
+
+# remove the moments when a trajectory is to close from the border since thigmotaxis is a different 
+# behavior than the correlated random walk assume by Turchin to compute the Net square displacement.
+arenaGrad <- read.delim(
+  system.file(
+    "sampleData/sample_1/ReferenceData/ImgTresholding_2602_ISA3080_Low_5.mov_1800.txt",
+    package = "MoveR"
+  )
+)
+# The edge correspond to the lower value of the gradient (i.e., 1),
+# we can hence extract the arena edge from the distance matrix as follow
+edge <-
+  stats::setNames(data.frame(which(arenaGrad == 1, arr.ind = T)), c("y.pos", "x.pos"))
+
+# then we can display the arena edge on the plot with trajectories
+MoveR::drawFrags(
+  fragsListV1Smoothed,
+  imgRes = c(3800, 2500),
+  add2It = points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01)
+)
+
+# now we can retrieve the distance from the edge for each particles over time by using the distance matrix
+fragsListV1Smoothed <- MoveR::analyseFrags(
+  fragsListV1Smoothed,
+  customFunc = list(
+    dist2Edge = function(x){
+      # first create a df containing the x and y coords for a given particles
+      temp <- data.frame(y.pos = signif(x[["y.pos"]], 3),
+                         x.pos = signif(x[["x.pos"]], 3))
+      # then, we retrieve the distance to the edge using the distance matrix
+      # because y and x coords corresponds to the rows and columns names in the distance matrix it is easy to 
+      # retrieve the resulting distance
+    Res <-
+      unlist(lapply(seq(nrow(
+        temp
+      )), function(z)
+        arenaGrad[temp[z, "y.pos"], temp[z, "x.pos"]]))
+    return(Res)}
+  )
+)
+
+# now we want to remove the moments when a trajectory is to close from the border since thigmotaxis is a different 
+# behavior than the correlated random walk assume by Turchin to compute the Net square displacement. 
+## first we need to convert the reaction distance (perception) of our model species in pixels 
+## in the case of the Trichogramma the reaction distance of an individual is considered as about 4 mm (see Wajnberg and Colazza 1998), 
+## an individual can hence perceive the arena edge from 4 mm distance and here we know that the scale of the video is 
+## 411 pixels for 1cm - an individual can hence perceive the arena from about 164 pixels
+TrichPerceptDist <- signif(4e-1 * 411 / 1, digits = 3)
+
+# now we can specify a custom function to filter moments where particles are located 
+# closer to the edge than the perception distance
+filter.out <-
+  MoveR::filterFunc(
+    fragsListV1Smoothed,
+    toFilter = "dist2Edge",
+    customFunc = function(x)
+      x <= TrichPerceptDist
+  )
+
+# apply the filter on the data 
+fragsListV1SmoothedFiltered <-
+  MoveR::filterFrags(fragsListV1Smoothed,
+              filter.out,
+              splitCond = TRUE,
+              minDur = 10)
+ 
+# then we can display the trajectories after filtration
+MoveR::drawFrags(
+  fragsListV1SmoothedFiltered[[2]],
+  imgRes = c(3800, 2500),
+  add2It = points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01)
+)
+
+# now we can compute the Turchin net square displacement, but we need to check what is the 
+# best sampling step to avoid temporal autocorrelation during computation
+# we can iterate trough various sampling time and plot the result to check it
+logseq <- signif(10^seq(1, 2.2, .05), digits = 2)
+logseq <- c(1:9, logseq)
+Res <- data.frame(SamplingStep=rep(NA, length(logseq)), D=rep(NA,length(logseq)))
+counter <- 0
+for(i in logseq){
+  counter <- counter + 1
+  temp <- MoveR::resampleFrags(fragsListV1SmoothedFiltered[[2]], Tstep = i, TimeCol ="frame")
+  D <- MoveR::turchinD(temp, 
+                  turnAngle = "TurnAngle",
+                  distTraveled = "distTraveled",
+                  behavStates = "actives2")
+  Res[counter,] <- c(i, D)
+}
+par(mfrow=c(1,1))
+plot(Res$SamplingStep, Res$D, log = "xy")
+
+
+# check at which time the turn angles are correlated
+
+
+a <- unlist(lapply(fragsListV1SmoothedFiltered[[2]], function(x)
+  x[["TurnAngle"]][which(x[["frame"]] <= 10)]
+  ))
+b <- unlist(lapply(fragsListV1SmoothedFiltered[[2]], function(x)
+  x[["TurnAngle"]][which(x[["frame"]] > 10 & x[["frame"]] <= 20)]
+))
+
+plot(a[-1], b, pch= 19)
+
+circular::cor.circular(a[-1], b, test = TRUE)
+
+
+
+
+# check the evolution of the metric used to compute the Net square displacement over time
+max(unlist(lapply(fragsListV1SmoothedFiltered[[2]], 
+       function(x)
+         max(x[["TurnAngle"]], na.rm = T))))
+
+Timeanalysis <- MoveR::analyseTime(
+  fragsListV1SmoothedFiltered[[2]],
+  timeCol = "frame",
+  customFunc = list(
+    meanTurnAngle = function(x)
+      mean(x[["TurnAngle"]], na.rm = T),
+    meandistTraveled = function(x)
+      mean(x[["distTraveled"]], na.rm = T),
+    meanTurnAngleActiv = function(x) {
+      ifelse(nrow(x[which(!is.na(x$actives2) &
+                            x$actives2 == "active"), ]) == 0, NA,
+             mean(x[["TurnAngle"]][which(!is.na(x$actives2) &
+                                           x$actives2 == "active")], na.rm = T))
+    },
+    meandistTraveledActiv = function(x) {
+      ifelse(nrow(x[which(!is.na(x$actives2) &
+                            x$actives2 == "active"), ]) == 0, NA,
+             mean(x[["distTraveled"]][which(!is.na(x$actives2) &
+                                              x$actives2 == "active")], na.rm = T))
+    }
+  ),
+  Tstep = 1,
+  sampling = 1,
+  wtd = TRUE
+)
+
+var <- c("meanTurnAngle", "meandistTraveled", "meanTurnAngleActiv", "meandistTraveledActiv")
+
+par(mfrow=c(2,2))
+for(i in var){ 
+
+plot(NULL, xlim=c(0, max(Timeanalysis[[i]][["frame"]], na.rm = T)), 
+     ylim=c(0,ceiling(max(Timeanalysis[[i]][[i]], na.rm = T))), 
+     ylab=i, xlab="time (frame)")
+
+points(Timeanalysis[[i]][["frame"]], Timeanalysis[[i]][[i]], pch = 19)
+}
+
+########################### verify the Turchin net square displacement computation on a simulated dataset ############################################
+
+# simulate a correlated random walk with known parameter to verify Turchin D computation
+n = 10000
+stepLength = 2
+angularErrorSd = 0.5
+linearErrorSd = 0.5
+angularErrorDist = stats::rnorm(n, sd = angularErrorSd)
+linearErrorDist = stats::rnorm(n, sd = linearErrorSd)
+
+## simulate a trajectory
+sim <- trajr::TrajGenerate(
+  n = n,
+  random = TRUE,
+  stepLength = stepLength,
+  angularErrorSd = angularErrorSd,
+  angularErrorDist = function(x) angularErrorDist,
+  linearErrorSd = linearErrorSd,
+  linearErrorDist = function(x) linearErrorDist,
+  fps = 1)
+
+sim <- data.frame(
+  x.pos = sim[["x"]] - min(sim[["x"]]),
+  y.pos = sim[["y"]] - min(sim[["y"]] ),
+  frame = sim[["time"]]
+)
+MoveR::drawFrags(list(sim), imgRes = c(2000,2000))
+
+## Turchin D from parameters
+Msin <- mean(sin(angularErrorDist), 
+             na.rm = T)
+Mcos <- mean(cos(angularErrorDist), 
+             na.rm = T)
+MDist <- stepLength
+Mdistsquared <- MDist^2
+act <- 1
+Dsim <- 1 * act * (Mdistsquared + 2 * MDist * Mcos/(1 - Mcos))
+
+## compute the needed metric on the simulated dataset
+simComp <-
+  MoveR::analyseFrags(
+    list(sim),
+    customFunc = list(
+      # specify a first function to compute speed over each fragment (a modulus present within the MoveR package)
+      speed = function(x)
+        MoveR::speed(
+          x,
+          TimeCol = "frame",
+          scale = 1,
+          unit = "pixels"
+        ),
+      # compute turning angle in radians over each fragment (a modulus present within the MoveR package)
+      TurnAngle = function(x)
+        MoveR::turnAngle(x, unit = "radians"),
+      # compute distance traveled
+      distTraveled = function(x)
+        MoveR::distTraveled(x, step = 1),
+      # compute turning angle variance in radians
+      VarAngle = function (y)
+        circular::var(
+          circular::circular(
+            y$TurnAngle,
+            type = "angle",
+            units = "radians"
+          ),
+          na.rm = T
+        )
+    )
+  )
+
+## add behavioral state (active all the time)
+simComp[[1]]["behavStates"] <- "active"
+
+## compute the Turchin D from the simulated data
+D <- MoveR::turchinD(
+  simComp,
+  turnAngle = "TurnAngle",
+  distTraveled = "distTraveled",
+  behavStates = "behavStates"
+)
+
+# compare simulated and computed D
+D # computed from sim data
+Dsim # computed from parameters
+
+# check the different elements of the formula
+mean(simComp$`1`$distTraveled,na.rm = T) # computed from sim data
+MDist # computed from parameters
+sd(simComp$`1`$distTraveled,na.rm = T) # computed from sim data
+linearErrorSd # computed from parameters
+# the problem should come from turning angle
+mean(sin(simComp$`1`$TurnAngle), 
+     na.rm = T) # computed from sim data
+Msin # computed from parameters
+mean(cos(simComp$`1`$TurnAngle), 
+     na.rm = T) # computed from sim data
+Mcos # computed from parameters
+
+# now we can compute the Turchin net square displacement, but we need to check what is the 
+# best sampling step to avoid temporal autocorrelation during computation
+# we can iterate trough various sampling time and plot the result to check it
+logseq <- signif(10^seq(1, 2.5, .05), digits = 2)
+logseq <- c(1:9, logseq)
+Res <- data.frame(SamplingStep=rep(NA, length(logseq)), D=rep(NA,length(logseq)))
+counter <- 0
+for(i in logseq){
+  counter <- counter + 1
+  temp <- MoveR::resampleFrags(simComp, Tstep = i, TimeCol ="frame")
+  D <- MoveR::turchinD(list(temp), 
+                       turnAngle = "TurnAngle",
+                       distTraveled = "distTraveled",
+                       behavStates = "behavStates")
+  Res[counter,] <- c(i, D)
+}
+
+plot(Res$SamplingStep, Res$D, log = "xy")
+
+
+

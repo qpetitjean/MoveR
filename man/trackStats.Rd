@@ -23,7 +23,7 @@ trackStats(
 
 \item{units}{A character string specifying the spatial unit of the coordinates after scaling (default = "pixels").}
 
-\item{progess}{A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
+\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
 }
 \value{
 A summary of video and tracklets data.

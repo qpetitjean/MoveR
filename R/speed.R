@@ -54,7 +54,7 @@
 #' 
 #' # it is also possible to resample the tracklet before computing speed, here every 10 time unit (i.e., frame)
 #' sampledFragDat <-
-#'   MoveR::resampleFrags(TrackDat, TimeCol = "frame",  Tstep = 10)
+#'   MoveR::resamplTracklets(TrackDat, TimeCol = "frame",  Tstep = 10)
 #' 
 #' # and then compute the speed of the particle over its trajectory
 #' sampledFragDat[["speed"]] <-

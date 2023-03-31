@@ -26,7 +26,6 @@ set.seed(2023)
 ## start to specify some parameters to generate the tracklet
 TrackL <-
   100 # the length of the tracklet or a sequence to randomly sample tracklet's length
-
 TrackDatTemp <-
   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)
 TrackDat <- list(
@@ -44,7 +43,7 @@ TrackDat[[1]][["distTraveled"]] <-
 str(TrackDat)
 
 # sum all the distance to compute the total distance traveled by the particle over the trajectory
-#' sum(TrackDat[[1]][["distTraveled"]], na.rm = T)
+sum(TrackDat[[1]][["distTraveled"]], na.rm = T)
 
 }
 \author{

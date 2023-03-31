@@ -19,10 +19,10 @@
 #'
 #' @param trexPath The path of the TRex output folder where .npz files are stored.
 #'
-#' @param mirrorY A Boolean (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the bottom-left (default = FALSE).
+#' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the bottom-left (default = FALSE).
 #'
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
-#' corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).
+#' corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).
 #'
 #' @param rawDat TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .npz files (see \href{https://trex.run}{trex.run}),
 #' may drastically increase the size of the object returned by the function (default = FALSE).
@@ -33,7 +33,7 @@
 #'
 #' @author Quentin PETITJEAN
 #'
-#' @seealso \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
+#' @seealso \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 #'
 #' @references 
 #' Tristan Walter, Iain D Couzin (2021) TRex, a fast multi-animal tracking system with markerless identification, and 2D estimation of posture and visual fields eLife 10:e64000.
@@ -42,13 +42,13 @@
 #' @examples
 #'
 #' # Download the first dataset from the sample data repository
-#' Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TRex")
+#' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 #' Path2Data
 #'
 #' # Import the list containing the 9 vectors classically used for further computation
 #' # and mirror Y coordinates to start on the bottom-left
 #' Data <- MoveR::readTrex(Path2Data[[1]],
-#'                mirrorY = T,
+#'                flipY = T,
 #'                imgHeight = 2160,
 #'                rawDat = F
 #'         )
@@ -65,10 +65,10 @@
 #' @export
 
 readTrex = function(trexPath,
-                    mirrorY = FALSE,
+                    flipY = FALSE,
                     imgHeight = NULL,
                     rawDat = FALSE) {
-  if (mirrorY == TRUE & is.null(imgHeight)) {
+  if (flipY == TRUE & is.null(imgHeight)) {
     stop(
       "imgHeight argument is missing, the height of the image resolution is needed to mirror y coordinates"
     )
@@ -173,13 +173,13 @@ readTrex = function(trexPath,
         names(Variable_list) %in% ls(pattern = VarN[i], envir = as.environment(Variable_list))
       ))]
   }
-  # if mirrorY = TRUE, mirror the Y coordinates according to image height
-  if (mirrorY == TRUE) {
+  # if flipY = TRUE, mirror the Y coordinates according to image height
+  if (flipY == TRUE) {
     metricList[["Y#wcentroid"]] <-
-      MoveR::mirrorYFunc(metricList[["Y#wcentroid"]], imgHeight = imgHeight)
-    metricList$Y <- MoveR::mirrorYFunc(metricList$Y, imgHeight = imgHeight)
+      MoveR::flipYCoords(metricList[["Y#wcentroid"]], imgHeight = imgHeight)
+    metricList$Y <- MoveR::flipYCoords(metricList$Y, imgHeight = imgHeight)
     metricList$midline_y <-
-      MoveR::mirrorYFunc(metricList$midline_y, imgHeight = imgHeight)
+      MoveR::flipYCoords(metricList$midline_y, imgHeight = imgHeight)
   }
   # add these variables to the output
   if (rawDat == FALSE) {

@@ -1,0 +1,23 @@
+# save each element of Temp as individual and temporary .npy files
+for(l in seq(ncol(Temp))){
+  np$save(paste0(dirname(fileName),"/" ,  names(Temp)[[l]], ".npy"), 
+          Temp[[l]])
+}
+
+# list the previously created .npy files
+npyList <-list.files(dirname(fileName),
+                     pattern = ".npy",
+                     full.names = T)
+
+# specify the expression to pass to eval() to save the temporary .npy files into the .npz file
+ParsingExp <- paste0("np$load(", "'", npyList, "'", ")")
+Arrnames <- paste0("'", gsub(".npy')", "", basename(ParsingExp)), "'")
+
+# save the temporary .npy files into the .npz file
+do.call(
+  what = np$savez_compressed,
+  args = append(list(fileName), eval(as.list(parse(text=paste(Arrnames, ParsingExp, sep = "="))))) 
+)
+
+# remove temporary .npy files
+unlink(npyList)

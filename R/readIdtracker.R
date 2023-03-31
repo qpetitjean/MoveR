@@ -14,14 +14,14 @@
 #'    \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 #' }
 #' 
-#' Also, by default the function mirror y coordinates to start on the bottom-left (see mirrorY argument).
+#' Also, by default the function mirror y coordinates to start on the bottom-left (see flipY argument).
 #'
 #' @param IdtrackerPath The full path of the idtrackerai output file (.npy).
 #'
-#' @param mirrorY A Boolean (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).
+#' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).
 #' 
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
-#' corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).
+#' corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).
 #'
 #' @param frameR A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video 
 #' (optional, only used to compute timestamps).
@@ -31,7 +31,7 @@
 #'
 #' @author Quentin PETITJEAN
 #'
-#' @seealso \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{mirrorYFunc}}
+#' @seealso \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{flipYCoords}}
 #'
 #' @references 
 #' Romero-Ferrero, F., Bergomi, M.G., Hinz, R.C. et al. idtracker.ai: tracking all individuals in small or large collectives of unmarked animals. Nat Methods 16, 179–182 (2019). https://doi.org/10.1038/s41592-018-0295-5.
@@ -40,14 +40,14 @@
 #' @examples
 #'
 #' # Download the first dataset from the sample data repository
-#' Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "IdTracker")
+#' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "IdTracker")
 #' Path2Data
 #'
 #' # Import the list containing the 9 vectors classically used for further computation
 #' # and mirror Y coordinates to start on the bottom-left
 #' Data <-
 #'   MoveR::readIdtracker(Path2Data[[1]],
-#'          mirrorY = T,
+#'          flipY = T,
 #'          imgHeight = 2160,
 #'          frameR = 25
 #'   )
@@ -56,10 +56,10 @@
 #' @export
 
 readIdtracker <- function(IdtrackerPath,
-                          mirrorY = TRUE,
+                          flipY = TRUE,
                           imgHeight = NULL,
                           frameR = NULL) {
-  if (mirrorY == TRUE & is.null(imgHeight)) {
+  if (flipY == TRUE & is.null(imgHeight)) {
     stop(
       "imgHeight argument is missing, the height of the image resolution is needed to mirror y coordinates"
     )
@@ -115,9 +115,9 @@ readIdtracker <- function(IdtrackerPath,
                       is.na(idtracker_data[[1]]$trajectories[, , 1][x, ])
                     ))))
   
-  # if mirrorY = TRUE, mirror the Y coordinates according to image height
-  if (mirrorY == TRUE) {
-    y.pos = mirrorYFunc(y.pos, imgHeight = imgHeight)
+  # if flipY = TRUE, mirror the Y coordinates according to image height
+  if (flipY == TRUE) {
+    y.pos = flipYCoords(y.pos, imgHeight = imgHeight)
   }
   
   idtrackerRaw <- list(

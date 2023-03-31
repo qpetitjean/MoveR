@@ -49,7 +49,7 @@
 #' str(arenaEdge)
 #' 
 #' # draw the tracklet and the arena edge
-#' MoveR::drawFrags(TrackDat,
+#' MoveR::drawTracklets(TrackDat,
 #'                  imgRes = c(80, 80),
 #'                  add2It = list(points(
 #'                    x = arenaEdge[["x.pos"]], y = arenaEdge[["y.pos"]], cex = 0.1
@@ -65,14 +65,14 @@
 #' # Exemple 2: With a a polygonal arena, using a distance matrix to avoid tough computation
 #' 
 #' # Download the first dataset from the sample data repository
-#' Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TRex")
+#' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 #' Path2Data
 #' 
 #' # Import the list containing the 9 vectors classically used for further computation
 #' Data <- MoveR::readTrex(Path2Data[[1]])
 #' 
 #' # convert it to a list of tracklets
-#' trackDat <- MoveR::convert2frags(Data[1:7], by = "identity")
+#' trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
 #' 
 #' # load the distance matrix to the arena edge, an object or the location of one or several areas of interest (here we have created a distance map using ImageJ)
 #' distMat <-
@@ -88,7 +88,7 @@
 #'                   c("y.pos", "x.pos"))
 #' 
 #' # draw only the first tracklet
-#' MoveR::drawFrags(trackDat,
+#' MoveR::drawTracklets(trackDat,
 #'                  selTrack = 1,
 #'                  add2It = list(points(
 #'                    x = arenaEdge[["x.pos"]], y = arenaEdge[["y.pos"]], cex = 0.1

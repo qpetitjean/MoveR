@@ -43,7 +43,7 @@
 #'   )))
 #' 
 #' # draw the trajectory and the objects (red dots)
-#' MoveR::drawFrags(TrackDat,
+#' MoveR::drawTracklets(TrackDat,
 #'                  timeCol = "frame",
 #'                  add2It = list(
 #'                    points(

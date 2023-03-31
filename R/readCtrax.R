@@ -14,14 +14,14 @@
 #'    \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 #' }
 #' 
-#' Also, the function can mirror y coordinates (see mirrorY argument).
+#' Also, the function can mirror y coordinates (see flipY argument).
 #'
 #' @param ctraxPath The full path of the Ctrax output file (.mat).
 #'
-#' @param mirrorY A Boolean (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).
+#' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).
 #'
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
-#' corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).
+#' corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).
 #'
 #'
 #' @return A list containing 9 elements classically used for further computations.
@@ -30,7 +30,7 @@
 #'
 #' @author Quentin PETITJEAN, Vincent CALCAGNO
 #'
-#' @seealso \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
+#' @seealso \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 #'
 #' @references 
 #' Branson, K., Robie, A., Bender, J. et al. High-throughput ethomics in large groups of Drosophila. Nat Methods 6, 451–457 (2009). https://doi.org/10.1038/nmeth.1328.
@@ -39,7 +39,7 @@
 #' @examples
 #'
 #' # Download the first dataset from the sample data repository
-#' Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "Ctrax")
+#' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "Ctrax")
 #' Path2Data
 #'
 #' # Import the list containing the 9 vectors classically used for further computation
@@ -51,9 +51,9 @@
 
 readCtrax <-
   function(ctraxPath,
-           mirrorY = FALSE,
+           flipY = FALSE,
            imgHeight = NULL) {
-    if (mirrorY == TRUE & is.null(imgHeight)) {
+    if (flipY == TRUE & is.null(imgHeight)) {
       stop(
         "imgHeight argument is missing, the height of the image resolution is needed to mirror y coordinates"
       )
@@ -91,10 +91,10 @@ readCtrax <-
         "timestamps"
       )]
     
-    # if mirrorY = TRUE, mirror the Y coordinates according to image height
-    if (mirrorY == TRUE) {
+    # if flipY = TRUE, mirror the Y coordinates according to image height
+    if (flipY == TRUE) {
       Ctrax_Raw$y.pos <-
-        mirrorYFunc(Ctrax_Raw$y.pos, imgHeight = imgHeight)
+        flipYCoords(Ctrax_Raw$y.pos, imgHeight = imgHeight)
     }
     return(Ctrax_Raw)
   }

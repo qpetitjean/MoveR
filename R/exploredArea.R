@@ -21,9 +21,9 @@
 #' @param timeWin  A list of one or several vector containing 2 numeric values separated by a comma
 #' corresponding to the time interval between which the tracklets have to be drawn according to timeCol (optional).
 #'
-#' @param graph A Boolean indicating whether the various diagnostics plots should be displayed or not (default = TRUE).
+#' @param graph A logical value (i.e., TRUE or FALSE) indicating whether the various diagnostics plots should be displayed or not (default = TRUE).
 #'
-#' @param saveGraph A logical value indicating whether the heatmap should be saved as a .tiff file in the hardrive - within the working directory (default = FALSE).
+#' @param saveGraph A logical value (i.e., TRUE or FALSE) indicating whether the heatmap should be saved as a .tiff file in the hardrive - within the working directory (default = FALSE).
 #' Alternatively, the user can specify the saving function and hence the extension and the
 #' directory where the heatmap should be saved (see for instance \code{\link[grDevices]{png}}, \code{\link[grDevices]{jpeg}} or \code{\link[grDevices]{tiff}}.
 #'
@@ -54,7 +54,7 @@
 #'   }), seq(TrackN))
 #' 
 #' # check the tracklets
-#' MoveR::drawFrags(TrackList,
+#' MoveR::drawTracklets(TrackList,
 #'                  timeCol = "frame")
 #' 
 #' # compute the total surface explored and displays the heatmap for all tracklets
@@ -65,9 +65,9 @@
 #'                     timeCol = "frame")
 #' 
 #' # compute the surface explored for each tracklet and display (but do not save) the heatmap for the 2 first tracklets
-#' # by combining exploredArea and analyseFrags, the surface explored for each tracklet is appended to the data
+#' # by combining exploredArea and analyseTracklets, the surface explored for each tracklet is appended to the data
 #' # of the corresponding tracklets.
-#' ExplorTest <- MoveR::analyseFrags(TrackList[1:2],
+#' ExplorTest <- MoveR::analyseTracklets(TrackList[1:2],
 #'                                   customFunc = list(
 #'                                     exploredArea = function(x)
 #'                                       exploredArea(
@@ -161,7 +161,7 @@ exploredArea <-
     # select the part of the tracklets that are included in timeWin
     WhoWhen <- lapply(seq(length(timeWin)),
                       function(p)
-                        MoveR::cutFrags(
+                        MoveR::cutTracklets(
                           trackDat,
                           customFunc = function(x)
                             x[[timeCol]] >= timeWin[[p]][[1]] &
@@ -170,7 +170,7 @@ exploredArea <-
     WhoWhen <- unlist(WhoWhen, recursive = FALSE)
     
     # Then, convert the list of tracklet as an unique list (only in case there is several tracklet in trackDat)
-    trackDatList <- MoveR::convert2list(WhoWhen)
+    trackDatList <- MoveR::convert2List(WhoWhen)
     
     # Compute the surface of a regular hexagon as follow: 3*side*apothem
     # where:

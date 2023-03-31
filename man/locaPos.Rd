@@ -10,7 +10,7 @@ locaPos(refDat = NULL, df = NULL, sep = NULL, dec = NULL, Fun = NULL)
 \item{refDat}{A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or
 the location of one or several areas of interest (e.g., create a distance map using ImageJ).}
 
-\item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given fragment.}
+\item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet.}
 
 \item{sep}{The field separator character, the values on each line of the file are separated by this character (optional, needed only if refDat is a path).}
 
@@ -31,12 +31,12 @@ find the position of a particle along its trajectory according to a reference ma
 Data <-
  readTrex(
    system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
-   mirrorY = T,
+   flipY = T,
    imgHeight = 2160,
    rawDat = F
  )
-# convert it to a list of fragments
-trackDat <- convert2frags(Data[1:7], by = "identity")
+# convert it to a list of tracklets
+trackDat <- convert2Tracklets(Data[1:7], by = "identity")
 
 # load the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or
 # the location of one or several areas of interest (here we have created a distance map using ImageJ)
@@ -56,13 +56,13 @@ refDat[which(as.numeric(refDat) >= 0 & as.numeric(refDat) <= 254)] <- "edge"
 
 # retrieve the area where the particles
 # are located over their whole trajectory using locaPos function
-trackDat <- analyseFrags(trackDat,
+trackDat <- analyseTracklets(trackDat,
                         customFunc = list(
                           Position = function(x)
                             locaPos(refDat, x)))
-# draw the result, with fragments part that are on the edge of the arena colored in red
+# draw the result, with tracklets part that are on the edge of the arena colored in red
 # and those at the center in black
-drawFrags(
+drawTracklets(
  trackDat,
  imgRes = c(3840, 2160),
  add2It = list(

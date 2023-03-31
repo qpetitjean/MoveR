@@ -18,7 +18,7 @@
 #'
 #' @param bootn A numeric value corresponding to the number of bootstrap sampling used to compute studentize 95% confidence interval (default = 0, meaning bootstrap will be not performed).
 #'
-#' @param progress A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
 #'
 #' @return this function returns a list containing three elements:
 #'  \itemize{
@@ -173,7 +173,7 @@ ANND <- function(trackDat,
       "\n here the function used ",
       min(TimelineStep, na.rm = T),
       ", but perhaps consider resampling the tracklets to better control the behavior of the function", 
-      "\n see MoveR::resampleFrags()"
+      "\n see MoveR::resamplTracklets()"
     )
   }
   if (is.null(Tinterval)) {
@@ -242,7 +242,7 @@ ANND <- function(trackDat,
   for (t in Newtimeline) {
     # select the tracklets that are detected in the selected timeline part and
     # Cut them according the selected part of the timeline
-    WhoWhen <- MoveR::cutFrags(trackDat, function (x)
+    WhoWhen <- MoveR::cutTracklets(trackDat, function (x)
       x[[timeCol]] %in% t)
     # identify the number of tracklets present at t
     # it assume that each tracklet is independant from other

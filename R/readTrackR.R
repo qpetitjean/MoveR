@@ -16,14 +16,14 @@
 #'
 #' Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above
 #' and the second containing all the elements retrieved from the .csv file (see rawDat argument).
-#' Also, the function can mirror y coordinates (see mirrorY argument).
+#' Also, the function can mirror y coordinates (see flipY argument).
 #'
 #' @param trackRPath The full path of the TrackR output file (.csv).
 #'
-#' @param mirrorY A Boolean (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).
+#' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).
 #'
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
-#' corresponding to the height of the image or video resolution (optional, only used when mirrorY = TRUE).
+#' corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).
 #'
 #' @param frameR A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video (optional, only used to compute timestamps).
 #'
@@ -36,7 +36,7 @@
 #'
 #' @author Quentin PETITJEAN
 #'
-#' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{mirrorYFunc}}
+#' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 #'
 #' @references 
 #' \href{https://swarm-lab.github.io/trackR}{trackR}
@@ -44,14 +44,14 @@
 #' @examples
 #'
 #' # Download the first dataset from the sample data repository
-#' Path2Data <- MoveR::dlSampleDat(dataSet = 1, tracker = "TrackR")
+#' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TrackR")
 #' Path2Data
 #' 
 #' # Import the list containing the 9 vectors classically used for further computation
 #' # and mirror Y coordinates to start on the top-left
 #' Data <-
 #'   MoveR::readTrackR(Path2Data[[1]],
-#'          mirrorY = T,
+#'          flipY = T,
 #'          imgHeight = 2160,
 #'          rawDat = F
 #'   )
@@ -72,11 +72,11 @@
 #' @export
 
 readTrackR <- function(trackRPath,
-                       mirrorY = FALSE,
+                       flipY = FALSE,
                        imgHeight = NULL,
                        frameR = NULL,
                        rawDat = FALSE) {
-  if (mirrorY == TRUE & is.null(imgHeight)) {
+  if (flipY == TRUE & is.null(imgHeight)) {
     stop(
       "imgHeight argument is missing, the height of the image resolution is needed to mirror y coordinates"
     )
@@ -95,9 +95,9 @@ readTrackR <- function(trackRPath,
     trackDat <- read.delim(trackRPath, sep = ",")
   }
   
-  # if mirrorY = TRUE, mirror the Y coordinates according to image height
-  if (mirrorY == TRUE) {
-    trackDat$y = mirrorYFunc(trackDat$y, imgHeight = imgHeight)
+  # if flipY = TRUE, mirror the Y coordinates according to image height
+  if (flipY == TRUE) {
+    trackDat$y = flipYCoords(trackDat$y, imgHeight = imgHeight)
   }
   # create ntargets, the number of particles detected for each frame (not in Raw output of TrackR)
   ntargets <- unlist(lapply(unique(trackDat[["frame"]]), function(x)

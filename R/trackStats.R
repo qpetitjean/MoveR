@@ -36,7 +36,7 @@
 #'
 #' @param units A character string specifying the spatial unit of the coordinates after scaling (default = "pixels").
 #'
-#' @param progress A Boolean (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
 #'
 #' @return A summary of video and tracklets data.
 #'
@@ -160,7 +160,7 @@ trackStats = function(trackDat,
           length(z))) > 0))
   if (length(InfCheck) > 0) {
     warning(
-      "Infinite values have been found in x.pos for the tracklets reported below; \nthis could produce a biased summary; \nconsider using filterFrags",
+      "Infinite values have been found in x.pos for the tracklets reported below; \nthis could produce a biased summary; \nconsider using filterTracklets",
       ": \n",
       paste(InfCheck, collapse = ", ")
     )
@@ -175,7 +175,7 @@ trackStats = function(trackDat,
   
   if (length(NACheck) > 0) {
     warning(
-      "NA values have been found in x.pos for the tracklets reported below; \nthis could produce a biased summary; \nconsider using filterFrags",
+      "NA values have been found in x.pos for the tracklets reported below; \nthis could produce a biased summary; \nconsider using filterTracklets",
       ": \n",
       paste(NACheck, collapse = ", ")
     )

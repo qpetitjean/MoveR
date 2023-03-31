@@ -33,9 +33,9 @@ If imgRes is unspecified, the function retrieve it using x and y maximum values 
 \item{timeWin}{A list of one or several vector containing 2 numeric values separated by a comma
 corresponding to the time interval between which the tracklets have to be drawn according to timeCol (optional).}
 
-\item{graph}{A Boolean indicating whether the various diagnostics plots should be displayed or not (default = TRUE).}
+\item{graph}{A logical value (i.e., TRUE or FALSE) indicating whether the various diagnostics plots should be displayed or not (default = TRUE).}
 
-\item{saveGraph}{A logical value indicating whether the heatmap should be saved as a .tiff file in the hardrive - within the working directory (default = FALSE).
+\item{saveGraph}{A logical value (i.e., TRUE or FALSE) indicating whether the heatmap should be saved as a .tiff file in the hardrive - within the working directory (default = FALSE).
 Alternatively, the user can specify the saving function and hence the extension and the
 directory where the heatmap should be saved (see for instance \code{\link[grDevices]{png}}, \code{\link[grDevices]{jpeg}} or \code{\link[grDevices]{tiff}}.}
 }
@@ -69,7 +69,7 @@ TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
   }), seq(TrackN))
 
 # check the tracklets
-MoveR::drawFrags(TrackList,
+MoveR::drawTracklets(TrackList,
                  timeCol = "frame")
 
 # compute the total surface explored and displays the heatmap for all tracklets
@@ -80,9 +80,9 @@ MoveR::exploredArea(TrackList,
                     timeCol = "frame")
 
 # compute the surface explored for each tracklet and display (but do not save) the heatmap for the 2 first tracklets
-# by combining exploredArea and analyseFrags, the surface explored for each tracklet is appended to the data
+# by combining exploredArea and analyseTracklets, the surface explored for each tracklet is appended to the data
 # of the corresponding tracklets.
-ExplorTest <- MoveR::analyseFrags(TrackList[1:2],
+ExplorTest <- MoveR::analyseTracklets(TrackList[1:2],
                                   customFunc = list(
                                     exploredArea = function(x)
                                       exploredArea(
