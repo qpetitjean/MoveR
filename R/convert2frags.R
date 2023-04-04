@@ -32,7 +32,7 @@
 #'trackDatList <- convert2list(fragsList)
 #'
 #'# convert the list of variable to a liost of fragment based on fragments identity
-#'trackDat <- convert2frags(trackDatList, by = "fragsId")
+#'trackDat <- convert2frags(trackDatList, by = "trackId")
 #'
 #' @export
 

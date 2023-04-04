@@ -36,7 +36,7 @@
 convert2list <- function(trackDat) {
   # convert the fragments' list to a data frame and add the fragment id
   trackDatdf <- do.call("rbind", trackDat)
-  trackDatdf[["fragsId"]] <-
+  trackDatdf[["trackId"]] <-
     gsub("[.][0-9]*", "", rownames(trackDatdf))
   # then transform the data frame to a list
   trackDatList <- as.list(trackDatdf)
