@@ -1,5 +1,0 @@
-"0","points(x = edge[, ""x.pos""], y = edge[, ""y.pos""], cex = 0.01)
-"
-"2","Error in plot.xy(xy.coords(x, y), type = type, ...) : 
-  plot.new has not been called yet
-"

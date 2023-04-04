@@ -1,6 +1,0 @@
-"0","# Import the sample data"
-"0","Data <-"
-"0","  MoveR::readTrex(Path2Data[[1]])"
-"2","Error in MoveR::readTrex(Path2Data[[1]]) : 
-  No such file or directory : undefined or wrong path supplied
-"

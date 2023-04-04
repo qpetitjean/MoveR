@@ -1,4 +1,0 @@
-"0","trackDatList <- MoveR::convert2list(trackDat)"
-"0","trackDatList[[""identity""]] <- paste(""Tricho"", trackDatList[[""identity""]], sep = ""_"")"
-"0","trackDat <- MoveR::convert2frags(trackDatList, by = ""identity"")"
-"0",""
