@@ -101,7 +101,7 @@ reference:
   - title: Spatial Trends
     desc: Analyse spatial trends over tracks according to custom pattern (e.g., displacement across area).
     contents:
-      - '`idStateSeq`'
+      - '`IdStateSeq`'
       
   - title: Utilities
     desc: Some utilities functions helping to either import sample data, convert it or locate particles' position.

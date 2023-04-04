@@ -6,7 +6,7 @@
 #'
 #' @param df A data frame containing x, y coordinates columns named "x.pos", "y.pos" for a given tracklet.
 #'
-#' @param TimeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
+#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
 #'
 #' @param unit A character string indicating whether the function should returns turning angle in radians or degrees.
 #'
@@ -39,7 +39,7 @@
 #' 
 #' # compute the turning angle over the particle's trajectory
 #' MoveR::turnAngle(TrackDat,
-#'                  TimeCol = "frame",
+#'                  timeCol = "frame",
 #'                  unit = "radians",
 #'                  scale = 1)
 #'
@@ -47,7 +47,7 @@
 
 turnAngle <-
   function(df,
-           TimeCol = NULL,
+           timeCol = NULL,
            unit = c("radians", "degrees"),
            compass = NULL,
            scale = NULL) {
@@ -63,23 +63,23 @@ turnAngle <-
     }
     if (is.null(scale)) {
       warning(
-        "the scaling factor to be applied to the trajectory coordinates is missing, default is 1/1"
+        "the scaling factor to be applied to the trajectory coordinates is missing, default is 1"
       )
       scale = 1 / 1
     }
-    if (is.null(TimeCol)) {
+    if (is.null(timeCol)) {
       stop(
-        "TimeCol argument is missing: the name of the column carying time information is needed to compute speed"
+        "timeCol argument is missing: the name of the column carying time information is needed to compute turning angle"
       )
     }
-    if (is.null(MoveR::listGet(df, TimeCol))) {
+    if (is.null(MoveR::listGet(df, timeCol))) {
       stop(
-        "TimeCol argument is misspelled or is absent from the input df: the name of the column carying time information is needed to compute speed"
+        "timeCol argument is misspelled or is absent from the input df: the name of the column carying time information is needed to compute turning angle"
       )
     }
     
     trj <-
-      trajr::TrajFromCoords(df[, c("x.pos", "y.pos", TimeCol)],
+      trajr::TrajFromCoords(df[, c("x.pos", "y.pos", timeCol)],
                             timeCol = 3, 
                             spatialUnits = "NA",
                             timeUnits = "NA")
@@ -91,10 +91,10 @@ turnAngle <-
       base::append(turnAngle, NA, after = length(turnAngle))
     
     if (length(unit) > 1) {
-      warning("Unit argument is not specified, default value is radians")
+      warning("unit argument is not specified, default value is radians")
       turnAngle <- turnAngle
     } else if (!unit == "degrees" & !unit == "radians") {
-      stop("Unit argument seems misspelled, choose either radians or degrees")
+      stop("unit argument seems misspelled, choose either radians or degrees")
     } else if (unit == "radians") {
       turnAngle <- turnAngle
     } else if (unit == "degrees") {

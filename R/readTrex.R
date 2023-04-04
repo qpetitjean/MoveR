@@ -19,7 +19,7 @@
 #'
 #' @param trexPath The path of the TRex output folder where .npz files are stored.
 #'
-#' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the bottom-left (default = FALSE).
+#' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the bottom-left (default = FALSE).
 #'
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
 #' corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).
@@ -28,7 +28,7 @@
 #' may drastically increase the size of the object returned by the function (default = FALSE).
 #'
 #' @return A list containing either a list of 9 elements classically used for further computations or a list containing 2 sublists, the first corresponding to the one previously mentioned
-#' and the second containing all the elements retrieved from the .npz files (see rawDat argument). Also, by default the function mirror y coordinates to start on the bottom-left.
+#' and the second containing all the elements retrieved from the .npz files (see rawDat argument). Also, by default the function flip y coordinates to start on the bottom-left.
 #'
 #'
 #' @author Quentin PETITJEAN
@@ -40,13 +40,14 @@
 #' \href{https://trex.run}{trex.run}
 #'
 #' @examples
-#'
+#' ## Not run:
+#' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 #' Path2Data
 #'
 #' # Import the list containing the 9 vectors classically used for further computation
-#' # and mirror Y coordinates to start on the bottom-left
+#' # and flip Y coordinates to start on the bottom-left
 #' Data <- MoveR::readTrex(Path2Data[[1]],
 #'                flipY = T,
 #'                imgHeight = 2160,
@@ -56,12 +57,13 @@
 #'
 #' # Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
 #' # and the second list containing all the elements retrieved from .npz files,
-#' # also do not mirror Y coordinates (start on the top-left)
+#' # also do not flip Y coordinates (start on the top-left)
 #' DataFull <- MoveR::readTrex(Path2Data[[1]],
 #'                    rawDat = T
 #'             )
 #' str(DataFull)
 #'
+#' ## End(Not run) 
 #' @export
 
 readTrex = function(trexPath,
@@ -70,7 +72,7 @@ readTrex = function(trexPath,
                     rawDat = FALSE) {
   if (flipY == TRUE & is.null(imgHeight)) {
     stop(
-      "imgHeight argument is missing, the height of the image resolution is needed to mirror y coordinates"
+      "imgHeight argument is missing, the height of the image resolution is needed to flip y coordinates"
     )
   }
   # import numpy python module to read .npz files
@@ -173,7 +175,7 @@ readTrex = function(trexPath,
         names(Variable_list) %in% ls(pattern = VarN[i], envir = as.environment(Variable_list))
       ))]
   }
-  # if flipY = TRUE, mirror the Y coordinates according to image height
+  # if flipY = TRUE, flip the Y coordinates according to image height
   if (flipY == TRUE) {
     metricList[["Y#wcentroid"]] <-
       MoveR::flipYCoords(metricList[["Y#wcentroid"]], imgHeight = imgHeight)

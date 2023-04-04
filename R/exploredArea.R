@@ -52,25 +52,25 @@
 #'       identity = paste("Tracklet", id, sep = "_")
 #'     )
 #'   }), seq(TrackN))
-#' 
+#'
 #' # check the tracklets
 #' MoveR::drawTracklets(TrackList,
 #'                  timeCol = "frame")
-#' 
+#'
 #' # compute the total surface explored and displays the heatmap for all tracklets
 #' # NB: Plot can be displayed and/or saved using graph and saveGraph arguments
 #' MoveR::exploredArea(TrackList,
 #'                     binRad = 8,
 #'                     scale = 1,
 #'                     timeCol = "frame")
-#' 
+#'
 #' # compute the surface explored for each tracklet and display (but do not save) the heatmap for the 2 first tracklets
 #' # by combining exploredArea and analyseTracklets, the surface explored for each tracklet is appended to the data
 #' # of the corresponding tracklets.
 #' ExplorTest <- MoveR::analyseTracklets(TrackList[1:2],
 #'                                   customFunc = list(
 #'                                     exploredArea = function(x)
-#'                                       exploredArea(
+#'                                       MoveR::exploredArea(
 #'                                         x,
 #'                                         binRad = 8,
 #'                                         scale = 1,
@@ -95,40 +95,40 @@ exploredArea <-
         "binRad argument is missing, \na numeric value specifying the diameter of the cell a particle can explore is needed to compute the surface explored"
       )
     }
-
+    
     # if imgRes is unspecified retrieve it approximately using the maximum value in x and y coordinates
     if (class(trackDat) == "list" & length(trackDat) >= 1) {
-     if (TRUE %in% is.na(imgRes)) {
-      xCoords <- unlist(lapply(trackDat, function(x)
-        MoveR::listGet(x, "x.pos")))
-      if (length(which(is.infinite(xCoords)) > 0)) {
-        xCoords <- xCoords[!is.infinite(xCoords)]
+      if (TRUE %in% is.na(imgRes)) {
+        xCoords <- unlist(lapply(trackDat, function(x)
+          MoveR::listGet(x, "x.pos")))
+        if (length(which(is.infinite(xCoords)) > 0)) {
+          xCoords <- xCoords[!is.infinite(xCoords)]
+        }
+        width <- round(max(xCoords) + 5 * max(xCoords) / 100, 0)
+        
+        yCoords <- unlist(lapply(trackDat, function(x)
+          MoveR::listGet(x, "y.pos")))
+        if (length(which(is.infinite(yCoords)) > 0)) {
+          yCoords <- yCoords[!is.infinite(yCoords)]
+        }
+        height <- round(max(yCoords) + 5 * max(yCoords) / 100, 0)
+        imgRes <- c(width, height)
       }
-      width <- round(max(xCoords) + 5 * max(xCoords) / 100, 0)
-      
-      yCoords <- unlist(lapply(trackDat, function(x)
-        MoveR::listGet(x, "y.pos")))
-      if (length(which(is.infinite(yCoords)) > 0)) {
-        yCoords <- yCoords[!is.infinite(yCoords)]
+    } else{
+      if (TRUE %in% is.na(imgRes)) {
+        xCoords <- trackDat[["x.pos"]]
+        if (length(which(is.infinite(xCoords)) > 0)) {
+          xCoords <- xCoords[!is.infinite(xCoords)]
+        }
+        width <- round(max(xCoords) + 5 * max(xCoords) / 100, 0)
+        
+        yCoords <- trackDat[["y.pos"]]
+        if (length(which(is.infinite(yCoords)) > 0)) {
+          yCoords <- yCoords[!is.infinite(yCoords)]
+        }
+        height <- round(max(yCoords) + 5 * max(yCoords) / 100, 0)
+        imgRes <- c(width, height)
       }
-      height <- round(max(yCoords) + 5 * max(yCoords) / 100, 0)
-      imgRes <- c(width, height)
-    }
-    }else{
-    if (TRUE %in% is.na(imgRes)) {
-      xCoords <- trackDat[["x.pos"]]
-      if (length(which(is.infinite(xCoords)) > 0)) {
-        xCoords <- xCoords[!is.infinite(xCoords)]
-      }
-      width <- round(max(xCoords) + 5 * max(xCoords) / 100, 0)
-      
-      yCoords <- trackDat[["y.pos"]]
-      if (length(which(is.infinite(yCoords)) > 0)) {
-        yCoords <- yCoords[!is.infinite(yCoords)]
-      }
-      height <- round(max(yCoords) + 5 * max(yCoords) / 100, 0)
-      imgRes <- c(width, height)
-    }
     }
     # Select only the part of the tracklets included in the selected time Window
     if (!is.list(timeWin)) {

@@ -7,11 +7,11 @@
 #'
 #' @param trackDatA A list of data frame containing tracking informations for each tracklet.
 #'
-#' @param TimeCol A character string corresponding to the name of the column containing time information (e.g., "frame").
+#' @param timeCol A character string corresponding to the name of the column containing time information (e.g., "frame").
 #'
-#' @param Tstep A numeric value corresponding to the length of the resampling step according to the time unit used in TimeCol (e.g., frame).
+#' @param Tstep A numeric value corresponding to the length of the resampling step according to the time unit used in timeCol (e.g., frame).
 #'
-#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
 #' @return A list of data frame containing the resampled tracklets.
 #'
@@ -47,14 +47,14 @@
 #'                         TimeSec = function(x)
 #'                           x[["frame"]] / 25
 #'                       ))
-#' # example 1: resample the tracklets every 0.2 seconds
+#' # resample the tracklets every 1 seconds
 #' ## check the size of the tracklets
 #' trackSize <- unlist(lapply(trackListV1, function(x)
 #'   nrow(x)))
 #'
 #' ## resample the tracklets every 1 seconds
 #' trackListSampled1S <- MoveR::resamplTracklets(trackListV1,
-#'                                            TimeCol = "TimeSec",
+#'                                            timeCol = "TimeSec",
 #'                                            Tstep = 1)
 #'
 #' ## check the size of the tracklets after resampling
@@ -64,28 +64,11 @@
 #' ## Compare the tracklets size
 #' cbind(trackSize, trackSize1s)
 #'
-#' # example 2: resample the tracklets every 1 minutes
-#'
-#' ## resample the tracklets every 0.10 seconds
-#' trackListSampled0.10S <- MoveR::resamplTracklets(trackListV1,
-#'                                               TimeCol = "TimeSec",
-#'                                               Tstep = 0.10)
-#' ## here some time step are not found in the tracklets' list (e.g., 0.10, 0.30),
-#' ## they are hence replaced by NA in the output list
-#'
-#' ## check the size of the tracklets after resampling
-#' trackSize0.10S <-
-#'   unlist(lapply(trackListSampled0.10S, function(x)
-#'     nrow(x)))
-#'
-#' ## Compare the tracklets size
-#' cbind(trackSize, trackSize1s, trackSize0.10S)
-#'
 #' @export
 
 resamplTracklets <-
   function(trackDat,
-           TimeCol = NULL,
+           timeCol = NULL,
            Tstep = NULL,
            progress = TRUE) {
     if (is.null(Tstep)) {
@@ -93,9 +76,9 @@ resamplTracklets <-
         "Tstep argument is missing: a value corresponding to the resampling step is needed to resample the data"
       )
     }
-    if (is.null(TimeCol)) {
+    if (is.null(timeCol)) {
       stop(
-        "TimeCol argument is missing: the name of the column carying time information is needed to resample the data"
+        "timeCol argument is missing: the name of the column carying time information is needed to resample the data"
       )
     }
     if (is.data.frame(trackDat)) {
@@ -113,15 +96,15 @@ resamplTracklets <-
       # resampling tracklets according to Tstep
       ## identify the first time unit where the tracklet is detected
       start <-
-        trackDat[[i]][trackDat[[i]][[TimeCol]] == sort(trackDat[[i]][[TimeCol]]),][1,]
+        trackDat[[i]][trackDat[[i]][[timeCol]] == sort(trackDat[[i]][[timeCol]]), ][1, ]
       
       ## use it as the starting point of the increment for resempling
       increment <-
-        seq(from = start[[TimeCol]],
-            to = max(trackDat[[i]][[TimeCol]], na.rm = T),
+        seq(from = start[[timeCol]],
+            to = max(trackDat[[i]][[timeCol]], na.rm = T),
             by = Tstep)
       selVal <-
-        as.character(increment) %in% as.character(signif(trackDat[[i]][[TimeCol]],
+        as.character(increment) %in% as.character(signif(trackDat[[i]][[timeCol]],
                                                          digits = max(nchar(increment),
                                                                       na.rm = T)))
       ## store the time values to keep and detect which have to be added
@@ -129,17 +112,17 @@ resamplTracklets <-
       
       ## retrieve data of the tracklet and add a row containing NA when a time value is missing
       toKeep <-
-        trackDat[[i]][trackDat[[i]][[TimeCol]] %in% toKeepTemp, ]
+        trackDat[[i]][trackDat[[i]][[timeCol]] %in% toKeepTemp,]
       if (FALSE %in% selVal) {
         toAdd <-
           setNames(data.frame(matrix(
             ncol = ncol(trackDat[[i]]),
             nrow = length(increment[which(selVal == FALSE)])
           )), c(names(trackDat[[i]])))
-        toAdd[TimeCol] <-
+        toAdd[timeCol] <-
           c(unlist(list(increment[which(selVal == FALSE)])))
         toKeep <-
-          rbind(toKeep, toAdd)[order(rbind(toKeep, toAdd)[[TimeCol]]),]
+          rbind(toKeep, toAdd)[order(rbind(toKeep, toAdd)[[timeCol]]), ]
         if ("trackletId" %in% names(trackDat[[i]]) == TRUE) {
           w1 <-
             paste("In tracklet", unique(trackDat[[i]]$trackletId), sep = " ")
@@ -152,7 +135,13 @@ resamplTracklets <-
           warning(w1, ": ", w2, w3)
         } else {
           w1 <-
-            paste("In tracklet", unique(trackDat[[i]]$identity), sep = " ")
+            paste("In tracklet",
+                  ifelse(
+                    !is.null(MoveR::listGet(trackDat, "identity")),
+                    unique(trackDat[[i]]$identity),
+                    names(trackDat)[i]
+                  ),
+                  sep = " ")
           w2 <-
             paste("\n some time units are missing",
                   list(increment[which(selVal == FALSE)]) ,

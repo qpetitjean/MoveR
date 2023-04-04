@@ -15,7 +15,7 @@
 #' to the length of the resampling step needed to discretize the input trajectory (optional)
 #' see \code{\link[trajr]{TrajRediscretize}}.
 #'
-#' @param TimeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
+#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
 #'
 #' @param compass.direction A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).
 #'
@@ -45,14 +45,14 @@
 #'   )
 #' 
 #' # compute the sinuosity of the particle' trajectory
-#' MoveR::sinuosity(TrackDat, scale = 1, TimeCol = "frame")
+#' MoveR::sinuosity(TrackDat, scale = 1, timeCol = "frame")
 #'
 #' @export
 
 sinuosity <- function(df,
                       scale = NULL,
                       segL = NULL,
-                      TimeCol = NULL,
+                      timeCol = NULL,
                       compass = NULL) {
   if (is.null(MoveR::listGet(df, "x.pos"))) {
     stop(
@@ -70,19 +70,19 @@ sinuosity <- function(df,
     )
     scale = 1 / 1
   }
-  if (is.null(TimeCol)) {
+  if (is.null(timeCol)) {
     stop(
-      "TimeCol argument is missing: the name of the column carying time information is needed to compute speed"
+      "timeCol argument is missing: the name of the column carying time information is needed to compute speed"
     )
   }
-  if (is.null(MoveR::listGet(df, TimeCol))) {
+  if (is.null(MoveR::listGet(df, timeCol))) {
     stop(
-      "TimeCol argument is misspelled or is absent from the input df: the name of the column carying time information is needed to compute speed"
+      "timeCol argument is misspelled or is absent from the input df: the name of the column carying time information is needed to compute speed"
     )
   }
   
   trj <-
-    trajr::TrajFromCoords(df[, c("x.pos", "y.pos", TimeCol)],
+    trajr::TrajFromCoords(df[, c("x.pos", "y.pos", timeCol)],
                           timeCol = 3, 
                           spatialUnits = "NA",
                           timeUnits = "NA")

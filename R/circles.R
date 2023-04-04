@@ -1,6 +1,6 @@
 #' @title Generate points located on circles contour and draw circle(s).
 #'
-#' @description Given x and y coordinates as well as the circle radius, this function draw circle(s) and returns the coordinates of the points simulated to draw the contour of the circle.
+#' @description Given x and y coordinates of the circle center as well as the circle radius, this function draw circle(s) and returns a list containing the coordinates of the points simulated to draw the contour of the circle(s).
 #'
 #' @param x A coordinate vector of circles to plot.
 #'
@@ -11,11 +11,11 @@
 #' @param Res A numeric value corresponding to the resolution of the circles (i.e., the number of points used to draw the circles contour, default = 500).
 #'
 #' @param center Either TRUE or a single integers or a vector of integers specifying the symbol(s) or a single character to be used to represent the circle center
-#' (see points for possible values and their interpretation).
+#' (see \code{\link[graphics]{points}} for possible values and their interpretation).
 #'
 #' @param draw A logical value (i.e., TRUE or FALSE) indicating whether the circle(s) should be drawn or not (default = TRUE).
 #'
-#' @param col The color or a vector of colors for filling the circles, the default leave polygons unfilled.
+#' @param col The color or a vector of colors for filling the circles, the default leaves polygons unfilled.
 #'
 #' @param border The color or a vector of colors to draw the border of the circles (default = "black").
 #'
@@ -23,40 +23,42 @@
 #'
 #' @param lty An integer or a vector of integer corresponding to line type to be used for drawing circles border, as in par (default = 1).
 #'
-#' @return Draw the circles from center coordinates and value of the radius on an existing plot window or, if there is no active plot window, on a new plot window.
-#' It also returns the coordinates of the points simulated to draw the contour of the circle(s).
+#' @return Draw the circles from the coordinates of the center and a value of the circle radius on an existing plot window or, if there is no active plot window, on a new plot window.
+#' It also returns a list containing the coordinates of the points simulated to draw the contour of the circle(s).
 #'
 #' @author Quentin PETITJEAN
 #'
-#' @seealso \code{\link{plot}}, \code{\link{points}}, \code{\link{points}}
+#' @seealso \code{\link[graphics]{polygon}}, \code{\link[graphics]{points}}
 #'
 #' @examples
 #'
-#'# draw 10 red-border and red-filled circles of different size on a new plot
-#'circles(
-#'  x = sample(1:100, 10),
-#'  y = sample(1:100, 10),
-#'  radius = sample(1:10, 10),
-#'  center = TRUE,
-#'  border = "red",
-#'  col = adjustcolor("firebrick", alpha = 0.2),
-#'  Res = 500,
-#'  lwd = 1.5,
-#'  lty = 1
-#')
-#'
-#'# draw 5 red-border and red-filled circles and 5 blue-border and blue-filled circles of different size on a new plot
-#'circles(
-#'  x = sample(1:100, 10),
-#'  y = sample(1:100, 10),
-#'  radius = sample(1:10, 10),
-#'  center = TRUE,
-#'  border = c(rep("red", 5), rep("blue", 5)),
-#'  col = c(rep(adjustcolor("firebrick", alpha = 0.2), 5), rep(adjustcolor("lightblue", alpha = 0.2), 5)),
-#'  Res = 500,
-#'  lwd = 1.5,
-#'  lty = c(rep(1,5), rep(2,5))
-#')
+#' # draw 10 red-border and red-filled circles of different size on a new plot
+#' MoveR::circles(
+#'   x = sample(1:100, 10),
+#'   y = sample(1:100, 10),
+#'   radius = sample(1:10, 10),
+#'   center = TRUE,
+#'   border = "red",
+#'   col = adjustcolor("firebrick", alpha = 0.2),
+#'   Res = 500,
+#'   lwd = 1.5,
+#'   lty = 1,
+#'   draw = TRUE
+#' )
+#' 
+#' # draw 5 red-border and red-filled circles and 5 blue-border and blue-filled circles of different size on a new plot
+#' MoveR::circles(
+#'   x = sample(1:100, 10),
+#'   y = sample(1:100, 10),
+#'   radius = sample(1:10, 10),
+#'   center = TRUE,
+#'   border = c(rep("red", 5), rep("blue", 5)),
+#'   col = c(rep(adjustcolor("firebrick", alpha = 0.2), 5), rep(adjustcolor("lightblue", alpha = 0.2), 5)),
+#'   Res = 500,
+#'   lwd = 1.5,
+#'   lty = c(rep(1, 5), rep(2, 5)),
+#'   draw = TRUE
+#' )
 #'
 #' @export
 
@@ -70,7 +72,7 @@ circles <-
            border = "black",
            lwd = 1,
            lty = 1,
-           draw = T) {
+           draw = TRUE) {
     if (is.null(x)) {
       stop("x argument is missing, 2 coordinate vectors are needed to draw the circles")
     }

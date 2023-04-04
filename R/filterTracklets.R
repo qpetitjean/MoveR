@@ -15,7 +15,7 @@
 #'
 #' @param minDur The minimum duration (i.e., number of records) to consider a tracklet valid after the filtering (default = 1).
 #'
-#' @param progess A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progess A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
 #' @return This function returns a list containing two sublists:
 #'    \itemize{
@@ -38,7 +38,8 @@
 #' @seealso \code{\link{filterFunc}}
 #'
 #' @examples
-#'
+#' ## Not run:
+#' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 #' Path2Data
@@ -97,6 +98,7 @@
 #' ## take a look at the first filtered tracklet
 #' str(trackDatSize20Dur10$CleanedTracklets[[1]])
 #'
+#' ## End(Not run)
 #' @export
 
 filterTracklets <- function(trackDat,

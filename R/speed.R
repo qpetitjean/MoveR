@@ -11,7 +11,7 @@
 #' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
 #' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.
 #'
-#' @param TimeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
+#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
 #'
 #' @return This function returns a vector containing the values of speed over a trajectory.
 #'
@@ -40,7 +40,7 @@
 #' # compute the speed of the particle along its trajectory,
 #' # expressing the speed as pixels/frame
 #' TrackDat[["speedFrame"]] <-
-#'   MoveR::speed(TrackDat, scale = 1, TimeCol = "frame")
+#'   MoveR::speed(TrackDat, scale = 1, timeCol = "frame")
 #' 
 #' # to compute the speed according to another time unit, a new column containing the new timeline is needed
 #' # here we consider that the frame rate is 25 frame per second
@@ -48,17 +48,17 @@
 #' 
 #' # then compute the speed of the particle over its trajectory according to the new time unit
 #' TrackDat[["speedSec"]] <-
-#'   MoveR::speed(TrackDat, scale = 1, TimeCol = "second")
+#'   MoveR::speed(TrackDat, scale = 1, timeCol = "second")
 #' 
 #' str(TrackDat)
 #' 
 #' # it is also possible to resample the tracklet before computing speed, here every 10 time unit (i.e., frame)
 #' sampledFragDat <-
-#'   MoveR::resamplTracklets(TrackDat, TimeCol = "frame",  Tstep = 10)
+#'   MoveR::resamplTracklets(TrackDat, timeCol = "frame",  Tstep = 10)
 #' 
 #' # and then compute the speed of the particle over its trajectory
 #' sampledFragDat[["speed"]] <-
-#'   MoveR::speed(sampledFragDat, scale = 1, TimeCol = "frame")
+#'   MoveR::speed(sampledFragDat, scale = 1, timeCol = "frame")
 #' 
 #' str(sampledFragDat) 
 #'
@@ -66,7 +66,7 @@
 
 speed <- function(df,
                   scale = NULL,
-                  TimeCol = NULL) {
+                  timeCol = NULL) {
   if (is.null(MoveR::listGet(df, "x.pos"))) {
     stop(
       "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
@@ -79,23 +79,23 @@ speed <- function(df,
   }
   if (is.null(scale)) {
     warning(
-      "the scaling factor to be applied to the trajectory coordinates is missing, default is 1/1"
+      "the scaling factor to be applied to the trajectory coordinates is missing, default is 1"
     )
     scale = 1 / 1
   }
-  if (is.null(TimeCol)) {
+  if (is.null(timeCol)) {
     stop(
-      "TimeCol argument is missing: the name of the column carying time information is needed to compute speed"
+      "timeCol argument is missing: the name of the column carying time information is needed to compute speed"
     )
   }
-  if (is.null(MoveR::listGet(df, TimeCol))) {
+  if (is.null(MoveR::listGet(df, timeCol))) {
     stop(
-      "TimeCol argument is misspelled or is absent from the input df: the name of the column carying time information is needed to compute speed"
+      "timeCol argument is misspelled or is absent from the input df: the name of the column carying time information is needed to compute speed"
     )
   }
   
   trj <-
-    trajr::TrajFromCoords(df[, c("x.pos", "y.pos", TimeCol)],
+    trajr::TrajFromCoords(df[, c("x.pos", "y.pos", timeCol)],
                           timeCol = 3, 
                           spatialUnits = "NA",
                           timeUnits = "NA")

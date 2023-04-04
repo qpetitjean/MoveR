@@ -55,7 +55,7 @@
 #'
 #' @param cex.start A numeric value, the size of the dot representing the start of the tracklets (default = 0.5).
 #'
-#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
 #' @return A plot displaying selected tracklets over a specified time window.
 #'
@@ -99,7 +99,7 @@
 #' MoveR::drawTracklets(TrackList,
 #'                  timeWin = list(c(1, 100), c(800, 900)),
 #'                  colId = "identity",
-#'                  cex.leg = 0.8,
+#'                  cex.leg = 0.75,
 #'                  ncol.leg = 2)
 #'
 #' # example 5: draw tracklets according to time interval (interval 1 to 100) and add dummy points on the plot
@@ -213,8 +213,7 @@ drawTracklets <- function(trackDat,
     xlim = ifelse(rep(isTRUE(legend), 2),
                   c(
                     0,
-                    max(ScaleX) + (ScaleX[2] - ScaleX[1]) * ncol.leg + (cex.leg * 1.5 / 100 *
-                                                                          (ScaleX[2] - ScaleX[1]))
+                    max(ScaleX) + (ScaleX[2] - ScaleX[1]) * ncol.leg + cex.leg * max(strwidth(colVal))
                   ),
                   c(0, max(ScaleX))),
     ylim = c(0, max(ScaleY)),
@@ -343,9 +342,13 @@ drawTracklets <- function(trackDat,
         cex = cex.leg
       )
     } else{
-      colValNum <- as.numeric(gsub("[^[:digit:]]", "", colVal))
-      names(colValNum) <- seq_along(colValNum)
-      colVal <- colVal[as.numeric(names(sort(colValNum)))]
+      if(TRUE %in%  grepl("[0-9]", colVal)){
+        colValNum <- as.numeric(gsub("[^[:digit:]]", "", colVal))
+        names(colValNum) <- seq_along(colValNum)
+        colVal <- colVal[as.numeric(names(sort(colValNum)))]
+      } else{
+        colVal <- colVal
+      }
       
       legend_image <- graphics::legend(
         x = max(ScaleX) + (1 * max(ScaleX) / 100),
@@ -432,7 +435,7 @@ drawTracklets <- function(trackDat,
   }
   
   coloration <-
-    data.frame(colors = coloration, colVal = colVal)
+    data.frame(colors = coloration, colVal = colVal[!is.na(colVal)])
   
   # plot all tracklets according to timeWin
   if (is.null(selTrack)) {

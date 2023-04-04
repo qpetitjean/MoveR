@@ -14,11 +14,11 @@
 #'    \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 #' }
 #' 
-#' Also, by default the function mirror y coordinates to start on the bottom-left (see flipY argument).
+#' Also, by default the function flip y coordinates to start on the bottom-left (see flipY argument).
 #'
 #' @param IdtrackerPath The full path of the idtrackerai output file (.npy).
 #'
-#' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).
+#' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the top-left (default = FALSE).
 #' 
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
 #' corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).
@@ -38,13 +38,14 @@
 #' \href{https://idtrackerai.readthedocs.io/en/latest/}{idtracker.ai}
 #'
 #' @examples
-#'
+#' ## Not run:
+#' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "IdTracker")
 #' Path2Data
 #'
 #' # Import the list containing the 9 vectors classically used for further computation
-#' # and mirror Y coordinates to start on the bottom-left
+#' # and flip Y coordinates to start on the bottom-left
 #' Data <-
 #'   MoveR::readIdtracker(Path2Data[[1]],
 #'          flipY = T,
@@ -52,7 +53,8 @@
 #'          frameR = 25
 #'   )
 #' str(Data)
-#' 
+#'
+#' ## End(Not run) 
 #' @export
 
 readIdtracker <- function(IdtrackerPath,
@@ -61,7 +63,7 @@ readIdtracker <- function(IdtrackerPath,
                           frameR = NULL) {
   if (flipY == TRUE & is.null(imgHeight)) {
     stop(
-      "imgHeight argument is missing, the height of the image resolution is needed to mirror y coordinates"
+      "imgHeight argument is missing, the height of the image resolution is needed to flip y coordinates"
     )
   }
   if (is.null(frameR)) {
@@ -115,7 +117,7 @@ readIdtracker <- function(IdtrackerPath,
                       is.na(idtracker_data[[1]]$trajectories[, , 1][x, ])
                     ))))
   
-  # if flipY = TRUE, mirror the Y coordinates according to image height
+  # if flipY = TRUE, flip the Y coordinates according to image height
   if (flipY == TRUE) {
     y.pos = flipYCoords(y.pos, imgHeight = imgHeight)
   }

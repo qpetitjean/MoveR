@@ -3,11 +3,11 @@
 #' @description Given a list containing vectors corresponding to the various variable of tracking data 
 #' the function returns a list of data frames corresponding to the data for each tracklet based on tracklets identity.
 #'
-#' @param trackDatList A list of vector corresponding to the variable of tracking data.
+#' @param trackDatList A list of vector corresponding to the variable characterizing the tracking data.
 #'
-#' @param by A character vector identifying tracklets to join by.
+#' @param by A character vector identifying the tracklets to join by.
 #'
-#' @return A list of data frames corresponding the the tracking data for each tracklets.
+#' @return A list of data frames corresponding the tracking data for each tracklets.
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -15,24 +15,30 @@
 #'
 #' @examples
 #'
-#'# generate some dummy tracklets
-#'## start to specify some parameters to generate tracklets
-#'Fragn <- 10 # the number of tracklet to simulate
-#'FragL <- 1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
-#'
-#'fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
-#'  trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
-#'    data.frame(
-#'      x.pos = j$x - min(j$x),
-#'      y.pos = j$y - min(j$y),
-#'      frame = j$time
-#'    )), seq(Fragn))
-#'
-#'# convert fragList to a simple list based on the variables present within each tracklets' data frame
-#'trackDatList <- convert2List(fragsList)
-#'
-#'# convert the list of variable to a liost of tracklet based on tracklets identity
-#'trackDat <- convert2Tracklets(trackDatList, by = "fragsId")
+#' set.seed(2023)
+#' # generate some dummy tracklets
+#' ## start to specify some parameters to generate tracklets
+#' TrackN <- 3 # the number of tracklet to simulate
+#' TrackL <-
+#'   1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
+#' id <- 0
+#' TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+#'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
+#'     id <<- id + 1
+#'     data.frame(
+#'       x.pos = j$x - min(j$x),
+#'       y.pos = j$y - min(j$y),
+#'       frame = j$time,
+#'      identity = paste("Tracklet", id, sep = "_")
+#'     )
+#'   }), seq(TrackN))
+#' 
+#'  # convert the list of tracklets to a simple list of variables
+#'  trackDatList <- MoveR::convert2List(TrackList)
+#'  
+#'  # convert back the list of variables to a list of tracklet based on tracklets identity
+#'  trackDat <- MoveR::convert2Tracklets(trackDatList, by = "trackletId")
+#'  str(trackDat) # display only the three first elements (dataframes) of the list
 #'
 #' @export
 

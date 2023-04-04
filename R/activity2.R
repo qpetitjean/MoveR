@@ -41,7 +41,8 @@
 #'          }
 #'
 #' @examples
-#'
+#' ## Not run:
+#' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 #' Path2Data
@@ -86,13 +87,13 @@
 #'       # specify a first function to compute speed over each tracklet (a modulus present within the MoveR package)
 #'       speed = function(x)
 #'         MoveR::speed(x,
-#'                      TimeCol = "frame",
+#'                      timeCol = "frame",
 #'                      scale = 1),
 #'       # compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
 #'       TurnAngle = function(x)
 #'         MoveR::turnAngle(
 #'           x,
-#'           TimeCol = "frame",
+#'           timeCol = "frame",
 #'           unit = "radians",
 #'           scale = 1
 #'         ),
@@ -151,6 +152,7 @@
 #'             )
 #'           }))
 #'
+#' ## End(Not run)
 #' @export
 #'
 activity2 <-
@@ -282,6 +284,7 @@ activity2 <-
     IncTresh <-
       unlist(lapply(0:100, function(x)
         x * (unique(nbins) ^ 2) / 100))
+    ### loop trough treshold increments 
     for (uptresh in IncTresh) {
       hotLim <- sum(m) / (unique(nbins) ^ 2 - uptresh)
       Hot = which(mdf3[["value"]] > hotLim,
@@ -291,8 +294,6 @@ activity2 <-
                    arr.ind = TRUE)
       mdf3[["spots"]][Cold] <- "Cold"
       if(length(which(mdf3[["spots"]] == "Hot")) == 0){
-        print(
-          "failed to identify active and inactive cluster: no cluster identified")
         next
       }
       ## identify the peaks drawed by hotspots using density based clustering
@@ -341,6 +342,7 @@ activity2 <-
       if (min(XRanges) == min(inactivClust[["x"]])) {
         next
       } else{
+        print("Clusters identified !")
         break
       }
     }
@@ -540,6 +542,6 @@ activity2 <-
         fill = c("#99CC66", "#993333")
       )
     }
-    Res <- MoveR::convert2Tracklets(trackdatL, by = "trackId")
+    Res <- MoveR::convert2Tracklets(trackdatL, by = "trackletId")
     return(Res)
   }

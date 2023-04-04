@@ -1,28 +1,28 @@
 #' @title Sliding window.
 #' 
 #' @description Given a vector containing numeric data, this function returns a vector of smoothed data 
-#' by performing the specified computation along a centered sliding window.
+#' by performing the specified computation over the input vector by moving a centered sliding window.
 #'
 #'
 #' @param x A vector containing data to smooth.
 #'
 #' @param Tstep A numeric value corresponding to the length of the sliding window (i.e., the number of values).
 #' 
-#' @param customFunc A function used to perform the computation along the sliding window.
+#' @param customFunc A function used to perform the computation over the sliding window.
 #'
-#' @return A vector containing smoothed data.
+#' @return A vector of the same length than the input data (x) which contains the smoothed data.
 #'
 #' @author Quentin PETITJEAN
 #'
 #' @examples
 #' 
-#' set.seed(123) 
+#' set.seed(2023) 
 #' # compute smoothed mean 
-#' smoothMean <- slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) mean(x, na.rm = T))
+#' slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) mean(x, na.rm = T))
 #' # compute smoothed variance 
-#' smoothVar <- slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) var(x, na.rm = T))
+#' slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) var(x, na.rm = T))
 #' # compute smoothed sd
-#' smoothSd <- slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) sd(x, na.rm = T))
+#' slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) sd(x, na.rm = T))
 #'
 #' @export
 

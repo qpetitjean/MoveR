@@ -10,7 +10,7 @@
 #' NB: in case customFunc is a list of unnamed function it will try to retrieve their names by returning the first character string
 #' following the function() call as result column name.
 #'
-#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
 #' @return this function returns the original list of data frames (i.e., tracklet)
 #' with the result of the specified computation appended.
@@ -49,13 +49,13 @@
 #'       # specify a first function to compute speed over each tracklet (a modulus present within the MoveR package)
 #'       speed = function(x)
 #'         MoveR::speed(x,
-#'                      TimeCol = "frame",
+#'                      timeCol = "frame",
 #'                      scale = 1),
 #'       # compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
 #'       TurnAngle = function(x)
 #'         MoveR::turnAngle(
 #'           x,
-#'           TimeCol = "frame",
+#'           timeCol = "frame",
 #'           unit = "radians",
 #'           scale = 1
 #'         ),
@@ -148,17 +148,26 @@ analyseTracklets <- function(trackDat,
       
       if(!inherits(TryFunc, "simpleError") & !inherits(TryFunc, "simpleWarning")) {
         trackDat[[i]][[j]] <- TryFunc
-      } else if (inherits(TryFunc, "simpleError") | inherits(TryFunc, "simpleWarning")) {
+      } else if (inherits(TryFunc, "simpleError")) {
         trackDat[[i]][[j]] <- NA
         warning(
           "For customFunc ",
-          j ,
+          "[",j,"]",
           " in tracklet ",
-          i ,
+          "[",i,"]",
           ", analyseTracklets returned NA, perhaps check customFunc argument:\n",
           TryFunc
         )
-      } 
+      } else if (inherits(TryFunc, "simpleWarning")) {
+        trackDat[[i]][[j]] <- customFunc[[j]](trackDat[[i]])
+        #warning(
+        #  "For customFunc ",
+        #  "[",j,"]",
+        #  " in tracklet ",
+        # "[",i,"]:\n ",
+        #TryFunc
+        #)
+      }  
     }
     if (isTRUE(progress)) {
       # progress bar

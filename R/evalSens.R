@@ -48,7 +48,7 @@
 #'
 #' @param timeCol A character string corresponding to the name of the column containing time information (default = "frame")
 #'
-#' @param progess A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
 #' @return A list of dataframes summarizing the results of the sensitivity analysis:
 #' \itemize{
@@ -61,7 +61,8 @@
 #' @author Quentin PETITJEAN
 #'
 #' @examples
-#'
+#' ## Not run:
+#' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 #' Path2Data
@@ -80,7 +81,12 @@
 #'            dec = ".",
 #'            sep = ";")
 #' 
-#' # perform the sensitivity analysis
+#' # perform the sensitivity analysis 
+#' ## NB: here NAs are introduced because some tracklets in the raw data have Inf values in x and y.pos, which usually produce a warning message 
+#' ## here the warning has been silenced but in this case sensitivity analysis should be preceded by a filtering step to remove Inf values (see \code{\link{filterTracklets}})
+#' w <- getOption("warn")
+#' options(warn = -1)
+#' 
 #' sensitivity <- MoveR::evalSens(
 #'   refDat = refDat,
 #'   trackDat = trackDat,
@@ -88,6 +94,7 @@
 #'   imgRes = c(3840, 2160),
 #'   timeCol = "frame"
 #' )
+#' options(warn = w)
 #' 
 #' # check the results
 #' str(sensitivity)
@@ -145,6 +152,7 @@
 #'   )
 #' }
 #'
+#' ## End(Not run)
 #' @export
 
 evalSens <-
@@ -153,7 +161,7 @@ evalSens <-
            radius = 20,
            imgRes = c(NA, NA),
            timeCol = "frame",
-           progess = TRUE) {
+           progress = TRUE) {
     # transform refDat to a list of dataframe according to timeCol
     if (is.data.frame(refDat)) {
       refDat <- split(refDat, refDat[[timeCol]])
@@ -187,7 +195,7 @@ evalSens <-
       ))
     FalsePId <- c()
     FalseNId <- c()
-    if (isTRUE(progess)) {
+    if (isTRUE(progress)) {
       # initialize progress bar
       total = length(refDat)
       pb <-
@@ -197,7 +205,7 @@ evalSens <-
     
     for (h in seq(length(refDat))) {
       # if x.pos, y,pos, and timeCol are not found
-      if (is.null(listGet(refDat[[h]], "x.pos"))) {
+      if (is.null(MoveR::listGet(refDat[[h]], "x.pos"))) {
         stop(
           "for the element ",
           h,
@@ -207,7 +215,7 @@ evalSens <-
         )
       }
       
-      if (is.null(listGet(refDat[[h]], "y.pos"))) {
+      if (is.null(MoveR::listGet(refDat[[h]], "y.pos"))) {
         stop(
           "for the element ",
           h,
@@ -217,7 +225,7 @@ evalSens <-
         )
       }
       
-      if (is.null(listGet(refDat[[h]], timeCol))) {
+      if (is.null(MoveR::listGet(refDat[[h]], timeCol))) {
         stop(
           "for the element ",
           h,
@@ -250,14 +258,14 @@ evalSens <-
         
         ## compute distances to the reference point and extract values included in the circle which have
         ## the reference point coordinates as center and size given by radius
-        refVal <- apply(dist2Pt(locTabDf, refDat[[h]]), 2,
+        refVal <- apply(MoveR::dist2Pt(locTabDf, refDat[[h]]), 2,
                         function(k)
                           locTab[as.matrix(locTabDf[k < radius, ])])
         
         # 2- check whether the tracklets pass through reference point or not
         
         ## subsetting trackDat according to the time (timeCol) were true position were recorded
-        trackT <- as.data.frame(convert2List(trackDat))
+        trackT <- as.data.frame(MoveR::convert2List(trackDat))
         trackTsub <-
           trackT[trackT[[timeCol]] == unique(refDat[[h]][[timeCol]]), ]
         
@@ -317,7 +325,7 @@ evalSens <-
                                                               FalseNcount[FalseNcount[["FalseN"]] == 1, 2])
         }
       }
-      if (isTRUE(progess)) {
+      if (isTRUE(progress)) {
         # progress bar
         pb$tick(1)
       }

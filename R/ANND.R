@@ -18,7 +18,7 @@
 #'
 #' @param bootn A numeric value corresponding to the number of bootstrap sampling used to compute studentize 95% confidence interval (default = 0, meaning bootstrap will be not performed).
 #'
-#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
 #' @return this function returns a list containing three elements:
 #'  \itemize{
@@ -26,10 +26,10 @@
 #'       \itemize{
 #'          \item{"ANNDmean": }{the averaged Nearest Neighbour Distance for each sampling step.}
 #'          \item{"97.5%": }{the upper limit of the confidence interval (97.5%).}
-#'          \item{"2.5%": }{the lower limit of the confidence interval (97.5%).}
+#'          \item{"2.5%": }{the lower limit of the confidence interval (2.5%).}
 #'          \item{"ANNDsd": }{the standard deviation of the Average Nearest Neighbour Distance for each sampling step.}
 #'          \item{"nInd": }{the number of particules used to compute the Averaged Nearest Neighbour Distance for each sampling step.}
-#'          \item{"timeCol": }{the sampling step, expressed in the same unit that the timeCol argument.}
+#'          \item{"timeCol": }{the timeline according to timeCol and sampling arguments.}
 #'       }}
 #'    
 #'    \item{"RawND": }{a list containing the raw neighbour distance computed among each particles across each time unit:
@@ -147,7 +147,7 @@ ANND <- function(trackDat,
     )
   }
   if (is.null(scale)) {
-    warning("scale argument is missing, default is 1/1")
+    warning("scale argument is missing, default is 1")
     scale = 1 / 1
   }
   if (is.null(sampling)) {
@@ -168,7 +168,7 @@ ANND <- function(trackDat,
   }else if(length(TimelineStep) > 1) {
     TimeLStep <- min(TimelineStep, na.rm = T)
     warning(
-      "In TimeCol : \n the time step is not constant across trackDat and returns the following values: ",
+      "In timeCol : \n the time step is not constant across trackDat and returns the following values: ",
       TimelineStep,
       "\n here the function used ",
       min(TimelineStep, na.rm = T),
@@ -250,8 +250,9 @@ ANND <- function(trackDat,
     maxId <- length(WhoWhen)
     # in case there is duplicated values at the same time in whowhen
     if(max(unlist(lapply(WhoWhen, function(x) nrow(x))), na.rm = T) > 1){
-      WhoWhentemp <- lapply(names(WhoWhen), function(x) WhoWhen[[x]][-which(duplicated(WhoWhen[[x]][["x.pos"]])),])
-      names(WhoWhentemp) <- names(WhoWhen)
+      WhoWhentemp <-
+        stats::setNames(lapply(names(WhoWhen), function(x)
+          WhoWhen[[x]][-which(duplicated(WhoWhen[[x]][["x.pos"]])), ]), names(WhoWhen))
       WhoWhen <- WhoWhentemp
     }
     # in case there is only one tracklet detected at t
@@ -263,18 +264,17 @@ ANND <- function(trackDat,
       # compute the mean distance to the nearest neighbour for the present time t (ANND - average nearest neighbour distance)
       ANNDmean <- NA
       ANNDsd <- NA
-      warning("for time unit = ", t, ", only 1 or no tracklet detected, the returned neighbour distance is NA")
+      warning("for time unit = ", "[", t, "]", ", only 1 or no tracklet detected, the returned neighbour distance is NA")
       } else{
     # compute distance to each neighbour for each present tracklet (ND - neighbour distance)
-    ND <-
+    ND <- stats::setNames(
       lapply(seq(maxId), function(x) {
         array(unlist(lapply(seq(maxId)[-x], function(y) {
           sqrt((WhoWhen[[x]]["x.pos"] - WhoWhen[[y]]["x.pos"]) ^ 2 + (WhoWhen[[x]]["y.pos"] -
                                                                         WhoWhen[[y]]["y.pos"]) ^ 2) * scale
         })), dimnames = list(names(WhoWhen)[-x]))
-      })
-    
-    names(ND) <- names(WhoWhen)
+      }), names(WhoWhen))
+
     # compute the distance to the nearest neighbour for each present tracklet (NND - nearest neighbour distance)
     NND <- array(unlist(lapply(seq(length(
       ND
@@ -299,15 +299,14 @@ ANND <- function(trackDat,
           ncol = bootn
         )
       # Match names of the sampled tracklets with computed values
-      bootsamplesVal <-
+      bootsamplesVal <- stats::setNames(
         lapply(seq(bootn), function(x) {
           array(unlist(lapply(seq(
             length(bootsamples[, x])
           ), function(y) {
             NND[match(bootsamples[, x][y], names(NND))]
           })), dim = c(length(bootsamples[, x]), 1))
-        })
-      names(bootsamplesVal) <- seq(bootn)
+        }), seq(bootn))
       ## compute the means
       UbWtd.mean <- unlist(lapply(seq(bootn), function(x) {
         mean(bootsamplesVal[[x]], na.rm = T)
@@ -342,9 +341,8 @@ ANND <- function(trackDat,
       ANNDRes[which(ANNDRes[[timeCol]] == t), "2.5%"] <-
         boot.ci.student$X2.5.
       # Append the sampling to BootSampling list
-      bootsamplesL <- lapply(seq(bootn), function(x) {bootsamples[,x]})
-      names(bootsamplesL) <- seq(bootn)
-      BootSampling[[paste(timeCol, as.character(t), sep = "_")]][["sampledTracks"]] <- bootsamplesL
+      bootsamplesL <- stats::setNames(lapply(seq(bootn), function(x) {bootsamples[,x]}), seq(bootn))
+      BootSampling[[paste(timeCol, as.character(t), sep = "_")]][["sampledTracklets"]] <- bootsamplesL
       BootSampling[[paste(timeCol, as.character(t), sep = "_")]][["sampledValues"]] <- bootsamplesVal
     }
     # Append the result to the result DF

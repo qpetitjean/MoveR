@@ -1,4 +1,4 @@
-#' @title Compute the net square displacement (Turchin 1998).
+#' @title Compute the net square displacement (Turchin 1998) - EXPERIMENTAL !!!.
 #'
 #' @description Given a list of data frames containing tracking informations and including the value of turning angles,
 #' distance traveled and behavioral states (either active or inactive), this function compute the Net square displacement value
@@ -23,63 +23,61 @@
 #'
 #' @examples
 #'
-#'# simulate a correlated random walk with known parameter to verify Turchin D computation
-#'## specify some parameters
-#'n = 1000
-#'stepLength = 2
-#'angularErrorSd = 0.5
-#'linearErrorSd = 0.2
-#'angularErrorDist = stats::rnorm(n, sd = angularErrorSd)
-#'linearErrorDist = stats::rnorm(n, sd = linearErrorSd)
+#' # simulate a correlated random walk with known parameter to verify Turchin D computation
+#' ## specify some parameters
+#' n = 1000
+#' stepLength = 2
+#' angularErrorSd = 0.5
+#' linearErrorSd = 0.2
+#' angularErrorDist = stats::rnorm(n, sd = angularErrorSd)
+#' linearErrorDist = stats::rnorm(n, sd = linearErrorSd)
+#' 
+#' ## simulate a trajectory
+#' sim <- trajr::TrajGenerate(
+#'   n = n,
+#'   random = TRUE,
+#'   stepLength = stepLength,
+#'   angularErrorSd = angularErrorSd,
+#'   angularErrorDist = function(x) angularErrorDist,
+#'   linearErrorSd = linearErrorSd,
+#'   linearErrorDist = function(x) linearErrorDist,
+#'   fps = 1)
 #'
-#'## simulate a trajectory
-#'sim <- trajr::TrajGenerate(
-#'  n = n,
-#'  random = TRUE,
-#'  stepLength = stepLength,
-#'  angularErrorSd = angularErrorSd,
-#'  angularErrorDist = function(x) angularErrorDist,
-#'  linearErrorSd = linearErrorSd,
-#'  linearErrorDist = function(x) linearErrorDist,
-#'  fps = 1)
-#'
-#'## convert it to a data frame to allow MoveR computation
-#'sim <- data.frame(
-#'  x.pos = sim[["x"]] - min(sim[["x"]]),
-#'  y.pos = sim[["y"]] - min(sim[["y"]] ),
-#'  frame = sim[["time"]]
-#')
-#'
-#'# take a look at the simulated data (here we use list(sim) because the function expect a list of trajectories)
-#'MoveR::drawTracklets(list(sim), imgRes = c(500,500))
-#'
-#'# compute the needed metric on the simulated dataset (here we use list(sim) because the function expect a list of trajectories)
-#'simComp <-
-#'  MoveR::analyseTracklets(
-#'    list(sim),
-#'    customFunc = list(
-#'      ## compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
-#'      TurnAngle = function(x)
-#'        MoveR::turnAngle(x, unit = "radians"),
-#'      ## compute distance traveled
-#'      distTraveled = function(x)
-#'        MoveR::distTraveled(x, step = 1)
-#'    )
-#'  )
-#'
-#'# add behavioral state (consider as active all the time)
-#'simComp[[1]]["behavStates"] <- "active"
-#'
-#'# compute the Turchin net square displacement from the simulated data
-#'D <- MoveR::turchinD(
-#'  simComp,
-#'  turnAngle = "TurnAngle",
-#'  distTraveled = "distTraveled",
-#'  behavStates = "behavStates"
-#')
-#'
-#'# check the net square displacement value D
-#'
+#' ## convert it to a data frame to allow MoveR computation
+#' sim <- data.frame(
+#'   x.pos = sim[["x"]] - min(sim[["x"]]),
+#'   y.pos = sim[["y"]] - min(sim[["y"]] ),
+#'   frame = sim[["time"]]
+#' )
+#' 
+#' # take a look at the simulated data (here we use list(sim) because the function expect a list of trajectories)
+#' MoveR::drawTracklets(list(sim), imgRes = c(500,500))
+#' 
+#' # compute the needed metric on the simulated dataset (here we use list(sim) because the function expect a list of trajectories)
+#' simComp <-
+#'   MoveR::analyseTracklets(
+#'     list(sim),
+#'     customFunc = list(
+#'       ## compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
+#'       TurnAngle = function(x)
+#'         MoveR::turnAngle(x, timeCol = "frame", unit = "radians", scale = 1),
+#'       ## compute distance traveled
+#'       distTraveled = function(x)
+#'         MoveR::distTraveled(x, step = 1)
+#'     )
+#'   )
+#' 
+#' # add behavioral state (consider as active all the time)
+#' simComp[[1]]["behavStates"] <- "active"
+#' 
+#' # compute the Turchin net square displacement from the simulated data
+#' MoveR::turchinD(
+#'   simComp,
+#'   turnAngle = "TurnAngle",
+#'   distTraveled = "distTraveled",
+#'   behavStates = "behavStates"
+#' )
+#' 
 #' @export
 
 turchinD <-

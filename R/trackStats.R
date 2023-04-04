@@ -19,7 +19,7 @@
 #'          \item{"totTrackDuration_f": }{the sum of the duration of all tracklets expressed in frames.}
 #'          \item{"totTrackDuration_s": }{the sum of the duration of all tracklets expressed in seconds}
 #'          \item{"totTrackLength_unit": }{the sum of the length of all tracklets in spatial unit as specified by the user (e.g., pixels, cm).}
-#'          \item{"trackId": }{the tracklets identity.}
+#'          \item{"trackletId": }{the tracklets identity.}
 #'          \item{"trackDuration_f": }{the duration of each tracklets expressed in frames.}
 #'          \item{"trackDuration_s": }{the duration of each tracklets expressed in seconds.}
 #'          \item{"trackLength_unit": }{the length of each tracklets in spatial unit as specified by the user (e.g., pixels, cm).}
@@ -36,7 +36,7 @@
 #'
 #' @param units A character string specifying the spatial unit of the coordinates after scaling (default = "pixels").
 #'
-#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.
+#' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
 #' @return A summary of video and tracklets data.
 #'
@@ -72,8 +72,8 @@
 #' TrackD <- TrackSummary[["TrackletSummary"]][["trackDuration_f"]]
 #' 
 #' # or using listGet utility
-#' TrackL2 <- listGet(TrackSummary, "trackLength_pixels")
-#' TrackD2 <- listGet(TrackSummary, "trackDuration_f")
+#' TrackL2 <- MoveR::listGet(TrackSummary, "trackLength_pixels")
+#' TrackD2 <- MoveR::listGet(TrackSummary, "trackDuration_f")
 #' 
 #' # plot the distribution of tracklets length and duration
 #' par(mfrow = c(2, 2))
@@ -106,7 +106,7 @@ trackStats = function(trackDat,
   videoDuration_f <-
     max(unlist(lapply(trackDat, function (x)
       max(
-        listGet(x, "frame")
+        MoveR::listGet(x, "frame")
       ))))
   ## compute the duration of the video in second
   videoDuration_s <- videoDuration_f / frameR
@@ -155,7 +155,7 @@ trackStats = function(trackDat,
   # some checking for Inf and NA values
   InfCheck <-
     names(which(unlist(lapply(lapply(lapply(trackDat, function (x)
-      is.infinite(listGet(x, "x.pos"))), function (y)
+      is.infinite(MoveR::listGet(x, "x.pos"))), function (y)
         which(y == TRUE)), function (z)
           length(z))) > 0))
   if (length(InfCheck) > 0) {
@@ -168,7 +168,7 @@ trackStats = function(trackDat,
   NACheck <-
     names(which(unlist(lapply(lapply(lapply(trackDat, function (x)
       is.na(
-        listGet(x, "x.pos")
+        MoveR::listGet(x, "x.pos")
       )), function (x)
         which(x == TRUE)), function (x)
           length(x))) > 0))
@@ -193,7 +193,7 @@ trackStats = function(trackDat,
       totTrackDuration_f = totTrackDuration_f,
       totTrackDuration_s = totTrackDuration_s,
       totTrackLength_u = totTrackLength,
-      trackId = Tracks,
+      trackletId = Tracks,
       trackDuration_f = TrackDuration_f,
       trackDuration_s = TrackDuration_s,
       trackLength_u = TrackLength
