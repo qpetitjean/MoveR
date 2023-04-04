@@ -15,7 +15,8 @@ listGet(myList, toFind)
 The object to find or NULL whether the object have been not found.
 }
 \description{
-The function looks for an object name within a data frame or across all levels of a list and returns it.
+Given a list or dataframe and an object to look for, the function looks for this object name within the data frame or across all levels of a list and returns it.
+In case the object is not found, nothing is returned (NULL)
 }
 \examples{
 
@@ -49,10 +50,10 @@ nested = list(
 
 # looking for "identity" containers within each element
 
-listGet(df, "identity")
-listGet(slist, "identity")
-listGet(nlist, "identity")
-listGet(nnlist, "identity")
+MoveR::listGet(df, "identity")
+MoveR::listGet(slist, "identity")
+MoveR::listGet(nlist, "identity")
+MoveR::listGet(nnlist, "identity")
 
 }
 \author{

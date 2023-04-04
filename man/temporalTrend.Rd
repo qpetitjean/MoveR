@@ -2,7 +2,7 @@
 % Please edit documentation in R/temporalTrend.R
 \name{temporalTrend}
 \alias{temporalTrend}
-\title{perform analysis across tracklets and time.}
+\title{Perform analysis across tracklets and time.}
 \usage{
 temporalTrend(
   trackDat,
@@ -11,11 +11,12 @@ temporalTrend(
   Tinterval = NULL,
   Tstep = 1,
   sampling = 1,
-  wtd = FALSE
+  wtd = FALSE,
+  progress = TRUE
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking informations for each tracklet (including a timeline).}
+\item{trackDat}{A list of data frame containing tracking informations for each tracklet.}
 
 \item{timeCol}{A character string corresponding to the name of the column containing time information.}
 
@@ -34,56 +35,67 @@ is performed using the 100 previous and the 100 next values).}
 to perform the computation, allow to make computation faster, it hence determine the resolution of the
 returned results (e.g., a value of 5000 mean that values will be computed every 5000 time units).}
 
-\item{wtd}{TRUE or FALSE, compute a weighed metric (TRUE) or not (FALSE) according to the length of the tracklets (default is FALSE).}
+\item{wtd}{A logical value (i.e., TRUE or FALSE) indicating whether the function should compute a weighed metric according to the length of the tracklets (default is FALSE).}
+
+\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 }
 \value{
-this function returns a list containing as much data frame as the number of custom functions specified by
-the customFunc argument. Each dataframe includes a column indicating the timeline according to timeCol and sampling arguments,
-the result of the computation performed according to the customFunc and the number of tracklet use for each computation.
+this function returns a list containing as much data frame as the number of custom functions specified by the customFunc argument.
+Each dataframe contains 3 columns indicating:
+\itemize{
+\item{"customFuncName": the result of the computation performed according to the customFunc and averaged over the sliding window specified by the Tstep argument.}
+\item{"timeCol": the timeline according to timeCol and sampling arguments.}
+\item{"nbTracklets": the number of tracklets included within each computation.}
+}
 }
 \description{
 Given a list of data frames containing tracking informations for each tracklet (including the timeline)
 and a custom function, this function perform the computation specified by the custom function(s) across time
 and smooth it and returns a list containing as much data frame as the number of custom functions specified by
 the customFunc argument. Each data frame includes a column indicating the result of the computation, the corresponding timeline
-as well as the number of tracklet used for the computation.
+as well as the number of tracklets used for the computation.
 }
 \examples{
 
+set.seed(2023)
 # generate some dummy tracklets
 ## start to specify some parameters to generate tracklets
-Fragn <- 25 # the number of tracklet to simulate
-FragL <-
- 100:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
-
-fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
-   data.frame(
-     x.pos = j$x - min(j$x),
-     y.pos = j$y - min(j$y),
-     frame = j$time
-   )), seq(Fragn))
+TrackN <- 25 # the number of tracklet to simulate
+TrackL <-
+  100:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
+id <- 0
+TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+  trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
+    id <<- id + 1
+    data.frame(
+      x.pos = j$x - min(j$x),
+      y.pos = j$y - min(j$y),
+      frame = j$time,
+      identity = paste("Tracklet", id, sep = "_")
+    )
+  }), seq(TrackN))
 
 # check the tracklets
-drawTracklets(fragsList,
-         imgRes = c(max(MoveR::convert2List(fragsList)[["x.pos"]]),
-                    max(MoveR::convert2List(fragsList)[["y.pos"]])),
+MoveR::drawTracklets(TrackList,
          timeCol = "frame")
 
 # add some metric to the dataset (speed and turning angle) and time unit conversion
-fragsListV1 <-
+TrackListV1 <-
  MoveR::analyseTracklets(
-   fragsList,
+   TrackList,
    customFunc = list(
      # specify a first function to compute speed over each tracklet (a modulus present within the MoveR package)
      speed = function(x)
        MoveR::speed(
          x,
-         TimeCol = "frame",
+         timeCol = "frame",
          scale = 1),
      # compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
      TurnAngle = function(x)
-       MoveR::turnAngle(x, unit = "radians"),
+       MoveR::turnAngle(x, 
+                        unit = "radians", 
+                        timeCol = "frame",
+                        scale = 1),
      # convert the time expressed in frame in second using a conversion factor of 25 frame per second
      TimeSec = function(x)
        x[["frame"]] / 25,
@@ -96,17 +108,17 @@ fragsListV1 <-
 # smooth the speed and the turning angle across tracklets and time, here we perform the computation 
 # every 50 time unit and on an interval of 100 values, 50 values are taken before and 50 values after the given time unit.
 Smoothedtracks <- MoveR::temporalTrend(
- trackDat = fragsListV1,
- timeCol = "frame",
- Tstep = 100,
- sampling = 50,
- wtd = TRUE,
- customFunc = list(
-   MeanSpeed = function(x)
-     mean(x[["speed"]], na.rm = T),
-   MeanTurnAngle = function(x)
-     mean(x[["TurnAngle"]], na.rm = T)
- )
+  trackDat = TrackListV1,
+  timeCol = "frame",
+  Tstep = 100,
+  sampling = 50,
+  wtd = TRUE,
+  customFunc = list(
+    MeanSpeed = function(x)
+      mean(x[["speed"]], na.rm = T),
+    MeanTurnAngle = function(x)
+      mean(x[["TurnAngle"]], na.rm = T)
+  )
 )
 
 # plot the results

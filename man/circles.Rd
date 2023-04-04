@@ -14,7 +14,7 @@ circles(
   border = "black",
   lwd = 1,
   lty = 1,
-  draw = T
+  draw = TRUE
 )
 }
 \arguments{
@@ -27,9 +27,9 @@ circles(
 \item{Res}{A numeric value corresponding to the resolution of the circles (i.e., the number of points used to draw the circles contour, default = 500).}
 
 \item{center}{Either TRUE or a single integers or a vector of integers specifying the symbol(s) or a single character to be used to represent the circle center
-(see points for possible values and their interpretation).}
+(see \code{\link[graphics]{points}} for possible values and their interpretation).}
 
-\item{col}{The color or a vector of colors for filling the circles, the default leave polygons unfilled.}
+\item{col}{The color or a vector of colors for filling the circles, the default leaves polygons unfilled.}
 
 \item{border}{The color or a vector of colors to draw the border of the circles (default = "black").}
 
@@ -40,43 +40,45 @@ circles(
 \item{draw}{A logical value (i.e., TRUE or FALSE) indicating whether the circle(s) should be drawn or not (default = TRUE).}
 }
 \value{
-Draw the circles from center coordinates and value of the radius on an existing plot window or, if there is no active plot window, on a new plot window.
-It also returns the coordinates of the points simulated to draw the contour of the circle(s).
+Draw the circles from the coordinates of the center and a value of the circle radius on an existing plot window or, if there is no active plot window, on a new plot window.
+It also returns a list containing the coordinates of the points simulated to draw the contour of the circle(s).
 }
 \description{
-Given x and y coordinates as well as the circle radius, this function draw circle(s) and returns the coordinates of the points simulated to draw the contour of the circle.
+Given x and y coordinates of the circle center as well as the circle radius, this function draw circle(s) and returns a list containing the coordinates of the points simulated to draw the contour of the circle(s).
 }
 \examples{
 
 # draw 10 red-border and red-filled circles of different size on a new plot
-circles(
- x = sample(1:100, 10),
- y = sample(1:100, 10),
- radius = sample(1:10, 10),
- center = TRUE,
- border = "red",
- col = adjustcolor("firebrick", alpha = 0.2),
- Res = 500,
- lwd = 1.5,
- lty = 1
+MoveR::circles(
+  x = sample(1:100, 10),
+  y = sample(1:100, 10),
+  radius = sample(1:10, 10),
+  center = TRUE,
+  border = "red",
+  col = adjustcolor("firebrick", alpha = 0.2),
+  Res = 500,
+  lwd = 1.5,
+  lty = 1,
+  draw = TRUE
 )
 
 # draw 5 red-border and red-filled circles and 5 blue-border and blue-filled circles of different size on a new plot
-circles(
- x = sample(1:100, 10),
- y = sample(1:100, 10),
- radius = sample(1:10, 10),
- center = TRUE,
- border = c(rep("red", 5), rep("blue", 5)),
- col = c(rep(adjustcolor("firebrick", alpha = 0.2), 5), rep(adjustcolor("lightblue", alpha = 0.2), 5)),
- Res = 500,
- lwd = 1.5,
- lty = c(rep(1,5), rep(2,5))
+MoveR::circles(
+  x = sample(1:100, 10),
+  y = sample(1:100, 10),
+  radius = sample(1:10, 10),
+  center = TRUE,
+  border = c(rep("red", 5), rep("blue", 5)),
+  col = c(rep(adjustcolor("firebrick", alpha = 0.2), 5), rep(adjustcolor("lightblue", alpha = 0.2), 5)),
+  Res = 500,
+  lwd = 1.5,
+  lty = c(rep(1, 5), rep(2, 5)),
+  draw = TRUE
 )
 
 }
 \seealso{
-\code{\link{plot}}, \code{\link{points}}, \code{\link{points}}
+\code{\link[graphics]{polygon}}, \code{\link[graphics]{points}}
 }
 \author{
 Quentin PETITJEAN

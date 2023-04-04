@@ -8,69 +8,89 @@ locaPos(refDat = NULL, df = NULL, sep = NULL, dec = NULL, Fun = NULL)
 }
 \arguments{
 \item{refDat}{A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or
-the location of one or several areas of interest (e.g., create a distance map using ImageJ).}
+the location of one or several areas of interest (e.g., create a distance map using ImageJ - with x and y coordinates as columns and rows names respectively).}
 
 \item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet.}
 
-\item{sep}{The field separator character, the values on each line of the file are separated by this character (optional, needed only if refDat is a path).}
+\item{sep}{The field separator character, the values on each line of the file are separated by this character (optional, needed only if refDat argument is a path).}
 
 \item{dec}{The character used in the file for decimal points (optional, needed only if refDat is a path).}
 
-\item{Fun}{A custom function used to transform the data from df (e.g., round, ceiling, log).}
+\item{Fun}{A custom function used to transform the data from df (e.g., round, ceiling, log).
+NB: Indeed, while the tracking software generally return cartesian coordinates (x and y) as decimal numbers, distances map does not,
+it could hence be necessary to round the x and y coordinates to find correspondences with refDat.}
 }
 \value{
-This function returns a vector containing the position of a particle according to a distance matrix to any object or
-the location of one or several areas of interest along the particle's trajectory.
+This function returns a vector containing the position of a particle over its trajectory according to a distance matrix to any object or a matrix containing the location of
+an area of interest.
 }
 \description{
-find the position of a particle along its trajectory according to a reference matrix indicating areas of interest.
+Given the position of a particle along its trajectory (a tracklet) and a reference matrix indicating the location of areas of interest in the same coordinates system
+as those specifying the particle' position, this function retrieve the value (area of interest) given by the reference matrix for the corresponding coordinates over the particle' trajectory.
 }
 \examples{
 
-# load the sample data
-Data <-
- readTrex(
-   system.file("sampleData/sample_1/TREXOutput", package = "MoveR"),
-   flipY = T,
-   imgHeight = 2160,
-   rawDat = F
- )
+## Not run:
+
+# Download the first dataset from the sample data repository
+Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
+Path2Data
+
+# Import the list containing the 9 vectors classically used for further computation
+# and flip Y coordinates to start on the bottom-left
+Data <- MoveR::readTrex(Path2Data[[1]],
+                        flipY = T,
+                        imgHeight = 2160,
+                        rawDat = F)
+str(Data)
+
 # convert it to a list of tracklets
-trackDat <- convert2Tracklets(Data[1:7], by = "identity")
+trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
 
-# load the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or
+# Import the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or
 # the location of one or several areas of interest (here we have created a distance map using ImageJ)
-refDat <-
- as.matrix(read.delim(
-   system.file("sampleData/sample_1/ReferenceData/TREXOutput/RefDat_2602_ISA3080_Low_5.csv", package = "MoveR"),
-   dec = "."
- ))
-##  retrieve the value of the edge limit (1) and of the center limit (254) to plot them
-arenaEdge <- data.frame(which(refDat == 1, arr.ind=T))
-arenaCenter <- data.frame(which(refDat == 254, arr.ind=T))
+refDat <- as.matrix(read.delim(Path2Data[[2]],
+                               dec = "."))
 
-## then specify that all values above 254 are considered as the center
-refDat[which(as.numeric(refDat) > 254)] <- "center"
-## rather all values above 0 and below or equal to 254 are considered as within the border
-refDat[which(as.numeric(refDat) >= 0 & as.numeric(refDat) <= 254)] <- "edge"
+##  retrieve the value of the edge limit (1) and of the center limit (254) to plot them
+arenaEdge <-
+  stats::setNames(data.frame(which(refDat == 1, arr.ind = T)),
+                  c("y.pos", "x.pos"))
+arenaCenter <-
+  stats::setNames(data.frame(which(refDat == 254, arr.ind = T)),
+                  c("y.pos", "x.pos"))
+
+## then specify that all values above 254 are considered as the center and the remaning at the edge
+refDat <-
+  apply(refDat, 2, function(x)
+    ifelse(x > 254, "center", "edge"))
 
 # retrieve the area where the particles
 # are located over their whole trajectory using locaPos function
-trackDat <- analyseTracklets(trackDat,
-                        customFunc = list(
-                          Position = function(x)
-                            locaPos(refDat, x)))
+trackDat <- MoveR::analyseTracklets(trackDat,
+                                    customFunc = list(
+                                      Position = function(x)
+                                        locaPos(
+                                          refDat,
+                                         x,
+                                         Fun = function(y)
+                                            ifelse(round(y, digits = 0) == 0,
+                                                   ceiling(y),
+                                                   round(y, digits = 0))
+                                        )
+                                      
+                                    ))
+
 # draw the result, with tracklets part that are on the edge of the arena colored in red
 # and those at the center in black
-drawTracklets(
- trackDat,
- imgRes = c(3840, 2160),
- add2It = list(
-   points(x = arenaEdge[, 2], y = arenaEdge[, 1], cex = 0.01),
-   points(x = arenaCenter[, 2], y = arenaCenter[, 1], cex = 0.01)
- ),
- colId = "Position"
-)
+MoveR::drawTracklets(trackDat,
+                     add2It = list(
+                       points(x = arenaEdge[["x.pos"]], y = arenaEdge[["y.pos"]], cex = 0.01),
+                       points(x = arenaCenter[["x.pos"]], y = arenaCenter[["y.pos"]], cex = 0.01)
+                     ),
+                     colId = "Position")
+
+## End(Not run)
 
 }
 \author{

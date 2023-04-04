@@ -4,7 +4,7 @@
 \alias{sinuosity}
 \title{Compute corrected rediscretized sinuosity index for a given tracklet.}
 \usage{
-sinuosity(df, scale = NULL, segL = NULL, TimeCol = NULL, compass = NULL)
+sinuosity(df, scale = NULL, segL = NULL, timeCol = NULL, compass = NULL)
 }
 \arguments{
 \item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet, as well as
@@ -17,7 +17,7 @@ a column containing time information, whatever the unit, over the tracklet.}
 to the length of the resampling step needed to discretize the input trajectory (optional)
 see \code{\link[trajr]{TrajRediscretize}}.}
 
-\item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
+\item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
 
 \item{compass.direction}{A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).}
 }
@@ -47,7 +47,7 @@ TrackDat <-
   )
 
 # compute the sinuosity of the particle' trajectory
-MoveR::sinuosity(TrackDat, scale = 1, TimeCol = "frame")
+MoveR::sinuosity(TrackDat, scale = 1, timeCol = "frame")
 
 }
 \references{

@@ -50,6 +50,7 @@ Given a list of data frames containing tracking information and two variable of 
 density based clustering as introduced in Ester et al. (1996). Also, the function use the DBSCAN method from Hennig (2020) to discriminate active and inactive states in a 2d space.
 }
 \examples{
+## Not run:
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -95,13 +96,13 @@ trackdat3 <-
       # specify a first function to compute speed over each tracklet (a modulus present within the MoveR package)
       speed = function(x)
         MoveR::speed(x,
-                     TimeCol = "frame",
+                     timeCol = "frame",
                      scale = 1),
       # compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
       TurnAngle = function(x)
         MoveR::turnAngle(
           x,
-          TimeCol = "frame",
+          timeCol = "frame",
           unit = "radians",
           scale = 1
         ),
@@ -160,6 +161,7 @@ MoveR::drawTracklets(trackdat3,
             )
           }))
 
+## End(Not run)
 }
 \references{
 \itemize{

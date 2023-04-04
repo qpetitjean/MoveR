@@ -11,24 +11,24 @@ slidWindow(x, Tstep, customFunc)
 
 \item{Tstep}{A numeric value corresponding to the length of the sliding window (i.e., the number of values).}
 
-\item{customFunc}{A function used to perform the computation along the sliding window.}
+\item{customFunc}{A function used to perform the computation over the sliding window.}
 }
 \value{
-A vector containing smoothed data.
+A vector of the same length than the input data (x) which contains the smoothed data.
 }
 \description{
 Given a vector containing numeric data, this function returns a vector of smoothed data
-by performing the specified computation along a centered sliding window.
+by performing the specified computation over the input vector by moving a centered sliding window.
 }
 \examples{
 
-set.seed(123) 
+set.seed(2023) 
 # compute smoothed mean 
-smoothMean <- slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) mean(x, na.rm = T))
+slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) mean(x, na.rm = T))
 # compute smoothed variance 
-smoothVar <- slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) var(x, na.rm = T))
+slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) var(x, na.rm = T))
 # compute smoothed sd
-smoothSd <- slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) sd(x, na.rm = T))
+slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) sd(x, na.rm = T))
 
 }
 \author{

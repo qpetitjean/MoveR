@@ -23,7 +23,7 @@ trackStats(
 
 \item{units}{A character string specifying the spatial unit of the coordinates after scaling (default = "pixels").}
 
-\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
+\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 }
 \value{
 A summary of video and tracklets data.
@@ -48,7 +48,7 @@ this function returns 2 sublists containing a summary of video and tracklets dat
 \item{"totTrackDuration_f": }{the sum of the duration of all tracklets expressed in frames.}
 \item{"totTrackDuration_s": }{the sum of the duration of all tracklets expressed in seconds}
 \item{"totTrackLength_unit": }{the sum of the length of all tracklets in spatial unit as specified by the user (e.g., pixels, cm).}
-\item{"trackId": }{the tracklets identity.}
+\item{"trackletId": }{the tracklets identity.}
 \item{"trackDuration_f": }{the duration of each tracklets expressed in frames.}
 \item{"trackDuration_s": }{the duration of each tracklets expressed in seconds.}
 \item{"trackLength_unit": }{the length of each tracklets in spatial unit as specified by the user (e.g., pixels, cm).}
@@ -83,8 +83,8 @@ TrackL <- TrackSummary[["TrackletSummary"]][["trackLength_pixels"]]
 TrackD <- TrackSummary[["TrackletSummary"]][["trackDuration_f"]]
 
 # or using listGet utility
-TrackL2 <- listGet(TrackSummary, "trackLength_pixels")
-TrackD2 <- listGet(TrackSummary, "trackDuration_f")
+TrackL2 <- MoveR::listGet(TrackSummary, "trackLength_pixels")
+TrackD2 <- MoveR::listGet(TrackSummary, "trackDuration_f")
 
 # plot the distribution of tracklets length and duration
 par(mfrow = c(2, 2))

@@ -40,7 +40,7 @@ TrackDat <- data.frame(
 
 # compute the speed of the particle along its trajectory
 TrackDat[["speed"]] <-
-  MoveR::speed(TrackDat, scale = 1, TimeCol = "frame")
+  MoveR::speed(TrackDat, scale = 1, timeCol = "frame")
 
 # we can then define the speed treshold above which the particle is considered actives using quantiles
 # here we use the 0.025 quantile to find the minimum speed treshold

@@ -9,7 +9,7 @@ readIdtracker(IdtrackerPath, flipY = TRUE, imgHeight = NULL, frameR = NULL)
 \arguments{
 \item{IdtrackerPath}{The full path of the idtrackerai output file (.npy).}
 
-\item{flipY}{A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).}
+\item{flipY}{A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the top-left (default = FALSE).}
 
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
 corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
@@ -36,16 +36,17 @@ this function returns a list of 9 vectors classically used for further computati
 \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 }
 
-Also, by default the function mirror y coordinates to start on the bottom-left (see flipY argument).
+Also, by default the function flip y coordinates to start on the bottom-left (see flipY argument).
 }
 \examples{
+## Not run:
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "IdTracker")
 Path2Data
 
 # Import the list containing the 9 vectors classically used for further computation
-# and mirror Y coordinates to start on the bottom-left
+# and flip Y coordinates to start on the bottom-left
 Data <-
   MoveR::readIdtracker(Path2Data[[1]],
          flipY = T,
@@ -54,6 +55,7 @@ Data <-
   )
 str(Data)
 
+## End(Not run) 
 }
 \references{
 Romero-Ferrero, F., Bergomi, M.G., Hinz, R.C. et al. idtracker.ai: tracking all individuals in small or large collectives of unmarked animals. Nat Methods 16, 179–182 (2019). https://doi.org/10.1038/s41592-018-0295-5.

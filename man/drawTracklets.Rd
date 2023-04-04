@@ -81,7 +81,7 @@ for the x and y axis respectively (default = 0).}
 
 \item{cex.start}{A numeric value, the size of the dot representing the start of the tracklets (default = 0.5).}
 
-\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
+\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 }
 \value{
 A plot displaying selected tracklets over a specified time window.
@@ -127,7 +127,7 @@ MoveR::drawTracklets(TrackList,
 MoveR::drawTracklets(TrackList,
                  timeWin = list(c(1, 100), c(800, 900)),
                  colId = "identity",
-                 cex.leg = 0.8,
+                 cex.leg = 0.75,
                  ncol.leg = 2)
 
 # example 5: draw tracklets according to time interval (interval 1 to 100) and add dummy points on the plot

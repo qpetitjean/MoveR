@@ -6,7 +6,7 @@
 \usage{
 turnAngle(
   df,
-  TimeCol = NULL,
+  timeCol = NULL,
   unit = c("radians", "degrees"),
   compass = NULL,
   scale = NULL
@@ -15,7 +15,7 @@ turnAngle(
 \arguments{
 \item{df}{A data frame containing x, y coordinates columns named "x.pos", "y.pos" for a given tracklet.}
 
-\item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
+\item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
 
 \item{unit}{A character string indicating whether the function should returns turning angle in radians or degrees.}
 
@@ -47,7 +47,7 @@ TrackDat <-
 
 # compute the turning angle over the particle's trajectory
 MoveR::turnAngle(TrackDat,
-                 TimeCol = "frame",
+                 timeCol = "frame",
                  unit = "radians",
                  scale = 1)
 

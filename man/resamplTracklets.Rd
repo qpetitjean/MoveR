@@ -4,14 +4,14 @@
 \alias{resamplTracklets}
 \title{Resampling tracklets.}
 \usage{
-resamplTracklets(trackDat, TimeCol = NULL, Tstep = NULL, progress = TRUE)
+resamplTracklets(trackDat, timeCol = NULL, Tstep = NULL, progress = TRUE)
 }
 \arguments{
-\item{TimeCol}{A character string corresponding to the name of the column containing time information (e.g., "frame").}
+\item{timeCol}{A character string corresponding to the name of the column containing time information (e.g., "frame").}
 
-\item{Tstep}{A numeric value corresponding to the length of the resampling step according to the time unit used in TimeCol (e.g., frame).}
+\item{Tstep}{A numeric value corresponding to the length of the resampling step according to the time unit used in timeCol (e.g., frame).}
 
-\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
+\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 
 \item{trackDatA}{A list of data frame containing tracking informations for each tracklet.}
 }
@@ -52,14 +52,14 @@ trackListV1 <-
                         TimeSec = function(x)
                           x[["frame"]] / 25
                       ))
-# example 1: resample the tracklets every 0.2 seconds
+# resample the tracklets every 1 seconds
 ## check the size of the tracklets
 trackSize <- unlist(lapply(trackListV1, function(x)
   nrow(x)))
 
 ## resample the tracklets every 1 seconds
 trackListSampled1S <- MoveR::resamplTracklets(trackListV1,
-                                           TimeCol = "TimeSec",
+                                           timeCol = "TimeSec",
                                            Tstep = 1)
 
 ## check the size of the tracklets after resampling
@@ -68,23 +68,6 @@ trackSize1s <- unlist(lapply(trackListSampled1S, function(x)
 
 ## Compare the tracklets size
 cbind(trackSize, trackSize1s)
-
-# example 2: resample the tracklets every 1 minutes
-
-## resample the tracklets every 0.10 seconds
-trackListSampled0.10S <- MoveR::resamplTracklets(trackListV1,
-                                              TimeCol = "TimeSec",
-                                              Tstep = 0.10)
-## here some time step are not found in the tracklets' list (e.g., 0.10, 0.30),
-## they are hence replaced by NA in the output list
-
-## check the size of the tracklets after resampling
-trackSize0.10S <-
-  unlist(lapply(trackListSampled0.10S, function(x)
-    nrow(x)))
-
-## Compare the tracklets size
-cbind(trackSize, trackSize1s, trackSize0.10S)
 
 }
 \author{

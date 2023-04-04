@@ -4,7 +4,7 @@
 \alias{speed}
 \title{Compute particle's speed over a trajectory.}
 \usage{
-speed(df, scale = NULL, TimeCol = NULL)
+speed(df, scale = NULL, timeCol = NULL)
 }
 \arguments{
 \item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet, as well as
@@ -13,7 +13,7 @@ a column containing time information, whatever the unit, over the trajectory.}
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
 (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.}
 
-\item{TimeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
+\item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
 }
 \value{
 This function returns a vector containing the values of speed over a trajectory.
@@ -43,7 +43,7 @@ TrackDat <-
 # compute the speed of the particle along its trajectory,
 # expressing the speed as pixels/frame
 TrackDat[["speedFrame"]] <-
-  MoveR::speed(TrackDat, scale = 1, TimeCol = "frame")
+  MoveR::speed(TrackDat, scale = 1, timeCol = "frame")
 
 # to compute the speed according to another time unit, a new column containing the new timeline is needed
 # here we consider that the frame rate is 25 frame per second
@@ -51,17 +51,17 @@ TrackDat[["second"]] <- TrackDat[["frame"]] / 25
 
 # then compute the speed of the particle over its trajectory according to the new time unit
 TrackDat[["speedSec"]] <-
-  MoveR::speed(TrackDat, scale = 1, TimeCol = "second")
+  MoveR::speed(TrackDat, scale = 1, timeCol = "second")
 
 str(TrackDat)
 
 # it is also possible to resample the tracklet before computing speed, here every 10 time unit (i.e., frame)
 sampledFragDat <-
-  MoveR::resamplTracklets(TrackDat, TimeCol = "frame",  Tstep = 10)
+  MoveR::resamplTracklets(TrackDat, timeCol = "frame",  Tstep = 10)
 
 # and then compute the speed of the particle over its trajectory
 sampledFragDat[["speed"]] <-
-  MoveR::speed(sampledFragDat, scale = 1, TimeCol = "frame")
+  MoveR::speed(sampledFragDat, scale = 1, timeCol = "frame")
 
 str(sampledFragDat) 
 

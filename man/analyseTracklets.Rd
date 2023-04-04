@@ -13,7 +13,7 @@ analyseTracklets(trackDat, customFunc, progress = TRUE)
 NB: in case customFunc is a list of unnamed function it will try to retrieve their names by returning the first character string
 following the function() call as result column name.}
 
-\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
+\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 }
 \value{
 this function returns the original list of data frames (i.e., tracklet)
@@ -56,13 +56,13 @@ TrackList2 <-
       # specify a first function to compute speed over each tracklet (a modulus present within the MoveR package)
       speed = function(x)
         MoveR::speed(x,
-                     TimeCol = "frame",
+                     timeCol = "frame",
                      scale = 1),
       # compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
       TurnAngle = function(x)
         MoveR::turnAngle(
           x,
-          TimeCol = "frame",
+          timeCol = "frame",
           unit = "radians",
           scale = 1
         ),

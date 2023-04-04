@@ -10,7 +10,7 @@ evalSens(
   radius = 20,
   imgRes = c(NA, NA),
   timeCol = "frame",
-  progess = TRUE
+  progress = TRUE
 )
 }
 \arguments{
@@ -28,7 +28,7 @@ If imgRes is unspecified, the function retrieve it using x and y maximum values 
 
 \item{timeCol}{A character string corresponding to the name of the column containing time information (default = "frame")}
 
-\item{progess}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
+\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 }
 \value{
 A list of dataframes summarizing the results of the sensitivity analysis:
@@ -75,6 +75,7 @@ informations related to sensitivity analysis:
 }
 }
 \examples{
+## Not run:
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -94,7 +95,12 @@ refDat <-
            dec = ".",
            sep = ";")
 
-# perform the sensitivity analysis
+# perform the sensitivity analysis 
+## NB: here NAs are introduced because some tracklets in the raw data have Inf values in x and y.pos, which usually produce a warning message 
+## here the warning has been silenced but in this case sensitivity analysis should be preceded by a filtering step to remove Inf values (see \code{\link{filterTracklets}})
+w <- getOption("warn")
+options(warn = -1)
+
 sensitivity <- MoveR::evalSens(
   refDat = refDat,
   trackDat = trackDat,
@@ -102,6 +108,7 @@ sensitivity <- MoveR::evalSens(
   imgRes = c(3840, 2160),
   timeCol = "frame"
 )
+options(warn = w)
 
 # check the results
 str(sensitivity)
@@ -159,6 +166,7 @@ for (i in seq_along(TimeF)) {
   )
 }
 
+## End(Not run)
 }
 \author{
 Quentin PETITJEAN

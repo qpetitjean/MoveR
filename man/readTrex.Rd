@@ -9,7 +9,7 @@ readTrex(trexPath, flipY = FALSE, imgHeight = NULL, rawDat = FALSE)
 \arguments{
 \item{trexPath}{The path of the TRex output folder where .npz files are stored.}
 
-\item{flipY}{A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the bottom-left (default = FALSE).}
+\item{flipY}{A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the bottom-left (default = FALSE).}
 
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
 corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
@@ -19,7 +19,7 @@ may drastically increase the size of the object returned by the function (defaul
 }
 \value{
 A list containing either a list of 9 elements classically used for further computations or a list containing 2 sublists, the first corresponding to the one previously mentioned
-and the second containing all the elements retrieved from the .npz files (see rawDat argument). Also, by default the function mirror y coordinates to start on the bottom-left.
+and the second containing all the elements retrieved from the .npz files (see rawDat argument). Also, by default the function flip y coordinates to start on the bottom-left.
 }
 \description{
 Given the path of a folder containing multiple Trex outputs (one .npz file per particle/individual),
@@ -40,13 +40,14 @@ Alternatively, the function can returns a list containing 2 sublists, the first 
 and the second containing all the elements retrieved from the .npz files (see rawDat argument).
 }
 \examples{
+## Not run:
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 Path2Data
 
 # Import the list containing the 9 vectors classically used for further computation
-# and mirror Y coordinates to start on the bottom-left
+# and flip Y coordinates to start on the bottom-left
 Data <- MoveR::readTrex(Path2Data[[1]],
                flipY = T,
                imgHeight = 2160,
@@ -56,12 +57,13 @@ str(Data)
 
 # Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
 # and the second list containing all the elements retrieved from .npz files,
-# also do not mirror Y coordinates (start on the top-left)
+# also do not flip Y coordinates (start on the top-left)
 DataFull <- MoveR::readTrex(Path2Data[[1]],
                    rawDat = T
             )
 str(DataFull)
 
+## End(Not run) 
 }
 \references{
 Tristan Walter, Iain D Couzin (2021) TRex, a fast multi-animal tracking system with markerless identification, and 2D estimation of posture and visual fields eLife 10:e64000.

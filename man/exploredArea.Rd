@@ -85,7 +85,7 @@ MoveR::exploredArea(TrackList,
 ExplorTest <- MoveR::analyseTracklets(TrackList[1:2],
                                   customFunc = list(
                                     exploredArea = function(x)
-                                      exploredArea(
+                                      MoveR::exploredArea(
                                         x,
                                         binRad = 8,
                                         scale = 1,

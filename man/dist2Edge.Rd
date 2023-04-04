@@ -47,7 +47,7 @@ TrackDat <- list(
 )
 
 # simulate a circular arena of 20 pixels radius and centered on the particle trajectory
-arenaEdge <-  circles(mean(TrackDat[[1]][["x.pos"]]),
+arenaEdge <-  MoveR::circles(mean(TrackDat[[1]][["x.pos"]]),
                       mean(TrackDat[[1]][["y.pos"]]),
                       radius = 20,
                       draw = F)
@@ -68,6 +68,7 @@ MoveR::dist2Edge(TrackDat[[1]],
 
 
 # Exemple 2: With a a polygonal arena, using a distance matrix to avoid tough computation
+## Not run:
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -84,12 +85,9 @@ distMat <-
   as.matrix(read.delim(Path2Data[[2]],
                        dec = "."))
 
-#  retrieve the value of the edge limit (1) and of the center limit (254) to plot them
+#  retrieve the value of the edge limit (1) to plot it
 arenaEdge <-
   stats::setNames(data.frame(which(distMat == 1, arr.ind = T)),
-                  c("y.pos", "x.pos"))
-arenaCenter <-
-  stats::setNames(data.frame(which(distMat == 254, arr.ind = T)),
                   c("y.pos", "x.pos"))
 
 # draw only the first tracklet
@@ -103,8 +101,17 @@ MoveR::drawTracklets(trackDat,
 # because it is tough to compute the distance to the closest part of the arena edge in this case
 # we can use another sister function helping to retrieve the distance to the edge from the distance
 # matrix
-cbind(trackDat[[1]], MoveR::locaPos(distMat, trackDat[[1]]))[950:1000, ]
 
+## NB: here NAs are introduced because some tracklets in the raw data have Inf values in x and y.pos, which usually produce a warning message
+## here the warning has been silenced but in this case retrieving the distance from the edge should be preceded by a filtering step to remove Inf values (see \code{\link{filterTracklets}})
+w <- getOption("warn")
+options(warn = -1)
+
+cbind(trackDat[[1]], MoveR::locaPos(distMat, trackDat[[1]], Fun = function(x) round(x, digits = 0)))[950:1000, ]
+
+options(warn = w)
+
+## End(Not run)
 }
 \seealso{
 \code{\link{dist2Pt}}, \code{\link{locaPos}}

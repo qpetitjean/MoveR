@@ -15,7 +15,7 @@ readTrackR(
 \arguments{
 \item{trackRPath}{The full path of the TrackR output file (.csv).}
 
-\item{flipY}{A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the top-left (default = FALSE).}
+\item{flipY}{A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the top-left (default = FALSE).}
 
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
 corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
@@ -46,16 +46,17 @@ this function returns a list of 9 vectors classically used for further computati
 
 Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above
 and the second containing all the elements retrieved from the .csv file (see rawDat argument).
-Also, the function can mirror y coordinates (see flipY argument).
+Also, the function can flip y coordinates (see flipY argument).
 }
 \examples{
+## Not run:
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TrackR")
 Path2Data
 
 # Import the list containing the 9 vectors classically used for further computation
-# and mirror Y coordinates to start on the top-left
+# and flip Y coordinates to start on the top-left
 Data <-
   MoveR::readTrackR(Path2Data[[1]],
          flipY = T,
@@ -66,7 +67,7 @@ str(Data)
 
 # Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
 # and the second list containing all the elements retrieved from .csv file,
-# also do not mirror Y coordinates (start on the bottom-left)
+# also do not flip Y coordinates (start on the bottom-left)
 
 DataFull <-
   MoveR::readTrackR(Path2Data[[1]],
@@ -76,6 +77,7 @@ DataFull <-
 
 str(DataFull)
 
+## End(Not run) 
 }
 \references{
 \href{https://swarm-lab.github.io/trackR}{trackR}

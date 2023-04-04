@@ -28,7 +28,7 @@ returned results (e.g., a value of 5000 mean that values will be computed every 
 
 \item{bootn}{A numeric value corresponding to the number of bootstrap sampling used to compute studentize 95\% confidence interval (default = 0, meaning bootstrap will be not performed).}
 
-\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
+\item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 }
 \value{
 this function returns a list containing three elements:
@@ -37,10 +37,10 @@ this function returns a list containing three elements:
 \itemize{
 \item{"ANNDmean": }{the averaged Nearest Neighbour Distance for each sampling step.}
 \item{"97.5\%": }{the upper limit of the confidence interval (97.5\%).}
-\item{"2.5\%": }{the lower limit of the confidence interval (97.5\%).}
+\item{"2.5\%": }{the lower limit of the confidence interval (2.5\%).}
 \item{"ANNDsd": }{the standard deviation of the Average Nearest Neighbour Distance for each sampling step.}
 \item{"nInd": }{the number of particules used to compute the Averaged Nearest Neighbour Distance for each sampling step.}
-\item{"timeCol": }{the sampling step, expressed in the same unit that the timeCol argument.}
+\item{"timeCol": }{the timeline according to timeCol and sampling arguments.}
 }}
 
 \item{"RawND": }{a list containing the raw neighbour distance computed among each particles across each time unit:

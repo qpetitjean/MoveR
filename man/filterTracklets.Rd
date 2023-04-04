@@ -15,7 +15,7 @@ filterTracklets(trackDat, filter, splitCond = TRUE, minDur = 1, progess = TRUE)
 
 \item{minDur}{The minimum duration (i.e., number of records) to consider a tracklet valid after the filtering (default = 1).}
 
-\item{progess}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.}
+\item{progess}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 }
 \value{
 This function returns a list containing two sublists:
@@ -43,6 +43,7 @@ The function hence returns two sublist, the first containing a summary of the in
 and the second containing a list with the filtered tracklets according to the condition test and "minDur" argument.
 }
 \examples{
+## Not run:
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -102,6 +103,7 @@ str(trackDatSize20Dur10$SummaryFiltering)
 ## take a look at the first filtered tracklet
 str(trackDatSize20Dur10$CleanedTracklets[[1]])
 
+## End(Not run)
 }
 \seealso{
 \code{\link{filterFunc}}

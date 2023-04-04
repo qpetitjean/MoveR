@@ -2,56 +2,65 @@
 % Please edit documentation in R/flipYCoords.R
 \name{flipYCoords}
 \alias{flipYCoords}
-\title{Mirror y coordinates.}
+\title{flip y coordinates.}
 \usage{
 flipYCoords(YCoords, imgHeight = NA)
 }
 \arguments{
 \item{YCoords}{A vector containing y coordinates for some particles.}
 
-\item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
-corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
+\item{imgHeight}{A numeric value expressed in pixels indicating the length of the Y axis (i.e., the height of the image or video).}
 }
 \value{
-A vector containing mirrored Y coordinates.
+A vector of the same length than the input data (YCoords) containing flipped Y coordinates.
 }
 \description{
 Given a vector containing the y coordinates of detected particles and image height,
-this function returns mirrored y coordinates.
+this function returns flipped y coordinates.
 }
 \examples{
 
+set.seed(2023)
 # generate some dummy tracklets
 ## start to specify some parameters to generate tracklets
-Fragn <- 1 # the number of tracklet to simulate
-FragL <- 10 # the length of the tracklets or a sequence to randomly sample tracklet length
+TrackN <- 1 # the number of tracklet to simulate
+TrackL <-
+  10000 # the length of the tracklets or a sequence to randomly sample tracklet length
+id <- 0
+TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+  trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
+    id <<- id + 1
+    data.frame(
+      x.pos = j$x - min(j$x),
+      y.pos = j$y - min(j$y),
+      frame = j$time,
+      identity = paste("Tracklet", id, sep = "_")
+   )
+  }), seq(TrackN))
 
-fragsList <- stats::setNames(lapply(lapply(seq(Fragn), function(i)
- trajr::TrajGenerate(sample(FragL, 1), random = TRUE, fps = 1)), function(j)
-   data.frame(
-     x.pos = j$x - min(j$x),
-     y.pos = j$y - min(j$y),
-     frame = j$time
-   )), seq(Fragn))
+# convert the list of tracklets to a simple list of variables
+trackDatList <- MoveR::convert2List(TrackList)
 
-trackDatList <- convert2List(fragsList)
-
+# find the maximum value on the y axis (corresponding to image Height)
 imgHeight <- max(trackDatList[["y.pos"]], na.rm = T)
 
-# use flipYCoords to mirror y coords
+# use flipYCoords to flip y coords
 trackDatList[["y.pos"]] <-
-  flipYCoords(trackDatList[["y.pos"]], imgHeight = imgHeight)
+  MoveR::flipYCoords(trackDatList[["y.pos"]], imgHeight = imgHeight)
 
 # convert the new dataset to a list of tracklet
-fragsListMirrored <- convert2Tracklets(trackDatList, by = "frags_id")
+trackDatflipped <-
+  MoveR::convert2Tracklets(trackDatList, by = "trackletId")
+
+# rename the identity of the flipped tracklet Tracklet_1_Bis
+trackDatflipped[[1]][["identity"]] <-
+  gsub("Tracklet_1", "Tracklet_1_Bis", trackDatflipped[[1]][["identity"]])
 
 # draw the result
-# here we can see that both trajectory are mirrored, with the original trajectory 
-# drawed in black and the mirrored one in red
-drawTracklets(
-  setNames(c(fragsList,fragsListMirrored), c(1:2)),
-  imgRes = c(max(trackDatList[["x.pos"]], na.rm = T), imgHeight), 
-  colFrag = T)
+# here we can see that both trajectory are flipped, with the original trajectory
+# drawed in black and the flipped one in red
+MoveR::drawTracklets(c(TrackList, trackDatflipped),
+                     colId = "identity")
 
 }
 \author{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/turchinD.R
 \name{turchinD}
 \alias{turchinD}
-\title{Compute the net square displacement (Turchin 1998).}
+\title{Compute the net square displacement (Turchin 1998) - EXPERIMENTAL !!!.}
 \usage{
 turchinD(trackDat, turnAngle = NULL, distTraveled = NULL, behavStates = NULL)
 }
@@ -37,20 +37,20 @@ linearErrorDist = stats::rnorm(n, sd = linearErrorSd)
 
 ## simulate a trajectory
 sim <- trajr::TrajGenerate(
- n = n,
- random = TRUE,
- stepLength = stepLength,
- angularErrorSd = angularErrorSd,
- angularErrorDist = function(x) angularErrorDist,
- linearErrorSd = linearErrorSd,
- linearErrorDist = function(x) linearErrorDist,
- fps = 1)
+  n = n,
+  random = TRUE,
+  stepLength = stepLength,
+  angularErrorSd = angularErrorSd,
+  angularErrorDist = function(x) angularErrorDist,
+  linearErrorSd = linearErrorSd,
+  linearErrorDist = function(x) linearErrorDist,
+  fps = 1)
 
 ## convert it to a data frame to allow MoveR computation
 sim <- data.frame(
- x.pos = sim[["x"]] - min(sim[["x"]]),
- y.pos = sim[["y"]] - min(sim[["y"]] ),
- frame = sim[["time"]]
+  x.pos = sim[["x"]] - min(sim[["x"]]),
+  y.pos = sim[["y"]] - min(sim[["y"]] ),
+  frame = sim[["time"]]
 )
 
 # take a look at the simulated data (here we use list(sim) because the function expect a list of trajectories)
@@ -58,30 +58,28 @@ MoveR::drawTracklets(list(sim), imgRes = c(500,500))
 
 # compute the needed metric on the simulated dataset (here we use list(sim) because the function expect a list of trajectories)
 simComp <-
- MoveR::analyseTracklets(
-   list(sim),
-   customFunc = list(
-     ## compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
-     TurnAngle = function(x)
-       MoveR::turnAngle(x, unit = "radians"),
-     ## compute distance traveled
-     distTraveled = function(x)
-       MoveR::distTraveled(x, step = 1)
-   )
- )
+  MoveR::analyseTracklets(
+    list(sim),
+    customFunc = list(
+      ## compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
+      TurnAngle = function(x)
+        MoveR::turnAngle(x, timeCol = "frame", unit = "radians", scale = 1),
+      ## compute distance traveled
+      distTraveled = function(x)
+        MoveR::distTraveled(x, step = 1)
+    )
+  )
 
 # add behavioral state (consider as active all the time)
 simComp[[1]]["behavStates"] <- "active"
 
 # compute the Turchin net square displacement from the simulated data
-D <- MoveR::turchinD(
- simComp,
- turnAngle = "TurnAngle",
- distTraveled = "distTraveled",
- behavStates = "behavStates"
+MoveR::turchinD(
+  simComp,
+  turnAngle = "TurnAngle",
+  distTraveled = "distTraveled",
+  behavStates = "behavStates"
 )
-
-# check the net square displacement value D
 
 }
 \references{
