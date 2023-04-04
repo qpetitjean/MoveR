@@ -126,7 +126,7 @@ and the second containing all the elements retrieved from the .npz files (see ra
 
 
 <dt>flipY</dt>
-<dd><p>A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be mirrored. If TRUE, y coordinates are mirrored to start on the bottom-left (default = FALSE).</p></dd>
+<dd><p>A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the bottom-left (default = FALSE).</p></dd>
 
 
 <dt>imgHeight</dt>
@@ -144,7 +144,7 @@ may drastically increase the size of the object returned by the function (defaul
     
 
 <p>A list containing either a list of 9 elements classically used for further computations or a list containing 2 sublists, the first corresponding to the one previously mentioned
-and the second containing all the elements retrieved from the .npz files (see rawDat argument). Also, by default the function mirror y coordinates to start on the bottom-left.</p>
+and the second containing all the elements retrieved from the .npz files (see rawDat argument). Also, by default the function flip y coordinates to start on the bottom-left.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -162,7 +162,8 @@ and the second containing all the elements retrieved from the .npz files (see ra
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Not run:</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Download the first dataset from the sample data repository</span></span></span>
 <span class="r-in"><span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">1</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Path2Data</span></span></span>
@@ -171,7 +172,7 @@ and the second containing all the elements retrieved from the .npz files (see ra
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpmYFHq7\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"                          </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Import the list containing the 9 vectors classically used for further computation</span></span></span>
-<span class="r-in"><span><span class="co"># and mirror Y coordinates to start on the bottom-left</span></span></span>
+<span class="r-in"><span><span class="co"># and flip Y coordinates to start on the bottom-left</span></span></span>
 <span class="r-in"><span><span class="va">Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">readTrex</span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>               flipY <span class="op">=</span> <span class="cn">T</span>,</span></span>
 <span class="r-in"><span>               imgHeight <span class="op">=</span> <span class="fl">2160</span>,</span></span>
@@ -191,7 +192,7 @@ and the second containing all the elements retrieved from the .npz files (see ra
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation</span></span></span>
 <span class="r-in"><span><span class="co"># and the second list containing all the elements retrieved from .npz files,</span></span></span>
-<span class="r-in"><span><span class="co"># also do not mirror Y coordinates (start on the top-left)</span></span></span>
+<span class="r-in"><span><span class="co"># also do not flip Y coordinates (start on the top-left)</span></span></span>
 <span class="r-in"><span><span class="va">DataFull</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">readTrex</span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                   rawDat <span class="op">=</span> <span class="cn">T</span></span></span>
 <span class="r-in"><span>            <span class="op">)</span></span></span>
@@ -240,6 +241,7 @@ and the second containing all the elements retrieved from the .npz files (see ra
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ X                        : num [1:156291] 2285 2280 2274 2273 2273 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ Y                        : num [1:156291] 628 634 637 639 641 ...</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## End(Not run) </span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

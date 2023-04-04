@@ -116,7 +116,7 @@ par(mfrow = c(1, 2))
 
 # draw the trajectories of all particles
 MoveR::drawTracklets(trackDat,
-                 timeCol = "frame")
+                     timeCol = "frame")
 
 # add a letter identifying the plot to the upper left corner of the first plot
 mtext(

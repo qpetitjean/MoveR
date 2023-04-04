@@ -114,7 +114,7 @@ and the second containing a list with the filtered tracklets according to the co
 
 
 <dt>progess</dt>
-<dd><p>A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.</p></dd>
+<dd><p>A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -144,7 +144,8 @@ and the second containing a list with the filtered tracklets according to the co
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Not run:</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Download the first dataset from the sample data repository</span></span></span>
 <span class="r-in"><span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">1</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Path2Data</span></span></span>
@@ -274,6 +275,7 @@ and the second containing a list with the filtered tracklets according to the co
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ identity: num  0 0 0 0 0 0 0 0 0 0 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ frame   : num  59 60 61 62 63 64 65 66 67 68 ...</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## End(Not run)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

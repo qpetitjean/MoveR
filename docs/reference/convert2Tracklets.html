@@ -86,18 +86,18 @@ the function returns a list of data frames corresponding to the data for each tr
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>trackDatList</dt>
-<dd><p>A list of vector corresponding to the variable of tracking data.</p></dd>
+<dd><p>A list of vector corresponding to the variable characterizing the tracking data.</p></dd>
 
 
 <dt>by</dt>
-<dd><p>A character vector identifying tracklets to join by.</p></dd>
+<dd><p>A character vector identifying the tracklets to join by.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A list of data frames corresponding the the tracking data for each tracklets.</p>
+<p>A list of data frames corresponding the tracking data for each tracklets.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -111,24 +111,49 @@ the function returns a list of data frames corresponding to the data for each tr
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># generate some dummy tracklets</span></span></span>
 <span class="r-in"><span><span class="co">## start to specify some parameters to generate tracklets</span></span></span>
-<span class="r-in"><span><span class="va">Fragn</span> <span class="op">&lt;-</span> <span class="fl">10</span> <span class="co"># the number of tracklet to simulate</span></span></span>
-<span class="r-in"><span><span class="va">FragL</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span> <span class="co"># the length of the tracklets or a sequence to randomly sample tracklet length</span></span></span>
+<span class="r-in"><span><span class="va">TrackN</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="co"># the number of tracklet to simulate</span></span></span>
+<span class="r-in"><span><span class="va">TrackL</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span> <span class="co"># the length of the tracklets or a sequence to randomly sample tracklet length</span></span></span>
+<span class="r-in"><span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span><span class="va">TrackList</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">TrackN</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">trajr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/trajr/man/TrajGenerate.html" class="external-link">TrajGenerate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">TrackL</span>, <span class="fl">1</span><span class="op">)</span>, random <span class="op">=</span> <span class="cn">TRUE</span>, fps <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">j</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">id</span> <span class="op">&lt;&lt;-</span> <span class="va">id</span> <span class="op">+</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      x.pos <span class="op">=</span> <span class="va">j</span><span class="op">$</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">j</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      y.pos <span class="op">=</span> <span class="va">j</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">j</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      frame <span class="op">=</span> <span class="va">j</span><span class="op">$</span><span class="va">time</span>,</span></span>
+<span class="r-in"><span>     identity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Tracklet"</span>, <span class="va">id</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">TrackN</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">fragsList</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">Fragn</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span></span>
-<span class="r-in"><span> <span class="fu">trajr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/trajr/man/TrajGenerate.html" class="external-link">TrajGenerate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">FragL</span>, <span class="fl">1</span><span class="op">)</span>, random <span class="op">=</span> <span class="cn">TRUE</span>, fps <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">j</span><span class="op">)</span></span></span>
-<span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>     x.pos <span class="op">=</span> <span class="va">j</span><span class="op">$</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">j</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>     y.pos <span class="op">=</span> <span class="va">j</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">j</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>     frame <span class="op">=</span> <span class="va">j</span><span class="op">$</span><span class="va">time</span></span></span>
-<span class="r-in"><span>   <span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">Fragn</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># convert fragList to a simple list based on the variables present within each tracklets' data frame</span></span></span>
-<span class="r-in"><span><span class="va">trackDatList</span> <span class="op">&lt;-</span> <span class="fu"><a href="convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">fragsList</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># convert the list of variable to a liost of tracklet based on tracklets identity</span></span></span>
-<span class="r-in"><span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">convert2Tracklets</span><span class="op">(</span><span class="va">trackDatList</span>, by <span class="op">=</span> <span class="st">"fragsId"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="co"># convert the list of tracklets to a simple list of variables</span></span></span>
+<span class="r-in"><span> <span class="va">trackDatList</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">TrackList</span><span class="op">)</span></span></span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span> <span class="co"># convert back the list of variables to a list of tracklet based on tracklets identity</span></span></span>
+<span class="r-in"><span> <span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">convert2Tracklets</span><span class="op">(</span><span class="va">trackDatList</span>, by <span class="op">=</span> <span class="st">"trackletId"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDat</span><span class="op">)</span> <span class="co"># display only the three first elements (dataframes) of the list</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ 1:'data.frame':	886 obs. of  5 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos     : num [1:886] 15.3 17.5 19.5 20.6 21.9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos     : num [1:886] 7.13 6.64 5.92 4.52 3.17 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ frame     : num [1:886] 0 1 2 3 4 5 6 7 8 9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ identity  : chr [1:886] "Tracklet_1" "Tracklet_1" "Tracklet_1" "Tracklet_1" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ trackletId: chr [1:886] "1" "1" "1" "1" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ 2:'data.frame':	280 obs. of  5 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos     : num [1:280] 129 131 133 135 136 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos     : num [1:280] 106 106 107 108 109 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ frame     : num [1:280] 0 1 2 3 4 5 6 7 8 9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ identity  : chr [1:280] "Tracklet_2" "Tracklet_2" "Tracklet_2" "Tracklet_2" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ trackletId: chr [1:280] "2" "2" "2" "2" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ 3:'data.frame':	572 obs. of  5 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos     : num [1:572] 88.5 90.1 92 93.8 95.1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos     : num [1:572] 35.5 34.5 33.7 32.8 31.7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ frame     : num [1:572] 0 1 2 3 4 5 6 7 8 9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ identity  : chr [1:572] "Tracklet_3" "Tracklet_3" "Tracklet_3" "Tracklet_3" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ trackletId: chr [1:572] "3" "3" "3" "3" ...</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

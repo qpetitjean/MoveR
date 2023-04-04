@@ -50,7 +50,7 @@
 #' @param cex.lab A numeric value, the character size and expansion for axes label (default = 1).
 #'
 #' @param cex.leg A numeric value, the character size and expansion for the legend label (default = 1).
-#' 
+#'
 #' @param ncol.leg A numeric value, the number of columns the legend should be displayed, only when colId is not continuous (default = 1)
 #'
 #' @param cex.start A numeric value, the size of the dot representing the start of the tracklets (default = 0.5).
@@ -127,38 +127,38 @@
 #' @export
 
 drawTracklets <- function(trackDat,
-                      selTrack = NULL,
-                      imgRes = c(NA, NA),
-                      timeWin = list(c(0, Inf)),
-                      timeCol = "frame",
-                      colGrad = c(
-                        "#000000",
-                        "#999999",
-                        "#6600CC",
-                        "#9999FF",
-                        "#33CCFF",
-                        "#0066CC",
-                        "#66CC00",
-                        "#FFFF00",
-                        "#FF3300",
-                        "#CC0000"
-                      ),
-                      colId = NULL,
-                      add2It = NULL,
-                      srt = 0,
-                      lwd = 1,
-                      main = "",
-                      xlab = "Video width (pixels)",
-                      ylab = "Video height (pixels)",
-                      legend = TRUE,
-                      legend.title = NULL,
-                      cex.axis = 1,
-                      cex.main = 1.25,
-                      cex.lab = 1,
-                      cex.leg = 1,
-                      ncol.leg = 1,
-                      cex.start = 0.5,
-                      progress = TRUE) {
+                          selTrack = NULL,
+                          imgRes = c(NA, NA),
+                          timeWin = list(c(0, Inf)),
+                          timeCol = "frame",
+                          colGrad = c(
+                            "#000000",
+                            "#999999",
+                            "#6600CC",
+                            "#9999FF",
+                            "#33CCFF",
+                            "#0066CC",
+                            "#66CC00",
+                            "#FFFF00",
+                            "#FF3300",
+                            "#CC0000"
+                          ),
+                          colId = NULL,
+                          add2It = NULL,
+                          srt = 0,
+                          lwd = 1,
+                          main = "",
+                          xlab = "Video width (pixels)",
+                          ylab = "Video height (pixels)",
+                          legend = TRUE,
+                          legend.title = NULL,
+                          cex.axis = 1,
+                          cex.main = 1.25,
+                          cex.lab = 1,
+                          cex.leg = 1,
+                          ncol.leg = 1,
+                          cex.start = 0.5,
+                          progress = TRUE) {
   if (is.null(names(trackDat))) {
     names(trackDat) <- seq(length(trackDat))
   }
@@ -213,7 +213,8 @@ drawTracklets <- function(trackDat,
     xlim = ifelse(rep(isTRUE(legend), 2),
                   c(
                     0,
-                    max(ScaleX) + (ScaleX[2] - ScaleX[1]) * ncol.leg + cex.leg * max(strwidth(colVal))
+                    max(ScaleX) + (ScaleX[2] - ScaleX[1]) * ncol.leg + (cex.leg * 1.5 / 100 *
+                                                                          (ScaleX[2] - ScaleX[1]))
                   ),
                   c(0, max(ScaleX))),
     ylim = c(0, max(ScaleY)),
@@ -342,7 +343,7 @@ drawTracklets <- function(trackDat,
         cex = cex.leg
       )
     } else{
-      if(TRUE %in%  grepl("[0-9]", colVal)){
+      if (TRUE %in%  grepl("[0-9]", colVal)) {
         colValNum <- as.numeric(gsub("[^[:digit:]]", "", colVal))
         names(colValNum) <- seq_along(colValNum)
         colVal <- colVal[as.numeric(names(sort(colValNum)))]
@@ -460,8 +461,8 @@ drawTracklets <- function(trackDat,
       with(
         NewTrackList[[f]],
         graphics::segments(
-          head(x.pos,-1),
-          head(y.pos,-1),
+          head(x.pos, -1),
+          head(y.pos, -1),
           x.pos[-1],
           y.pos[-1],
           NewTrackList[[f]]$colorpal,
@@ -496,8 +497,8 @@ drawTracklets <- function(trackDat,
       with(
         NewTrackList[[f]],
         graphics::segments(
-          head(x.pos,-1),
-          head(y.pos,-1),
+          head(x.pos, -1),
+          head(y.pos, -1),
           x.pos[-1],
           y.pos[-1],
           NewTrackList[[f]]$colorpal,

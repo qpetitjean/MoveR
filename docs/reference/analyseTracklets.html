@@ -99,7 +99,7 @@ following the function() call as result column name.</p></dd>
 
 
 <dt>progress</dt>
-<dd><p>A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression.</p></dd>
+<dd><p>A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -138,7 +138,7 @@ with the result of the specified computation appended.</p>
 <span class="r-in"><span><span class="co"># check the tracklets</span></span></span>
 <span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="va">TrackList</span>,</span></span>
 <span class="r-in"><span>                 timeCol <span class="op">=</span> <span class="st">"frame"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="analyseTracklets-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in strwidth(colVal):</span> plot.new has not been called yet</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Run some computation on the dataset using analyseTracklets</span></span></span>
 <span class="r-in"><span><span class="va">TrackList2</span> <span class="op">&lt;-</span></span></span>
@@ -148,13 +148,13 @@ with the result of the specified computation appended.</p>
 <span class="r-in"><span>      <span class="co"># specify a first function to compute speed over each tracklet (a modulus present within the MoveR package)</span></span></span>
 <span class="r-in"><span>      speed <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-in"><span>        <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="speed.html">speed</a></span><span class="op">(</span><span class="va">x</span>,</span></span>
-<span class="r-in"><span>                     TimeCol <span class="op">=</span> <span class="st">"frame"</span>,</span></span>
+<span class="r-in"><span>                     timeCol <span class="op">=</span> <span class="st">"frame"</span>,</span></span>
 <span class="r-in"><span>                     scale <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      <span class="co"># compute turning angle in radians over each tracklet (a modulus present within the MoveR package)</span></span></span>
 <span class="r-in"><span>      TurnAngle <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-in"><span>        <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="turnAngle.html">turnAngle</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>          <span class="va">x</span>,</span></span>
-<span class="r-in"><span>          TimeCol <span class="op">=</span> <span class="st">"frame"</span>,</span></span>
+<span class="r-in"><span>          timeCol <span class="op">=</span> <span class="st">"frame"</span>,</span></span>
 <span class="r-in"><span>          unit <span class="op">=</span> <span class="st">"radians"</span>,</span></span>
 <span class="r-in"><span>          scale <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span>        <span class="op">)</span>,</span></span>
@@ -204,7 +204,6 @@ with the result of the specified computation appended.</p>
 <span class="r-in"><span>  ticks <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  main <span class="op">=</span> <span class="st">"Frequency plot of the particles' turning angle"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="analyseTracklets-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
