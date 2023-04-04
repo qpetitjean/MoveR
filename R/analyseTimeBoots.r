@@ -312,7 +312,7 @@ analyseTimeBoots <-
             data.frame(
               Res = Res[[x]],
               len = len[[x]],
-              fragId = names(WhoWhen)
+              trackId = names(WhoWhen)
             ))
         names(Reslen) <- names(Res)
         # create an equivalent of na.rm = T, useful to compute the weighed mean for each metric and
@@ -346,7 +346,7 @@ analyseTimeBoots <-
         }
         # create a list of the fragment that could be sampled for each customfunc (after removing fragments which return NA)
         toSample <- lapply(Reslen, function (x)
-          x$fragId)
+          x$trackId)
         # check the number of fragments that could be sampled for each customfunc (after removing fragments which return NA)
         toSampleLen <- lapply(toSample, length)
         # in case the number of fragments that could be sampled differ among customfunc, identify for which customfunc it is the case
@@ -431,7 +431,7 @@ analyseTimeBoots <-
         bootsamplesVal <-
           lapply(names(bootsamples), function(x) {
             array(unlist(lapply(seq(bootn), function(y) {
-              Reslen[[x]]$Res[match(bootsamples[[x]][, y], Reslen[[x]]$fragId)]
+              Reslen[[x]]$Res[match(bootsamples[[x]][, y], Reslen[[x]]$trackId)]
             })), dim = c(length(bootsamples[[x]]) / bootn, bootn))
           })
         names(bootsamplesVal) <- names(bootsamples)
@@ -439,7 +439,7 @@ analyseTimeBoots <-
         bootsampleslen <-
           lapply(names(bootsamples), function(x) {
             array(unlist(lapply(seq(bootn), function(y) {
-              Reslen[[x]]$len[match(bootsamples[[x]][, y], Reslen[[x]]$fragId)]
+              Reslen[[x]]$len[match(bootsamples[[x]][, y], Reslen[[x]]$trackId)]
             })), dim = c(length(bootsamples[[x]]) / bootn, bootn))
           })
         names(bootsampleslen) <- names(bootsamples)

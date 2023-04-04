@@ -39,7 +39,7 @@
 #'   mirrorYFunc(trackDatList[["y.pos"]], imgHeight = imgHeight)
 #' 
 #' # convert the new dataset to a list of fragment
-#' fragsListMirrored <- convert2frags(trackDatList, by = "frags_id")
+#' fragsListMirrored <- convert2frags(trackDatList, by = "trackId")
 #' 
 #' # draw the result
 #' # here we can see that both trajectory are mirrored, with the original trajectory 
