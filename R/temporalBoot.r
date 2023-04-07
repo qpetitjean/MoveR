@@ -523,7 +523,7 @@ temporalBoot <-
           wtd.sd_temp <- stats::setNames(lapply(names(customFunc), function(z) {
             unlist(lapply(seq(bootn), function(y) {
               sum(bootsampleslen[[z]][, y] * ((
-                bootsamplesVal[[z]][, y] - wtd.mean[[z]][y]
+                bootsamplesVal[[z]][, y] - wtd.mean[[paste(z, "mean", sep = "_")]][y]
               ) ^ 2))
             }))
           }), names(customFunc))
@@ -536,7 +536,7 @@ temporalBoot <-
             data.frame(wtd.mean, wtd.sd)
           # compute the bootstrap estimates
           bootEst <- stats::setNames(lapply(names(customFunc), function(x) {
-            (wtd.mean[[x]] - meanx[[x]]) / (wtd.sd[[x]] / sqrt(samplen[[x]]))
+            (wtd.mean[[paste(x, "mean", sep = "_")]] - meanx[[x]]) / (wtd.sd[[paste(x, "sd", sep = "_")]] / sqrt(samplen[[x]]))
           }), names(customFunc))
         }
         # append the list of sampled tracklets, values as well as the omitted tracklets
@@ -556,7 +556,7 @@ temporalBoot <-
                 na.rm = T
               ) *
                 sdx[[z]] / sqrt(samplen[[z]])
-            ), meanBoot[[z]], i, length(WhoWhen)
+            ), meanBoot[[paste(z, "mean", sep="_")]], i, length(WhoWhen)
             )))
           }), names(customFunc))
         # append the results (95%CI, mean and time) to the boot.ci.student list

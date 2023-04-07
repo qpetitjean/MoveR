@@ -17,12 +17,10 @@
 #' @examples
 #' 
 #' set.seed(2023) 
-#' # compute smoothed mean 
+#' # compute smoothed mean over a sliding window of 15 time unit in length
 #' slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) mean(x, na.rm = T))
-#' # compute smoothed variance 
+#' # compute smoothed variance over a sliding window of 15 time unit in length
 #' slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) var(x, na.rm = T))
-#' # compute smoothed sd
-#' slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) sd(x, na.rm = T))
 #'
 #' @export
 

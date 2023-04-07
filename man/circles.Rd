@@ -49,13 +49,12 @@ Given x and y coordinates of the circle center as well as the circle radius, thi
 \examples{
 
 set.seed(2023)
-par(mfrow = c(1, 2))
-plot.new()
+plot(NULL, xlim = c(1,120), ylim = c(1,120), xlab = "x", ylab = "y")
 # draw 4 red-border and red-filled circles of different size on a new plot
-circleCoords1 <- MoveR::circles(
+circleCoords1 <- circles(
   x = sample(1:100, 4),
   y = sample(1:100, 4),
-  radius = sample(1:4, 4),
+  radius = sample(5:15, 4),
   center = TRUE,
   border = "red",
   col = adjustcolor("firebrick", alpha = 0.2),
@@ -66,10 +65,12 @@ circleCoords1 <- MoveR::circles(
 )
 str(circleCoords1)
 
-circleCoords2 <- MoveR::circles(
+# draw 2 red-border and red-filled circles and 2 blue-border and blue-filled circles of different size on #' a new plot
+plot(NULL, xlim = c(-10,120), ylim = c(-10,120), xlab = "x", ylab = "y")
+circleCoords2 <- circles(
   x = sample(1:100, 4),
   y = sample(1:100, 4),
-  radius = sample(1:4, 4),
+  radius = sample(5:20, 4),
   center = TRUE,
   border = c(rep("red", 2), rep("blue", 2)),
   col = c(rep(adjustcolor("firebrick", alpha = 0.2), 2), rep(adjustcolor("lightblue", alpha = 0.2), 2)),

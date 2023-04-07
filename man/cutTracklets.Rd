@@ -44,7 +44,8 @@ trackDatSub <- MoveR::cutTracklets(TrackList,
                       customFunc = function(x)
                       x[["frame"]] \%in\% TimeSeq)
 
-par(mfrow = c(1,2))
+layout(matrix(c(1,2),2,2, byrow=TRUE), widths=c(1,1))
+par(mar=c(c(5, 4, 4, 0.5) + 0.1))
 ### draw the tracklets before the cut
 MoveR::drawTracklets(TrackList,
                  cex.leg = 0.8,

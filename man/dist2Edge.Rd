@@ -47,10 +47,10 @@ TrackDat <- list(
 )
 
 # simulate a circular arena of 20 pixels radius and centered on the particle trajectory
-arenaEdge <-  MoveR::circles(mean(TrackDat[[1]][["x.pos"]]),
-                      mean(TrackDat[[1]][["y.pos"]]),
-                      radius = 20,
-                      draw = F)
+arenaEdge <-  as.data.frame(MoveR::circles(mean(TrackDat[[1]][["x.pos"]]),
+                            mean(TrackDat[[1]][["y.pos"]]),
+                            radius = 20,
+                            draw = F))
 str(arenaEdge)
 
 # draw the tracklet and the arena edge
@@ -63,7 +63,7 @@ MoveR::drawTracklets(TrackDat,
 # Compute the distance to the closest part of the edge based on the form of the arena (here circular)
 # Negative values indicate increasing distance from the edge of the object in the direction of its center (the particle is considered inside) and vice versa.
 MoveR::dist2Edge(TrackDat[[1]],
-                 edge = arenaEdge[[1]],
+                 edge = arenaEdge,
                  customFunc = "CircularArena")
 
 
