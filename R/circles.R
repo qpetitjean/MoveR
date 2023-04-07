@@ -32,11 +32,14 @@
 #'
 #' @examples
 #'
-#' # draw 10 red-border and red-filled circles of different size on a new plot
-#' MoveR::circles(
-#'   x = sample(1:100, 10),
-#'   y = sample(1:100, 10),
-#'   radius = sample(1:10, 10),
+#' set.seed(2023)
+#' par(mfrow = c(1, 2))
+#' plot.new()
+#' # draw 4 red-border and red-filled circles of different size on a new plot
+#' circleCoords1 <- MoveR::circles(
+#'   x = sample(1:100, 4),
+#'   y = sample(1:100, 4),
+#'   radius = sample(1:4, 4),
 #'   center = TRUE,
 #'   border = "red",
 #'   col = adjustcolor("firebrick", alpha = 0.2),
@@ -45,20 +48,22 @@
 #'   lty = 1,
 #'   draw = TRUE
 #' )
+#' str(circleCoords1)
 #' 
-#' # draw 5 red-border and red-filled circles and 5 blue-border and blue-filled circles of different size on a new plot
-#' MoveR::circles(
-#'   x = sample(1:100, 10),
-#'   y = sample(1:100, 10),
-#'   radius = sample(1:10, 10),
+# draw 2 red-border and red-filled circles and 2 blue-border and blue-filled circles of different size on a new plot
+#' circleCoords2 <- MoveR::circles(
+#'   x = sample(1:100, 4),
+#'   y = sample(1:100, 4),
+#'   radius = sample(1:4, 4),
 #'   center = TRUE,
-#'   border = c(rep("red", 5), rep("blue", 5)),
-#'   col = c(rep(adjustcolor("firebrick", alpha = 0.2), 5), rep(adjustcolor("lightblue", alpha = 0.2), 5)),
+#'   border = c(rep("red", 2), rep("blue", 2)),
+#'   col = c(rep(adjustcolor("firebrick", alpha = 0.2), 2), rep(adjustcolor("lightblue", alpha = 0.2), 2)),
 #'   Res = 500,
 #'   lwd = 1.5,
-#'   lty = c(rep(1, 5), rep(2, 5)),
+#'   lty = c(rep(1, 2), rep(2, 2)),
 #'   draw = TRUE
 #' )
+#' str(circleCoords2)
 #'
 #' @export
 
@@ -163,7 +168,7 @@ circles <-
             max(y, na.rm = T) + max(radius,  na.rm = T)
           ),
           xlab = "x",
-          ylab = "y",
+          ylab = "y"
         )
       }
     theta <- seq(0, 2 * pi, length = Res)

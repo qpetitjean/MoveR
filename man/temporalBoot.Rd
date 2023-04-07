@@ -54,18 +54,15 @@ this function returns a list containing two elements:
 \item{"timeCol": }{the timeline according to timeCol and sampling arguments.}
 \item{"nbTracklets": }{the number of tracklets included within each computation.}
 }}
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{\\item\{"BootSampling": \}\{a list of sublists corresponding to the sampling points according to timeCol and sampling arguments. 
-Each sublist contains: 
-  \\itemize\{
-     \\item\{"UnWtd_Result" or "wtd_Result": \}\{a dataframe containing either unweighted or weighted mean and sd for each customFunc according to the wtd argument.\}
-     \\item\{"sampled_Tracklets": \}\{a list of matrices (one matrix per customFunc) containing the identity of the sampled tracklets (rows) over each bootstrap sampling (columns).\}
-     \\item\{"sampled_Values": \}\{a list of matrices (one matrix per customFunc) containing the value returned by a given customFunc (rows) over each bootstrap sampling (columns).\}
-     \\item\{"omitted_Tracklets": \}\{a list of matrices (one matrix per customFunc) containing the identity of the omitted tracklets (rows) over each bootstrap sampling (columns). 
-     Tracklet omission may occur when a given customFunc returns NA. This list is only included in the output if at least one tracklets have been omitted.\}
-  \}\}
-}\if{html}{\out{</div>}}
-
+\item{"BootSampling": }{a list of sublists corresponding to the sampling points according to timeCol and sampling arguments.
+Each sublist contains:
+\itemize{
+\item{"UnWtd_Result" or "wtd_Result": }{a dataframe containing either unweighted or weighted mean and sd for each customFunc according to the wtd argument.}
+\item{"sampled_Tracklets": }{a list of matrices (one matrix per customFunc) containing the identity of the sampled tracklets (rows) over each bootstrap sampling (columns).}
+\item{"sampled_Values": }{a list of matrices (one matrix per customFunc) containing the value returned by a given customFunc (rows) over each bootstrap sampling (columns).}
+\item{"omitted_Tracklets": }{a list of matrices (one matrix per customFunc) containing the identity of the omitted tracklets (rows) over each bootstrap sampling (columns).
+Tracklet omission may occur when a given customFunc returns NA. This list is only included in the output if at least one tracklets have been omitted.}
+}}
 }
 }
 \description{

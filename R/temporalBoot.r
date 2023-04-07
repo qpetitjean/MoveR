@@ -40,7 +40,6 @@
 #'          \item{"timeCol": }{the timeline according to timeCol and sampling arguments.}
 #'          \item{"nbTracklets": }{the number of tracklets included within each computation.}
 #'       }}
-#'       
 #'     \item{"BootSampling": }{a list of sublists corresponding to the sampling points according to timeCol and sampling arguments. 
 #'     Each sublist contains: 
 #'       \itemize{

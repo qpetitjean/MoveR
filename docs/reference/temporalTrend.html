@@ -180,7 +180,7 @@ Each dataframe contains 3 columns indicating:</p><ul><li><p>"customFuncName": th
 <span class="r-in"><span><span class="co"># check the tracklets</span></span></span>
 <span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="va">TrackList</span>,</span></span>
 <span class="r-in"><span>         timeCol <span class="op">=</span> <span class="st">"frame"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in strwidth(colVal):</span> plot.new has not been called yet</span>
+<span class="r-plt img"><img src="temporalTrend-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># add some metric to the dataset (speed and turning angle) and time unit conversion</span></span></span>
 <span class="r-in"><span><span class="va">TrackListV1</span> <span class="op">&lt;-</span></span></span>
@@ -228,6 +228,7 @@ Each dataframe contains 3 columns indicating:</p><ul><li><p>"customFuncName": th
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Smoothedtracks</span><span class="op">[[</span><span class="st">"MeanSpeed"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">MeanSpeed</span> <span class="op">~</span> <span class="va">Smoothedtracks</span><span class="op">[[</span><span class="st">"MeanSpeed"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">frame</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">Smoothedtracks</span><span class="op">[[</span><span class="st">"MeanTurnAngle"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">MeanTurnAngle</span> <span class="op">~</span> <span class="va">Smoothedtracks</span><span class="op">[[</span><span class="st">"MeanTurnAngle"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">frame</span>, type <span class="op">=</span> <span class="st">"l"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="temporalTrend-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
