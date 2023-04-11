@@ -105,8 +105,8 @@ as <a href="https://trex.run">TRex</a>,
 <strong>CLEAN/FILTER</strong> the data according to custom functions
 specified by the user. For instance, it can easily remove suspected
 tracking errors based on expected particles’ size or speed. It is also
-possible to sample the particles’ tracks according to a specified time
-step or remove part of the tracks that are detected outside an arena or
+possible to sample the particles’ tracks (tracklets) according to a specified time
+step or remove part of the tracklets that are detected outside an arena or
 a given area.
 </li>
 <br />
@@ -117,19 +117,19 @@ detection compared to manual annotations.
 </li>
 <br />
 <li>
-<strong>VISUALIZE</strong> the tracks of all or specified particles over
+<strong>VISUALIZE</strong> the tracklets of all or specified particles over
 time.
 </li>
 <br />
 <li>
-<strong>ANALYSE</strong> the data over tracks, time, or space. It is
-possible to compute low (basics) or high (advanced) level metrics over
-each track and temporal and spatial trends. In a nutshell, Low and
-High-level metrics return the results of a given computation over each
-track, while temporal trends functions return the results of a given
-calculation over time by averaging the value of each track. It is also
+<strong>ANALYSE</strong> the data over tracklets, time, or space. It is
+possible to compute basics metrics over each tracklet but also to conduct 
+more advanced computation by looking for temporal and spatial trends. 
+In a nutshell, basics metrics return the results of a given 
+computation over each tracklet, while temporal trends functions return the results of a given
+calculation over time by averaging the value of each tracklet. It is also
 possible to compute a studentized 95% confidence interval by
-bootstrapping over the tracks. Also, it is possible to extract specified
+bootstrapping over the tracklet. Also, it is possible to extract specified
 spatial trends according to a given pattern set by the user.
 </li>
 <br />
