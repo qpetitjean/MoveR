@@ -42,7 +42,7 @@ navbar:
       href: articles/MoveR-ParallelComputation.html
   - text: Changelog
     icon: fas fa-history
-    href: NEWS.md
+    href: news/index.html
   right:
   - icon: fa-home
     href: index.html

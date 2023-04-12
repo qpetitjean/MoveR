@@ -1,3 +1,4 @@
-# MoveR 0.0.0.9000
+# MoveR dev. release v0.1.0
 
-* Added a `NEWS.md` file to track changes to the package.
+* This is the development release of the MoveR package.
+* This version is still under active development and might be unstable.
