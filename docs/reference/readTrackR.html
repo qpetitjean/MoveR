@@ -65,6 +65,8 @@ Also, the function can flip y coordinates (see flipY argument)."><!-- mathjax --
     <a class="dropdown-item" href="../articles/MoveR-ImportData.html">Import Data</a>
     <a class="dropdown-item" href="../articles/MoveR-Clean-FilterData.html">Clean/Filter Data</a>
     <a class="dropdown-item" href="../articles/MoveR-ComputeMetrics.html">Compute some metrics</a>
+    <a class="dropdown-item" href="../articles/MoveR-SensitivityAnalysis.html">Conduct Sensitivity Analysis</a>
+    <a class="dropdown-item" href="../articles/MoveR-ParallelComputation.html">Perform Parallel Computation</a>
   </div>
 </li>
 <li class="nav-item">
@@ -179,9 +181,9 @@ and the second containing all the elements retrieved from the .csv file (see raw
 <span class="r-in"><span><span class="co"># Download the first dataset from the sample data repository</span></span></span>
 <span class="r-in"><span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">1</span>, tracker <span class="op">=</span> <span class="st">"TrackR"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Path2Data</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpmYFHq7\\MoveR_SampleData-main\\sample_1\\TrackROutput\\2602_ISA3080_Low_5_Results.csv"                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpmYFHq7\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpmYFHq7\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\TrackROutput\\2602_ISA3080_Low_5_Results.csv"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"                          </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Import the list containing the 9 vectors classically used for further computation</span></span></span>
 <span class="r-in"><span><span class="co"># and flip Y coordinates to start on the top-left</span></span></span>

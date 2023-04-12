@@ -37,6 +37,8 @@ this function download the selected sample dataset used as example to run the fu
     <a class="dropdown-item" href="../articles/MoveR-ImportData.html">Import Data</a>
     <a class="dropdown-item" href="../articles/MoveR-Clean-FilterData.html">Clean/Filter Data</a>
     <a class="dropdown-item" href="../articles/MoveR-ComputeMetrics.html">Compute some metrics</a>
+    <a class="dropdown-item" href="../articles/MoveR-SensitivityAnalysis.html">Conduct Sensitivity Analysis</a>
+    <a class="dropdown-item" href="../articles/MoveR-ParallelComputation.html">Perform Parallel Computation</a>
   </div>
 </li>
 <li class="nav-item">
@@ -106,7 +108,9 @@ to sample data from each tracking software.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>This function returns a vector containing the path to the selected sample dataset(s) (raw tracking data), the distance matrix from the border of the arena (performed using ImageJ) and the reference data, a .csv file containing particles location (manually detected) over several frames to perform sensitivity analyses.
+<p>This function returns a vector containing the path to the selected sample dataset(s) (raw tracking data), the distance matrix from the border of the arena (color tresholding - greyscale - performed using ImageJ),
+the reference data (a .csv file containing particles location -manually detected- over several frames to perform sensitivity analyses) and the filtered/cleaned version of the
+tracking data (filtered using the approach described in the MoveR-Clean-FilterData vignette).
 In case the sample dataset has already been downloaded in a temporary (default) or specified directory, the function retrieve the data instead of downloading it again.</p>
     </div>
     <div class="section level2">
@@ -121,9 +125,9 @@ In case the sample dataset has already been downloaded in a temporary (default) 
 <span class="r-in"><span><span class="co"># Here we are selecting the first sample dataset, that have been tracked using \href{https://trex.run}{TRex}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">DLsampleData</span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">1</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpmYFHq7\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpmYFHq7\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpmYFHq7\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"                          </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># If the "dir" argument is not specified, the data are saved in a temporary directory (deleted after the R session is properly terminated).</span></span></span>
 <span class="r-in"><span><span class="co"># In case the sample data has already been downloaded, the function will retrieve it instead of downloading it again.</span></span></span>

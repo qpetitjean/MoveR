@@ -35,6 +35,8 @@
     <a class="dropdown-item" href="../articles/MoveR-ImportData.html">Import Data</a>
     <a class="dropdown-item" href="../articles/MoveR-Clean-FilterData.html">Clean/Filter Data</a>
     <a class="dropdown-item" href="../articles/MoveR-ComputeMetrics.html">Compute some metrics</a>
+    <a class="dropdown-item" href="../articles/MoveR-SensitivityAnalysis.html">Conduct Sensitivity Analysis</a>
+    <a class="dropdown-item" href="../articles/MoveR-ParallelComputation.html">Perform Parallel Computation</a>
   </div>
 </li>
 <li class="nav-item">
@@ -160,7 +162,7 @@
       </dl></div><div class="section level2">
       <h2 id="visualize">Visualize<a class="anchor" aria-label="anchor" href="#visualize"></a></h2>
       
-      <p class="section-desc"></p><p>Visualize the tracks of all or specified particles over time.</p>
+      <p class="section-desc"></p><p>Visualize the tracklets of all or specified particles over time.</p>
 
       
     </div><div id="" class="section level2">
@@ -174,9 +176,9 @@
         </dt>
         <dd>Display tracklets on a plot.</dd>
       </dl></div><div class="section level2">
-      <h2 id="low-level-metrics">Low Level Metrics<a class="anchor" aria-label="anchor" href="#low-level-metrics"></a></h2>
+      <h2 id="basic-metrics">Basic Metrics<a class="anchor" aria-label="anchor" href="#basic-metrics"></a></h2>
       
-      <p class="section-desc"></p><p>Performed simple computation over each tracks.</p>
+      <p class="section-desc"></p><p>Performed simple computation over each tracklet.</p>
 
       
     </div><div id="" class="section level2">
@@ -189,6 +191,21 @@
           <code><a href="activity1.html">activity1()</a></code> 
         </dt>
         <dd>Determine active or inactive states according to the speed of a particles along its trajectory.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="activity2.html">activity2()</a></code> 
+        </dt>
+        <dd>Determine active or inactive states according to density based clustering method.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="analyseTracklets.html">analyseTracklets()</a></code> 
+        </dt>
+        <dd>Perform custom computation over a tracklet list.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ANND.html">ANND()</a></code> 
+        </dt>
+        <dd>Compute Average Nearest Neighbour Distance (ANND) among tracklets.</dd>
       </dl><dl><dt>
           
           <code><a href="dist2Edge.html">dist2Edge()</a></code> 
@@ -206,6 +223,11 @@
         <dd>Compute the distance traveled by a particle over a trajectory.</dd>
       </dl><dl><dt>
           
+          <code><a href="exploredArea.html">exploredArea()</a></code> 
+        </dt>
+        <dd>Compute the total surface explored and display the corresponding heatmap.</dd>
+      </dl><dl><dt>
+          
           <code><a href="sinuosity.html">sinuosity()</a></code> 
         </dt>
         <dd>Compute corrected rediscretized sinuosity index for a given tracklet.</dd>
@@ -219,37 +241,6 @@
           <code><a href="turnAngle.html">turnAngle()</a></code> 
         </dt>
         <dd>Compute particle's turning angle over a trajectory.</dd>
-      </dl></div><div class="section level2">
-      <h2 id="high-level-metrics">High Level Metrics<a class="anchor" aria-label="anchor" href="#high-level-metrics"></a></h2>
-      
-      <p class="section-desc"></p><p>Performed more advanced computation over each tracks.</p>
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="activity2.html">activity2()</a></code> 
-        </dt>
-        <dd>Determine active or inactive states according to density based clustering method.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="analyseTracklets.html">analyseTracklets()</a></code> 
-        </dt>
-        <dd>Perform custom computation over a tracklet list.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="ANND.html">ANND()</a></code> 
-        </dt>
-        <dd>Compute Average Nearest Neighbour Distance (ANND) among tracklets.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="exploredArea.html">exploredArea()</a></code> 
-        </dt>
-        <dd>Compute the total surface explored and display the corresponding heatmap.</dd>
       </dl><dl><dt>
           
           <code><a href="turchinD.html">turchinD()</a></code> 
@@ -279,7 +270,7 @@
       </dl></div><div class="section level2">
       <h2 id="spatial-trends">Spatial Trends<a class="anchor" aria-label="anchor" href="#spatial-trends"></a></h2>
       
-      <p class="section-desc"></p><p>Analyse spatial trends over tracks according to custom pattern (e.g., displacement across area).</p>
+      <p class="section-desc"></p><p>Analyse spatial trends over tracklets according to custom pattern (e.g., displacement across area).</p>
 
       
     </div><div id="" class="section level2">

@@ -61,6 +61,8 @@
     <a class="dropdown-item" href="../articles/MoveR-ImportData.html">Import Data</a>
     <a class="dropdown-item" href="../articles/MoveR-Clean-FilterData.html">Clean/Filter Data</a>
     <a class="dropdown-item" href="../articles/MoveR-ComputeMetrics.html">Compute some metrics</a>
+    <a class="dropdown-item" href="../articles/MoveR-SensitivityAnalysis.html">Conduct Sensitivity Analysis</a>
+    <a class="dropdown-item" href="../articles/MoveR-ParallelComputation.html">Perform Parallel Computation</a>
   </div>
 </li>
 <li class="nav-item">
@@ -100,7 +102,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Import Data</h1>
             
-            <h4 data-toc-skip class="date">2023-04-07</h4>
+            <h4 data-toc-skip class="date">2023-04-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-ImportData.Rmd" class="external-link"><code>vignettes/MoveR-ImportData.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-ImportData.Rmd</code></div>
@@ -116,7 +118,7 @@
 <h3 id="download-sample-data-from-github-">Download sample data from github.<a class="anchor" aria-label="anchor" href="#download-sample-data-from-github-"></a>
 </h3>
 <p>For this example we are selecting the first sample of data available in the <a href="https://github.com/qpetitjean/MoveR_SampleData" class="external-link">MoveR_SampleData</a> github repository.</p>
-<p>Briefly, this dataset come from the video recording (image resolution: 3840x2160) of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena for 8 minutes at 25 fps and tracked using <a href="https://trex.run" class="external-link">TRex</a> (see fig. <a href="#fig:VideoPics">1</a> below).</p>
+<p>Briefly, this dataset come from the video recording (image resolution: 3840x2160) of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena for 8 minutes at 25 fps (see fig. <a href="#fig:VideoPics">1</a> below) and tracked using <a href="https://trex.run" class="external-link">TRex</a> (Walter and Couzin, 2021).</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:VideoPics"></span>
 <img src="https://github.com/qpetitjean/MoveR_SampleData/raw/main/sample_1/2602_ISA3080_Low_5_Compressed.gif" alt="Frame extracted from a video recording of 12 parasitic micro-wasps (genus &lt;em&gt;Trichogramma&lt;/em&gt;) placed in a polygonal arena." width="100%"><p class="caption">
@@ -129,9 +131,9 @@ Figure 1: Frame extracted from a video recording of 12 parasitic micro-wasps (ge
 <span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">1</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Path2Data</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpmYFHq7\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span></span>
-<span><span class="co">## [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpmYFHq7\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span></span>
-<span><span class="co">## [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpmYFHq7\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span></span>
+<span><span class="co">## [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span></span>
+<span><span class="co">## [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"</span></span></code></pre>
 <p>The function download the data from the <a href="https://github.com/qpetitjean/MoveR_SampleData" class="external-link">MoveR_SampleData</a> github repository and returns a vector containing the path to the raw data and the distance matrix helping to locate the edge of the arena and the reference data corresponding to the location particles (manually detected) over several frames (the latters will be useful in another tutorial).</p>
 <p>Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the “dir” argument from the <em>DLsampleData</em> function.
 In any case, the function look for previous occurrence of the sample data to avoid multiple downloading.</p>
@@ -517,6 +519,14 @@ Figure 5: Micro-wasps trajectories for Tricho_7 and Tricho_11 over the whole vid
 <p>Indeed, on the fig. <a href="#fig:drawTracklets4">5</a> the track of these two individuals are clearly interrupted at multiple location. It indicate that the tracking software have lost or perhaps switched the identity of some animals over the tracking session. The dataset hence need to cleaned/filtered to remove as much artifacts as possible.</p>
 <p>For more insight how to use MoveR to clean and filter your dataset and then run further computation check the next tutorials.</p>
 <p><strong>Happy coding.</strong></p>
+</div>
+<div class="section level3">
+<h3 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h3>
+<ul>
+<li>Walter, T., Couzin, I.D., 2021. TRex, a fast multi-animal tracking system with markerless identification, and 2D estimation of posture and visual fields. eLife 10, e64000. <a href="https://doi.org/10.7554/eLife.64000" class="external-link uri">https://doi.org/10.7554/eLife.64000</a>
+</li>
+</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
