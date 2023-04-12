@@ -2,7 +2,7 @@ title: MoveR
 url: http://qpetitjean.github.io/MoveR
 
 development:
-  mode: release
+  mode: auto
   version_label: danger
   version_tooltip: "dev. version"
   
