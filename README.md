@@ -18,7 +18,7 @@ video tracking solutions in a reproducible, reliable and open framework.
 
 ## Dependencies
 
-In a sack of flexibility, `MoveR` is mainly coded using base `r fontawesome::fa("r-project", fill = "steelblue")`.<br />
+In a sack of flexibility, `MoveR` is mainly coded using base.<br />
 However it still relies on a few dependencies:<br />
 
 <ul>
