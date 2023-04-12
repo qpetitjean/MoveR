@@ -63,8 +63,8 @@ trackDat <- MoveR::convert2Tracklets(TRexDat[-which(names(TRexDat) == "ntargets"
 ```
 
 Now we have imported the data, we can clean them to remove for instance:
-* infinite values corresponding to the moments where the particles were undetected, 
-* probable spurious elements detected by the tracking software using several filters based on the particles size, speed, location within the arena). 
+  * infinite values corresponding to the moments where the particles were undetected, 
+  * probable spurious elements detected by the tracking software using several filters based on the particles size, speed, location within the arena). 
 For this purpose, 3 main functions, `filterFunc()`, `mergeFilters()` and `filterTracklets()` allow to specify custom filters, merge several filters and use them to clean the data, respectively.
 
 ## Remove infinite values 
@@ -119,11 +119,12 @@ trackDat.Infilt <-
 
 # display the summary of the filtering process
 str(trackDat.Infilt[[1]])
+
 ```
 
 The function output correspond to a list containing 2 sublists:  
-* the first one being a summary of the filtering process
-* the second containing the list of filtered tracklets which can be used for further computation
+  * the first one being a summary of the filtering process
+  * the second containing the list of filtered tracklets which can be used for further computation
 See the help page of the function for more details (?MoveR::filterTracklets())
 
 According to the summary of the filtering process, the number of tracklet is drastically increased after the filtering (Tracknb_before_filter = 88 -> Tracknb_after_filter = 165583 tracklets) but a large amount appears to be very short and may be due to punctual detection of an individual over the timeline because, the `minDur` argument allow to remove an important part of these tracklets (Tracknb_after_filter = 165583 -> Tracknb_after_minDur = 6989 tracklets). 
@@ -189,6 +190,7 @@ hist(log10(MoveR::convert2List(trackDat.lenfilt[[2]])$maj.ax),
      xlab = "Particles' length (log10)",
      cex.main = 0.8)
 mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+
 ```
 
 According to the summary of the filtering step based on particles' size, the amount of data removed by the filtering is reasonable with 3.7% of data considered above or below the particles' length threshold but the filter splited some tracklets in small part resulting in an additional 2.5% of data removed because resulting tracklets were shorter than 1 second (25 frames).
@@ -261,6 +263,7 @@ hist(log10(MoveR::convert2List(trackDat.speedfilt[[2]])[["speed"]]),
      cex.main= 0.9,
      xlab = "Particles' speed (log10)")
 mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+
 ```
 
 According to the summary of the filtering step based on particles' speed, the amount of data removed by the filtering is reasonable with 0.1% of data considered above the speed threshold, which is consistent with our approach since we wanted to remove only extremes values (999Th quantile, fig. \@ref(fig:SpeedClean)A&B). 
@@ -274,8 +277,8 @@ Finally, it seems interesting to remove the particles that are detected outside 
 Indeed, sometimes particles can be detected outside the arena, either because an individual as escaped from the arena or because the background has changed over the video recording (tracking artifact). To solve this issue, it is possible to remove the parts of a tracklet that have been detected outside the arena. 
 
 To tackle this aim, we will report two main methods:
-* use a distance matrix from the arena edge  generated using simple color tresholding in imageJ (particularly useful if the arena have a complex polygonal shape) to retrieve relative position of the particles from the edge and then filter on it.
-* or compute the distance to the known arena edge and then filter on it.
+  * use a distance matrix from the arena edge  generated using simple color tresholding in imageJ (particularly useful if the arena have a complex polygonal shape) to retrieve relative position of the particles from the edge and then filter on it.
+  * or compute the distance to the known arena edge and then filter on it.
 
 We first need to import the location of the distance matrix from the arena edge  or the location of the arena edge. 
 For this example we will use the distance matrix for both purposes. 
@@ -441,6 +444,7 @@ polygon(c(0,
 
 # rename the cleaned dataset for further use
 trackDat5 <- trackDat.borderfilt[[2]]
+
 ```
 
 According to the summary of the filtering step based the location of the particles inside or outside the arena, the amount of data removed by the filtering is very low (<0.1%), confirming that there is few tracking artifact outside of the arena (values within the red area in fig. \@ref(fig:edgeClean)A). 
@@ -466,6 +470,7 @@ MoveR::drawTracklets(
     points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01)
   )
 )
+
 ```
 
 Here we can see that the points detected outside the arena belong to two tracklets that stayed still over the video-recording ("Tracklet_2" and "Tracklet_3724"). We can thus be confident about the fact that it should be considered as tracking artifacts.
@@ -609,6 +614,7 @@ MoveR::drawTracklets(
     points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01)
   )
 )
+
 ```
 As observed trough the use of the first method, the points detected outside the arena belong to two tracklets that stayed still over the video-recording ("Tracklet_2" and "Tracklet_3724") (fig. \@ref(fig:edgeCleanBeforeAfterAlternative)). We can thus be confident about the fact that it should be considered as tracking artifacts. Also, it confirms that the 2 methods give similar outputs, at least for filtering tracklets detected outside the arena.
 
@@ -658,9 +664,6 @@ Data_Trex_stats_after_filter <-
                     scale = scaling,
                     unit = "cm")
 
-str(Data_Trex_stats_before_filter)
-str(Data_Trex_stats_after_filter)
-
 ```
 
 By comparing the summary of the tracking information before and after the filtering process, we can see that video characteristics are unchanged. 
@@ -682,6 +685,7 @@ data.table::fwrite(
   dec = ".",
   na = "NA",
 )
+
 ```
 
 Now that the filtering/cleaning process is achieved, we can move to data analysis through various metrics computations.
@@ -694,6 +698,6 @@ For more insight how to use MoveR to run further computation check the next tuto
 
 ## References
 
-* Ion Scotta, M., Margris, L., Sellier, N., Warot, S., Gatti, F., Siccardi, F., Gibert, P., Vercken, E., Ris, N., 2021. Genetic Variability, Population Differentiation, and Correlations for Thermal Tolerance Indices in the Minute Wasp, Trichogramma cacoeciae. Insects 12, 1013. https://doi.org/10.3390/insects12111013
+  * Ion Scotta, M., Margris, L., Sellier, N., Warot, S., Gatti, F., Siccardi, F., Gibert, P., Vercken, E., Ris, N., 2021. Genetic Variability, Population Differentiation, and Correlations for Thermal Tolerance Indices in the Minute Wasp, Trichogramma cacoeciae. Insects 12, 1013. https://doi.org/10.3390/insects12111013
 
-* Walter, T., Couzin, I.D., 2021. TRex, a fast multi-animal tracking system with markerless identification, and 2D estimation of posture and visual fields. eLife 10, e64000. https://doi.org/10.7554/eLife.64000
+  * Walter, T., Couzin, I.D., 2021. TRex, a fast multi-animal tracking system with markerless identification, and 2D estimation of posture and visual fields. eLife 10, e64000. https://doi.org/10.7554/eLife.64000

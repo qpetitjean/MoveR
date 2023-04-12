@@ -91,6 +91,7 @@ Here we use only the 7 first element of Data because the last two (i.e., ntarget
 trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
 
 str(trackDat[1:3]) # display only the 3 first tracklets
+
 ```
 
 Now we can easily look at the trajectory for a given particle by selecting its identity.
@@ -142,6 +143,7 @@ mtext(
   adj = 0,
   padj = -0.5
 )
+
 ```
 
 otherwise, it is possible to focus on the trajectories recorded within a given time intervals. For instance, between 1 and 999 frames (see fig. \@ref(fig:drawTracklets2)A below) and between 6000 and 6999 frames and 11000, 11999 frames (see fig. \@ref(fig:drawTracklets2)B below).
@@ -169,6 +171,7 @@ MoveR::drawTracklets(
 
 # add a letter identifying the plot to the upper left corner of the second plot
 mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+
 ```
 
 Note that it is also possible to represent specified tracklets over given time window(s) by combining the `selFrags` and `timeWin` arguments respectively.
@@ -181,7 +184,9 @@ However, here the identity of the particles is a numerical variable, we hence ne
 trackDatList <- MoveR::convert2List(trackDat)
 trackDatList[["identity"]] <- paste("Tricho", trackDatList[["identity"]], sep = "_")
 trackDat <- MoveR::convert2Tracklets(trackDatList, by = "identity")
+
 str(trackDat)
+
 ```
 
 As previously noted, the various arguments from `drawTracklets()` can be combined to emphasize the behavior of particular tracklets over a specified time window (see fig. \@ref(fig:drawTracklets3)B below).
@@ -212,6 +217,7 @@ MoveR::drawTracklets(
 
 # add a letter identifying the plot to the upper left corner of the second plot
 mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
+
 ```
 
 By looking at the fig. \@ref(fig:drawTracklets3)B, we can see that some particles' tracks are interrupted. This is particularly obvious for Tricho_7 or Tricho_11, let's take a closer look. 
@@ -227,6 +233,7 @@ MoveR::drawTracklets(
   colId = "identity",
   selTrack = c("Tricho_7","Tricho_11")
 )
+
 ```
 
 Indeed, on the fig. \@ref(fig:drawTracklets4) the track of these two individuals are clearly interrupted at multiple location. It indicate that the tracking software have lost or perhaps switched the identity of some animals over the tracking session. The dataset hence need to cleaned/filtered to remove as much artifacts as possible. 

@@ -116,7 +116,3 @@ reference:
       - '`locaPos`' 
       - '`flipYCoords`' 
       - '`slidWindow`'
-      
-news:
-    one_page: true
-    cran_dates: false
