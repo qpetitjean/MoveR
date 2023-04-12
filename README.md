@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 <img alt="GitHub" src="https://img.shields.io/github/license/qpetitjean/MoveR"><br />
-<img alt="GitHub R package version (branch)" src="https://img.shields.io/github/r-package/v/qpetitjean/MoveR/MoveRV1?label=Package%20version"><br />
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/qpetitjean/MoveR?include_prereleases">
 <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/qpetitjean/MoveR"><br />
 <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/qpetitjean/MoveR"> 
 <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/qpetitjean/MoveR"><br />
