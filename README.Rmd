@@ -21,11 +21,11 @@ MoveR <img src="man/figures/hexsticker.png" height="120" align="right"/>
 
 <!-- badges: start -->
 <img alt="GitHub" src="https://img.shields.io/github/license/qpetitjean/MoveR"><br />
-<img alt="GitHub R package version (branch)" src="https://img.shields.io/github/r-package/v/qpetitjean/MoveR/MoveRV1?label=Package%20version"><br />
+<img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/qpetitjean/MoveR?include_prereleases">
 <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/qpetitjean/MoveR"><br />
 <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/qpetitjean/MoveR">&nbsp;
 <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/qpetitjean/MoveR"><br />
-<img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/qpetitjean/MoveR/MoveRV1">
+<img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/qpetitjean/MoveR/Main">
 <!-- badges: end -->
 
 The `MoveR` `r fontawesome::fa("r-project", fill = "steelblue")` package aims to help users analyze the output of automated video-tracking solutions in a reproducible, reliable and open framework.

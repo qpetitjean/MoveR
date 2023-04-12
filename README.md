@@ -13,13 +13,18 @@
 <img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/qpetitjean/MoveR/Main">
 <!-- badges: end -->
 
-The `MoveR` package aims to help users analyze the output of automated
-video tracking solutions in a reproducible, reliable and open framework.
+The `MoveR`
+<img src="man/figures/fa-icon-9b00320707d42527dde67262afb33ded.svg"
+style="width:1.13em;height:1em" /> package aims to help users analyze
+the output of automated video-tracking solutions in a reproducible,
+reliable and open framework.
 
 ## Dependencies
 
-In a sack of flexibility, `MoveR` is mainly coded using base .<br />
-However it still relies on a few dependencies:<br />
+In a sack of flexibility, `MoveR` is mainly coded using base
+<img src="man/figures/fa-icon-9b00320707d42527dde67262afb33ded.svg"
+style="width:1.13em;height:1em" />.<br /> However it still relies on a
+few dependencies:<br />
 
 <ul>
 <li>
@@ -83,9 +88,11 @@ and repeat the above installation commands.
 
 ## Overview
 
-`MoveR` is an package allowing to import, clean/filter and analyze raw
-particles/animal movement data obtained from video-tracking
-softwares.<br />
+`MoveR` is an
+<img src="man/figures/fa-icon-9b00320707d42527dde67262afb33ded.svg"
+style="width:1.13em;height:1em" /> package allowing to import,
+clean/filter and analyze raw particles/animal movement data obtained
+from video-tracking softwares.<br />
 
 ### Main workflow steps
 
@@ -93,8 +100,8 @@ More particularly, `MoveR` provides tools to:<br />
 
 <ul>
 <li>
-<strong>IMPORT</strong> the raw data from various tracking software such
-as <a href="https://trex.run">TRex</a>,
+<strong>IMPORT</strong> the raw data from various video-tracking
+software such as <a href="https://trex.run">TRex</a>,
 <a href="https://swarm-lab.github.io/trackR">trackR</a>,
 <a href="https://ctrax.sourceforge.net/">Ctrax</a> and
 <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a>
@@ -105,9 +112,9 @@ as <a href="https://trex.run">TRex</a>,
 <strong>CLEAN/FILTER</strong> the data according to custom functions
 specified by the user. For instance, it can easily remove suspected
 tracking errors based on expected particles’ size or speed. It is also
-possible to sample the particles’ tracks (tracklets) according to a specified time
-step or remove part of the tracklets that are detected outside an arena or
-a given area.
+possible to sample particles’ tracklets (i.e., a fragment of particle’s
+trajectory) according to a specified time step or split tracklets’ and
+remove parts that are detected outside an arena or a given area.
 </li>
 <br />
 <li>
@@ -117,20 +124,20 @@ detection compared to manual annotations.
 </li>
 <br />
 <li>
-<strong>VISUALIZE</strong> the tracklets of all or specified particles over
-time.
+<strong>VISUALIZE</strong> the tracklets of all or specified particles
+over time.
 </li>
 <br />
 <li>
 <strong>ANALYSE</strong> the data over tracklets, time, or space. It is
-possible to compute basics metrics over each tracklet but also to conduct 
-more advanced computation by looking for temporal and spatial trends. 
-In a nutshell, basics metrics return the results of a given 
-computation over each tracklet, while temporal trends functions return the results of a given
-calculation over time by averaging the value of each tracklet. It is also
-possible to compute a studentized 95% confidence interval by
-bootstrapping over the tracklet. Also, it is possible to extract specified
-spatial trends according to a given pattern set by the user.
+possible to compute low (basics) or high (advanced) level metrics over
+each tracklet and temporal and spatial trends. In a nutshell, Low and
+High-level metrics return the results of a given computation over each
+tracklet, while temporal trends functions return the results of a given
+calculation over time by averaging the value of each tracklet. It is
+also possible to compute a studentized 95% confidence interval by
+bootstrapping over the tracklets. Also, it is possible to extract
+specified spatial trends according to a given pattern set by the user.
 </li>
 <br />
 </ul>
