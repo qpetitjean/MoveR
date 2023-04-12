@@ -24,13 +24,7 @@
 #'          \item{"y.pos": }{the y position of the manually detected particle's that have not been detected by the tracking method (from refDat).}
 #'          \item{"timeCol": }{the time unit at which manual detection have been performed (from refDat).}
 #'      } }
-#'    \item{"FalsePositive": }{a dataframe containing 10 columns which retrieves the informations of the particles that have been detected by the tracking method but is not truly present (i.e., not detected via manual observation):
-#'       \itemize{
-#'          \item{"see \code{\link{readCtrax}},
-#'          \code{\link{readTrackR}},
-#'          \code{\link{readTrex}},
-#'          \code{\link{readIdtracker}}"}
-#'      }
+#'    \item{"FalsePositive": }{a dataframe containing the informations belonging to each particles that have been detected by the tracking method but is not truly present (i.e., not detected via manual observation)
 #'    }
 #' }
 #'

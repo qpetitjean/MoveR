@@ -1,7 +1,7 @@
 Package: MoveR
 Type: Package
 Title: R Package For Movement Analysis
-Version: 0.0.0.9000
+Version: v0.1.0
 Authors@R: c(
     person(given   = "Quentin",
            family  = "PETITJEAN",
@@ -21,7 +21,7 @@ Authors@R: c(
            family  = "COINTE",
            role    = c("ctb"),
            email   = "melina.cointe@inrae.fr"))
-Description: A set of functions helping users to process (i.e., filter, clean, draw and analyse) movement datas provided by 
+Description: A set of functions helping users to process (i.e., filter, clean, draw and analyse) movement data provided by 
     tracking software.  
 URL: https://github.com/qpetitjean/MoveR
 BugReports: https://github.com/qpetitjean/MoveR/issues

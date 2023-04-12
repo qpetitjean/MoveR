@@ -12,11 +12,7 @@ pkgdown:
   as_is: true
 ---
 
-# Import data
-
 We are starting with a basic example of importing raw data from tracking software.
-
-## Download sample data from github.
 
 For this example we are selecting the first sample of data available in the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository. 
 
@@ -28,6 +24,8 @@ knitr::include_graphics(
 )
 
 ```
+
+## Download sample data from github.
 
 Now let's download the data.
 

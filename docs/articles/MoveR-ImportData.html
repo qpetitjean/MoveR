@@ -66,7 +66,7 @@
   </div>
 </li>
 <li class="nav-item">
-  <a class="nav-link" href="../NEWS.html">
+  <a class="nav-link" href="../news/index.html">
     <span class="fas fa fas fa-history"></span>
      
     Changelog
@@ -110,13 +110,7 @@
 
     
     
-<div class="section level2">
-<h2 id="import-data">Import data<a class="anchor" aria-label="anchor" href="#import-data"></a>
-</h2>
 <p>We are starting with a basic example of importing raw data from tracking software.</p>
-<div class="section level3">
-<h3 id="download-sample-data-from-github-">Download sample data from github.<a class="anchor" aria-label="anchor" href="#download-sample-data-from-github-"></a>
-</h3>
 <p>For this example we are selecting the first sample of data available in the <a href="https://github.com/qpetitjean/MoveR_SampleData" class="external-link">MoveR_SampleData</a> github repository.</p>
 <p>Briefly, this dataset come from the video recording (image resolution: 3840x2160) of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena for 8 minutes at 25 fps (see fig. <a href="#fig:VideoPics">1</a> below) and tracked using <a href="https://trex.run" class="external-link">TRex</a> (Walter and Couzin, 2021).</p>
 <div class="figure" style="text-align: center">
@@ -125,6 +119,9 @@
 Figure 1: Frame extracted from a video recording of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena.
 </p>
 </div>
+<div class="section level2">
+<h2 id="download-sample-data-from-github-">Download sample data from github.<a class="anchor" aria-label="anchor" href="#download-sample-data-from-github-"></a>
+</h2>
 <p>Now let’s download the data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dl the first dataset from the sample data repository</span></span>
@@ -138,9 +135,9 @@ Figure 1: Frame extracted from a video recording of 12 parasitic micro-wasps (ge
 <p>Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the <code>dir</code> argument from <code><a href="../reference/DLsampleData.html">DLsampleData()</a></code>.
 In any case, the function look for previous occurrence of the sample data to avoid multiple downloading.</p>
 </div>
-<div class="section level3">
-<h3 id="import-sample-data-into-r-environment-">Import sample data into R environment.<a class="anchor" aria-label="anchor" href="#import-sample-data-into-r-environment-"></a>
-</h3>
+<div class="section level2">
+<h2 id="import-sample-data-into-r-environment-">Import sample data into R environment.<a class="anchor" aria-label="anchor" href="#import-sample-data-into-r-environment-"></a>
+</h2>
 <p>Once the sample data has been downloaded or retrieved we use <code><a href="../reference/readTrex.html">readTrex()</a></code> to import the data into <svg aria-hidden="true" role="img" viewbox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:steelblue;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"></path></svg> environment.<br>
 Note that the same result can be achieved trough the use of <code><a href="../reference/readCtrax.html">readCtrax()</a></code>, <code><a href="../reference/readIdtracker.html">readIdtracker()</a></code> or <code><a href="../reference/readTrackR.html">readTrackR()</a></code> depending on the input data.</p>
 <p>Here the raw tracking data are located in the ./MoveR_SampleData-main/sample_1/TREXOutput directory which is the first element of the Path2Data vector.</p>
@@ -215,9 +212,9 @@ Note that the same result can be achieved trough the use of <code><a href="../re
 <p>In this case, the output of the function returns a list containing 2 sublists, the first corresponding to the one mentioned above and the second containing all the elements as returned by the tracking software.</p>
 <p>Also, the argument <code>mirrorY</code>, can be used to revert the y coordinates. Indeed some tracking software sets the origin of the y axis on the bottom-left while other use the upper-left corner of the video (see <code>??readTrex()</code> for more insight).</p>
 </div>
-<div class="section level3">
-<h3 id="convert-the-data-to-a-list-of-particles-tracks-tracklets-">Convert the data to a list of particles tracks (tracklets).<a class="anchor" aria-label="anchor" href="#convert-the-data-to-a-list-of-particles-tracks-tracklets-"></a>
-</h3>
+<div class="section level2">
+<h2 id="convert-the-data-to-a-list-of-particles-tracks-tracklets-">Convert the data to a list of particles tracks (tracklets).<a class="anchor" aria-label="anchor" href="#convert-the-data-to-a-list-of-particles-tracks-tracklets-"></a>
+</h2>
 <p>In order to ease the readability and computation performed on tracking data, the list of elements describing the tracking output need to be converted as a list of particles tracks called tracklets.</p>
 <p>To ease further computation, graphical representation and manual inspection the data are converted to a list of tracklets based on particles’ identity using <code><a href="../reference/convert2Tracklets.html">convert2Tracklets()</a></code>.
 Here we use only the 7 first element of Data because the last two (i.e., ntargets and timestamps) do not carry the same amount of information and are not useful for the next steps of this tutorial.</p>
@@ -267,9 +264,9 @@ For instance, here we are displaying the data frame containing the characteristi
 <span><span class="co">##  $ frame   : num  0 1 2 3 4 5 6 7 8 9 ...</span></span></code></pre>
 <p>It is then easy to look at the particles trajectories.</p>
 </div>
-<div class="section level3">
-<h3 id="first-look-at-the-trajectories">First look at the trajectories<a class="anchor" aria-label="anchor" href="#first-look-at-the-trajectories"></a>
-</h3>
+<div class="section level2">
+<h2 id="first-look-at-the-trajectories">First look at the trajectories<a class="anchor" aria-label="anchor" href="#first-look-at-the-trajectories"></a>
+</h2>
 <p>Using <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code>, it is easy to visualize the trajectories included in the dataset (see fig. <a href="#fig:drawTracklets1">2</a>A below), or to focus on the trajectories described only by some particles, here the fifth’ first (see fig. <a href="#fig:drawTracklets1">2</a>B below).</p>
 <p>Note that <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> needs an argument <code>timeCol</code> specifying the timeline of the video (here “frame”). One can also specify the resolution of the video to set x and y limits of the plot but as default, the <code>imgRes</code> argument use the maximum values recorded in x and y + 5% to set the plots limits (see drawTracklets documentation).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -347,6 +344,7 @@ Figure 3: Micro-wasps trajectories over specified part of the video timeline, ex
 <code class="sourceCode R"><span><span class="va">trackDatList</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat</span><span class="op">)</span></span>
 <span><span class="va">trackDatList</span><span class="op">[[</span><span class="st">"identity"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Tricho"</span>, <span class="va">trackDatList</span><span class="op">[[</span><span class="st">"identity"</span><span class="op">]</span><span class="op">]</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
 <span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">trackDatList</span>, by <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDat</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 13</span></span>
 <span><span class="co">##  $ Tricho_0 :'data.frame':   12013 obs. of  8 variables:</span></span>
@@ -520,14 +518,13 @@ Figure 5: Micro-wasps trajectories for Tricho_7 and Tricho_11 over the whole vid
 <p>For more insight how to use MoveR to clean and filter your dataset and then run further computation check the next tutorials.</p>
 <p><strong>Happy coding.</strong></p>
 </div>
-<div class="section level3">
-<h3 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
-</h3>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <ul>
 <li>Walter, T., Couzin, I.D., 2021. TRex, a fast multi-animal tracking system with markerless identification, and 2D estimation of posture and visual fields. eLife 10, e64000. <a href="https://doi.org/10.7554/eLife.64000" class="external-link uri">https://doi.org/10.7554/eLife.64000</a>
 </li>
 </ul>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
