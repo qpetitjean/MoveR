@@ -1,7 +1,7 @@
 Package: MoveR
 Type: Package
 Title: R Package For Movement Analysis
-Version: v0.1.0
+Version: 0.1.0
 Authors@R: c(
     person(given   = "Quentin",
            family  = "PETITJEAN",
