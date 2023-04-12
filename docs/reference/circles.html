@@ -154,13 +154,12 @@ It also returns a list containing the coordinates of the points simulated to dra
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/frame.html" class="external-link">plot.new</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="cn">NULL</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">120</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">120</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"x"</span>, ylab <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># draw 4 red-border and red-filled circles of different size on a new plot</span></span></span>
-<span class="r-in"><span><span class="va">circleCoords1</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">circles</span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">circleCoords1</span> <span class="op">&lt;-</span> <span class="fu">circles</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  radius <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  radius <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">15</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  center <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  border <span class="op">=</span> <span class="st">"red"</span>,</span></span>
 <span class="r-in"><span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"firebrick"</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>,</span></span>
@@ -169,25 +168,28 @@ It also returns a list containing the coordinates of the points simulated to dra
 <span class="r-in"><span>  lty <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>  draw <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="circles-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">circleCoords1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 85 85 85 85 85 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 44 44.1 44.1 44.2 44.3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 62 62 62 62 62 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 98 98.2 98.4 98.6 98.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 81 81 81 81 81 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 44 44 44 44 44.1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 65 65.1 65.2 65.3 65.5 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 51 51 51 51 51 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 98 98.1 98.1 98.2 98.2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 75 75 75 75 75 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 65 65 65.1 65.1 65.2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 28 28 28 28 28 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 29 29 29.1 29.1 29.1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 38 38 38 38 38 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 29 29.2 29.3 29.5 29.6 ...</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">circleCoords2</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">circles</span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="co"># draw 2 red-border and red-filled circles and 2 blue-border and blue-filled circles of different size on #' a new plot</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="cn">NULL</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>,<span class="fl">120</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>,<span class="fl">120</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"x"</span>, ylab <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">circleCoords2</span> <span class="op">&lt;-</span> <span class="fu">circles</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  radius <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  radius <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">20</span>, <span class="fl">4</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  center <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  border <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"firebrick"</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"lightblue"</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
@@ -196,22 +198,22 @@ It also returns a list containing the coordinates of the points simulated to dra
 <span class="r-in"><span>  lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  draw <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="circles-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">circleCoords2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 73 73 73 73 73 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 79 79 79 79 79.1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 83 83 83 83 83 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 45 45.3 45.5 45.8 46 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 67 67 67 67 67 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 45 45.1 45.1 45.2 45.2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 110 110 110 110 110 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 4 4.15 4.3 4.45 4.6 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 101 101 101 101 101 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 4 4.04 4.08 4.11 4.15 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 16 16 16 16 16 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 96 96.2 96.3 96.5 96.7 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 5 5 5 5 5 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 96 96 96.1 96.1 96.1 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 90 90 90 90 90 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 5 5.14 5.28 5.42 5.55 ...</span>
 <span class="r-in"><span></span></span>
-<span class="r-plt img"><img src="circles-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -1,0 +1,15 @@
+---
+title: "Parallel Computation"
+description: "A tutorial about how to speed up MoveR computation using parallel processing."
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    fig_caption: true
+    number_sections: false
+    global_numbering: false
+    link-citations: yes
+pkgdown:
+  as_is: true
+---
+
+TODO

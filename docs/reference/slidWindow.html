@@ -112,7 +112,7 @@ by performing the specified computation over the input vector by moving a center
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span> </span></span>
-<span class="r-in"><span><span class="co"># compute smoothed mean </span></span></span>
+<span class="r-in"><span><span class="co"># compute smoothed mean over a sliding window of 15 time unit in length</span></span></span>
 <span class="r-in"><span><span class="fu">slidWindow</span><span class="op">(</span> x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">150</span><span class="op">)</span>, Tstep <span class="op">=</span> <span class="fl">15</span>, customFunc <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1]           NA           NA           NA           NA           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [6]           NA           NA -0.194226194 -0.142082057 -0.036829378</span>
@@ -144,7 +144,7 @@ by performing the specified computation over the input vector by moving a center
 <span class="r-out co"><span class="r-pr">#&gt;</span> [136]  0.320118724  0.226212228  0.142834041  0.188207260  0.052744830</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [141]  0.039321250 -0.031673798 -0.044879985           NA           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [146]           NA           NA           NA           NA           NA</span>
-<span class="r-in"><span><span class="co"># compute smoothed variance </span></span></span>
+<span class="r-in"><span><span class="co"># compute smoothed variance over a sliding window of 15 time unit in length</span></span></span>
 <span class="r-in"><span><span class="fu">slidWindow</span><span class="op">(</span> x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">150</span><span class="op">)</span>, Tstep <span class="op">=</span> <span class="fl">15</span>, customFunc <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1]        NA        NA        NA        NA        NA        NA        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [8] 1.0311998 1.0336001 0.6963756 0.5367159 0.5194341 0.4556176 0.4373905</span>
@@ -167,30 +167,6 @@ by performing the specified computation over the input vector by moving a center
 <span class="r-out co"><span class="r-pr">#&gt;</span> [127] 0.8816763 0.8481104 0.9269095 0.9989280 1.0054827 0.9097580 0.9142402</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [134] 1.0756216 1.1076018 1.1845236 1.1801116 0.8838022 0.6355241 0.6575411</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [141] 0.6792715 0.6737378 0.6816449        NA        NA        NA        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [148]        NA        NA        NA</span>
-<span class="r-in"><span><span class="co"># compute smoothed sd</span></span></span>
-<span class="r-in"><span><span class="fu">slidWindow</span><span class="op">(</span> x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">150</span><span class="op">)</span>, Tstep <span class="op">=</span> <span class="fl">15</span>, customFunc <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1]        NA        NA        NA        NA        NA        NA        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [8] 1.5183547 1.5029671 0.8261287 0.9218964 0.9014370 0.9099489 0.9755484</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [15] 0.9727917 0.9855942 0.9821635 0.9304289 0.8331458 0.8399263 0.7966981</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [22] 0.8034452 0.7024739 0.6959871 0.8636965 0.7956522 0.8005990 0.8351479</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [29] 0.8393741 0.8339896 0.9151355 0.9304968 0.9388152 0.9402168 0.9555757</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [36] 0.9865553 1.1083752 1.1131883 1.0929202 1.0029240 1.0111741 1.0205753</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 0.9413119 0.9236048 1.0947900 1.0499561 1.0017068 0.9875805 0.9944439</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [50] 0.9874098 0.9061696 0.6961013 0.7392435 0.7927791 0.7917634 0.8695709</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] 0.8700816 0.8789786 0.9633655 0.8501949 0.8365543 0.8407759 0.8468160</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] 0.8782273 0.9427349 0.9431380 0.9419971 0.9329646 0.8302198 0.8512974</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [71] 0.8081370 0.8114885 0.8137987 0.8886311 0.7917471 0.7820224 0.7640539</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [78] 0.7346007 0.7284330 0.7042833 0.7012431 0.8796777 0.9066554 0.9184395</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 0.8901088 0.8958266 0.9642780 0.9842216 0.8344938 0.8611892 0.9624673</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [92] 0.9784821 0.9787093 0.9855286 0.9730399 0.9745021 0.9904301 0.9433107</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [99] 0.9454690 0.9919890 1.0124449 0.9518443 0.9926209 1.0300361 1.0333793</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [106] 0.9864738 0.9684378 1.0215233 1.0730117 1.0724471 1.0658453 0.9529433</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [113] 0.9127317 0.9225042 0.8993047 0.8893248 0.9612076 0.9272516 0.9489826</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [120] 0.9129590 0.9089758 0.9150975 0.8579133 0.8057074 0.8008784 0.7998908</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [127] 0.8018457 0.8101204 0.8093693 0.8068681 0.7990048 0.7134776 0.7199410</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [134] 0.6709870 0.6824227 0.6675724 0.6610297 0.6504095 0.6843040 0.6835999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [141] 0.7644889 0.7455592 0.8256196        NA        NA        NA        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [148]        NA        NA        NA</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -34,6 +34,10 @@ navbar:
       href: articles/MoveR-Clean-FilterData.html
     - text: Compute some metrics
       href: articles/MoveR-ComputeMetrics.html
+      - text: Conduct Sensitivity Analysis
+      href: articles/MoveR-SensitivityAnalysis.html
+      - text: Perform Parallel Computation
+      href: articles/MoveR-ParallelComputation.html
   - text: Changelog
     icon: fas fa-history
     href: NEWS.md
@@ -68,30 +72,26 @@ reference:
       - '`trackStats`'     
  
   - title: Visualize
-    desc: Visualize the tracks of all or specified particles over time.
+    desc: Visualize the tracklets of all or specified particles over time.
     contents:
       - '`drawTracklets`'       
 
-  - title: Low Level Metrics
-    desc: Performed simple computation over each tracks. 
+  - title: Basic Metrics
+    desc: Performed simple computation over each tracklet. 
     contents:
       - '`activity1`'
-      - '`dist2Edge`'
-      - '`dist2Pt`'
-      - '`distTraveled`'
-      - '`sinuosity`'   
-      - '`speed`'
-      - '`turnAngle`'
-
-  - title: High Level Metrics
-    desc: Performed more advanced computation over each tracks. 
-    contents:
       - '`activity2`'
       - '`analyseTracklets`'
       - '`ANND`'
+      - '`dist2Edge`'
+      - '`dist2Pt`'
+      - '`distTraveled`'
       - '`exploredArea`'
-      - '`turchinD`'       
-   
+      - '`sinuosity`'   
+      - '`speed`'
+      - '`turnAngle`'
+      - '`turchinD`'  
+
   - title: Temporal Trends
     desc: Analyse temporal trends for a given computation over time by averaging the value of each track and compute a studentized 95% confidence interval (bootstrap).
     contents:
@@ -99,7 +99,7 @@ reference:
       - '`temporalBoot`'
 
   - title: Spatial Trends
-    desc: Analyse spatial trends over tracks according to custom pattern (e.g., displacement across area).
+    desc: Analyse spatial trends over tracklets according to custom pattern (e.g., displacement across area).
     contents:
       - '`IdStateSeq`'
       
@@ -113,4 +113,5 @@ reference:
       - '`listGet`'
       - '`locaPos`' 
       - '`flipYCoords`' 
-      - '`slidWindow`' 
+      - '`slidWindow`'
+      

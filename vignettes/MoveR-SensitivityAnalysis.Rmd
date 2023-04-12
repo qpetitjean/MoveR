@@ -1,0 +1,15 @@
+---
+title: "Sensitivity Analysis"
+description: "A tutorial about how to conduct sensitivity analysis to assess video-tracking and cleaning procedures."
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    fig_caption: true
+    number_sections: false
+    global_numbering: false
+    link-citations: yes
+pkgdown:
+  as_is: true
+---
+
+TODO

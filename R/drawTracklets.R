@@ -162,7 +162,6 @@ drawTracklets <- function(trackDat,
   if (is.null(names(trackDat))) {
     names(trackDat) <- seq(length(trackDat))
   }
-  
   # compute the duration of the video according to timeCol argument
   viDur <-
     max(unlist(lapply(trackDat, function(x)
@@ -308,12 +307,15 @@ drawTracklets <- function(trackDat,
       ScaleVal <-
         pretty(c(min(colVal, na.rm = T), max(colVal, na.rm = T)), n = 5)
       ScaleLegtemp <- which(colVal %in% ScaleVal)
-      if (length(ScaleLegtemp) < length(ScaleVal)) {
-        ScaleLegtemp <-
-          c(ScaleLegtemp, max(ScaleLegtemp + mean(diff(
-            ScaleLegtemp
-          ))))
-      }
+        for (val in which(!ScaleVal %in% colVal)) {
+          if (val == length(ScaleVal)) {
+            ScaleLegtemp <-
+              c(ScaleLegtemp, max(ScaleLegtemp + mean(diff(ScaleLegtemp))))
+          } else if (val == 1) {
+            ScaleLegtemp <-
+              c(min(ScaleLegtemp - mean(diff(ScaleLegtemp))), ScaleLegtemp)
+          }
+        }
       if (max(nchar(ScaleVal)) >= 5) {
         ScaleVal <- format(ScaleVal, scientific = TRUE)
       } else{
@@ -324,7 +326,7 @@ drawTracklets <- function(trackDat,
       ScaleLeg[1] <- ScaleLeg[1] + (2.5 * max(ScaleY) / 100)
       ScaleLeg[length(ScaleLeg)] <-
         ScaleLeg[length(ScaleLeg)] - (5 * max(ScaleY) / 100)
-      
+
       legend_image <-
         grDevices::as.raster(matrix(coloration, ncol = 1))
       graphics::rasterImage(

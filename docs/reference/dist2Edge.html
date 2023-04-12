@@ -144,15 +144,14 @@ from the edge of the object in the direction of its center (the particle is cons
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># simulate a circular arena of 20 pixels radius and centered on the particle trajectory</span></span></span>
-<span class="r-in"><span><span class="va">arenaEdge</span> <span class="op">&lt;-</span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="circles.html">circles</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">TrackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"x.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                      <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">TrackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                      radius <span class="op">=</span> <span class="fl">20</span>,</span></span>
-<span class="r-in"><span>                      draw <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">arenaEdge</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="circles.html">circles</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">TrackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"x.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">TrackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            radius <span class="op">=</span> <span class="fl">20</span>,</span></span>
+<span class="r-in"><span>                            draw <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">arenaEdge</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ :'data.frame':	500 obs. of  2 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos: num [1:500] 51.3 51.3 51.3 51.2 51.2 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos: num [1:500] 24.4 24.7 25 25.2 25.5 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	500 obs. of  2 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ x.pos: num  51.3 51.3 51.3 51.2 51.2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ y.pos: num  24.4 24.7 25 25.2 25.5 ...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># draw the tracklet and the arena edge</span></span></span>
 <span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="va">TrackDat</span>,</span></span>
@@ -165,7 +164,7 @@ from the edge of the object in the direction of its center (the particle is cons
 <span class="r-in"><span><span class="co"># Compute the distance to the closest part of the edge based on the form of the arena (here circular)</span></span></span>
 <span class="r-in"><span><span class="co"># Negative values indicate increasing distance from the edge of the object in the direction of its center (the particle is considered inside) and vice versa.</span></span></span>
 <span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu">dist2Edge</span><span class="op">(</span><span class="va">TrackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>                 edge <span class="op">=</span> <span class="va">arenaEdge</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                 edge <span class="op">=</span> <span class="va">arenaEdge</span>,</span></span>
 <span class="r-in"><span>                 customFunc <span class="op">=</span> <span class="st">"CircularArena"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  18.7823577  16.4582563  15.0931207  13.8661236  13.3560386  11.9547261</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7]  11.4459542  10.2583611   9.5002640   9.2819667   8.8674120   8.9262716</span>

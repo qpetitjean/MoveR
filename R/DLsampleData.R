@@ -10,7 +10,9 @@
 #' @param tracker A character string corresponding to the name of the tracking software from which data have to be downloaded: Ctrax, IdTracker, TrackR and/or TRex. By default the function returns the path
 #' to sample data from each tracking software.
 #'
-#' @return This function returns a vector containing the path to the selected sample dataset(s) (raw tracking data), the distance matrix from the border of the arena (performed using ImageJ) and the reference data, a .csv file containing particles location (manually detected) over several frames to perform sensitivity analyses.
+#' @return This function returns a vector containing the path to the selected sample dataset(s) (raw tracking data), the distance matrix from the border of the arena (color tresholding - greyscale - performed using ImageJ),
+#' the reference data (a .csv file containing particles location -manually detected- over several frames to perform sensitivity analyses) and the filtered/cleaned version of the 
+#' tracking data (filtered using the approach described in the MoveR-Clean-FilterData vignette).
 #' In case the sample dataset has already been downloaded in a temporary (default) or specified directory, the function retrieve the data instead of downloading it again.
 #'
 #' @author Quentin PETITJEAN
@@ -136,5 +138,23 @@ DLsampleData <-
     } else{
       refDatPath <- NULL
     }
-    return(c(path2F, ArenaFile, refDatPath))
+    ## path to the filtered/cleaned dataset (filtered using the procedure detailed) in the MoveR-Clean-FilterData vignette
+    ### find whether CleanDat file exist
+    CleanDat <-
+      list.files(file.path(td,
+                           "MoveR_SampleData-main",
+                           sampleData), 
+                 "cleaned")
+    if (length(CleanDat) > 0) {
+      CleanDatPath <-
+        paste(td,
+              "MoveR_SampleData-main",
+              sampleData,
+              CleanDat,
+              sep = "\\")
+    } else{
+      CleanDatPath <- NULL
+    }
+    
+    return(c(path2F, ArenaFile, refDatPath, CleanDatPath))
   }
