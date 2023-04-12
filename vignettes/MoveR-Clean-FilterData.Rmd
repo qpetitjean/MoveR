@@ -34,8 +34,10 @@ knitr::include_graphics(
 Let's download the data, import and convert them to a list of tracklets (see the Import Data vignette for detailed procedure).
 
 Note that we have included some extra data that are related to this dataset within the "raw tracking data" when we have reduced the dataset: 
-* the timeline (in frame and in second) 
-* the temperature at which the individuals are exposed over the assay 
+
+  * the timeline (in frame and in second) 
+
+  * the temperature at which the individuals are exposed over the assay 
 
 These extra information will be useful to conduct further analyses in this tutorial and some others.
 For instance, we can automatically determine the frame rate of the video-recording using the timeline and timestamps (you also can usually do it using frame instead of timeline).
@@ -63,8 +65,11 @@ trackDat <- MoveR::convert2Tracklets(TRexDat[-which(names(TRexDat) == "ntargets"
 ```
 
 Now we have imported the data, we can clean them to remove for instance:
-  * infinite values corresponding to the moments where the particles were undetected, 
+
+  * infinite values corresponding to the moments where the particles were undetected 
+  
   * probable spurious elements detected by the tracking software using several filters based on the particles size, speed, location within the arena). 
+  
 For this purpose, 3 main functions, `filterFunc()`, `mergeFilters()` and `filterTracklets()` allow to specify custom filters, merge several filters and use them to clean the data, respectively.
 
 ## Remove infinite values 
@@ -122,10 +127,13 @@ str(trackDat.Infilt[[1]])
 
 ```
 
-The function output correspond to a list containing 2 sublists:  
+The function output correspond to a list containing 2 sublists:
+
   * the first one being a summary of the filtering process
+  
   * the second containing the list of filtered tracklets which can be used for further computation
-See the help page of the function for more details (?MoveR::filterTracklets())
+  
+See the help page of the function for more details (`filterTracklets()`)
 
 According to the summary of the filtering process, the number of tracklet is drastically increased after the filtering (Tracknb_before_filter = 88 -> Tracknb_after_filter = 165583 tracklets) but a large amount appears to be very short and may be due to punctual detection of an individual over the timeline because, the `minDur` argument allow to remove an important part of these tracklets (Tracknb_after_filter = 165583 -> Tracknb_after_minDur = 6989 tracklets). 
 
@@ -277,8 +285,10 @@ Finally, it seems interesting to remove the particles that are detected outside 
 Indeed, sometimes particles can be detected outside the arena, either because an individual as escaped from the arena or because the background has changed over the video recording (tracking artifact). To solve this issue, it is possible to remove the parts of a tracklet that have been detected outside the arena. 
 
 To tackle this aim, we will report two main methods:
-  * use a distance matrix from the arena edge  generated using simple color tresholding in imageJ (particularly useful if the arena have a complex polygonal shape) to retrieve relative position of the particles from the edge and then filter on it.
-  * or compute the distance to the known arena edge and then filter on it.
+
+  * use a distance matrix from the arena edge  generated using simple color tresholding in imageJ (particularly useful if the arena have a complex polygonal shape) to retrieve relative position of the particles from the edge and then filter on it
+  
+  * or compute the distance to the known arena edge and then filter on it
 
 We first need to import the location of the distance matrix from the arena edge  or the location of the arena edge. 
 For this example we will use the distance matrix for both purposes. 
