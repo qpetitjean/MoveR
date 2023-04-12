@@ -65,7 +65,7 @@ trackDat <- MoveR::convert2Tracklets(TRexDat[-which(names(TRexDat) == "ntargets"
 Now we have imported the data, we can clean them to remove for instance:
 * infinite values corresponding to the moments where the particles were undetected, 
 * probable spurious elements detected by the tracking software using several filters based on the particles size, speed, location within the arena). 
-For this purpose, 3 main functions, <em>filterFunc</em>, <em>mergeFilters</em>  and <em>filterTracklets</em> allow to specify custom filters, merge several filters and use them to clean the data, respectively.
+For this purpose, 3 main functions, `filterFunc()`, `mergeFilters()` and `filterTracklets()` allow to specify custom filters, merge several filters and use them to clean the data, respectively.
 
 ## Remove infinite values 
 
@@ -73,7 +73,7 @@ Infinite values are added by TRex when the particles are temporarily undetected,
 
 In other words, when a particle is temporarily undetected we assume that the identity of the tracklet is spurious (conservative approach), thus the function create a new tracklet with a new identity (trackletId). Nevertheless, the original identity of the particles is still conserved in the "identity" vector.
 
-Because infinite values can be detected in both x and y coordinates (i.e., x.pos and y.pos) we are using <em>filterFunc<em> to create the filters on each variable and then <em>mergeFilter<em> to combine the two filters.
+Because infinite values can be detected in both x and y coordinates (i.e., x.pos and y.pos) we are using `filterFunc()` to create the filters on each variable and then `mergeFilter()` to combine the two filters.
 
 ```{r InfFilt}
 # specify the filter to detected infinite values on "x.pos"
@@ -104,9 +104,9 @@ filter.Inf <-
 
 ```
 
-Now, that the filter is properly specified the dataset can be filtered to remove infinite values detected on both x and y coordinates. For that purpose, the <em>filterTracklets<em> function 
+Now, that the filter is properly specified the dataset can be filtered to remove infinite values detected on both x and y coordinates using `filterTracklets()`.
 
-Note that in case a particle is lost and detected again during a very short time period, the function may return small tracklets which may be considered useless. These small tracklets can be removed by specifying the minimum duration above which tracklet should be kept using the <em>minDur<em> argument. For this example, we are keeping only the tracklets lasting more than one second by setting minDur to 25 frames which correspond to 1 second, or to the frame rate of the video (hence we can use the frameRate object defined above).
+Note that in case a particle is lost and detected again during a very short time period, the function may return small tracklets which may be considered useless. These small tracklets can be removed by specifying the minimum duration above which tracklet should be kept using the `minDur` argument. For this example, we are keeping only the tracklets lasting more than one second by setting minDur to 25 frames which correspond to 1 second, or to the frame rate of the video (hence we can use the frameRate object defined above).
 
 ```{r InfRemove}
 # filter infinite values according to the previously specified filters
@@ -126,7 +126,7 @@ The function output correspond to a list containing 2 sublists:
 * the second containing the list of filtered tracklets which can be used for further computation
 See the help page of the function for more details (?MoveR::filterTracklets())
 
-According to the summary of the filtering process, the number of tracklet is drastically increased after the filtering (Tracknb_before_filter = 88 -> Tracknb_after_filter = 165583 tracklets) but a large amount appears to be very short and may be due to punctual detection of an individual over the timeline because, the minDur argument allow to remove an important part of these tracklets (Tracknb_after_filter = 165583 -> Tracknb_after_minDur = 6989 tracklets). 
+According to the summary of the filtering process, the number of tracklet is drastically increased after the filtering (Tracknb_before_filter = 88 -> Tracknb_after_filter = 165583 tracklets) but a large amount appears to be very short and may be due to punctual detection of an individual over the timeline because, the `minDur` argument allow to remove an important part of these tracklets (Tracknb_after_filter = 165583 -> Tracknb_after_minDur = 6989 tracklets). 
 
 Hence, there is a lot of moments where the micro-wasps were undetected within the dataset. As results, the filtering removed 64.7% (100-35.3) of the data corresponding to infinite values and then removed another 10.2% (35.3-25.1) because the resulting tracklets were shorter than 1 second (25 frames).
 
@@ -333,7 +333,7 @@ str(ArenaEdge)
 Here is the graphical representation of the distance matrix with decreasing distance from the centre from the edge of the represented by the contour line (fig. \@ref(fig:edgeDef)A).
 Accordingly, the lowest value (i.e., 1) corresponds from the edge of the arena (fig. \@ref(fig:edgeDef)B, black line). hence, the use of a distance matrix may be a a good option to retrieve the location of the edge of an arena, whatever its shape.
 
-However, in the case of using a classic circular arena a simpler approach would consist of generating the expected arena edge using the <em>circles<em> function and feeding it with coordinates of the arena center and the radius length (fig. \@ref(fig:edgeDef)B, red line).
+However, in the case of using a classic circular arena a simpler approach would consist of generating the expected arena edge using `circles()` and feeding it with coordinates of the arena center and the radius length (fig. \@ref(fig:edgeDef)B, red line).
 
 We can then use these information (distance matrix or coordinates from the edge of the arena) to filter the dataset by removing the particles detected outside the arena.
 
@@ -447,7 +447,7 @@ According to the summary of the filtering step based the location of the particl
 
 As expected these artifacts are removed by the filter as shown on the fig. \@ref(fig:edgeClean)B, where there is no red area anymore. Accordingly, the filter splited only few tracklets in small part resulting in less than 0.1% of data removed because resulting tracklets were shorter than 1 second (25 frames).
 
-While fig. \@ref(fig:edgeClean)A&B and the summary give a quantitative view of the amount of data removed by the filtering we can also want to have an idea of the spatio-temporal distribution of the removed data. For this we can use the <em>drawTracklets<em> function as follow:
+While fig. \@ref(fig:edgeClean)A&B and the summary give a quantitative view of the amount of data removed by the filtering we can also want to have an idea of the spatio-temporal distribution of the removed data. For this we can use `drawTracklets()` as follow:
 
 ```{r edgeCleanBeforeAfter, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of the particles' trajectories detected outside the arena before the filtering process removing the moments where the particles are detected outside of the arena."}
 # identify the tracklets that are detected outside the arena
@@ -472,10 +472,10 @@ Here we can see that the points detected outside the arena belong to two trackle
 
 ### METHOD 2: Filter by retrieving the distance from the arena edge (distance matrix)
 
-Alternatively in case the arena have a complex shape for which it is difficult to find the shortest distance between the arena edge and a given particle (a.g., a polygonal arena with rounded corner), it is possible to use the matrix of distance from the edge to retrieve distance from the edge for each position of a particle's trajectory by combining the use of <em>analyseTracklets<em> function and the <em>locaPos<em> modulus below.
+Alternatively in case the arena have a complex shape for which it is difficult to find the shortest distance between the arena edge and a given particle (a.g., a polygonal arena with rounded corner), it is possible to use the matrix of distance from the edge to retrieve distance from the edge for each position of a particle's trajectory by combining the use of `analyseTracklets()` and `locaPos()` below.
 
 It is then possible to specify whether a particle is inside or outside the arena over its whole trajectory.
-Then the procedure is similar than for previous steps: specify the filter using <em>filterFunc<em> and filter the data using <em>filterTracklets<em>.
+Then the procedure is similar than for previous steps: specify the filter using `filterFunc()` and filter the data using `filterTracklets()`.
 
 ```{r edgeCleanAlternative, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="METHOD 2: Histogram of the distance of the particles from the edge before (A) and after (B) the filtering process removing the moments where the particles are detected outside of the arena. The green area corresponds to the inside of the arena while the red area corresponds to the outside. Here the filtering process is based on distance from the edge retrieved from the distance matrix (color thresholding using ImageJ)."}
 trackDat4bis <- MoveR::analyseTracklets(trackDat.speedfilt[[2]],
@@ -590,7 +590,7 @@ Here, the distribution of the distance from the edge is different that from the 
 
 However, as expected, although these differences the results of the filtering is consistent between the two methods, with the two tracklets detected as spurious being identical.
 
-Indeed, as for the previous method, we can also want to have an idea of the spatio-temporal distribution of the removed data. For this we can use the <em>drawTracklets<em> function as follow:
+Indeed, as for the previous method, we can also want to have an idea of the spatio-temporal distribution of the removed data. For this we can use `drawTracklets()` as follow:
 
 ```{r edgeCleanBeforeAfterAlternative, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of the particles' trajectories detected outside the arena before the filtering process removing the moments where the particles are detected outside of the arena."}
 # identify the tracklets that are detected outside the arena
@@ -642,7 +642,7 @@ FilterSummary
 
 As previously stated, we can indeed see that the filter based on infinite values have removed a lot of data contrary to the other filters. Also, it seems that the minimum duration of the tracklets set to 25 frames (1 second) is appropriate since it remove a small amount of data.
 
-It is also possible to display a summary of the tracking information of both the initial dataset (i.e., trackDat) and the filtered/cleaned one (trackDat5) using the <em>trackStats<em> function to quickly compare them.
+It is also possible to display a summary of the tracking information of both the initial dataset (i.e., trackDat) and the filtered/cleaned one (trackDat5) using `trackStats()` to quickly compare them.
 
 ```{r TrackStatsSummary}
 # compute and display a detailed summary of the tracking information before and after cleaning (see ??trackStats())
@@ -667,10 +667,10 @@ By comparing the summary of the tracking information before and after the filter
 
 On the contrary, tracklets are more numerous and shorter after the filtering than before which is not surprising since we have removed biased data and splited the tracklets accordingly.  
 
-Both kind of summaries can then be saved as a .csv file using common function such as <em>utils::write.csv<em> or <em>data.table::fwrite<em>. 
+Both kind of summaries can then be saved as a .csv file using common function such as `utils::write.csv()` or `data.table::fwrite()`. 
 
 Also, the filtered dataset can be saved before using it for further computations. 
-As such dataset can be large we recommend to use the <em>data.table::fwrite<em> function from the data.table package as well as saving the data as .gz archive to save as much disk space as possible (e.g., For this dataset: .csv = 181Mo vs .csv.gz = 62Mo).
+As such dataset can be large we recommend to use `data.table::fwrite()` from the data.table package as well as saving the data as .gz archive to save as much disk space as possible (e.g., For this dataset: .csv = 181Mo vs .csv.gz = 62Mo).
 
 ```{r SaveTheData, eval=FALSE}
 # save the cleaned dataset as .csv compressed as .gz

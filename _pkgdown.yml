@@ -2,7 +2,9 @@ title: MoveR
 url: http://qpetitjean.github.io/MoveR
 
 development:
-  mode: auto
+  mode: release
+  version_label: danger
+  version_tooltip: "dev. version"
   
 template:
   bootstrap: 5
@@ -114,3 +116,7 @@ reference:
       - '`locaPos`' 
       - '`flipYCoords`' 
       - '`slidWindow`'
+      
+news:
+    one_page: true
+    cran_dates: false
