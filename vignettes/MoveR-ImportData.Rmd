@@ -12,13 +12,17 @@ pkgdown:
   as_is: true
 ---
 
+
+<a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="next">Next &raquo;</a>
+
+
 We are starting with a basic example of importing raw data from tracking software.
 
 For this example we are selecting the first sample of data available in the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository. 
 
 Briefly, this dataset come from the video recording (image resolution: 3840x2160) of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena for 8 minutes at 25 fps  (see fig. \@ref(fig:VideoPics) below) and tracked using <a href="https://trex.run">TRex</a> (Walter and Couzin, 2021).
 
-```{r VideoPics, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.cap="Frame extracted from a video recording of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena."}
+```{r VideoPics, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.cap="Frames extracted from a video recording of 12 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a polygonal arena."}
 knitr::include_graphics(
   "https://github.com/qpetitjean/MoveR_SampleData/raw/main/sample_1/2602_ISA3080_Low_5_Compressed.gif"
 )
@@ -239,6 +243,10 @@ Indeed, on the fig. \@ref(fig:drawTracklets4) the track of these two individuals
 For more insight how to use MoveR to clean and filter your dataset and then run further computation check the next tutorials. 
 
 <strong>Happy coding.</strong>
+
+
+<a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="next">Next &raquo;</a>
+
 
 ## References
 

@@ -8,14 +8,12 @@ output:
     number_sections: false
     global_numbering: false
     link-citations: yes
+    css: pkgdown/extra.css
 pkgdown:
   as_is: true
 ---
 
-TODO
 
-```{r echo=FALSE}
-
-```
+<a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="next">Next &raquo;</a>
 
 

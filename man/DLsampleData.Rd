@@ -19,10 +19,14 @@ to sample data from each tracking software.}
 \item{dir}{The path to the directory where the sample dataset is saved, by default, the function will save it in a temporary directory (optional).}
 }
 \value{
-This function returns a vector containing the path to the selected sample dataset(s) (raw tracking data), the distance matrix from the border of the arena (color tresholding - greyscale - performed using ImageJ),
-the reference data (a .csv file containing particles location -manually detected- over several frames to perform sensitivity analyses) and the filtered/cleaned version of the
-tracking data (filtered using the approach described in the MoveR-Clean-FilterData vignette).
-In case the sample dataset has already been downloaded in a temporary (default) or specified directory, the function retrieve the data instead of downloading it again.
+This function returns a vector containing the path to:
+\itemize{
+\item{the selected sample dataset (raw tracking data).}
+\item{the distance matrix from the border of the arena (color tresholding - greyscale - performed using ImageJ).}
+\item{the reference data (a .csv file containing particles location -manually detected- over several frames to perform sensitivity analyses).}
+\item{the filtered/cleaned version of the tracking data (filtered using the approach described in the MoveR-Clean-FilterData vignette).}
+}
+Also, in case the sample dataset has already been downloaded in a temporary (default) or specified directory, the function retrieve the data instead of downloading it again.
 }
 \description{
 Given the id of a sample dataset stored in \href{https://github.com/qpetitjean/MoveR_SampleData}{MoveR_SampleData Github repository},

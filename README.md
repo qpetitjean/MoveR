@@ -6,6 +6,10 @@
 <!-- badges: start -->
 
 <img alt="GitHub" src="https://img.shields.io/github/license/qpetitjean/MoveR"><br />
+[![CRAN
+status](https://www.r-pkg.org/badges/version/MoveR)](https://CRAN.R-project.org/package=MoveR)<br />
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)<br />
 <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/qpetitjean/MoveR?include_prereleases">
 <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/qpetitjean/MoveR"><br />
 <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/qpetitjean/MoveR"> 
@@ -105,7 +109,7 @@ software such as <a href="https://trex.run">TRex</a>,
 <a href="https://swarm-lab.github.io/trackR">trackR</a>,
 <a href="https://ctrax.sourceforge.net/">Ctrax</a> and
 <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a>
-(other can be easily implemented if needed).
+(for now).
 </li>
 <br />
 <li>
