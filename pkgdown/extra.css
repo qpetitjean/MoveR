@@ -19,7 +19,7 @@ h1, h2, h3 {
 
 .previous {
   font-style: italic;
-  text-align: left;
+  float: left;
   background-color: rgba(44, 62, 80, 1);
   color: rgba(24, 188, 156, 1);
   border: 1rem rgba(44, 62, 80, 1);
@@ -27,7 +27,7 @@ h1, h2, h3 {
 
 .next {
   font-style: italic;
-  text-align: right;
+  float: right;
   background-color: rgba(44, 62, 80, 1);
   color: rgba(24, 188, 156, 1);
   border: 1rem rgba(44, 62, 80, 1);
