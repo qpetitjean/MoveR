@@ -24,7 +24,7 @@ To reduce space allocation and computing time we reduced the dataset by removing
 
 ```{r VideoPics, echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, out.width="49%", fig.show='hold', fig.cap="A. Frame extracted from a video recording of 24 parasitic micro-wasps (genus <em>Trichogramma</em>) placed in a thermostated circular arena. B. Temperature ramp over which the movements of parasitic micro-wasp were recorded. The shaded area corresponds to the part of the data removed from the original dataset (i.e., moments where temperature was below 35&#8451;) while the white area correspond to the remaining data used in the following exemple."}
 knitr::include_graphics(
-  c('https://raw.githubusercontent.com/qpetitjean/MoveR/Main/man/figures/Sample2_ReducedData.png',
+  c('https://github.com/qpetitjean/MoveR_SampleData/raw/main/sample_2/2021-03-01-ISA17150-chaud.gif',
     'https://raw.githubusercontent.com/qpetitjean/MoveR/Main/man/figures/Sample2_ReducedData.png')
   )
 ## Make GIF
