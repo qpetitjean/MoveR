@@ -36,7 +36,7 @@ knitr::include_graphics(
 
 ## Import sample data from github.
 
-Let's download the data, import and convert them to a list of tracklets (see the Import Data vignette for detailed procedure).
+Let's download the data, import and convert them to a list of tracklets (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html">Import Data vignette</a> for detailed procedure).
 
 Note that we have included some extra data that are related to this dataset within the "raw tracking data" when we have reduced the dataset: 
 
