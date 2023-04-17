@@ -15,23 +15,11 @@ h1, h2, h3 {
   margin-top: 1.5em;
 }
 
-/* Code color ----------------------------------------------- */
-
-.fl      {color: blue;}
-.fu      {color: darkblue;} /* function */
-.ch,.st  {color: darkorange;} /* string */
-.kw      {color: black;} /* keyword */
-.co      {color: darkgreen;} /* comment */
-  
-.message { color: darkgray;   font-weight: bolder;}
-.error   { color: firebrick;  font-weight: bolder;}
-.warning { color: indigo; font-weight: bolder;}
-
-
 /* Previous/next buttons ----------------------------------------------- */
 
 .previous {
   font-style: italic;
+  text-align: left;
   background-color: rgba(44, 62, 80, 1);
   color: rgba(24, 188, 156, 1);
   border: 1rem rgba(44, 62, 80, 1);
@@ -39,6 +27,7 @@ h1, h2, h3 {
 
 .next {
   font-style: italic;
+  text-align: right;
   background-color: rgba(44, 62, 80, 1);
   color: rgba(24, 188, 156, 1);
   border: 1rem rgba(44, 62, 80, 1);
