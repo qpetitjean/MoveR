@@ -17,15 +17,15 @@ h1, h2, h3 {
 
 /* Code color ----------------------------------------------- */
 
- .fl      {color: blue;}
-  .fu      {color: darkblue;} /* function */
-  .ch,.st  {color: darkorange;} /* string */
-  .kw      {color: black;} /* keyword */
-  .co      {color: darkgreen;} /* comment */
+.fl      {color: blue;}
+.fu      {color: darkblue;} /* function */
+.ch,.st  {color: darkorange;} /* string */
+.kw      {color: black;} /* keyword */
+.co      {color: darkgreen;} /* comment */
   
-  .message { color: darkgray;   font-weight: bolder;}
-  .error   { color: firebrick;  font-weight: bolder;}
-  .warning { color: indigo; font-weight: bolder;
+.message { color: darkgray;   font-weight: bolder;}
+.error   { color: firebrick;  font-weight: bolder;}
+.warning { color: indigo; font-weight: bolder;}
 
 
 /* Previous/next buttons ----------------------------------------------- */
