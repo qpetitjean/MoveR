@@ -103,7 +103,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Compute some metrics</h1>
             
-            <h4 data-toc-skip class="date">2023-04-17</h4>
+            <h4 data-toc-skip class="date">2023-04-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-ComputeMetrics.Rmd" class="external-link"><code>vignettes/MoveR-ComputeMetrics.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-ComputeMetrics.Rmd</code></div>
@@ -111,8 +111,30 @@
 
     
     
-<p><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="external-link previous">« Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="external-link next">Next »</a></p>
-  </main>
+<p><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="external-link previous">« Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="external-link next">Next »</a><br></p>
+<p>Now that we are familiar with importing and cleaning/filtering raw data from tracking software, we will go deeper by computing various metrics across tracklets and time.</p>
+<p>For this example we are selecting the second sample of data available in the <a href="https://github.com/qpetitjean/MoveR_SampleData" class="external-link">MoveR_SampleData</a> github repository. For more detail about this dataset see the introduction of the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="external-link">Clean/Filter Data vignette</a>.</p>
+<div class="section level2">
+<h2 id="import-sample-data-from-github-">Import sample data from github.<a class="anchor" aria-label="anchor" href="#import-sample-data-from-github-"></a>
+</h2>
+<p>Let’s download the data, import and convert them to a list of tracklets (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="external-link">Import Data vignette</a> for detailed procedure).</p>
+<p>Here we are avoiding redundancy by using the already cleaned version of the dataset.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># dl the second dataset from the sample data repository</span></span>
+<span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">2</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Import the sample data</span></span>
+<span><span class="va">TRexDat</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span>  <span class="va">Path2Data</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>  sep <span class="op">=</span> <span class="st">";"</span>,</span>
+<span>  dec <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># convert the data to a list of tracklets</span></span>
+<span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">TRexDat</span>, by <span class="op">=</span> <span class="st">"trackletId"</span><span class="op">)</span></span></code></pre></div>
+<p><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="external-link previous">« Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="external-link next">Next »</a><br></p>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

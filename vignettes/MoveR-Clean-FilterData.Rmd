@@ -13,7 +13,7 @@ pkgdown:
 ---
 
 
-<a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ComputeMetrics.html" class="next">Next &raquo;</a>
+<a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ComputeMetrics.html" class="next">Next &raquo;</a><br />
 
 
 Now that we are familiar with importing raw data from tracking software, we are focusing on how to clean/filter them.
@@ -34,7 +34,7 @@ knitr::include_graphics(
 ## Make GIF
 ```
 
-## Import sample data from github.
+## Import sample data from github
 
 Let's download the data, import and convert them to a list of tracklets (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html">Import Data vignette</a> for detailed procedure).
 
@@ -122,7 +122,7 @@ These small tracklets can be removed by specifying the minimum duration above wh
 
 For this example, we are keeping only the tracklets lasting more than one second by setting minDur to 25 frames which correspond to 1 second, or to the frame rate of the video (hence we can use the frameRate object defined above).
 
-```{r InfRemove}
+```{r InfRemove, results='markup'}
 # filter infinite values according to the previously specified filters
 # here we are also removing the tracklets that are shorter than 25 frames (1 second) using the minDur argument.
 trackDat.Infilt <-
@@ -211,7 +211,7 @@ mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 
 ```
 
-```{r SizeCleanSTR, echo=TRUE, message=FALSE, warning=FALSE, results='asis'}
+```{r SizeCleanSTR, echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
 # display the information about the filtering process (see ??filterTracklets())
 str(trackDat.lenfilt[[1]])
 
@@ -229,7 +229,7 @@ Indeed, the particles' speed can be a good indicator of spurious detection or pa
 
 However, While the data can be filtered based data that already exist into the raw output of the tracking software, here the speed of the particles is not included, and in any case it should be recomputed since we have modified the tracklets over the previous filtering processes.
 
-For the sacks of this example we will use the 999^th percentile as a treshold above which particles' speed are considered artifactual.
+For the sacks of this example we will use the 999<sup>th</sup> percentile as a treshold above which particles' speed are considered artifactual.
 
 ```{r SpeedClean, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Histogram of the Log-transformed speed of the particles and 999th quantile (vertical line) of the distribution before (A) and after the filtering process (B) removing the moments where the particles' speed is above the 999th quantile."}
 # retrieve the previously filtered data and used them to compute particles' speed
@@ -289,7 +289,7 @@ mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 
 ```
 
-```{r SpeedCleanSTR, echo=TRUE, results='asis', message=FALSE, warning=FALSE}
+```{r SpeedCleanSTR, echo=TRUE, results='markup', message=FALSE, warning=FALSE}
 # display the information about the filtering process (see ??filterTracklets())
 str(trackDat.speedfilt[[1]])
 
@@ -363,7 +363,7 @@ ArenaEdge <- MoveR::circles(
 
 ```
 
-```{r edgeDefSTR, echo=TRUE, results='asis', message=FALSE, warning=FALSE}
+```{r edgeDefSTR, echo=TRUE, results='markup', message=FALSE, warning=FALSE}
 ## the coordinates of the arena edge are then stored in the ArenaEdge object
 str(ArenaEdge)
 
@@ -481,7 +481,7 @@ trackDat5 <- trackDat.borderfilt[[2]]
 
 ```
 
-```{r edgeCleanSTR, echo=TRUE, results='asis', message=FALSE, warning=FALSE}
+```{r edgeCleanSTR, echo=TRUE, results='markup', message=FALSE, warning=FALSE}
 # display the information about the filtering process (see ??filterTracklets())
 str(trackDat.borderfilt[[1]])
 
@@ -495,7 +495,6 @@ While fig. \@ref(fig:edgeClean)A&B and the summary give a quantitative view of t
 
 ```{r edgeCleanBeforeAfter, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of the particles' trajectories detected outside the arena before the filtering process removing the moments where the particles are detected outside of the arena."}
 # identify the tracklets that are detected outside the arena
-
 trackDat4List <- MoveR::convert2List(trackDat4)
 OutTracklets <- unique(trackDat4List[["trackletId"]][which(trackDat4List[["dist2Edge"]] >= 0)])
 
@@ -633,7 +632,7 @@ polygon(c(0,
 ```
 
 
-```{r edgeCleanAlternativeSTR, echo=TRUE, results='asis', message=FALSE, warning=FALSE}
+```{r edgeCleanAlternativeSTR, echo=TRUE, results='markup', message=FALSE, warning=FALSE}
 # display the information about the filtering process (see ??filterTracklets())
 str(trackDat.borderfiltbis[[1]])
 
@@ -758,7 +757,7 @@ For more insight how to use MoveR to run further computation check the next tuto
 <strong>Happy coding.</strong>
 
 
-<a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ComputeMetrics.html" class="next">Next &raquo;</a>
+<a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ComputeMetrics.html" class="next">Next &raquo;</a><br />
 
 
 ## References

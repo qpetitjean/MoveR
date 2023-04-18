@@ -14,6 +14,36 @@ pkgdown:
 ---
 
 
-<a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="next">Next &raquo;</a>
+<a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="next">Next &raquo;</a><br />
 
+
+Now that we are familiar with importing and cleaning/filtering raw data from tracking software, we will go deeper by computing various metrics across tracklets and time. 
+
+For this example we are selecting the second sample of data available in the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository. For more detail about this dataset see the introduction of the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html">Clean/Filter Data vignette</a>.
+
+## Import sample data from github.
+
+Let's download the data, import and convert them to a list of tracklets (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html">Import Data vignette</a> for detailed procedure).
+
+Here we are avoiding redundancy by using the already cleaned version of the dataset.
+
+```{r DLsampleData, echo=TRUE}
+# dl the second dataset from the sample data repository
+Path2Data <- MoveR::DLsampleData(dataSet = 2, tracker = "TRex")
+
+# Import the sample data
+TRexDat <- data.table::fread(
+  Path2Data[[3]],
+  sep = ";",
+  dec = ".")
+
+# convert the data to a list of tracklets
+trackDat <- MoveR::convert2Tracklets(TRexDat, by = "trackletId")
+
+```
+
+
+
+
+<a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="next">Next &raquo;</a><br />
 

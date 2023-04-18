@@ -2,8 +2,22 @@
 /* spacing ----------------------------------------------- */
 
 h1, h2, h3 {
-  font-weight: normal;
   letter-spacing: 1.2pt;
+}
+
+h1 { 
+  font-weight: 700;
+  font-size:   3rem;
+}
+
+h2 { 
+  font-weight: 600;
+  font-size:   2.5rem;
+}
+
+h3 { 
+  font-weight: 500;
+  font-size:   2rem;
 }
 
 .contents h2, .contents h3, .contents h4 {
@@ -18,17 +32,25 @@ h1, h2, h3 {
 /* Previous/next buttons ----------------------------------------------- */
 
 .previous {
-  font-style: italic;
+  font-weight: bold;
+  text-decoration: none!important;
   float: left;
-  background-color: rgba(44, 62, 80, 1);
-  color: rgba(24, 188, 156, 1);
-  border: 1rem rgba(44, 62, 80, 1);
+  background-color: rgba(24, 188, 156, 1);
+  color: rgba(255, 255, 255, 1);
 }
 
 .next {
-  font-style: italic;
+  font-weight: bold;
+  text-decoration: none!important;
   float: right;
-  background-color: rgba(44, 62, 80, 1);
-  color: rgba(24, 188, 156, 1);
-  border: 1rem rgba(44, 62, 80, 1);
+  background-color: rgba(24, 188, 156, 1);
+  color: rgba(255, 255, 255, 1);
+}
+
+/* Captions ----------------------------------------------- */
+
+.caption {
+  font-style: italic;
+  font-size: 0.8rem;
+  color: rgba(188, 134, 11, 1);
 }
