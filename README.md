@@ -135,28 +135,27 @@ spatial trends according to a given pattern set by the user.
 <br />
 </ul>
 
-### Breakthroughs
+### Innovative features
 
 Besides the high flexibility and unified environment, the primary
 innovations provided by `MoveR` are the possibility to:<br />
 
 <ul>
 <li>
-<strong>Characterize behavioral states</strong> (i.e., active
-vs. inactive states) using unsupervised learning methods (i.e.,
-density-based clustering - see actives2 function).
+<strong>Behavioral classification: </strong> Discriminate active
+vs. inactive states using an unsupervised method (density-based clustering) - see the actives2 function.
 </li>
 <br />
 <li>
-<strong>Compute the expected diffusion coefficient D</strong>, a proxy
-of population dispersal, assuming a correlated random walk model (from
-Turchin’s 1998 result; see turchinD function).
+<strong>Behavior upscaling: </strong> Compute the expected diffusion coefficient (D) as a proxy
+of long-term dispersal, assuming a correlated random walk model (from
+Turchin’s 1998; see turchinD function).
 </li>
 <br />
 <li>
-<strong>Identify and extract arbitrary patterns</strong>, in terms of
-changes among behavioral states, spatial regions or areas of interest,
-patch crosses, or any other patterns, using a very versatile
+<strong>Pattern identification: </strong> Identify and extract arbitrary patterns in terms of
+changes of behavioral states, spatial position or areas of interest (e.g. 
+boundary crossing, patch changes, ...)  using a very versatile
 regular-expression syntax.
 </li>
 </ul>
