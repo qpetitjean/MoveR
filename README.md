@@ -124,13 +124,13 @@ time.
 <li>
 <strong>ANALYSE</strong> the data over tracks, time, or space. It is
 possible to compute low (basics) or high (advanced) level metrics over
-each track and temporal and spatial trends. In a nutshell, Low and
+each track and temporal and spatial trends. In a nutshell, ** TERMES A HARMONISER AVEC LA FIGURE ** Low and
 High-level metrics return the results of a given computation over each
 track, while temporal trends functions return the results of a given
 calculation over time by averaging the value of each track. It is also
 possible to compute a studentized 95% confidence interval by
-bootstrapping over the tracks. Also, it is possible to extract specified
-spatial trends according to a given pattern set by the user.
+bootstrapping over the tracks. Also, it is possible to identify and extract specific
+spatial patterns (e.g. movement from patch to patch), according to arbitrary state sequences specified by the user.
 </li>
 <br />
 </ul>
