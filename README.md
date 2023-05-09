@@ -147,7 +147,7 @@ vs. inactive states using an unsupervised method (density-based clustering) - s
 </li>
 <br />
 <li>
-<strong>Behavior upscaling: </strong> Compute the expected diffusion coefficient (D) as a proxy
+<strong>Movement upscaling: </strong> Compute the expected diffusion coefficient (D) as a proxy
 of long-term dispersal, assuming a correlated random walk model (from
 Turchin’s 1998; see turchinD function).
 </li>
