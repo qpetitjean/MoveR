@@ -79,7 +79,7 @@ str(DataFull)
 
 In this case, the output of the function returns a list containing 2 sublists, the first corresponding to the one mentioned above and the second containing all the elements as returned by the tracking software.
 
-Also, the argument `mirrorY`, can be used to revert the y coordinates. Indeed some tracking software sets the origin of the y axis on the bottom-left while other use the upper-left corner of the video (see `??readTrex()` for more insight).
+Also, the argument `mirrorY`, can be used to revert the y coordinates. Indeed some tracking software sets the origin of the y axis on the bottom-left while other use the upper-left corner of the video (see `readTrex()` for more insight).
 
 ## Convert the data to a list of particles tracks (tracklets)
 

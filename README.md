@@ -32,10 +32,11 @@ few dependencies:<br />
 
 <ul>
 <li>
-<a href="https://www.rdocumentation.org/packages/graphics/">graphics</a>,
-<a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a>
-and <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a>
-to load R functions for base graphics.
+<a href="https://www.rdocumentation.org/packages/graphics">graphics</a>,
+<a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a>,
+<a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a> and
+<a href="https://www.rdocumentation.org/packages/plotly">plotly</a> to
+display graphical elements.
 </li>
 <br />
 <li>
@@ -53,13 +54,14 @@ formatted data.
 </li>
 <br />
 <li>
-<a href="https://www.rdocumentation.org/packages/stats">stats</a> to
-load R functions for basic calculations.
+<a href="https://www.rdocumentation.org/packages/stats">stats</a> and
+<a href="https://www.rdocumentation.org/packages/pracma">pracma</a> to
+perform basic and advanced calculations.
 </li>
 <br />
 <li>
 <a href="https://www.rdocumentation.org/packages/trajr">trajr</a> to
-load R functions to compute basic movement metrics (e.g., speed,
+load R functions to compute basic movement descriptors (e.g., speed,
 sinuosity).
 </li>
 <br />
@@ -113,6 +115,17 @@ software such as <a href="https://trex.run">TRex</a>,
 </li>
 <br />
 <li>
+<strong>VISUALIZE</strong> the tracklets of all or specified particles
+over time.
+</li>
+<br />
+<li>
+<strong>MANAGE ROIs (regions of interest)</strong> by importing the
+location of area edges or specifying it from scratch and assign ROIs
+identity to particle’s position over trajectories.
+</li>
+<br />
+<li>
 <strong>CLEAN/FILTER</strong> the data according to custom functions
 specified by the user. For instance, it can easily remove suspected
 tracking errors based on expected particles’ size or speed. It is also
@@ -128,20 +141,16 @@ detection compared to manual annotations.
 </li>
 <br />
 <li>
-<strong>VISUALIZE</strong> the tracklets of all or specified particles
-over time.
-</li>
-<br />
-<li>
-<strong>ANALYSE</strong> the data over tracklets, time, or space. It is
-possible to compute low (basics) or high (advanced) level metrics over
-each tracklet and temporal and spatial trends. In a nutshell, Low and
-High-level metrics return the results of a given computation over each
-tracklet, while temporal trends functions return the results of a given
-calculation over time by averaging the value of each tracklet. It is
-also possible to compute a studentized 95% confidence interval by
-bootstrapping over the tracklets. Also, it is possible to extract
-specified spatial trends according to a given pattern set by the user.
+<strong>ANALYSE</strong> the data over tracklets, time, or space (e.g.,
+across areas). It is possible to compute basics or high (advanced) level
+descriptors over each tracklet and further investigate temporal trends
+and/or identify spatial patterns (e.g., sequences of area visited). In a
+nutshell, Basic and High-level descriptors return the results of a given
+computation over each tracklet, while temporal trends functions return
+the results of a given calculation over time by averaging the value of
+each tracklet. It is also possible to compute a studentized 95%
+confidence interval by bootstrapping over the tracklets. Also, it is
+possible to identify specified spatial patterns.
 </li>
 <br />
 </ul>
@@ -155,13 +164,15 @@ innovations provided by `MoveR` are the possibility to:<br />
 <li>
 <strong>Characterize behavioral states</strong> (i.e., active
 vs. inactive states) using unsupervised learning methods (i.e.,
-density-based clustering - see actives2 function).
+density-based clustering - see activity2 function).
 </li>
 <br />
 <li>
 <strong>Compute the expected diffusion coefficient D</strong>, a proxy
 of population dispersal, assuming a correlated random walk model (from
-Turchin’s 1998 result; see turchinD function).
+Turchin’s 1998 result; see turchinD function) - <strong>This solution is
+currently under development and need further implementation before being
+stable</strong>.
 </li>
 <br />
 <li>

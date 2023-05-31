@@ -159,7 +159,7 @@ We first retrieve the scaling of the video using the diameter of the circular ar
 
 Then, we know that <em>Trichogramma</em>'s body length is generally higher than 0.15mm and lower than 1mm (personal observation) we can hence use these limits to filter the particles for which the length is not included within this interval (fig. \@ref(fig:SizeClean)A&B). 
 
-```{r SizeClean, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Histogram of the Log-transformed length of the particles and specified limits (vertical lines corresponding to 0.015 and 0.1 cm) of the distribution before (A) and after the filtering process (B) removing the moments where the particles' length is below or above the specified limits."}
+```{r SizeClean, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Histogram of the Log-transformed length of the particles and specified limits (vertical lines corresponding to 0.015 and 0.1 cm) of the distribution before (A) and after the filtering process (B) removing the moments where the particles' length is below or above the specified limits."}
 # the scaling of the video - 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ)
 scaling <- 1 / 413.4
 
@@ -230,7 +230,7 @@ However, While the data can be filtered based data that already exist into the r
 
 For the sacks of this example we will use the 999<sup>th</sup> percentile as a treshold above which particles' speed are considered artifactual.
 
-```{r SpeedClean, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Histogram of the Log-transformed speed of the particles and 999th quantile (vertical line) of the distribution before (A) and after the filtering process (B) removing the moments where the particles' speed is above the 999th quantile."}
+```{r SpeedClean, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Histogram of the Log-transformed speed of the particles and 999th quantile (vertical line) of the distribution before (A) and after the filtering process (B) removing the moments where the particles' speed is above the 999th quantile."}
 # retrieve the previously filtered data and used them to compute particles' speed
 trackDat3 <- trackDat.lenfilt[[2]]
 
@@ -309,7 +309,7 @@ To solve this issue, it is possible to remove the parts of a tracklet that have 
 To tackle this aim, one may either use the already implemented functions to generate the edge of circular or polygonal ROIs (see `circles()` and `polygons()`) or retrieving the position of the arena (or any ROI) edge from a distance matrix generated trough an image processing program such as <a href="https://imagej.net/ij/index.html">ImageJ</a>.
 
 We first need to retrieve or generate the points specifying the arena edge: 
-```{r edgeDef, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of centre and edge of the arena retrieved from a distance matrix generated using color tresholding in imageJ. The position of the arena edge can be extracted from the distance matrix as the lowest value of distance matrix (i.e., 1) and the centre of the arena as the mean of the edge x and y coordinates."}
+```{r edgeDef,  echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of centre and edge of the arena retrieved from a distance matrix generated using color tresholding in imageJ. The position of the arena edge can be extracted from the distance matrix as the lowest value of distance matrix (i.e., 1) and the centre of the arena as the mean of the edge x and y coordinates."}
 
 # retrieve the location of the arena edge from a distance matrix generated using color tresholding in imageJ
 # as color tresholding returns a matrix with image resolution (x in rows and y in columns) and increasing distance to the edge of the arena, here the edge correspond 
@@ -356,7 +356,7 @@ However, in the case of using a classic circular or polygonal arena a simpler ap
 
 We can then easily identify whether a particle is detect within or outside the arena by assigning the ROI to each tracklet using the `assignROI()` and filtering out the tracklets parts detected outside the arena. 
 
-```{r edgeClean, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. The arena edges are represented by the black circle."}
+```{r edgeClean,  echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. The arena edges are represented by the black circle."}
 ## assign The ROI (here the arena) to the particles' positions
 trackDat4 <-
   MoveR::analyseTracklets(trackDat.speedfilt[[2]],
@@ -440,7 +440,7 @@ OutTracklets
 ```
 
 
-```{r edgeCleanBeforeAfter, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of the particles' trajectories detected outside the arena before the filtering process removing the moments where the particles are detected outside of the arena."}
+```{r edgeCleanBeforeAfter,  echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of the particles' trajectories detected outside the arena before the filtering process removing the moments where the particles are detected outside of the arena."}
 # identify the part of the tracklets that are detected outside the arena
 trackDat4List <- MoveR::convert2List(trackDat4)
 OutTracklets <- unique(trackDat4List[["trackletId"]][which(trackDat4List[["Arena"]] == FALSE)])

@@ -283,7 +283,53 @@ As expected, a new column (activity2) containing particles' activity states, cod
 Also, in case the `graph` argument is `TRUE`, a 3D plot showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) is displayed (see fig. \@ref(fig:actives2-3Dplot)). 
 
 ```{r actives2-3Dplot, echo=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
-htmltools::includeHTML("https://raw.githubusercontent.com/qpetitjean/MoveR/Main/man/figures/activity2-3Dplot.html")
+
+load("C:/Users/quent/Desktop/Test/activity2-3Dplot.Rdata")
+
+    # draw the plot
+      fig <- plotly::plot_ly(x=~colnames(dens), y=~rownames(dens), contours = list(
+        z = list(
+          show = TRUE,
+          start = round(min(sqrt(dens)),-2),
+          project = list(z = TRUE),
+          end = round(max(sqrt(dens)),-2),
+          size = max(sqrt(dens)) / 10,
+          color = "white"
+        )
+      ))
+      ## add inactive layer
+      fig <- plotly::add_surface(
+        p = fig,
+        z = sqrt(dens),
+        opacity = 0.8,
+        colorscale = "Hot",
+        cmin = min(sqrt(dens1)),
+        cmax = max(sqrt(dens1)),
+        colorbar = list(title = "inactive\ncounts (sqrt)")
+      )
+      ## add active layer
+      fig <- plotly::add_surface(
+        p = fig,
+        z = sqrt(dens2),
+        opacity = 1,
+        colorscale = list(
+          c(0, 0.25, 1),
+          c("rgb(20,20,20)", "rgb(58,139,44)", "rgb(234,239,226)")
+        ),
+        #colorscale = "Greens",
+        colorbar = list(title = "active\ncounts (sqrt)")
+      )
+      fig <- plotly::layout(
+        fig,
+        title = '3D density plot and 95% ellipsis of the inactive state',
+        scene1 = list(
+          xaxis = list(title = var2n),
+          yaxis = list(title = var1n),
+          zaxis = list(title = "counts (sqrt)")
+        )
+      )
+      fig
+
 ```
 
 This plot may be helpful as diagnostic plot to check the distribution of data making the two clusters and to check whether the clusters has been identified in an expected way.
@@ -598,7 +644,7 @@ strains_plot(
   colvariable = c("#339999", "#6600CC", "#669933"),
   # A vector containing the color of each variable on the plot
   scaleVariable = list(c(0, 1),
-                       c(0, 12),
+                       c(0, 14),
                        c(0, 5)),
   # a list containing vectors which indicates the upper and lower value to specify the scale for each variable
   Lab = list("Activity (%)",
