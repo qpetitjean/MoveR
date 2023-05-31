@@ -103,7 +103,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Compute some metrics</h1>
             
-            <h4 data-toc-skip class="date">2023-05-30</h4>
+            <h4 data-toc-skip class="date">2023-05-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-ComputeMetrics.Rmd" class="external-link"><code>vignettes/MoveR-ComputeMetrics.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-ComputeMetrics.Rmd</code></div>
@@ -147,7 +147,9 @@
 <li><p>the sinuosity using <code><a href="../reference/sinuosity.html">sinuosity()</a></code></p></li>
 <li><p>the surface explored using <code><a href="../reference/exploredArea.html">exploredArea()</a></code></p></li>
 </ul>
-<p>Note that the distance to the edge of the arena does not need to be computed again since we already did it to remove the moments where the particles were detected outside the arena.</p>
+<p class="notes">
+Note that the distance to the edge of the arena does not need to be computed again since we already did it to remove the moments where the particles were detected outside the arena.
+</p>
 <p>Also it is possible to smooth selected metrics over each tracklet using <code><a href="../reference/slidWindow.html">slidWindow()</a></code>. For this example we are smoothing the following metrics using a sliding window of 10 frames (<code>Tstep</code> argument):</p>
 <ul>
 <li><p>the mean turning angle and its variance using <code><a href="https://rdrr.io/pkg/circular/man/variance.html" class="external-link">circular::var()</a></code> from the circular package</p></li>
@@ -155,10 +157,14 @@
 <li><p>the mean distance traveled</p></li>
 <li><p>the mean distance to the edge</p></li>
 </ul>
-<p>Note that the sinuosity and the surface explored do not need to be smoothed because both functions return a single value for each tracklet (i.e., this value is repeated over the tracklet’s duration).</p>
+<p class="notes">
+Note that the sinuosity and the surface explored do not need to be smoothed because both functions return a single value for each tracklet (i.e., this value is repeated over the tracklet’s duration).
+</p>
 <p>Before computing the listed metrics, we need to specify some parameters, especially for <code><a href="../reference/dist2Edge.html">dist2Edge()</a></code>, <code><a href="../reference/activity1.html">activity1()</a></code> and <code><a href="../reference/exploredArea.html">exploredArea()</a></code>.</p>
 <p>Indeed, to compute the distance from the edges of the arena we need to import the location of the edge (the region of interest - ROI) from a distance matrix using <code><a href="../reference/locROI.html">locROI()</a></code>.</p>
-<p>Note that generating the distance matrix is an external process that can be achieved using image processing program such as <a href="https://imagej.net/ij/index.html" class="external-link">ImageJ</a>.</p>
+<p class="notes">
+Note that generating the distance matrix is an external process that can be achieved using image processing program such as <a href="https://imagej.net/ij/index.html" class="external-link">ImageJ</a>.
+</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">arenaEdge</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/locROI.html">locROI</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, edgeCrit <span class="op">=</span> <span class="fl">1</span>, xy <span class="op">=</span> <span class="fl">1</span>, order <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>Also, to classify the particles between “active” (1) or “inactive” (0) state, we need to find the speed threshold above which a particle is considered as active and feed the <code>minSpeed</code> argument with it. To do that, we can plot the distribution of particles’ speed and find the valley in the bimodal distribution (fig. <a href="#fig:SpeedTresh">1</a>).</p>
@@ -203,15 +209,15 @@ Figure 1: kernel density estimate of the particles’ speed. The bimodal distrib
 <span></span>
 <span><span class="va">activTresh</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">^</span><span class="va">valley</span></span>
 <span><span class="va">activTresh</span></span></code></pre></div>
-<p>[1] 1.648978</p>
+<pre><code><span><span class="co">## [1] 1.648978</span></span></code></pre>
 <p>We have found the threshold above which the particles are considered as active.</p>
 <p>Now need to identify the diameter of the typical surface a particle can “explore” around its position to determine the surface explored over each tracklet. To do that, we need some knowledge about the model species.</p>
 <p>In the case of <em>Trichogramma</em> Wajnberg and Colazza (1998) reported that the perception distance (i.e., reaction distance) of an individual is about 4 mm. Accordingly, we can infer that an individual should explore a surrounding surface of 16 mm<sup>2</sup>. The diameter of such a cell is hence 8 mm or 331 pixels which corresponds to the <code>binRad</code> argument.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scaling</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">413.4</span> <span class="co"># the scaling of the video - 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ)</span></span>
 <span><span class="va">diamSurf</span> <span class="op">&lt;-</span> <span class="fl">0.8</span> <span class="op">/</span> <span class="va">scaling</span></span></code></pre></div>
 <p>Now we have everything that is needed to run the computation of the desired metrics the first step consist in specifying a list of custom functions as follow:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Specify the batch of function to pass to the analyseTracklet function for metric computation over each tracklet</span></span>
 <span><span class="va">customFuncList</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="co">## compute</span></span>
@@ -285,11 +291,14 @@ Figure 1: kernel density estimate of the particles’ speed. The bimodal distrib
 <span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span>                     <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p class="notes">
+</p>
 <p>Note that naming each element (function) of the list ensure that the output of the computation is properly named when appended to the data.
 In case list elements are unnamed, the <code><a href="../reference/analyseTracklets.html">analyseTracklets()</a></code> look for a generic name within the specified <code>customFunc</code>.</p>
-<p>For instance, for <code>turnAngle(x, TimeCol = "runTimelinef", unit = "radians")</code>, the function can retrieve <code>turnAngle</code> but the result can be unexpected in case of more complex function structure such as for <code>circular::var(circular::circular(x$turnAngle, type = "angle", units = "radians"), na.rm = T)</code>, here the function will extract <code><a href="https://rdrr.io/pkg/circular/man/variance.html" class="external-link">circular::var</a></code>.</p>
+For instance, for <code>turnAngle(x, TimeCol = "runTimelinef", unit = "radians")</code>, the function can retrieve <code>turnAngle</code> but the result can be unexpected in case of more complex function structure such as for <code>circular::var(circular::circular(x$turnAngle, type = "angle", units = "radians"), na.rm = T)</code>, here the function will extract <code><a href="https://rdrr.io/pkg/circular/man/variance.html" class="external-link">circular::var</a></code>.
+
 <p>Everything is ok, let’s start the computation using <code><a href="../reference/analyseTracklets.html">analyseTracklets()</a></code></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trackDat2</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/analyseTracklets.html">analyseTracklets</a></span><span class="op">(</span><span class="va">trackDat</span>,</span>
 <span>                          customFunc <span class="op">=</span> <span class="va">customFuncList</span><span class="op">)</span></span>
@@ -401,8 +410,11 @@ In case list elements are unnamed, the <code><a href="../reference/analyseTrackl
 <span><span class="co">## 19          -56.86466</span></span>
 <span><span class="co">## 20          -56.85294</span></span></code></pre>
 <p>Great! as displayed above for the first tracklet, the desired metrics and the smoothed one has been added to the dataset.</p>
+<p class="notes">
+</p>
 <p>Note that <code>sinuosity</code> and <code>explorArea</code> return an unique value, in this case, the value is repeated over the whole tracklet.</p>
-<p>Also note that as we choose a step of 10 time units (here frames) for each sliding window, the first and last 5 values of the computed metrics return NA.</p>
+Also note that as we choose a step of 10 time units (here frames) for each sliding window, the first and last 5 values of the computed metrics return NA.
+
 <p>To summarize, it is easy to run relatively intensive computation on a large set of tracklets and smooth the resulting metrics over each tracklet. While for this example, we have combined <code><a href="../reference/analyseTracklets.html">analyseTracklets()</a></code>, <code><a href="../reference/slidWindow.html">slidWindow()</a></code> and various modulus (e.g., <code><a href="../reference/speed.html">speed()</a></code>, <code><a href="../reference/sinuosity.html">sinuosity()</a></code>, <code><a href="../reference/turnAngle.html">turnAngle()</a></code>), <code><a href="../reference/analyseTracklets.html">analyseTracklets()</a></code> is flexible enough to accept any computation specified by the user within the “customFunc” argument.</p>
 <p>To go further, while we have identified activity states (i.e., active vs inactive) based on 1 dimension using <code>active1()</code>, one may also perform activity states classification trough non-hierarchical clustering in 2 dimensions using <code><a href="../reference/activity2.html">activity2()</a></code>.</p>
 </div>
@@ -411,7 +423,7 @@ In case list elements are unnamed, the <code><a href="../reference/analyseTrackl
 </h2>
 <p>The <code>MoveR</code> package allow to use density based clustering (Henning 2020; Ester et al., 1996) on two a dimensions array to classify particles’ between active and inactive states.</p>
 <p>For this purpose, we are using <code><a href="../reference/activity2.html">activity2()</a></code> and the previously smoothed speed (log-transformed) and turning angle variance as dimensions to performed non-hierarchical clustering as follow:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># use density based clustering to classify actives and inactives states in a 2 dimension array (here the smoothed speed (log) and the angle variance)</span></span>
 <span><span class="co"># when graph = TRUE, the function display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering).</span></span>
 <span></span>
@@ -428,8 +440,10 @@ In case list elements are unnamed, the <code><a href="../reference/analyseTrackl
 <span>    na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>    graph <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in MoveR::activity2(trackDat = trackDat2, var1 = "slideMeanSpeed", :</span></span>
+<span><span class="co">## var1 contains infinite values, these values has been removed</span></span></code></pre>
 <pre><code><span><span class="co">## [1] "Clusters identified !"</span></span></code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">trackDat3</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##      maj.ax       angle min.ax    x.pos    y.pos identity  frame runTimelinef</span></span>
 <span><span class="co">## 1  16.55498 -0.04423860     NA 639.2191 165.7905      434 103180       103180</span></span>
@@ -540,7 +554,7 @@ In case list elements are unnamed, the <code><a href="../reference/analyseTrackl
 <p>Also, in case the <code>graph</code> argument is <code>TRUE</code>, a 3D plot showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) is displayed (see fig. <a href="#fig:actives2"><strong>??</strong></a>).</p>
 <p>This plot may be helpful as diagnostic plot to check the distribution of data making the two clusters and to check whether the clusters has been identified in an expected way.</p>
 <p>Now we have identified activity states according to both 1d (<code><a href="../reference/activity1.html">activity1()</a></code>) and 2d (<code><a href="../reference/activity2.html">activity2()</a></code>) methods, we can compare the global proportion of both active and inactive state returned by the two functions (see fig. <a href="#fig:PieCharts">2</a> below).</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compare the amount of active and inactive state between activity1() and activity2() functions</span></span>
 <span><span class="va">trackDatL</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
@@ -551,6 +565,7 @@ In case list elements are unnamed, the <code><a href="../reference/analyseTrackl
 <span>  <span class="co">## pie chart of behavioral state proportion for both results</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/pie.html" class="external-link">pie</a></span><span class="op">(</span></span>
 <span>  main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Proportion of active vs. inactive states\nfor activity"</span>, <span class="va">i</span>, <span class="st">"()"</span><span class="op">)</span>,</span>
+<span>  cex.main <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">act</span>, <span class="va">inact</span><span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>active <span class="op">=</span> <span class="va">act</span>,</span>
@@ -580,8 +595,10 @@ Figure 2: Pie chart representing the proportion of active (green) and inactive (
 <h2 id="global-exploration-pattern">Global exploration pattern<a class="anchor" aria-label="anchor" href="#global-exploration-pattern"></a>
 </h2>
 <p>While we have already computed the surface explored over each tracklet using <code><a href="../reference/exploredArea.html">exploredArea()</a></code> combined with <code><a href="../reference/analyseTracklets.html">analyseTracklets()</a></code>, one would also compute the total surface explored over the whole dataset and quickly check if the particles’ displacements are homogeneously distributed in space (<code>graph</code> = TRUE).</p>
-<p>Note that <code>exploredArea</code> also allow to save the heatmap with or without displaying it by specifying a saving function or a logical value (TRUE) in the <code>saveGraph</code> argument.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p class="notes">
+Note that <code>exploredArea</code> also allow to save the heatmap with or without displaying it by specifying a saving function or a logical value (TRUE) in the <code>saveGraph</code> argument.
+</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Total surface explored</span></span>
 <span><span class="va">Totexplored</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/exploredArea.html">exploredArea</a></span><span class="op">(</span></span>
 <span>  <span class="va">trackDat3</span>,</span>
@@ -604,13 +621,13 @@ Figure 3: Heatmap of the area visited by the particles. Here we used the reactio
 </h2>
 <p>While <code>MoveR</code> does not focus on the study of interaction among particles, we have implemented the possibility to compute the Average Nearest Neighbor Distance (ANND) among particles. The ANND is commonly viewed as an index of sociability in gregarious groups of individuals.</p>
 <p>Hence, using <code><a href="../reference/ANND.html">ANND()</a></code> one can compute the Average Nearest Neighbor distance across all particles and time unit. In addition , the function allow to perform a bootstrap over time unit to compute studentize 95% confidence interval around the ANND.</p>
-<p>For this example, we are computing the ANND and studentize 95% confidence interval every 125 frames (i.e., 5 seconds) over 500 bootstrap sampling.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p>For this example, we are computing the ANND and studentize 95% confidence interval every 20 seconds (i.e., 20 seconds * 25 frames) over 500 bootstrap sampling.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute the ANND and studentize 95% confidence interval (bootstrap)</span></span>
 <span><span class="va">ANNDRes</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/ANND.html">ANND</a></span><span class="op">(</span></span>
 <span>    <span class="va">trackDat3</span>,</span>
 <span>    timeCol <span class="op">=</span> <span class="st">"runTimelinef"</span>,</span>
-<span>    sampling <span class="op">=</span> <span class="fl">10</span> <span class="op">*</span> <span class="fl">25</span>,</span>
+<span>    sampling <span class="op">=</span> <span class="fl">20</span> <span class="op">*</span> <span class="fl">25</span>,</span>
 <span>    scale <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    bootn <span class="op">=</span> <span class="fl">500</span></span>
 <span><span class="op">)</span></span>
@@ -629,13 +646,14 @@ Figure 3: Heatmap of the area visited by the particles. Here we used the reactio
 <span>    TempCol <span class="op">=</span> <span class="st">"Measured_Temp_Deg_C"</span>, <span class="co"># name of the temperature column</span></span>
 <span>    TempScale <span class="op">=</span> <span class="cn">NULL</span>, <span class="co"># a vector containing 2 values (same unit as TempCol) indicating lower and upper limit of the temperature axis (either x or y)</span></span>
 <span>    TimeCol <span class="op">=</span> <span class="st">"runTimelinef"</span>, <span class="co"># name of the time column,</span></span>
-<span>    TimeLimit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">(</span><span class="fl">20</span><span class="op">*</span><span class="fl">60</span><span class="op">*</span><span class="fl">25</span><span class="op">)</span>, <span class="op">(</span><span class="fl">70</span><span class="op">*</span><span class="fl">60</span><span class="op">*</span><span class="fl">25</span><span class="op">)</span><span class="op">)</span>, <span class="co"># a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis</span></span>
+<span>    TimeLimit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">(</span><span class="fl">25</span><span class="op">*</span><span class="fl">60</span><span class="op">*</span><span class="fl">25</span><span class="op">)</span>, <span class="op">(</span><span class="fl">70</span><span class="op">*</span><span class="fl">60</span><span class="op">*</span><span class="fl">25</span><span class="op">)</span><span class="op">)</span>, <span class="co"># a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis</span></span>
 <span>    nbrIndcounted <span class="op">=</span> <span class="fl">24</span>, <span class="co"># the number\r of individual manually counted</span></span>
 <span>    IC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ANNDmean <span class="op">=</span> <span class="va">ANNDResPlot</span><span class="op">)</span>, <span class="co"># a list of datasets containing 95%Ci</span></span>
 <span>    variables <span class="op">=</span> <span class="st">"ANNDmean"</span>, <span class="co"># a vector containing the names of variables to plot (names of columns present in both smoothDf and IC)</span></span>
 <span>    colvariable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"purple"</span><span class="op">)</span>, <span class="co"># A vector containing the color of each variable on the plot</span></span>
 <span>    scaleVariable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span><span class="op">)</span><span class="op">)</span>, <span class="co"># a list containing vectors which indicates the upper and lower value to specify the scale for each variable</span></span>
-<span>    Lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ANND (pixels)"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>    Lab <span class="op">=</span> <span class="st">"ANND (pixels)"</span>,</span>
+<span>    xTick <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:ANND"></span>
 <img src="MoveR-ComputeMetrics_files/figure-html/ANND-1.png" alt="Evolution of the Average Nearest Neighbor Distance (ANND, purple line) and studentize 95% confidence interval among &lt;em&gt;Trichogramma&lt;/em&gt; individuals over time and temperature ramp (from 35°C to 45°C and back to 35°C, yellow to red line) expressed in pixels. The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment." width="100%"><p class="caption">
@@ -654,16 +672,19 @@ Figure 4: Evolution of the Average Nearest Neighbor Distance (ANND, purple line)
 <p>For instance,</p>
 <ul>
 <li><p>the mean sinuosity over time</p></li>
-<li><p>the mean speed of active individual only</p></li>
-<li><p>the mean speed of all individual</p></li>
-<li><p>the mean activity (using results of <code><a href="../reference/activity2.html">activity2()</a></code>)</p></li>
-<li><p>the mean distance to the edge</p></li>
-<li><p>the mean distance traveled.</p></li>
+<li><p>the mean speed of active individual only over time</p></li>
+<li><p>the mean speed of all individual over time</p></li>
+<li><p>the mean activity over time (using results of <code><a href="../reference/activity2.html">activity2()</a></code>)</p></li>
+<li><p>the mean surface explored over time</p></li>
+<li><p>the mean distance to the edge over time</p></li>
+<li><p>the mean distance traveled over time.</p></li>
 </ul>
-<p>Note that <code><a href="../reference/temporalTrend.html">temporalTrend()</a></code> allow to analyse only specific part of the timeline by specifying the <code>Tinterval</code> argument. More importantly, and as tracklets might present different length, the function allow to weighed the results of the custom functions according to the tracklet length of the tracklets by using the <code>wtd</code> argument.</p>
-<p>Also, as the results of the computation are smoothed over time, the <code>sampling</code> and <code>Tstep</code> arguments should be specified to define the sampling step (i.e., the resolution) use for the computation and the size of the sliding window used for smoothing, respectively.</p>
+<p class="notes">
+Note that <code><a href="../reference/temporalTrend.html">temporalTrend()</a></code> allow to analyse only specific part of the timeline by specifying the <code>Tinterval</code> argument. More importantly, and as tracklets might present different length, the function allow to weighed the results of the custom functions according to the tracklet length of the tracklets by using the <code>wtd</code> argument.
+</p>
+<p>As the results of the computation are smoothed over time, the <code>sampling</code> and <code>Tstep</code> arguments should be specified to define the sampling step (i.e., the resolution) use for the computation and the size of the sliding window used for smoothing, respectively.</p>
 <p>Here, we are using a sampling step of 20 seconds (20 seconds * 25 fps) and a sliding window of 1.5 minutes (90 seconds * 25 fps)</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># specify a list of custom function to smooth the existing metrics over time</span></span>
 <span><span class="va">customFuncList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="co"># smooth sinuosity over time</span></span>
@@ -675,7 +696,7 @@ Figure 4: Evolution of the Average Nearest Neighbor Distance (ANND, purple line)
 <span>  speed_active <span class="op">=</span></span>
 <span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>      <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">activity2</span><span class="op">)</span> <span class="op">&amp;</span></span>
-<span>                            <span class="va">x</span><span class="op">$</span><span class="va">activity2</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span>, <span class="cn">NA</span>,</span>
+<span>                            <span class="va">x</span><span class="op">$</span><span class="va">activity2</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>,<span class="op">]</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span>, <span class="cn">NA</span>,</span>
 <span>             <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">slideMeanSpeed</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">activity2</span><span class="op">)</span> <span class="op">&amp;</span></span>
 <span>                                           <span class="va">x</span><span class="op">$</span><span class="va">activity2</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="op">}</span>,</span>
@@ -687,12 +708,17 @@ Figure 4: Evolution of the Average Nearest Neighbor Distance (ANND, purple line)
 <span>  <span class="co"># smooth activity states over time</span></span>
 <span>  activity <span class="op">=</span></span>
 <span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">activity2</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">activity2</span><span class="op">)</span>,<span class="op">]</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="cn">NA</span></span>
 <span>      <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">activity2</span><span class="op">)</span> <span class="op">&amp;</span></span>
-<span>                 <span class="va">x</span><span class="op">$</span><span class="va">activity2</span> <span class="op">==</span> <span class="fl">1</span>, <span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">activity2</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>
+<span>                 <span class="va">x</span><span class="op">$</span><span class="va">activity2</span> <span class="op">==</span> <span class="fl">1</span>,<span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">activity2</span><span class="op">)</span>,<span class="op">]</span><span class="op">)</span></span>
 <span>      <span class="op">}</span></span>
+<span>    <span class="op">}</span>,</span>
+<span>  <span class="co"># smooth the exploration over time</span></span>
+<span>  explorArea <span class="op">=</span></span>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">explorArea</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span>    <span class="op">}</span>,</span>
 <span>  <span class="co"># smooth the distance to the edge whatever the states over time</span></span>
 <span>  Dist2Edge <span class="op">=</span></span>
@@ -717,15 +743,16 @@ Figure 4: Evolution of the Average Nearest Neighbor Distance (ANND, purple line)
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot the result</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">p</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">TemporalRes_wtd</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">p</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">TemporalRes_wtd</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>    <span class="cn">NULL</span>,</span>
 <span>    ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">TemporalRes_wtd</span><span class="op">[[</span><span class="va">p</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
-<span>      digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">TemporalRes_wtd</span><span class="op">[[</span><span class="va">p</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
+<span>      digits <span class="op">=</span> <span class="fl">1</span></span>
+<span>    <span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TemporalRes_wtd</span><span class="op">[[</span><span class="va">p</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TemporalRes_wtd</span><span class="op">[[</span><span class="va">p</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
 <span>      digits <span class="op">=</span> <span class="fl">1</span></span>
 <span>    <span class="op">)</span><span class="op">)</span>,</span>
 <span>    xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -736,19 +763,19 @@ Figure 4: Evolution of the Average Nearest Neighbor Distance (ANND, purple line)
 <span>    ylab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">TemporalRes_wtd</span><span class="op">)</span><span class="op">[</span><span class="va">p</span><span class="op">]</span>,</span>
 <span>    xlab <span class="op">=</span> <span class="st">"Time (frames)"</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">TemporalRes_wtd</span><span class="op">[[</span><span class="va">p</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span> <span class="op">~</span> <span class="va">TemporalRes_wtd</span><span class="op">[[</span><span class="va">p</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">runTimelinef</span> , col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">TemporalRes_wtd</span><span class="op">[[</span><span class="va">p</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">~</span> <span class="va">TemporalRes_wtd</span><span class="op">[[</span><span class="va">p</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">runTimelinef</span> , col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:TemporalTrend"></span>
-<img src="MoveR-ComputeMetrics_files/figure-html/TemporalTrend-1.png" alt="Evolution of the various metrics (sinuosity, speed for active state, speed including all activity states, activity, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames." width="100%"><p class="caption">
-Figure 5: Evolution of the various metrics (sinuosity, speed for active state, speed including all activity states, activity, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames.
+<img src="MoveR-ComputeMetrics_files/figure-html/TemporalTrend-1.png" alt="Evolution of the various metrics (sinuosity, speed for active state, speed including all activity states, activity, surface explored, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames." width="100%"><p class="caption">
+Figure 5: Evolution of the various metrics (sinuosity, speed for active state, speed including all activity states, activity, surface explored, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames.
 </p>
 </div>
 <p>Here we are, after a quick look at this panel of graph (fig. <a href="#fig:TemporalTrend">5</a>) it seems that there is a common trend across all metrics with a tipping point marking either a drastic decrease or increase depending on the considered metric.</p>
-<p>More particularly, there is a drop on speed (whatever which metric is considered), activity, distance to the edge (here the more the value is negative, the more the individuals far from the edge) and distance traveled while there is an increase of sinuosity.</p>
+<p>More particularly, there is a drop on speed (whatever which metric is considered), activity, surface explored, distance to the edge (here the more the value is negative, the more the individuals far from the edge) and distance traveled while there is an increase of sinuosity.</p>
 <p>While this observation is encouraging, we need to check whether the variability around the computed values are small enough too support it. This could then help us to find the tipping point (i.e., temperature threshold) which hampered <em>Trichogramma</em>’s movements.</p>
 <p>Accordingly, let’s start computing studentized 95% confidence interval using <code><a href="../reference/temporalTrend.html">temporalTrend()</a></code>:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">TemporalResBOOT_wtd</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/temporalBoot.html">temporalBoot</a></span><span class="op">(</span></span>
 <span>    trackDat <span class="op">=</span> <span class="va">trackDat3</span>,</span>
@@ -767,7 +794,7 @@ Figure 5: Evolution of the various metrics (sinuosity, speed for active state, s
 <span><span class="va">boot.ci.NoNA</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">boot.ci</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">p</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">boot.ci.NoNA</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>    <span class="cn">NULL</span>,</span>
@@ -795,45 +822,59 @@ Figure 5: Evolution of the various metrics (sinuosity, speed for active state, s
 <span><span class="op">}</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:TemporalBoot"></span>
-<img src="MoveR-ComputeMetrics_files/figure-html/TemporalBoot-1.png" alt="Evolution of the various metrics (i.e., sinuosity, speed for including active state only, speed including all activity states, activity, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames." width="100%"><p class="caption">
-Figure 6: Evolution of the various metrics (i.e., sinuosity, speed for including active state only, speed including all activity states, activity, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames.
+<img src="MoveR-ComputeMetrics_files/figure-html/TemporalBoot-1.png" alt="Evolution of the various metrics (i.e., sinuosity, speed for including active state only, speed including all activity states, activity, surface explored, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames." width="100%"><p class="caption">
+Figure 6: Evolution of the various metrics (i.e., sinuosity, speed for including active state only, speed including all activity states, activity, surface explored, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames.
 </p>
 </div>
-<p>Great ! now that we have computed the studentized 95% CI, we can see that the distance to the edge is very variable (fig. <a href="#fig:TemporalBoot">6</a>) compared to the others metrics.</p>
-<p>Also, as the speed metrics and the distance traveled exhibit very similar trends we can use a more synthetic view of the results by plotting the sinuosity, the activity and the speed (for all individuals) on the same plot.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p>Great! now that we have computed the studentized 95% CI, we can see that the distance to the edge is very variable (fig. <a href="#fig:TemporalBoot">6</a>) compared to the others metrics.</p>
+<p>Also, as the speed metrics, the distance traveled and the surface explored exhibit very similar trends we can hence use a more synthetic view of the results by plotting the sinuosity, the activity and the speed (for all individuals) on the same plot.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># import a custom function to plot the results</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/main/RScripts/Strains_plotFunc.r"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span></span>
+<span>  <span class="st">"https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/main/RScripts/Strains_plotFunc.r"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot the activity, speed and sinuosity and studentize 95% confidence interval as an envelope as well as the number of detection over the experiment.</span></span>
 <span><span class="fu">strains_plot</span><span class="op">(</span></span>
-<span>    finalDatList <span class="op">=</span> <span class="va">trackDatL</span>, <span class="co"># the cleaned dataset, needed to compute the average number of individuals over the video</span></span>
-<span>    smoothDf <span class="op">=</span> <span class="va">TemporalRes_wtd</span>, <span class="co"># a list of smoothed datasets</span></span>
-<span>    TempAxis <span class="op">=</span> <span class="st">"y"</span>, <span class="co"># position of the temperature axis</span></span>
-<span>    TempCol <span class="op">=</span> <span class="st">"Measured_Temp_Deg_C"</span>, <span class="co"># name of the temperature column</span></span>
-<span>    TimeCol <span class="op">=</span> <span class="st">"runTimelinef"</span>, <span class="co"># name of the time column,</span></span>
-<span>    TimeLimit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">(</span><span class="fl">20</span><span class="op">*</span><span class="fl">60</span><span class="op">*</span><span class="fl">25</span><span class="op">)</span>, <span class="op">(</span><span class="fl">70</span><span class="op">*</span><span class="fl">60</span><span class="op">*</span><span class="fl">25</span><span class="op">)</span><span class="op">)</span>, <span class="co"># a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis</span></span>
-<span>    nbrIndcounted <span class="op">=</span> <span class="fl">24</span>, <span class="co"># the number\r of individual manually counted</span></span>
-<span>    IC <span class="op">=</span> <span class="va">boot.ci.NoNA</span>, <span class="co"># a list of datasets containing 95%Ci</span></span>
-<span>    variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"activity"</span> , <span class="st">"speed_active"</span>, <span class="st">"sinuosity"</span><span class="op">)</span>, <span class="co"># a vector containing the names of variables to plot (names of columns present in both smoothDf and IC)</span></span>
-<span>    colvariable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#339999"</span>, <span class="st">"#6600CC"</span>, <span class="st">"#669933"</span><span class="op">)</span>, <span class="co"># A vector containing the color of each variable on the plot</span></span>
-<span>    scaleVariable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">boot.ci.NoNA</span><span class="op">[[</span><span class="st">"activity"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">`2.5%`</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>                               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">boot.ci.NoNA</span><span class="op">[[</span><span class="st">"speed_active"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">`2.5%`</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>                               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">boot.ci.NoNA</span><span class="op">[[</span><span class="st">"sinuosity"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">`2.5%`</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="co"># a list containing vectors which indicates the upper and lower value to specify the scale for each variable</span></span>
-<span>    Lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>            <span class="st">"Activity (%)"</span>,</span>
-<span>            <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="st">"Speed ("</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">px.s</span> <span class="op">^</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="st">")"</span><span class="op">)</span>,</span>
-<span>            <span class="st">"Sinuosity"</span></span>
-<span>          <span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  finalDatList <span class="op">=</span> <span class="va">trackDatL</span>,</span>
+<span>  <span class="co"># the cleaned dataset, needed to compute the average number of individuals over the video</span></span>
+<span>  smoothDf <span class="op">=</span> <span class="va">TemporalRes_wtd</span>,</span>
+<span>  <span class="co"># a list of smoothed datasets</span></span>
+<span>  TempAxis <span class="op">=</span> <span class="st">"y"</span>,</span>
+<span>  <span class="co"># position of the temperature axis</span></span>
+<span>  TempCol <span class="op">=</span> <span class="st">"Measured_Temp_Deg_C"</span>,</span>
+<span>  <span class="co"># name of the temperature column</span></span>
+<span>  TimeCol <span class="op">=</span> <span class="st">"runTimelinef"</span>,</span>
+<span>  <span class="co"># name of the time column,</span></span>
+<span>  TimeLimit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">(</span><span class="fl">25</span> <span class="op">*</span> <span class="fl">60</span> <span class="op">*</span> <span class="fl">25</span><span class="op">)</span>, <span class="op">(</span><span class="fl">70</span> <span class="op">*</span> <span class="fl">60</span> <span class="op">*</span> <span class="fl">25</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="co"># a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis</span></span>
+<span>  nbrIndcounted <span class="op">=</span> <span class="fl">24</span>,</span>
+<span>  <span class="co"># the number\r of individual manually counted</span></span>
+<span>  IC <span class="op">=</span> <span class="va">boot.ci.NoNA</span>,</span>
+<span>  <span class="co"># a list of datasets containing 95%Ci</span></span>
+<span>  variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"activity"</span> , <span class="st">"speed_active"</span>, <span class="st">"sinuosity"</span><span class="op">)</span>,</span>
+<span>  <span class="co"># a vector containing the names of variables to plot (names of columns present in both smoothDf and IC)</span></span>
+<span>  colvariable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#339999"</span>, <span class="st">"#6600CC"</span>, <span class="st">"#669933"</span><span class="op">)</span>,</span>
+<span>  <span class="co"># A vector containing the color of each variable on the plot</span></span>
+<span>  scaleVariable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>                       <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span><span class="op">)</span>,</span>
+<span>                       <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="co"># a list containing vectors which indicates the upper and lower value to specify the scale for each variable</span></span>
+<span>  Lab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Activity (%)"</span>,</span>
+<span>             <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="st">"Speed ("</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">px.s</span> <span class="op">^</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="st">")"</span><span class="op">)</span>,</span>
+<span>             <span class="st">"Sinuosity"</span><span class="op">)</span>, <span class="co"># a list specifying the y axis labels</span></span>
+<span>  xTick <span class="op">=</span> <span class="fl">5</span> <span class="co"># the increment between each x axis tick</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:SynthPlot"></span>
 <img src="MoveR-ComputeMetrics_files/figure-html/SynthPlot-1.png" alt="Evolution of the activity, sinuosity and speed of &lt;em&gt;Trichogramma&lt;/em&gt; individuals and studentize 95% confidence interval over time and temperature ramp (from 35°C to 45°C and back to 35°C, yellow to red line). The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment." width="100%"><p class="caption">
 Figure 7: Evolution of the activity, sinuosity and speed of <em>Trichogramma</em> individuals and studentize 95% confidence interval over time and temperature ramp (from 35°C to 45°C and back to 35°C, yellow to red line). The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment.
 </p>
 </div>
-<p>Great ! We now have a better look at the effect of temperature on <em>Trichogramma</em>’s movements (see fig. <a href="#fig:SynthPlot">7</a>) and can now retrieve a temperature threshold at which movements start to decrease (about 38℃) or even stop (CTmax about 40℃).</p>
+<p>Great! We now have a better look at the effect of temperature on <em>Trichogramma</em>’s movements (see fig. <a href="#fig:SynthPlot">7</a>) and can now retrieve a temperature threshold at which movements start to decrease (about 38℃) or even stop (CTmax about 40℃).</p>
 <p>As these computation may be relatively intensive, and hence time consuming, depending on the size of the dataset (i.e., number of individuals tracked, duration of the tracking), the amount of metrics to compute and the sampling resolution (i.e., <code>sampling</code> argument) specified in <code>temporalTrend</code> and <code>temporalBoot</code>, it is easily possible to run the computation in parallel (across several thread of a personal computer).</p>
 <p>Luckily, this is the topic of the next tutorial.</p>
+<p>Happy coding.</p>
 <p><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="external-link previous">« Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="external-link next">Next »</a><br></p>
 </div>
 <div class="section level2">

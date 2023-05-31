@@ -256,7 +256,7 @@ The `MoveR` package allow to use density based clustering (Henning 2020; Ester e
 
 For this purpose, we are using `activity2()` and the previously smoothed speed (log-transformed) and turning angle variance as dimensions to performed non-hierarchical clustering as follow: 
 
-```{r actives2, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
+```{r actives2, echo=TRUE, message=FALSE, warning=FALSE}
 # use density based clustering to classify actives and inactives states in a 2 dimension array (here the smoothed speed (log) and the angle variance)
 # when graph = TRUE, the function display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering).
 
@@ -266,14 +266,19 @@ trackDat3 <-
     var1 = "slideMeanSpeed",
     var2 = "slideVarAngle",
     var1T = log10,
-    var2T = NULL,
     nbins = 100,
     eps = 0.15,
     minPts = 5,
-    na.rm = TRUE,
     graph = TRUE
   )
 
+```
+
+```{r actives2Showdata, echo=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
+htmltools::includeHTML("https://raw.githubusercontent.com/qpetitjean/MoveR/Main/man/figures/activity2-3Dplot.html")
+```
+
+```{r actives2Showdata, echo=TRUE, results='markup'}
 head(trackDat3[[1]], 20)
 ```
 
@@ -296,7 +301,7 @@ for (i in c(1:2)) {
   ## pie chart of behavioral state proportion for both results
   pie(
   main = paste0("Proportion of active vs. inactive states\nfor activity", i, "()"),
-  cex.main = 0.8,
+  cex.main = 0.7,
   c(act, inact),
   labels = paste(round(
     data.frame(active = act,
@@ -347,15 +352,15 @@ While `MoveR` does not focus on the study of interaction among particles, we hav
 
 Hence, using `ANND()` one can compute the Average Nearest Neighbor distance across all particles and time unit. In addition , the function allow to perform a bootstrap over time unit to compute studentize 95% confidence interval around the ANND. 
 
-For this example, we are computing the ANND and studentize 95% confidence interval every 125 frames (i.e., 5 seconds) over 500 bootstrap sampling.
+For this example, we are computing the ANND and studentize 95% confidence interval every 20 seconds (i.e., 20 seconds * 25 frames) over 500 bootstrap sampling.
 
-```{r ANND, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the Average Nearest Neighbor Distance (ANND, purple line) and studentize 95% confidence interval among <em>Trichogramma</em> individuals over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line) expressed in pixels. The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
+```{r ANND, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', fig.asp = 0.7, out.width="100%", fig.cap="Evolution of the Average Nearest Neighbor Distance (ANND, purple line) and studentize 95% confidence interval among <em>Trichogramma</em> individuals over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line) expressed in pixels. The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
 
 # compute the ANND and studentize 95% confidence interval (bootstrap)
 ANNDRes <- MoveR::ANND(
     trackDat3,
     timeCol = "runTimelinef",
-    sampling = 10 * 25,
+    sampling = 20 * 25,
     scale = 1,
     bootn = 500
 )
@@ -374,13 +379,14 @@ strains_plot(
     TempCol = "Measured_Temp_Deg_C", # name of the temperature column
     TempScale = NULL, # a vector containing 2 values (same unit as TempCol) indicating lower and upper limit of the temperature axis (either x or y)
     TimeCol = "runTimelinef", # name of the time column,
-    TimeLimit = c((20*60*25), (70*60*25)), # a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis
+    TimeLimit = c((25*60*25), (70*60*25)), # a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis
     nbrIndcounted = 24, # the number\r of individual manually counted
     IC = list(ANNDmean = ANNDResPlot), # a list of datasets containing 95%Ci
     variables = "ANNDmean", # a vector containing the names of variables to plot (names of columns present in both smoothDf and IC)
     colvariable = c("purple"), # A vector containing the color of each variable on the plot
     scaleVariable = list(c(0,300)), # a list containing vectors which indicates the upper and lower value to specify the scale for each variable
-    Lab = c("ANND (pixels)"))
+    Lab = "ANND (pixels)",
+    xTick = 5)
 
 ```
 
@@ -400,15 +406,17 @@ For instance,
 
   * the mean sinuosity over time
   
-  * the mean speed of active individual only
+  * the mean speed of active individual only over time
   
-  * the mean speed of all individual
+  * the mean speed of all individual over time
   
-  * the mean activity (using results of `activity2()`)
+  * the mean activity over time (using results of `activity2()`)
   
-  * the mean distance to the edge
+  * the mean surface explored over time
   
-  * the mean distance traveled.
+  * the mean distance to the edge over time
+  
+  * the mean distance traveled over time.
 
 <p class="notes">Note that `temporalTrend()` allow to analyse only specific part of the timeline by specifying the `Tinterval` argument. More importantly, and as tracklets might present different length, the function allow to weighed the results of the custom functions according to the tracklet length of the tracklets by using the `wtd` argument.</p>
 
@@ -416,7 +424,7 @@ As the results of the computation are smoothed over time, the `sampling` and `Ts
 
 Here, we are using a sampling step of 20 seconds (20 seconds * 25 fps) and a sliding window of 1.5 minutes (90 seconds * 25 fps)
 
-```{r TemporalTrend, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the various metrics (sinuosity, speed for active state, speed including all activity states, activity, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames."}
+```{r TemporalTrend, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the various metrics (sinuosity, speed for active state, speed including all activity states, activity, surface explored, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames."}
 # specify a list of custom function to smooth the existing metrics over time
 customFuncList <- list(
   # smooth sinuosity over time
@@ -428,7 +436,7 @@ customFuncList <- list(
   speed_active =
     function(x) {
       ifelse(nrow(x[which(!is.na(x$activity2) &
-                            x$activity2 == 1), ]) == 0, NA,
+                            x$activity2 == 1),]) == 0, NA,
              mean(x$slideMeanSpeed[which(!is.na(x$activity2) &
                                            x$activity2 == 1)], na.rm = T))
     },
@@ -440,12 +448,17 @@ customFuncList <- list(
   # smooth activity states over time
   activity =
     function(x) {
-      if (nrow(x[!is.na(x$activity2), ]) == 0) {
+      if (nrow(x[!is.na(x$activity2),]) == 0) {
         NA
       } else {
         nrow(x[!is.na(x$activity2) &
-                 x$activity2 == 1, ]) / nrow(x[!is.na(x$activity2), ])
+                 x$activity2 == 1,]) / nrow(x[!is.na(x$activity2),])
       }
+    },
+  # smooth the exploration over time
+  explorArea =
+    function(x) {
+      mean(x$explorArea, na.rm = T)
     },
   # smooth the distance to the edge whatever the states over time
   Dist2Edge =
@@ -470,15 +483,16 @@ TemporalRes_wtd <- MoveR::temporalTrend(
 )
 
 # plot the result
-par(mfrow = c(2, 3))
-for (p in seq_along(TemporalRes_wtd)){
+par(mfrow = c(2, 4))
+for (p in seq_along(TemporalRes_wtd)) {
   plot(
     NULL,
     ylim = c(round(
-      min(TemporalRes_wtd[[p]][,1], na.rm = T),
-      digits = 1),
+      min(TemporalRes_wtd[[p]][, 1], na.rm = T),
+      digits = 1
+    ),
     round(
-      max(TemporalRes_wtd[[p]][,1], na.rm = T),
+      max(TemporalRes_wtd[[p]][, 1], na.rm = T),
       digits = 1
     )),
     xlim = c(
@@ -489,19 +503,19 @@ for (p in seq_along(TemporalRes_wtd)){
     ylab = names(TemporalRes_wtd)[p],
     xlab = "Time (frames)"
   )
-lines(TemporalRes_wtd[[p]][,1] ~ TemporalRes_wtd[[p]]$runTimelinef , col = "red")
+  lines(TemporalRes_wtd[[p]][, 1] ~ TemporalRes_wtd[[p]]$runTimelinef , col = "red")
 }
 
 ```
 Here we are, after a quick look at this panel of graph (fig. \@ref(fig:TemporalTrend)) it seems that there is a common trend across all metrics with a tipping point marking either a drastic decrease or increase depending on the considered metric. 
 
-More particularly, there is a drop on speed (whatever which metric is considered), activity, distance to the edge (here the more the value is negative, the more the individuals far from the edge) and distance traveled while there is an increase of sinuosity. 
+More particularly, there is a drop on speed (whatever which metric is considered), activity, surface explored, distance to the edge (here the more the value is negative, the more the individuals far from the edge) and distance traveled while there is an increase of sinuosity. 
 
 While this observation is encouraging, we need to check whether the variability around the computed values are small enough too support it. This could then help us to find the tipping point (i.e., temperature threshold) which hampered <em>Trichogramma</em>'s movements. 
 
 Accordingly, let's start computing studentized 95% confidence interval using `temporalTrend()`: 
 
-```{r TemporalBoot, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the various metrics (i.e., sinuosity, speed for including active state only, speed including all activity states, activity, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames."}
+```{r TemporalBoot, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the various metrics (i.e., sinuosity, speed for including active state only, speed including all activity states, activity, surface explored, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames."}
 
 TemporalResBOOT_wtd <-
   MoveR::temporalBoot(
@@ -521,7 +535,7 @@ boot.ci <- TemporalResBOOT_wtd[[c(which(names(TemporalResBOOT_wtd) == "BootCiStu
 boot.ci.NoNA <- lapply(boot.ci, function(x) na.omit(x))
 
 
-par(mfrow = c(2, 3))
+par(mfrow = c(2, 4))
 for (p in seq_along(boot.ci.NoNA)) {
   plot(
     NULL,
@@ -552,34 +566,46 @@ for (p in seq_along(boot.ci.NoNA)) {
 
 Great! now that we have computed the studentized 95% CI, we can see that the distance to the edge is very variable (fig. \@ref(fig:TemporalBoot)) compared to the others metrics. 
 
-Also, as the speed metrics and the distance traveled exhibit very similar trends we can use a more synthetic view of the results by plotting the sinuosity, the activity and the speed (for all individuals) on the same plot.
+Also, as the speed metrics, the distance traveled and the surface explored exhibit very similar trends we can hence use a more synthetic view of the results by plotting the sinuosity, the activity and the speed (for all individuals) on the same plot.
 
 
-```{r SynthPlot, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the activity, sinuosity and speed of <em>Trichogramma</em> individuals and studentize 95% confidence interval over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line). The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
-
+```{r SynthPlot, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', fig.asp = 0.7, out.width="100%", fig.cap="Evolution of the activity, sinuosity and speed of <em>Trichogramma</em> individuals and studentize 95% confidence interval over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line). The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
 # import a custom function to plot the results
-source("https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/main/RScripts/Strains_plotFunc.r")
+source(
+  "https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/main/RScripts/Strains_plotFunc.r"
+)
 
 # plot the activity, speed and sinuosity and studentize 95% confidence interval as an envelope as well as the number of detection over the experiment.
 strains_plot(
-    finalDatList = trackDatL, # the cleaned dataset, needed to compute the average number of individuals over the video
-    smoothDf = TemporalRes_wtd, # a list of smoothed datasets
-    TempAxis = "y", # position of the temperature axis
-    TempCol = "Measured_Temp_Deg_C", # name of the temperature column
-    TimeCol = "runTimelinef", # name of the time column,
-    TimeLimit = c((20*60*25), (70*60*25)), # a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis
-    nbrIndcounted = 24, # the number\r of individual manually counted
-    IC = boot.ci.NoNA, # a list of datasets containing 95%Ci
-    variables = c("activity" , "speed_active", "sinuosity"), # a vector containing the names of variables to plot (names of columns present in both smoothDf and IC)
-    colvariable = c("#339999", "#6600CC", "#669933"), # A vector containing the color of each variable on the plot
-    scaleVariable = list(c(0, max(boot.ci.NoNA[["activity"]]$`2.5%`, na.rm=T)), 
-                               c(0, max(boot.ci.NoNA[["speed_active"]]$`2.5%`, na.rm=T)), 
-                               c(0, max(boot.ci.NoNA[["sinuosity"]]$`2.5%`, na.rm=T))), # a list containing vectors which indicates the upper and lower value to specify the scale for each variable
-    Lab = list(
-            "Activity (%)",
-            expression("Speed (" * list(px.s ^ -1) * ")"),
-            "Sinuosity"
-          ))
+  finalDatList = trackDatL,
+  # the cleaned dataset, needed to compute the average number of individuals over the video
+  smoothDf = TemporalRes_wtd,
+  # a list of smoothed datasets
+  TempAxis = "y",
+  # position of the temperature axis
+  TempCol = "Measured_Temp_Deg_C",
+  # name of the temperature column
+  TimeCol = "runTimelinef",
+  # name of the time column,
+  TimeLimit = c((25 * 60 * 25), (70 * 60 * 25)),
+  # a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis
+  nbrIndcounted = 24,
+  # the number\r of individual manually counted
+  IC = boot.ci.NoNA,
+  # a list of datasets containing 95%Ci
+  variables = c("activity" , "speed_active", "sinuosity"),
+  # a vector containing the names of variables to plot (names of columns present in both smoothDf and IC)
+  colvariable = c("#339999", "#6600CC", "#669933"),
+  # A vector containing the color of each variable on the plot
+  scaleVariable = list(c(0, 1),
+                       c(0, 12),
+                       c(0, 5)),
+  # a list containing vectors which indicates the upper and lower value to specify the scale for each variable
+  Lab = list("Activity (%)",
+             expression("Speed (" * list(px.s ^ -1) * ")"),
+             "Sinuosity"), # a list specifying the y axis labels
+  xTick = 5 # the increment between each x axis tick
+)
 
 ```
 
