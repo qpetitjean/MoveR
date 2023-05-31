@@ -1,8 +1,8 @@
 #' @title Determine active or inactive states according to density based clustering method.
 #'
-#' @description Given a list of data frames containing tracking information and two variable of interest the function use 
-#' density based clustering as introduced in Ester et al. (1996). Also, the function use the DBSCAN method from Hennig (2020) to discriminate active and inactive states in a 2d space. 
-#'
+#' @description Given a list of data frames containing tracking information and two variable of interest the function use
+#' density based clustering as introduced in Ester et al. (1996). 
+#' As a result, the function use the DBSCAN method from Hennig (2020) to discriminate active and inactive states in a 2d space by returning numeric values indicating whether the particle is "active" (1) or "inactive" (0).
 #'
 #' @param trackDat A list of data frame containing tracking information for each tracklet.
 #'
@@ -17,42 +17,43 @@
 #' @param nbins A numeric value indicating the number of bins in both vertical and horizontal directions (default = 100).
 #'
 #' @param eps A numeric value specifying the reachability distance (Ester et al., 1996), which correspond to the maximum distance around cluster's members (see \code{\link[fpc]{dbscan}}).
-#' 
+#'
 #' @param minPts A numeric value specifying the reachability minimum no. of points (Ester et al., 1996), which correspond to the minimum number of point per cluster (see \code{\link[fpc]{dbscan}}).
-#' 
+#'
 #' @param scale A logical value (i.e., TRUE or FALSE) indicating whether the data should be centered (i.e., values minus the mean) and scaled (divided by the standard deviation) (default = TRUE).
-#' 
+#'
 #' @param na.rm A logical value (i.e., TRUE or FALSE) indicating whether NA values should be stripped before the computation proceeds (default = TRUE).
 #'
-#' @param graph A logical value (i.e., TRUE or FALSE) indicating whether the various diagnostics plots should be displayed or not (default = TRUE).
+#' @param graph A logical value (i.e., TRUE or FALSE) indicating whether the distribution (3d density map) of the active and inactive states according to the classification (density based clustering) plot should be displayed or not (default = TRUE). 
 #'
 #'
-#' @return This function returns the results of the classification (actives vs. inactives) appended to 
-#' the original list of data frame containing tracking information for each tracklet.
+#' @return This function returns the results of the classification (actives vs. inactives) as numeric value (1 or 0, respectively) appended to
+#' the original list of data frame containing tracking information for each tracklet. 
+#' Also, if graph argument is TRUE, the function returns the distribution (3d density map) of the active and inactive states according to the classification (density based clustering) in the viewer.
 #'
 #' @author Quentin PETITJEAN
-#' 
+#'
 #' @seealso \code{\link[fpc]{dbscan}}
 #'
 #' @references
 #' \itemize{
-#'          \item{Christian Hennig (2020). fpc: Flexible Procedures for Clustering. R package version 2.2-9. \href{https://CRAN.R-project.org/package=fpc}{https://CRAN.R-project.org/package=fpc}}
-#'          \item{Martin Ester, Hans-Peter Kriegel, Joerg Sander, Xiaowei Xu (1996). A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise. Institute for Computer Science, University of Munich. Proceedings of 2nd International Conference on Knowledge Discovery and Data Mining (KDD-96).}
+#'          \item{Christian, H., (2020). fpc: Flexible Procedures for Clustering. R package version 2.2-9. \href{https://CRAN.R-project.org/package=fpc}{https://CRAN.R-project.org/package=fpc}}
+#'          \item{Ester, M., Kriegel H.P., Sander, J., Xu X., (1996). A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise. Institute for Computer Science, University of Munich. Proceedings of 2nd International Conference on Knowledge Discovery and Data Mining (KDD-96).}
 #'          }
 #'
 #' @examples
-#' ## Not run:
-#' 
+#' \dontrun{
+#'
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 #' Path2Data
-#' 
+#'
 #' # Import the list containing the 9 vectors classically used for further computation
 #' Data <- MoveR::readTrex(Path2Data[[1]])
-#' 
+#'
 #' # convert it to a list of tracklets
 #' trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
-#' 
+#'
 #' # infinite values that are present in the tracking output should be removed
 #' ## define the filter
 #' filter.Inf <-
@@ -62,21 +63,21 @@
 #'     customFunc = function(x)
 #'      is.infinite(x)
 #'   )
-#' 
+#'
 #' ### filter Infinite values
 #' trackDat.Infilt <-
 #'   MoveR::filterTracklets(trackDat,
 #'                      filter = filter.Inf,
 #'                      splitCond = TRUE,
 #'                      minDur = 100)
-#' 
+#'
 #' ### remove some tracklet to speed up the computation
 #' trackdat2 <- trackDat.Infilt[[2]][1:75]
-#' 
+#'
 #' # check the tracklet
 #' MoveR::drawTracklets(trackdat2,
 #'                  timeCol = "frame")
-#' 
+#'
 #' # add some metric to the dataset to perform 2d clustering (speed and turning angle)
 #' # and smooth them by computing the mean value over a 10 frames' sliding window
 #' Tstep = 10
@@ -117,15 +118,10 @@
 #'                          mean(x, na.rm = T))
 #'     )
 #'   )
-#' 
+#'
 #' # use density based clustering to classify actives and inactives states in a 2 dimension array (here the speed and the angle variance)
-#' # when graph = TRUE, several graphical output are displayed:
-#' # - the distribution of inactives states
-#' # - the resuls of the density based clustering with the two groups displayed
-#' # - a similar representation but as hexbinplot, with the count
-#' # - the final representation of the 2d clustering with the increasing size of the dot representing the increasing number of count
-#' # - a pie chart representing the proportion of actives vs inactives states
-#' 
+#' # when graph = TRUE, the function also display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering)
+#'
 #' trackdat3 <- MoveR::activity2(
 #'   trackdat3,
 #'   var1 = "SlidemeanSpeed",
@@ -138,21 +134,21 @@
 #'   na.rm = TRUE,
 #'   graph = TRUE
 #' )
-#' 
+#'
 #' # draw the particle' trajectory and spot the inactive moments using red dots
 #' MoveR::drawTracklets(trackdat3,
 #'           cex.start = 0.1,
 #'           add2It = list(for (i in seq_along(trackdat3)) {
 #'             points(
-#'               trackdat3[[i]][["x.pos"]][which(trackdat3[[i]][["activity2"]] == "inactive")],
-#'               trackdat3[[i]][["y.pos"]][which(trackdat3[[i]][["activity2"]] == "inactive")],
+#'               trackdat3[[i]][["x.pos"]][which(trackdat3[[i]][["activity2"]] == 0)],
+#'               trackdat3[[i]][["y.pos"]][which(trackdat3[[i]][["activity2"]] == 0)],
 #'               col = "red",
 #'               pch = 19,
 #'               cex = 1.5
 #'             )
 #'           }))
 #'
-#' ## End(Not run)
+#' }
 #' @export
 #'
 activity2 <-
@@ -167,7 +163,6 @@ activity2 <-
            scale = TRUE,
            na.rm = TRUE,
            graph = TRUE) {
-    
     # retrieve var1 and var2 from the dataset and transform them if needed
     trackdatL <- MoveR::convert2List(trackDat)
     var1n <- var1
@@ -204,13 +199,17 @@ activity2 <-
       )
     }
     # if minPts or eps argument are null return an error
-    if(is.null(eps)){
-      stop("eps argument is missing, specifying a maximum distance around cluster's members is needed.")
+    if (is.null(eps)) {
+      stop(
+        "eps argument is missing, specifying a maximum distance around cluster's members is needed."
+      )
     }
-    if(is.null(minPts)){
-      stop("minPts argument is missing, specifying a minimum number of point per cluster is needed.")
+    if (is.null(minPts)) {
+      stop(
+        "minPts argument is missing, specifying a minimum number of point per cluster is needed."
+      )
     }
-
+    
     # if na.rm argument is TRUE, remove the lines containing NA in the dataframe containing var1 and var2
     if (isTRUE(na.rm)) {
       tempDf <-
@@ -218,11 +217,11 @@ activity2 <-
     }
     # in case there is infinite values remove them
     if (length(which(is.infinite(tempDf[["var1"]]))) > 0) {
-      tempDf <- tempDf[-c(which(is.infinite(tempDf[["var1"]]))), ]
+      tempDf <- tempDf[-c(which(is.infinite(tempDf[["var1"]]))),]
       warning("var1 contains infinite values, these values has been removed")
     }
     if (length(which(is.infinite(tempDf[["var2"]]))) > 0) {
-      tempDf <- tempDf[-c(which(is.infinite(tempDf[["var2"]]))), ]
+      tempDf <- tempDf[-c(which(is.infinite(tempDf[["var2"]]))),]
       warning("var1 contains infinite values, these values has been removed")
     }
     if (nrow(tempDf) == 0) {
@@ -284,7 +283,7 @@ activity2 <-
     IncTresh <-
       unlist(lapply(0:100, function(x)
         x * (unique(nbins) ^ 2) / 100))
-    ### loop trough treshold increments 
+    ### loop trough treshold increments
     for (uptresh in IncTresh) {
       hotLim <- sum(m) / (unique(nbins) ^ 2 - uptresh)
       Hot = which(mdf3[["value"]] > hotLim,
@@ -293,17 +292,18 @@ activity2 <-
       Cold = which(mdf3[["value"]] <= hotLim,
                    arr.ind = TRUE)
       mdf3[["spots"]][Cold] <- "Cold"
-      if(length(which(mdf3[["spots"]] == "Hot")) == 0){
+      if (length(which(mdf3[["spots"]] == "Hot")) == 0) {
         next
       }
       ## identify the peaks drawed by hotspots using density based clustering
       db <-
-        fpc::dbscan(mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y")],
-                    eps = eps,
-                    MinPts = minPts,
-                    scale = scale,
-                    method = "hybrid"
-                    )
+        fpc::dbscan(
+          mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y")],
+          eps = eps,
+          MinPts = minPts,
+          scale = scale,
+          method = "hybrid"
+        )
       ## extract the border of the clusters (rectangular)
       if (length(unique(db[["cluster"]])[grepl("0", unique(db[["cluster"]]))]) > 0) {
         dbclust <-
@@ -322,20 +322,20 @@ activity2 <-
         as.data.frame(do.call("rbind",
                               lapply(dbclust,
                                      function(i)
-                                       apply(mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y")][db[["cluster"]] == i, ], 2,
+                                       apply(mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y")][db[["cluster"]] == i,], 2,
                                              mean, na.rm = T))))
       # reorder the centroids according to x axis to ensure that active is clust 1, and inactive is clust 2
       centroids <- cbind(centroids, dbclust)
       if (nrow(centroids) < 2) {
         next
       }
-      centroids <- centroids[order(centroids[, "x"]), ]
+      centroids <- centroids[order(centroids[, "x"]),]
       # determine whether cluster belong to inactive or active category according to its coordinate on x axis (angle variance, the lower the variance, the more individual are actives)
       if (nrow(centroids) == 2) {
         inactivClust <-
-          mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y", "value")][db[["cluster"]] == centroids[which(centroids[["x"]] == max(centroids[["x"]])), "dbclust"], ]
+          mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y", "value")][db[["cluster"]] == centroids[which(centroids[["x"]] == max(centroids[["x"]])), "dbclust"],]
         activClust <-
-          mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y", "value")][db[["cluster"]] == centroids[which(centroids[["x"]] == min(centroids[["x"]])), "dbclust"], ]
+          mdf3[which(mdf3[["spots"]] == "Hot"), c("x", "y", "value")][db[["cluster"]] == centroids[which(centroids[["x"]] == min(centroids[["x"]])), "dbclust"],]
       } else if (nrow(centroids) > 2) {
         next
       }
@@ -346,8 +346,10 @@ activity2 <-
         break
       }
     }
-    if(!exists("inactivClust", inherits = FALSE)){
-      stop("failed to identify active and inactive cluster: no cluster identified, perhaps eps and minPts arguments should be modified.")
+    if (!exists("inactivClust", inherits = FALSE)) {
+      stop(
+        "failed to identify active and inactive cluster: no cluster identified, perhaps eps and minPts arguments should be modified."
+      )
     }
     names(inactivClust) <-
       c('X_values', 'Y_values', 'response')
@@ -381,19 +383,19 @@ activity2 <-
     ### find the coordinates of the major and minor axis
     majRadInact <-
       ellipseContourInact[c(which(ellipseContourInact[["x"]] == min(ellipseContourInact[["x"]])),
-                            which(ellipseContourInact[["x"]] == max(ellipseContourInact[["x"]]))),]
+                            which(ellipseContourInact[["x"]] == max(ellipseContourInact[["x"]]))), ]
     minRadInact <-
       ellipseContourInact[c(which(ellipseContourInact[["y"]] == min(ellipseContourInact[["y"]])),
-                            which(ellipseContourInact[["y"]] == max(ellipseContourInact[["y"]]))),]
+                            which(ellipseContourInact[["y"]] == max(ellipseContourInact[["y"]]))), ]
     ### delimit (expend) inactive cluster to upper limit of the ellipse in y and lower in x
     ### create the tresholds
     #### for y, the threshold corresponds to the value of y for which x is minimum of the minor radius
     minRadInact <-
       minRadInact[!duplicated(minRadInact[["x"]]) &
-                    !duplicated(minRadInact[["y"]]),]
+                    !duplicated(minRadInact[["y"]]), ]
     majRadInact <-
       majRadInact[!duplicated(majRadInact[["x"]]) &
-                    !duplicated(majRadInact[["y"]]),]
+                    !duplicated(majRadInact[["y"]]), ]
     YtreshInact <-  max(minRadInact[["y"]], na.rm = T)
     #### for x, the threshold corresponds to the left limit of the ellipse (minimum x value of the major radius)
     XtreshInact <- min(majRadInact[["x"]], na.rm = T)
@@ -403,8 +405,8 @@ activity2 <-
                  var1 = var1)
     SigSqrt <- evecs %*% diag(sqrt(evals)) %*% t(evecs)
     Z <-
-      t(apply(toClust, 1, function(x)
-        solve(SigSqrt, x - mu)))
+      t(apply(toClust, 1, function(i)
+        solve(SigSqrt, i - mu)))
     toClust[["insideInact"]] <-
       rowSums(Z ^ 2) < stats::qchisq(0.95, df = ncol(Z))
     ### apply the thresholds previously computed
@@ -414,133 +416,83 @@ activity2 <-
     toClust[["insideInact"]][which(toClust["var2"] > minRadInact[["x"]][which(YtreshInact == minRadInact[["y"]])] &
                                      toClust["var1"] < YtreshInact)] <-
       TRUE
-    toClust[["activ"]] <- rep(NA, nrow(toClust))
-    toClust[["activ"]][which(toClust[["insideInact"]] == TRUE)] <-
-      "inactive"
-    toClust[["activ"]][which(toClust[["insideInact"]] == FALSE)] <-
-      "active"
-    trackdatL[["activity2"]] <- toClust[["activ"]]
+    toClust[["activity"]] <- rep(NA, nrow(toClust))
+    toClust[["activity"]][which(toClust[["insideInact"]] == TRUE)] <-
+      0
+    toClust[["activity"]][which(toClust[["insideInact"]] == FALSE)] <-
+      1
+    trackdatL[["activity2"]] <- toClust[["activity"]]
     
     if (isTRUE(graph)) {
-      # distribution of inactive states
-      plot(inactivClust,
-           main = "Distribution of inactive states")
+      # display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering)
+      ## retrieve the result of the classification in the matrix of counts
+      ZPlot <-
+        t(apply(mdf3[, c(1, 2)], 1, function(i)
+          solve(SigSqrt, i - mu)))
+      mdf3[["insideInact"]] <-
+        rowSums(ZPlot ^ 2) < stats::qchisq(0.95, df = ncol(ZPlot))
+      ## apply the thresholds previously computed
+      mdf3[["insideInact"]][which(mdf3["x"] > XtreshInact &
+                                    mdf3["y"] < majRadInact[["y"]][which(XtreshInact == majRadInact[["x"]])])] <-
+        TRUE
+      mdf3[["insideInact"]][which(mdf3["x"] > minRadInact[["x"]][which(YtreshInact == minRadInact[["y"]])] &
+                                    mdf3["y"] < YtreshInact)] <-
+        TRUE
+      mdf3[["activity"]] <- rep(NA, nrow(mdf3))
+      mdf3[["activity"]][which(mdf3[["insideInact"]] == TRUE)] <-
+        0
+      mdf3[["activity"]][which(mdf3[["insideInact"]] == FALSE)] <-
+        1
+      # convert the result to density matrix
+      l1 <- mdf3[which(mdf3["activity"] == 0), ]
+      l2 <- mdf3[which(mdf3["activity"] == 1), ]
+      dens <- stats::xtabs(value ~ y + x, mdf3[-c(4, 5, 6)])
+      dens1 <- stats::xtabs(value ~ y + x, l1[-c(4, 5, 6)])
+      dens2 <- stats::xtabs(value ~ y + x, l2[-c(4, 5, 6)])
       
-      # density based-clustering
-      plot(
-        mdf3[which(mdf3[["spots"]] == "Cold"), c("x", "y")],
-        pch = 20,
-        col = rgb(
-          red = 0,
-          green = 0,
-          blue = 1,
-          alpha = 0.2
+      # draw the plot
+      fig <- plotly::plot_ly(x=~colnames(dens), y=~rownames(dens), contours = list(
+        z = list(
+          show = TRUE,
+          start = round(min(sqrt(dens)),-2),
+          project = list(z = TRUE),
+          end = round(max(sqrt(dens)),-2),
+          size = max(sqrt(dens)) / 10,
+          color = "white"
+        )
+      ))
+      ## add inactive layer
+      fig <- plotly::add_surface(
+        p = fig,
+        z = sqrt(dens),
+        opacity = 0.8,
+        colorscale = "Hot",
+        cmin = min(sqrt(dens1)),
+        cmax = max(sqrt(dens1)),
+        colorbar = list(title = "inactive\ncounts (sqrt)")
+      )
+      ## add active layer
+      fig <- plotly::add_surface(
+        p = fig,
+        z = sqrt(dens2),
+        opacity = 1,
+        colorscale = list(
+          c(0, 0.25, 1),
+          c("rgb(20,20,20)", "rgb(58,139,44)", "rgb(234,239,226)")
         ),
-        xlab = var2n,
-        ylab = var1n,
-        main = "2d hist and clustering of the two groups: \nactives vs inactives"
+        #colorscale = "Greens",
+        colorbar = list(title = "active\ncounts (sqrt)")
       )
-      ## add point belonging to active cluster
-      points(activClust[["X_values"]], activClust[["Y_values"]], col = "#99CC66", pch =
-               19)
-      points(inactivClust[["X_values"]],
-             inactivClust[["Y_values"]],
-             col = "#993333",
-             pch = 19)
-      # plot the inactive cluster ellipse
-      lines(ellipseContourInact, col = "black")
-      ### plot major and minor radius for both Otherain and inactive ellipses
-      lines(majRadInact[["x"]], majRadInact[["y"]],  col = "black")
-      lines(minRadInact[["x"]], minRadInact[["y"]], col = "black")
-      ## add centroid of each cluster
-      points(centroids, col = "black", pch = 19)
-
-      ###### draw the Y threshold
-      lines(
-        x = c(minRadInact[["x"]][which(minRadInact[["y"]] == max(minRadInact[["y"]], na.rm = T))], ifelse(
-          length(which(is.infinite(tempDf[["var2"]]))) > 0,
-          max(tempDf[["var2"]][-which(is.infinite(tempDf[["var2"]]))], na.rm = T),
-          max(tempDf[["var2"]], na.rm = T)
-        ) * 2),
-        y = rep(YtreshInact, 2)
-        ,
-        col = "black"
-        
-      )
-    
-      ###### draw the X threshold
-      lines(
-        x = rep(XtreshInact, 2),
-        y = c(majRadInact[["y"]][which(majRadInact[["x"]] == min(majRadInact[["x"]], na.rm =
-                                                                   T))], ifelse(
-                                                                     length(which(is.infinite(tempDf[["var1"]]))) > 0,
-                                                                     min(tempDf[["var1"]][-which(is.infinite(tempDf[["var1"]]))], na.rm = T),
-                                                                     min(tempDf[["var1"]], na.rm = T)
-                                                                   ) * 2),
-        col = "black"
-      )
-      # represent the result as 2d hexbinplot
-      hexplt <- hexbin::hexbinplot(
-        tempDf[, "var1"] ~ tempDf[, "var2"],
-        data = tempDf,
-        aspect = '1',
-        xbins = 40,
-        xlab = var2n,
-        ylab = var1n,
-        main = "2d hexbinplot and 95% ellipsis of the inactive states",
-        panel = function(x, y, ...) {
-          hexbin::panel.hexbinplot(x, y, ...)
-          lattice::panel.lines(ellipseContourInact, col = "#993333")
-          lattice::panel.lines(ellipseContourInact, col = "#993333")
-        }
-      )
-      print(hexplt)
-      # represent the result as 2d hexbinplot with size of the bin corresponding to the density
-      toClustNoNA <- na.omit(toClust)
-      if (length(which(is.infinite(toClustNoNA[, "var1"])) > 0)) {
-        toClustNoNA <-
-          toClustNoNA[-c(which(is.infinite(toClustNoNA[, "var1"]))),]
-      }
-      with(
-        toClustNoNA,
-        hextri::hextri(
-          tempDf[, "var2"],
-          tempDf[, "var1"],
-          class = toClustNoNA[["activ"]],
-          colours = c("#99CC66", "#993333"),
-          style = "size",
-          nbins = 15,
-          xlab = var2n,
-          ylab = var1n,
-          main = "2d clusters of activity classification",
-          diffuse = FALSE,
-          border = TRUE
+      fig <- plotly::layout(
+        fig,
+        title = '3D density plot and 95% ellipsis of the inactive state',
+        scene1 = list(
+          xaxis = list(title = var2n),
+          yaxis = list(title = var1n),
+          zaxis = list(title = "counts (sqrt)")
         )
       )
-      legend("topright", fill=c("#99CC66", "#993333"),
-             legend=c("actives","inactives"),bty="n")
-      # pie chart of behavioral state proportion
-      act <-
-        length(which(trackdatL[["activity2"]] == "active")) / length(trackdatL[["activity2"]][-c(which(is.na(trackdatL[["activity2"]])))]) * 100
-      inact <-
-        length(which(trackdatL[["activity2"]] == "inactive")) / length(trackdatL[["activity2"]][-c(which(is.na(trackdatL[["activity2"]])))]) * 100
-      pie(
-        main = "Proportion of active vs. inactive states",
-        c(act, inact),
-        labels = paste(round(
-          data.frame(active = act,
-                     inactive = inact),
-          digits = 2
-        ), "%", sep = ""),
-        col = c("#99CC66", "#993333")
-      )
-      legend(
-        .8,
-        1.0,
-        c("active", "inactive"),
-        cex = 0.8,
-        fill = c("#99CC66", "#993333")
-      )
+      print(fig)
     }
     Res <- MoveR::convert2Tracklets(trackdatL, by = "trackletId")
     return(Res)

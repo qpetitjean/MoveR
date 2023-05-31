@@ -1,7 +1,7 @@
 #' @title Download sample data to depict the use of the MoveR package.
 #'
 #' @description Given the id of a sample dataset stored in \href{https://github.com/qpetitjean/MoveR_SampleData}{MoveR_SampleData Github repository}, 
-#' this function download the selected sample dataset used as example to run the functions from the MoveR package and returns the local path to access the data.
+#' this function download the sample datasets used as example to run the functions from the MoveR package and returns the local path to access the specified dataset.
 #'
 #' @param dataSet A numeric value, either 1 or 2 corresponding to the desired sampled dataset.
 #'
@@ -22,7 +22,7 @@
 #' @author Quentin PETITJEAN
 #'
 #' @examples
-#' ## Not run:
+#' \dontrun{
 #' 
 #' # Here we are selecting the first sample dataset, that have been tracked using \href{https://trex.run}{TRex}
 #'
@@ -32,7 +32,7 @@
 #' # In case the sample data has already been downloaded, the function will retrieve it instead of downloading it again.
 #' # This behavior is similar if the "dir" argument is specified.
 #'
-#' ## End(Not run)
+#' }
 #' @export
 
 DLsampleData <-
@@ -64,7 +64,7 @@ DLsampleData <-
     dirList <- list.dirs(dirname(td), recursive = T)
     # look for previous dl of the sample data in temp dir
     TargetDirList <-
-      dirList[grepl("MoveR_SampleData-main", dirList)]
+      dirList[grepl(file.path("MoveR_SampleData-main", sampleData), dirList)]
     # if data has already been dl, retrieve the path, else dl it in temp dir
     if (length(TargetDirList) > 0) {
       td <-
@@ -83,6 +83,10 @@ DLsampleData <-
       unzip(tf, exdir = td, overwrite = TRUE)
       ## remove the .zip file from the temp directory
       unlink(tf)
+      ## modify td path
+      td <- paste(td,
+                  "MoveR_SampleData-main",
+                  sep = "\\")
     }
     # Retrieve the path to the data
     # here we will use the sample of data given by dataSet argument
@@ -92,7 +96,6 @@ DLsampleData <-
       if (tracker[i] != "TRex") {
         TempPath <-
           paste(td,
-                "MoveR_SampleData-main",
                 sampleData,
                 paste0(tracker[i], "Output"),
                 sep = "\\")
@@ -100,7 +103,6 @@ DLsampleData <-
           paste(TempPath, list.files(TempPath), sep = "\\")
       } else{
         path2FTemp <- paste(td,
-                            "MoveR_SampleData-main",
                             sampleData,
                             paste0(tracker[i], "Output"),
                             sep = "\\")
@@ -111,14 +113,12 @@ DLsampleData <-
     MatrixDat <-
       list.files(
         file.path(td,
-                  "MoveR_SampleData-main",
                   sampleData,
                   "ReferenceData"),
         "DistMatrix"
       )
     ArenaFile <-
       paste(td,
-            "MoveR_SampleData-main",
             sampleData,
             "ReferenceData",
             MatrixDat,
@@ -127,14 +127,12 @@ DLsampleData <-
     ### find whether RefDat file exist
     RefDat <-
       list.files(file.path(td,
-                           "MoveR_SampleData-main",
                            sampleData,
                            "ReferenceData"),
                  "RefDat")
     if (length(RefDat) > 0) {
       refDatPath <-
         paste(td,
-              "MoveR_SampleData-main",
               sampleData,
               "ReferenceData",
               RefDat,
@@ -146,19 +144,16 @@ DLsampleData <-
     ### find whether CleanDat file exist
     CleanDat <-
       list.files(file.path(td,
-                           "MoveR_SampleData-main",
                            sampleData), 
                  "cleaned")
     if (length(CleanDat) > 0) {
       CleanDatPath <-
         paste(td,
-              "MoveR_SampleData-main",
               sampleData,
               CleanDat,
               sep = "\\")
     } else{
       CleanDatPath <- NULL
     }
-    
     return(c(path2F, ArenaFile, refDatPath, CleanDatPath))
   }

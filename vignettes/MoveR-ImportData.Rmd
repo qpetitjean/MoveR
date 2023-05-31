@@ -43,13 +43,14 @@ Path2Data
 
 The function download the data from the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository and returns a vector containing the path to the raw data and the distance matrix helping to locate the edge of the arena and the reference data corresponding to the location particles (manually detected) over several frames (the latters will be useful in another tutorial).
 
-Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the `dir` argument from `DLsampleData()`. 
-In any case, the function look for previous occurrence of the sample data to avoid multiple downloading.
+<p class="notes">Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the `dir` argument from `DLsampleData()`. 
+In any case, the function look for previous occurrence of the sample data to avoid multiple downloading.</p>
 
 ## Import sample data into R environment
 
 Once the sample data has been downloaded or retrieved we use `readTrex()` to import the data into `r fontawesome::fa("r-project", fill = "steelblue")` environment.<br />
-Note that the same result can be achieved trough the use of `readCtrax()`, `readIdtracker()` or `readTrackR()` depending on the input data. 
+
+<p class="notes">Note that the same result can be achieved trough the use of `readCtrax()`, `readIdtracker()` or `readTrackR()` depending on the input data.</p>
 
 Here the raw tracking data are located in the ./MoveR_SampleData-main/sample_1/TREXOutput directory which is the first element of the Path2Data vector.
 
@@ -64,7 +65,7 @@ str(Data)
 
 The function import the data as a list of 9 elements that are the most useful and further used by various functions of the MoveR package. 
 
-Note that output of the various "read" functions is standardized. However, it is also possible to import the output as returned by the tracking software by specifying rawDat = TRUE.
+<p class="notes">Note that output of the various `read` functions is standardized. However, it is also possible to import the output as returned by the tracking software by specifying rawDat = TRUE.</p>
 
 ```{r ImportFullDat, echo=TRUE, results='markup'}
 # Import the sample data
@@ -111,7 +112,8 @@ It is then easy to look at the particles trajectories.
 
 Using `drawTracklets()`, it is easy to visualize the trajectories included in the dataset (see fig. \@ref(fig:drawTracklets1)A below), or to focus on the trajectories described only by some particles, here the fifth' first (see fig. \@ref(fig:drawTracklets1)B below).
 
-Note that `drawTracklets()` needs an argument `timeCol` specifying the timeline of the video (here "frame"). One can also specify the resolution of the video to set x and y limits of the plot but as default, the `imgRes` argument use the maximum values recorded in x and y + 5% to set the plots limits (see drawTracklets documentation).
+
+<p class="notes">Note that `drawTracklets()` needs an argument `timeCol` specifying the timeline of the video (here "frame"). One can also specify the resolution of the video to set x and y limits of the plot but as default, the `imgRes` argument use the maximum values recorded in x and y + 5% to set the plots limits (see drawTracklets documentation).</p>
 
 ```{r drawTracklets1, echo=TRUE, fig.show="hold", fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=5, dpi = 300, fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. A. all trajectories are represented. B. only the first 5 tracklets are represented. The trajectories are colored according to the moments at which they are recorded."}
 # split the graphical window in 2 columns
@@ -148,7 +150,7 @@ mtext(
 
 ```
 
-otherwise, it is possible to focus on the trajectories recorded within a given time intervals. For instance, between 1 and 999 frames (see fig. \@ref(fig:drawTracklets2)A below) and between 6000 and 6999 frames and 11000, 11999 frames (see fig. \@ref(fig:drawTracklets2)B below).
+Otherwise, it is possible to focus on the trajectories recorded within a given time intervals. For instance, between 1 and 999 frames (see fig. \@ref(fig:drawTracklets2)A below) and between 6000 and 6999 frames and 11000, 11999 frames (see fig. \@ref(fig:drawTracklets2)B below).
 
 ```{r drawTracklets2, echo=TRUE, fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=5, dpi = 300, fig.cap="Micro-wasps trajectories over specified part of the video timeline, expressed in frame. A. all trajectories are represented over a time window of 1000 frames (between 1 and 999 frames). B. all trajectories are represented over two time windows of 1000 frames duration (between 6000 and 6999 and 11000 and 11999 frames). The trajectories are colored according to the moments at which they are recorded."}
 # split the graphical window in 2 columns
@@ -176,7 +178,7 @@ mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 
 ```
 
-Note that it is also possible to represent specified tracklets over given time window(s) by combining the `selFrags` and `timeWin` arguments respectively.
+<p class="notes">Note that it is also possible to represent specified tracklets over given time window(s) by combining the `selFrags` and `timeWin` arguments respectively.</p>
 
 Finally, drawTracklets allow to color the particles' tracks according to categorical variable, such as the identity of the particle (see fig. \@ref(fig:drawTracklets3)A below). 
 

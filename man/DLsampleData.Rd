@@ -30,10 +30,10 @@ Also, in case the sample dataset has already been downloaded in a temporary (def
 }
 \description{
 Given the id of a sample dataset stored in \href{https://github.com/qpetitjean/MoveR_SampleData}{MoveR_SampleData Github repository},
-this function download the selected sample dataset used as example to run the functions from the MoveR package and returns the local path to access the data.
+this function download the sample datasets used as example to run the functions from the MoveR package and returns the local path to access the specified dataset.
 }
 \examples{
-## Not run:
+\dontrun{
 
 # Here we are selecting the first sample dataset, that have been tracked using \href{https://trex.run}{TRex}
 
@@ -43,7 +43,7 @@ DLsampleData(dataSet = 1, tracker = "TRex")
 # In case the sample data has already been downloaded, the function will retrieve it instead of downloading it again.
 # This behavior is similar if the "dir" argument is specified.
 
-## End(Not run)
+}
 }
 \author{
 Quentin PETITJEAN

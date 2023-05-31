@@ -38,6 +38,7 @@ knitr::include_graphics(
 
 Let's download the data, import and convert them to a list of tracklets (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html">Import Data vignette</a> for detailed procedure).
 
+<p class="notes">
 Note that we have included some extra data that are related to this dataset within the "raw tracking data" when we have reduced the dataset: 
 
   * the timeline expressed in frame (may be different from the default frame list because the data come from merged videos)
@@ -45,7 +46,7 @@ Note that we have included some extra data that are related to this dataset with
   * the temperature at which the individuals are exposed over the assay 
 
 These extra information will be useful to conduct further analyses in this tutorial and some others.
-For instance, we can automatically determine the frame rate of the video-recording using the timeline and timestamps (usually made using the default frame list instead of timeline).
+For instance, we can automatically determine the frame rate of the video-recording using the timeline and timestamps (usually made using the default frame list instead of timeline).</p>
 
 ```{r DLsampleData, echo=TRUE}
 # dl the second dataset from the sample data repository
@@ -116,9 +117,7 @@ filter.Inf <-
 
 Now, that the filter is properly specified the dataset can be filtered to remove infinite values detected on both x and y coordinates using `filterTracklets()`.
 
-Note that in case a particle is lost and detected again during a very short time period, the function may return small tracklets which may be considered useless. 
-
-These small tracklets can be removed by specifying the minimum duration above which tracklet should be kept using the `minDur` argument. 
+<p class="notes">Note that in case a particle is lost and detected again during a very short time period, the function may return small tracklets which may be considered useless. These small tracklets can be removed by specifying the minimum duration above which tracklet should be kept using the `minDur` argument.</p>
 
 For this example, we are keeping only the tracklets lasting more than one second by setting minDur to 25 frames which correspond to 1 second, or to the frame rate of the video (hence we can use the frameRate object defined above).
 
@@ -158,7 +157,7 @@ To remove the spurious detection of particles generated over the video-tracking 
 
 We first retrieve the scaling of the video using the diameter of the circular arena measuring 2.5cm and it's length in pixels. 
 
-Then, we know that <em>Trichogramma</em>'s body length is generally higher than 0.15mm and lower than 1mm (personal observation) we can hence use these limits to filter the particles for which the length is not included within this interval fig. \@ref(fig:SizeClean)A&B). 
+Then, we know that <em>Trichogramma</em>'s body length is generally higher than 0.15mm and lower than 1mm (personal observation) we can hence use these limits to filter the particles for which the length is not included within this interval (fig. \@ref(fig:SizeClean)A&B). 
 
 ```{r SizeClean, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Histogram of the Log-transformed length of the particles and specified limits (vertical lines corresponding to 0.015 and 0.1 cm) of the distribution before (A) and after the filtering process (B) removing the moments where the particles' length is below or above the specified limits."}
 # the scaling of the video - 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ)
@@ -211,7 +210,7 @@ mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 
 ```
 
-```{r SizeCleanSTR, echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
+```{r SizeCleanSTR, echo=TRUE, results='markup'}
 # display the information about the filtering process (see ??filterTracklets())
 str(trackDat.lenfilt[[1]])
 
@@ -289,7 +288,7 @@ mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 
 ```
 
-```{r SpeedCleanSTR, echo=TRUE, results='markup', message=FALSE, warning=FALSE}
+```{r SpeedCleanSTR, echo=TRUE, results='markup'}
 # display the information about the filtering process (see ??filterTracklets())
 str(trackDat.speedfilt[[1]])
 
@@ -307,31 +306,19 @@ Indeed, sometimes particles can be detected outside the arena, either because an
 
 To solve this issue, it is possible to remove the parts of a tracklet that have been detected outside the arena. 
 
-To tackle this aim, one may use two main methods:
+To tackle this aim, one may either use the already implemented functions to generate the edge of circular or polygonal ROIs (see `circles()` and `polygons()`) or retrieving the position of the arena (or any ROI) edge from a distance matrix generated trough an image processing program such as <a href="https://imagej.net/ij/index.html">ImageJ</a>.
 
-  * use a distance matrix from the arena edge  generated using simple color tresholding in imageJ (particularly useful if the arena have a complex polygonal shape) to retrieve relative position of the particles from the edge and then filter on it
-  
-  * or compute the distance to the known arena edge and then filter on it
+We first need to retrieve or generate the points specifying the arena edge: 
+```{r edgeDef, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of centre and edge of the arena retrieved from a distance matrix generated using color tresholding in imageJ. The position of the arena edge can be extracted from the distance matrix as the lowest value of distance matrix (i.e., 1) and the centre of the arena as the mean of the edge x and y coordinates."}
 
-We first need to import the location of the distance matrix from the arena edge  or the location of the arena edge. 
-For this example we will use the distance matrix for both purposes. 
-```{r edgeDef, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of the distance matrix from the arena edge . The contour plot represent the decreasing distance from the edge to the centre of the arena (A). Arena centre and edge can be extracted from the distance matrix as the lowest value of distance matrix (i.e., 1) and the centre of the arena as the mean of the edge coordinates (B)."}
-# define filter based on the presence of individual outside the arena
-## import the distance matrix from the edge of the arena (a distance matrix generated using color tresholding in imageJ) 
-arenaDist <- read.delim(Path2Data[[2]])
+# retrieve the location of the arena edge from a distance matrix generated using color tresholding in imageJ
+# as color tresholding returns a matrix with image resolution (x in rows and y in columns) and increasing distance to the edge of the arena, here the edge correspond 
+# to the lower value of the distance matrix (i.e., 1).
+# Also specifying the order argument as TRUE ensure that the points delimiting the arena edge are sorted clockwise, making easy to draw the edge.
+edge <- MoveR::locROI(Path2Data[[2]], edgeCrit = 1, xy = 1, order = T)
+# here the coordinates of the arena edge are stored in the edge object
 
-## represent the gradient of distance from the arena edge 
-par(mfrow=c(1,2))
-contour(as.matrix(arenaDist),
-        main="Contour plot of the \ndistance from the arena edge ",
-        cex.main = 0.9)
-mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
-
-## The edge correspond to the lower value of the distrance matrix (i.e., 1), 
-## we can hence extract the arena edge from the distance matrix as follow
-border = 1
-edge <- data.frame(which(arenaDist == border, arr.ind = T))
-names(edge)[c(1, 2)] <- c("y.pos", "x.pos")
+# it is then easy to draw the arena edge
 plot(NULL, 
      xlim = c(0, max(edge[, "x.pos"])), 
      ylim = c(0, max(edge[, "y.pos"])),
@@ -339,102 +326,67 @@ plot(NULL,
      ylab = "Video height (pixels)",
      main = "Edge and centre of the arena",
      cex.main = 0.9)
-points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01)
+graphics::polygon(x = edge[["x.pos"]], edge[["y.pos"]], lty = 2, col = adjustcolor("firebrick", alpha = 0.2))
 
-## As well as the center of the arena
-center = c(mean(edge[, "x.pos"]), mean(edge[, "y.pos"]))
-points(
-  x = center[1],
-  y = center[2],
+# As well as the center of the arena
+graphics::points(
+  x = mean(edge[["x.pos"]]),
+  y = mean(edge[["y.pos"]]),
   col = "black",
   pch = 3,
-  cex = 0.5
+  cex = 1
 )
-mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 
-## Note that, in the case of a circular arena, by knowing the coordinates of the center of the arena and the length of the diameter (2.5cm) allows to generate the coordinates of the border of the arena using the circles() function from the MoveR package
+# Note that, in the case of a circular arena, by knowing the coordinates of the center of the arena and the length of the diameter (2.5cm) allows to generate the coordinates of the border of the arena using the circles() function from the MoveR package. Similar method can also be used for polygonal shape using the polygons() function from the MoveR package.
 ArenaEdge <- MoveR::circles(
-  center[1],
-  center[2],
+  mean(edge[["x.pos"]]),
+  mean(edge[["y.pos"]]),
   radius = 2.5 / 2 / scaling, # here the radius of the arena is 2.5cm/2 divided by the scaling to obtain the value in pixels
   border = "firebrick",
   draw = T
 )
-
+# here the coordinates of the arena edge are then stored in the ArenaEdge object
 ```
 
-```{r edgeDefSTR, echo=TRUE, results='markup', message=FALSE, warning=FALSE}
-## the coordinates of the arena edge are then stored in the ArenaEdge object
-str(ArenaEdge)
+Here the distance matrix generated using <a href="https://imagej.net/ij/index.html">ImageJ</a> returns decreasing distance from the centre of the arena to the edge.
 
-```
+Accordingly, the lowest value (i.e., 1) corresponds to the edge of the arena (fig. \@ref(fig:edgeDef), black line). Hence, the use of a distance matrix may be a a good option to retrieve the location of the edge of an arena or any ROI, whatever its shape.
 
-Here is the graphical representation of the distance matrix with decreasing distance from the centre from the edge of the represented by the contour line (fig. \@ref(fig:edgeDef)A).
+However, in the case of using a classic circular or polygonal arena a simpler approach would consist of generating the expected arena edge using `circles()` or `polygons()` and feeding the former with coordinates of the arena center and the radius length (fig. \@ref(fig:edgeDef), red line).
 
-Accordingly, the lowest value (i.e., 1) corresponds from the edge of the arena (fig. \@ref(fig:edgeDef)B, black line). Hence, the use of a distance matrix may be a a good option to retrieve the location of the edge of an arena, whatever its shape.
+We can then easily identify whether a particle is detect within or outside the arena by assigning the ROI to each tracklet using the `assignROI()` and filtering out the tracklets parts detected outside the arena. 
 
-However, in the case of using a classic circular arena a simpler approach would consist of generating the expected arena edge using `circles()` and feeding it with coordinates of the arena center and the radius length (fig. \@ref(fig:edgeDef)B, red line).
-
-We can then use these information (distance matrix or coordinates from the edge of the arena) to filter the dataset by removing the particles detected outside the arena.
-
-Accordingly, we can either do it by computing the distance (in pixels) from the arena edge for each position of each particle (METHOD 1). Or by retrieving the distance from the edge for each position of a particle's trajectory according to the distance matrix generated using imageJ (especially useful for arena with complex shape) (METHOD 2).
-
-### METHOD 1: Filter by computing the distance from the arena edge
-
-```{r edgeClean, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="METHOD 1: Histogram of the distance of the particles from the edge before (A) and after (B) the filtering process removing the moments where the particles are detected outside of the arena. The green area corresponds to the inside of the arena while the red area corresponds to the outside. Here the filtering process is based on distance from the edge computed using the shape of the arena and the dist2Edge function of the MoveR package."}
-## compute the distance from the edge using "analyseFrag" and the dist2edge modulus
+```{r edgeClean, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. The arena edges are represented by the black circle."}
+## assign The ROI (here the arena) to the particles' positions
 trackDat4 <-
   MoveR::analyseTracklets(trackDat.speedfilt[[2]],
-               customFunc = list(
-                 dist2Edge = function(x)
-                   MoveR::dist2Edge(x, edge,
-                                    customFunc = "CircularArena")
-               ))
+                          customFunc = list(
+                            Arena = function(x)
+                              MoveR::assignROI(
+                                x,
+                                ROIs = edge,
+                                edgeInclude = F,
+                                order = T
+                              )
+                          ))
 
-## represent the proportion of particles detected outside the arena
-## here we consider that a particle is outside when the distance to the egde is positive because 0 correspond to the border location.
-## extract the vector of distance to the edge
-dist2EdgeL <- MoveR::convert2List(trackDat4)[["dist2Edge"]]
+# draw the tracklet and the arena edges 
+MoveR::drawTracklets(trackDat4,
+                     timeCol = "runTimelinef",
+                     add2It = list(graphics::polygon(x = edge$x.pos, y = edge$y.pos)))
 
-## plot particles' distance from the edge distribution before the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively
-par(mfrow=c(1,2))
-H <- hist(dist2EdgeL, 
-     breaks = 50, 
-     main = "Distance of the particles from the edge of \nthe arena before filtering",
-     xlab = "Particles' distance from the edge",
-     cex.main=0.9)
-abline(v = 0, col = "#660000")
-mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
-polygon(c(min(dist2EdgeL, na.rm = T),
-          0,
-          0,
-          min(dist2EdgeL, na.rm = T)), 
-        c(0,
-          0,
-          max(H[["counts"]]),
-          max(H[["counts"]])), 
-        col = grDevices::adjustcolor("#336600", alpha.f = 0.25))
-polygon(c(0,
-          ifelse(max(dist2EdgeL, na.rm = T) < 0, 
-                 0, 
-                 max(dist2EdgeL, na.rm = T)),
-          ifelse(max(dist2EdgeL, na.rm = T) < 0, 
-                 0, 
-                 max(dist2EdgeL, na.rm = T)),
-          0), 
-        c(0,
-          0,
-          max(H[["counts"]]),
-          max(H[["counts"]])), 
-        col = grDevices::adjustcolor("#660000", alpha.f = 0.25))
+```
 
-# create the filter accordingly
+Apparently the amount of artifact detected outside the arena is null or very low (see fig. \@ref(fig:edgeClean). However, by using `assignROI()` and excluding the edge some tracklet part are indeed detected outside the arena.
+
+```{r FiltOut, echo=TRUE, results='markup'}
+# create the filter to remove particles outside the arena
 filter.out <-
   MoveR::filterFunc(
     trackDat4,
-    toFilter = "dist2Edge",
+    toFilter = "Arena",
     customFunc = function(x)
-      x >= 0
+      x == FALSE
   )
 
 # apply the filter on the data using the frame rate as minimum duration of the tracklets
@@ -444,59 +396,55 @@ trackDat.borderfilt <-
               splitCond = TRUE,
               minDur = frameRate)
 
-# plot particles' distance from the edge distribution after the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively (here, the red part should not exist because we have removed the particles detected outside the arena)
-dist2EdgeLFiltered <- MoveR::convert2List(trackDat.borderfilt[[2]])[["dist2Edge"]]
-hist(dist2EdgeLFiltered, 
-     breaks = 50, 
-     main = "Distance of the particles from the edge of \nthe arena after filtering",
-     xlab = "Particles' distance from the edge",
-     cex.main=0.9)
-abline(v = 0, col = "#660000")
-mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
-polygon(c(min(dist2EdgeLFiltered, na.rm = T),
-          0,
-          0,
-          min(dist2EdgeLFiltered, na.rm = T)), 
-        c(0,
-          0,
-          max(H[["counts"]]),
-          max(H[["counts"]])), 
-        col = grDevices::adjustcolor("#336600", alpha.f = 0.25))
-polygon(c(0,
-          ifelse(max(dist2EdgeLFiltered, na.rm = T) < 0, 
-                 0, 
-                 max(dist2EdgeLFiltered, na.rm = T)),
-          ifelse(max(dist2EdgeLFiltered, na.rm = T) < 0, 
-                 0, 
-                 max(dist2EdgeLFiltered, na.rm = T)),
-          0), 
-        c(0,
-          0,
-          max(H[["counts"]]),
-          max(H[["counts"]])), 
-        col = grDevices::adjustcolor("#660000", alpha.f = 0.25))
-
 # rename the cleaned dataset for further use
 trackDat5 <- trackDat.borderfilt[[2]]
 
+# check that the particle detected outside has been removed
+## retrieve the ROI assignation before and after filtering
+compar <- list(
+  before = MoveR::convert2List(trackDat4)[["Arena"]],
+  after = MoveR::convert2List(trackDat5)[["Arena"]]
+)
+
+## create a count table to determine the amount of tracklets parts that are within and outside the arena
+res <- data.frame(matrix(NA, nrow = 2, ncol = 2))
+colnames(res) <- unique(compar[[1]])
+rownames(res) <- unique(names(compar))
+for (i in seq_along(compar)) {
+  res[i, "ROI_1"] <- length(grep("\\<ROI_1\\>", compar[[i]]))
+  res[i, "FALSE"] <- length(grep("\\<FALSE\\>", compar[[i]]))
+}
+
+res
 ```
 
-```{r edgeCleanSTR, echo=TRUE, results='markup', message=FALSE, warning=FALSE}
+Then, as expected the filtering step based the location of the particles inside or outside the arena have removed parts of the tracklets (54 occurrences) detected outside the arena (ROI_1). 
+
+```{r edgeCleanSTR, echo=TRUE, results='markup'}
 # display the information about the filtering process (see ??filterTracklets())
 str(trackDat.borderfilt[[1]])
 
 ```
+ 
+In addition, according to the summary of the filtering step, the amount of data removed by the filtering is very low (<0.1%), confirming that there is few tracking artifact outside of the arena (fig. \@ref(fig:edgeClean)). 
 
-According to the summary of the filtering step based the location of the particles inside or outside the arena, the amount of data removed by the filtering is very low (<0.1%), confirming that there is few tracking artifact outside of the arena (values within the red area in fig. \@ref(fig:edgeClean)A). 
+Accordingly, the filter splited only few tracklets in small part resulting in less than 0.1% of data removed because resulting tracklets were shorter than 1 second (25 frames).
 
-As expected these artifacts are removed by the filter as shown on the fig. \@ref(fig:edgeClean)B, where there is no red area anymore. Accordingly, the filter splited only few tracklets in small part resulting in less than 0.1% of data removed because resulting tracklets were shorter than 1 second (25 frames).
+While the count table and the summary of the filtering give a general quantitative view of the amount of data removed by the filtering step one may also want to have an idea of the tracklets identity and the spatio-temporal distribution of the removed data. For this we can use `drawTracklets()` as follow:
 
-While fig. \@ref(fig:edgeClean)A&B and the summary give a quantitative view of the amount of data removed by the filtering we can also want to have an idea of the spatio-temporal distribution of the removed data. For this we can use `drawTracklets()` as follow:
+```{r edgeCleanBeforeAfterOut, echo=TRUE, results='markup'}
+# identify the part of the tracklets that are detected outside the arena
+trackDat4List <- MoveR::convert2List(trackDat4)
+OutTracklets <- unique(trackDat4List[["trackletId"]][which(trackDat4List[["Arena"]] == FALSE)])
+OutTracklets
+```
+
 
 ```{r edgeCleanBeforeAfter, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of the particles' trajectories detected outside the arena before the filtering process removing the moments where the particles are detected outside of the arena."}
-# identify the tracklets that are detected outside the arena
+# identify the part of the tracklets that are detected outside the arena
 trackDat4List <- MoveR::convert2List(trackDat4)
-OutTracklets <- unique(trackDat4List[["trackletId"]][which(trackDat4List[["dist2Edge"]] >= 0)])
+OutTracklets <- unique(trackDat4List[["trackletId"]][which(trackDat4List[["Arena"]] == FALSE)])
+OutTracklets
 
 # plot them
 MoveR::drawTracklets(
@@ -505,176 +453,12 @@ MoveR::drawTracklets(
   main = ,
   cex.main = 0.9,
   cex.start = 1, # increase the size of the start points of the tracklet (help to locate it, particularly if the particle is still)
-  add2It = list(
-    points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01)
-  )
+  add2It = list(graphics::polygon(x = edge$x.pos, y = edge$y.pos))
 )
 
 ```
 
-Here we can see that the points detected outside the arena belong to two tracklets that stayed still over the video-recording ("Tracklet_2" and "Tracklet_3724"). We can thus be confident about the fact that it should be considered as tracking artifacts.
-
-### METHOD 2: Filter by retrieving the distance from the arena edge (distance matrix)
-
-Alternatively in case the arena have a complex shape for which it is difficult to find the shortest distance between the arena edge and a given particle (a.g., a polygonal arena with rounded corner), it is possible to use the matrix of distance from the edge to retrieve distance from the edge for each position of a particle's trajectory by combining the use of `analyseTracklets()` and `locaPos()` below.
-
-It is then possible to specify whether a particle is inside or outside the arena over its whole trajectory.
-
-Then the procedure is similar than for previous steps: 
-
-specify the filter using `filterFunc()` and filter the data using `filterTracklets()`.
-
-```{r edgeCleanAlternative, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="METHOD 2: Histogram of the distance of the particles from the edge before (A) and after (B) the filtering process removing the moments where the particles are detected outside of the arena. The green area corresponds to the inside of the arena while the red area corresponds to the outside. Here the filtering process is based on distance from the edge retrieved from the distance matrix (color thresholding using ImageJ)."}
-trackDat4bis <- MoveR::analyseTracklets(trackDat.speedfilt[[2]],
-                                 customFunc = list(
-                                   dist2Edge = function(x) {
-                                     MoveR::locaPos(arenaDist, df = x)
-                                   },
-                                   # extract the distance from the edge from the distance matrix and attribute it to each position from each trajectory.
-                                   InOut =  function(x) {
-                                     border <- border # specify the value of the border from the distance matrix
-                                     sapply(seq(nrow(x)), function(y)
-                                       if (x$dist2Edge[y] > 0) {
-                                         # if the particle is located at a distance above the border value, the particle is considered "In" the arena. 
-                                         "In"
-                                       } else if (x$dist2Edge[y] <= 0) {
-                                         # if the particle is located at a value of 0 or below, the particle is considered "Out" of the arena.
-                                         "Out"
-                                       })
-                                   }
-                                 ))
-
-# represent the proportion of particles detected outside the arena
-# here we consider that a particle is outside when the distance to the egde is strictly above 0 because 0 corresponds to everything that is detected outside the arena.
-# extract the vector of distance to the edge
-dist2EdgeL <- MoveR::convert2List(trackDat4bis)[["dist2Edge"]]
-
-# plot particles' distance from the edge distribution before the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively
-par(mfrow=c(1,2))
-H <- hist(dist2EdgeL, 
-     breaks = 50, 
-     main = "Distance of the particles from the edge of \nthe arena before filtering",
-     xlab = "Particles' distance from the edge",
-     cex.main=0.9)
-abline(v = 0, col = "#660000")
-mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
-polygon(c(max(dist2EdgeL, na.rm = T),
-          0,
-          0,
-          max(dist2EdgeL, na.rm = T)), 
-        c(0,
-          0,
-          max(H[["counts"]]),
-          max(H[["counts"]])), 
-        col = grDevices::adjustcolor("#336600", alpha.f = 0.25))
-polygon(c(0,
-          ifelse(min(dist2EdgeL, na.rm = T) > 0, 
-                 0, 
-                 min(dist2EdgeL, na.rm = T)),
-          ifelse(min(dist2EdgeL, na.rm = T) > 0, 
-                 0, 
-                 min(dist2EdgeL, na.rm = T)),
-          0), 
-        c(0,
-          0,
-          max(H[["counts"]]),
-          max(H[["counts"]])), 
-        col = grDevices::adjustcolor("#660000", alpha.f = 0.25))
-
-# create the filter
-filter.outbis <-
-  MoveR::filterFunc(
-    trackDat4bis,
-    toFilter = "InOut",
-    customFunc = function(x)
-      x == "Out"
-  )
-
-# apply the filter on the data using the frame rate as minimum duration of the tracklets
-trackDat.borderfiltbis <-
-  MoveR::filterTracklets(trackDat4bis,
-                     filter.outbis,
-                     splitCond = TRUE,
-                     minDur = frameRate)
-
-## plot particles' distance from the edge distribution after the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively (here, the red part should not exist because we have removed the particles detected outside the arena)
-dist2EdgeLFiltered <- MoveR::convert2List(trackDat.borderfiltbis[[2]])[["dist2Edge"]]
-hist(dist2EdgeLFiltered, 
-     breaks = 50, 
-     main = "Distance of the particles from the edge of \nthe arena after filtering",
-     xlab = "Particles' distance from the edge",
-     cex.main=0.9)
-abline(v = 0, col = "#660000")
-mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
-polygon(c(max(dist2EdgeLFiltered, na.rm = T),
-          0,
-          0,
-          max(dist2EdgeLFiltered, na.rm = T)), 
-        c(0,
-          0,
-          max(H[["counts"]]),
-          max(H[["counts"]])), 
-        col = grDevices::adjustcolor("#336600", alpha.f = 0.25))
-polygon(c(0,
-          ifelse(min(dist2EdgeLFiltered, na.rm = T) > 0, 
-                 0, 
-                 min(dist2EdgeLFiltered, na.rm = T)),
-          ifelse(min(dist2EdgeLFiltered, na.rm = T) > 0, 
-                 0, 
-                 min(dist2EdgeLFiltered, na.rm = T)),
-          0), 
-        c(0,
-          0,
-          max(H[["counts"]]),
-          max(H[["counts"]])), 
-        col = grDevices::adjustcolor("#660000", alpha.f = 0.25))
-
-```
-
-
-```{r edgeCleanAlternativeSTR, echo=TRUE, results='markup', message=FALSE, warning=FALSE}
-# display the information about the filtering process (see ??filterTracklets())
-str(trackDat.borderfiltbis[[1]])
-
-```
-
-
-Here, the distribution of the distance from the edge is different that from the first method. 
-
-This is mainly due to the fact that the distance matrix performed using color thresholding returns 0 for the particles that are detected outside of the arena rather than a true distance from the edge. 
-
-In addition, because the length of the radius of the arena is about 500 pixels and the grey scale on which the tresholding have been conducted is limited to 256 values (0-255), all particles detected within the second half of the arena radius are considered at the center with a value of 255. 
-
-Also, this behavior explains why the red area highlighting the proportion of particles detected outside the arena is not visible on fig. \@ref(fig:edgeCleanAlternative)A contrary to fig. \@ref(fig:edgeClean)A. 
-
-Indeed, here all the particles detected outside have a value of 0 (the red "area" hence corresponds to a vertical line at 0).
-
-However, as expected, although these differences the results of the filtering is consistent between the two methods, with the two tracklets detected as spurious being identical.
-
-Indeed, as for the previous method, we can also want to have an idea of the spatio-temporal distribution of the removed data. For this we can use `drawTracklets()` as follow:
-
-```{r edgeCleanBeforeAfterAlternative, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Representation of the particles' trajectories detected outside the arena before the filtering process removing the moments where the particles are detected outside of the arena."}
-# identify the tracklets that are detected outside the arena
-
-trackDat4Listbis <- MoveR::convert2List(trackDat4bis)
-OutTracklets <- unique(trackDat4Listbis[["trackletId"]][which(trackDat4Listbis[["dist2Edge"]] == 0)])
-
-# plot them
-MoveR::drawTracklets(
-  trackDat4bis,
-  selTrack = OutTracklets,
-  main = ,
-  cex.main = 0.9,
-  cex.start = 1, # increase the size of the start points of the tracklet (help to locate it, particularly if the particle is still)
-  add2It = list(
-    points(x = edge[, "x.pos"], y = edge[, "y.pos"], cex = 0.01)
-  )
-)
-
-```
-As observed trough the use of the first method, the points detected outside the arena belong to two tracklets that stayed still over the video-recording ("Tracklet_2" and "Tracklet_3724") (fig. \@ref(fig:edgeCleanBeforeAfterAlternative)).
-
-We can thus be confident about the fact that it should be considered as tracking artifacts. Also, it confirms that the 2 methods give similar outputs, at least for filtering tracklets detected outside the arena.
+Here we can see that the tracklets' part detected outside the arena belong to two tracklets that stayed still over the video-recording ("Tracklet_2" and "Tracklet_3724"). We can thus be confident about the fact that it should be considered as tracking artifacts.
 
 Now we have achieved the filtering of the dataset, one would take a look and eventually save a summary of the filtering procedure.
 
@@ -748,9 +532,9 @@ data.table::fwrite(
 
 Now that the filtering/cleaning process is achieved, we can move to data analysis through various metrics computations.
 
-Note, however, that ones would add or replace some of the filters that have been used in this example depending on the model species and the study' aims. 
+<p class="notes">Note, however, that ones would add or replace some of the filters that have been used in this example depending on the model species and the study' aims. 
 
-Accordingly, the various function developed in the MoveR package are very flexible and allow the user to specify custom functions to break limits.
+Accordingly, the various function developed in the MoveR package are very flexible and allow the user to specify custom functions to break limits.</p>
 
 For more insight how to use MoveR to run further computation check the next tutorials. 
 

@@ -14,10 +14,10 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><link href="../deps/_Roboto-0.4.0/font.css" rel="stylesheet">
-<link href="../deps/_JetBrains%20Mono-0.4.0/font.css" rel="stylesheet">
-<link href="../deps/_Roboto%20Slab-0.4.0/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.6/font.css" rel="stylesheet">
+<link href="../deps/JetBrains_Mono-0.4.6/font.css" rel="stylesheet">
+<link href="../deps/Roboto_Slab-0.4.6/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
@@ -62,8 +62,8 @@
     <a class="dropdown-item" href="../articles/MoveR-ImportData.html">Import Data</a>
     <a class="dropdown-item" href="../articles/MoveR-Clean-FilterData.html">Clean/Filter Data</a>
     <a class="dropdown-item" href="../articles/MoveR-ComputeMetrics.html">Compute some metrics</a>
-    <a class="dropdown-item" href="../articles/MoveR-SensitivityAnalysis.html">Conduct Sensitivity Analysis</a>
-    <a class="dropdown-item" href="../articles/MoveR-ParallelComputation.html">Perform Parallel Computation</a>
+    <a class="dropdown-item" href="../articles/MoveR-ParallelComputation.html">Parallel computing</a>
+    <a class="dropdown-item" href="../articles/MoveR-SensitivityAnalysis.html">Detection performances</a>
   </div>
 </li>
 <li class="nav-item">
@@ -103,7 +103,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Clean/Filter Data</h1>
             
-            <h4 data-toc-skip class="date">2023-04-18</h4>
+            <h4 data-toc-skip class="date">2023-05-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-Clean-FilterData.Rmd" class="external-link"><code>vignettes/MoveR-Clean-FilterData.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-Clean-FilterData.Rmd</code></div>
@@ -232,7 +232,7 @@ For instance, we can automatically determine the frame rate of the video-recordi
 </h2>
 <p>To remove the spurious detection of particles generated over the video-tracking procedure, one cleaning step can consist on removing all the moment when a particles’ size is lower or higher than a given threshold (e.g., the known size of the animals).</p>
 <p>We first retrieve the scaling of the video using the diameter of the circular arena measuring 2.5cm and it’s length in pixels.</p>
-<p>Then, we know that <em>Trichogramma</em>’s body length is generally higher than 0.15mm and lower than 1mm (personal observation) we can hence use these limits to filter the particles for which the length is not included within this interval fig. <a href="#fig:SizeClean">2</a>A&amp;B).</p>
+<p>Then, we know that <em>Trichogramma</em>’s body length is generally higher than 0.15mm and lower than 1mm (personal observation) we can hence use these limits to filter the particles for which the length is not included within this interval (fig. <a href="#fig:SizeClean">2</a>A&amp;B).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># the scaling of the video - 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ)</span></span>
 <span><span class="va">scaling</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">413.4</span></span>
@@ -391,30 +391,21 @@ Figure 3: Histogram of the Log-transformed speed of the particles and 999th quan
 </h2>
 <p>Indeed, sometimes particles can be detected outside the arena, either because an individual as escaped from the arena or because the background has changed over the video recording (tracking artifact).</p>
 <p>To solve this issue, it is possible to remove the parts of a tracklet that have been detected outside the arena.</p>
-<p>To tackle this aim, one may use two main methods:</p>
-<ul>
-<li><p>use a distance matrix from the arena edge generated using simple color tresholding in imageJ (particularly useful if the arena have a complex polygonal shape) to retrieve relative position of the particles from the edge and then filter on it</p></li>
-<li><p>or compute the distance to the known arena edge and then filter on it</p></li>
-</ul>
-<p>We first need to import the location of the distance matrix from the arena edge or the location of the arena edge.
-For this example we will use the distance matrix for both purposes.</p>
+<p>To tackle this aim, one may either use the already implemented functions to generate the edge of circular or polygonal ROIs (see <code><a href="../reference/circles.html">circles()</a></code> and <code><a href="../reference/polygons.html">polygons()</a></code>) or retrieving the position of the arena (or any ROI) edge from a distance matrix generated trough an image processing program such as <a href="https://imagej.net/ij/index.html" class="external-link">ImageJ</a>.</p>
+<p>We first need to retrieve or generate the points specifying the arena edge:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># define filter based on the presence of individual outside the arena</span></span>
-<span><span class="co">## import the distance matrix from the edge of the arena (a distance matrix generated using color tresholding in imageJ) </span></span>
-<span><span class="va">arenaDist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## represent the gradient of distance from the arena edge </span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/contour.html" class="external-link">contour</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">arenaDist</span><span class="op">)</span>,</span>
-<span>        main<span class="op">=</span><span class="st">"Contour plot of the \ndistance from the arena edge "</span>,</span>
-<span>        cex.main <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu">bold</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">3</span>, line <span class="op">=</span> <span class="fl">0</span>, adj <span class="op">=</span> <span class="fl">0</span>, padj <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## The edge correspond to the lower value of the distrance matrix (i.e., 1), </span></span>
-<span><span class="co">## we can hence extract the arena edge from the distance matrix as follow</span></span>
-<span><span class="va">border</span> <span class="op">=</span> <span class="fl">1</span></span>
-<span><span class="va">edge</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">arenaDist</span> <span class="op">==</span> <span class="va">border</span>, arr.ind <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">edge</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"y.pos"</span>, <span class="st">"x.pos"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># retrieve the location of the arena edge from a distance matrix generated using color tresholding in imageJ</span></span>
+<span><span class="co"># as color tresholding returns a matrix with image resolution (x in rows and y in columns) and increasing distance to the edge of the arena, here the edge correspond </span></span>
+<span><span class="co"># to the lower value of the distance matrix (i.e., 1).</span></span>
+<span><span class="co"># Also specifying the order argument as TRUE ensure that the points delimiting the arena edge are sorted clockwise, making easy to draw the edge.</span></span>
+<span><span class="va">edge</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/locROI.html">locROI</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, edgeCrit <span class="op">=</span> <span class="fl">1</span>, xy <span class="op">=</span> <span class="fl">1</span>, order <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="co"># the coordinates of the arena edge are stored in the edge object</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">edge</span><span class="op">)</span></span></code></pre></div>
+<p>‘data.frame’: 4098 obs. of 2 variables:
+$ y.pos: int 10 10 10 10 10 10 10 10 10 10 …
+$ x.pos: int 920 919 918 917 916 915 914 913 912 911 …</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># it is then easy to draw the arena edge</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="cn">NULL</span>, </span>
 <span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[</span>, <span class="st">"x.pos"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>     ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[</span>, <span class="st">"y.pos"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -422,102 +413,73 @@ For this example we will use the distance matrix for both purposes.</p>
 <span>     ylab <span class="op">=</span> <span class="st">"Video height (pixels)"</span>,</span>
 <span>     main <span class="op">=</span> <span class="st">"Edge and centre of the arena"</span>,</span>
 <span>     cex.main <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">edge</span><span class="op">[</span>, <span class="st">"x.pos"</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">edge</span><span class="op">[</span>, <span class="st">"y.pos"</span><span class="op">]</span>, cex <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">edge</span><span class="op">[[</span><span class="st">"x.pos"</span><span class="op">]</span><span class="op">]</span>, <span class="va">edge</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"firebrick"</span>, alpha <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## As well as the center of the arena</span></span>
-<span><span class="va">center</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[</span>, <span class="st">"x.pos"</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[</span>, <span class="st">"y.pos"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="va">center</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span>  y <span class="op">=</span> <span class="va">center</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
+<span><span class="co"># As well as the center of the arena</span></span>
+<span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[[</span><span class="st">"x.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>  col <span class="op">=</span> <span class="st">"black"</span>,</span>
 <span>  pch <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  cex <span class="op">=</span> <span class="fl">0.5</span></span>
+<span>  cex <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu">bold</span><span class="op">(</span><span class="st">"B"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">3</span>, line <span class="op">=</span> <span class="fl">0</span>, adj <span class="op">=</span> <span class="fl">0</span>, padj <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## Note that, in the case of a circular arena, by knowing the coordinates of the center of the arena and the length of the diameter (2.5cm) allows to generate the coordinates of the border of the arena using the circles() function from the MoveR package</span></span>
+<span><span class="co"># Note that, in the case of a circular arena, by knowing the coordinates of the center of the arena and the length of the diameter (2.5cm) allows to generate the coordinates of the border of the arena using the circles() function from the MoveR package. Similar method can also be used for polygonal shape using the polygons() function from the MoveR package.</span></span>
 <span><span class="va">ArenaEdge</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/circles.html">circles</a></span><span class="op">(</span></span>
-<span>  <span class="va">center</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span>  <span class="va">center</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[[</span><span class="st">"x.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>  radius <span class="op">=</span> <span class="fl">2.5</span> <span class="op">/</span> <span class="fl">2</span> <span class="op">/</span> <span class="va">scaling</span>, <span class="co"># here the radius of the arena is 2.5cm/2 divided by the scaling to obtain the value in pixels</span></span>
 <span>  border <span class="op">=</span> <span class="st">"firebrick"</span>,</span>
 <span>  draw <span class="op">=</span> <span class="cn">T</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:edgeDef"></span>
-<img src="MoveR-Clean-FilterData_files/figure-html/edgeDef-1.png" alt="Representation of the distance matrix from the arena edge . The contour plot represent the decreasing distance from the edge to the centre of the arena (A). Arena centre and edge can be extracted from the distance matrix as the lowest value of distance matrix (i.e., 1) and the centre of the arena as the mean of the edge coordinates (B)." width="100%"><p class="caption">
-Figure 4: Representation of the distance matrix from the arena edge . The contour plot represent the decreasing distance from the edge to the centre of the arena (A). Arena centre and edge can be extracted from the distance matrix as the lowest value of distance matrix (i.e., 1) and the centre of the arena as the mean of the edge coordinates (B).
+<img src="MoveR-Clean-FilterData_files/figure-html/edgeDef-1.png" alt="Representation of centre and edge of the arena retrieved from a distance matrix generated using color tresholding in imageJ. The position of the arena edge can be extracted from the distance matrix as the lowest value of distance matrix (i.e., 1) and the centre of the arena as the mean of the edge x and y coordinates." width="100%"><p class="caption">
+Figure 4: Representation of centre and edge of the arena retrieved from a distance matrix generated using color tresholding in imageJ. The position of the arena edge can be extracted from the distance matrix as the lowest value of distance matrix (i.e., 1) and the centre of the arena as the mean of the edge x and y coordinates.
 </p>
 </div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## the coordinates of the arena edge are then stored in the ArenaEdge object</span></span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># the coordinates of the arena edge are then stored in the ArenaEdge object</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">ArenaEdge</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 1</span></span>
-<span><span class="co">##  $ :'data.frame':    500 obs. of  2 variables:</span></span>
-<span><span class="co">##   ..$ x.pos: num [1:500] 1438 1438 1438 1437 1437 ...</span></span>
-<span><span class="co">##   ..$ y.pos: num [1:500] 524 530 537 543 550 ...</span></span></code></pre>
-<p>Here is the graphical representation of the distance matrix with decreasing distance from the centre from the edge of the represented by the contour line (fig. <a href="#fig:edgeDef">4</a>A).</p>
-<p>Accordingly, the lowest value (i.e., 1) corresponds from the edge of the arena (fig. <a href="#fig:edgeDef">4</a>B, black line). Hence, the use of a distance matrix may be a a good option to retrieve the location of the edge of an arena, whatever its shape.</p>
-<p>However, in the case of using a classic circular arena a simpler approach would consist of generating the expected arena edge using <code><a href="../reference/circles.html">circles()</a></code> and feeding it with coordinates of the arena center and the radius length (fig. <a href="#fig:edgeDef">4</a>B, red line).</p>
-<p>We can then use these information (distance matrix or coordinates from the edge of the arena) to filter the dataset by removing the particles detected outside the arena.</p>
-<p>Accordingly, we can either do it by computing the distance (in pixels) from the arena edge for each position of each particle (METHOD 1). Or by retrieving the distance from the edge for each position of a particle’s trajectory according to the distance matrix generated using imageJ (especially useful for arena with complex shape) (METHOD 2).</p>
-<div class="section level3">
-<h3 id="method-1-filter-by-computing-the-distance-from-the-arena-edge">METHOD 1: Filter by computing the distance from the arena edge<a class="anchor" aria-label="anchor" href="#method-1-filter-by-computing-the-distance-from-the-arena-edge"></a>
-</h3>
+<p>‘data.frame’: 500 obs. of 2 variables:
+$ x.pos: num 1438 1438 1438 1437 1437 …
+$ y.pos: num 524 530 537 543 550 …</p>
+<p>Here the distance matrix generated using <a href="https://imagej.net/ij/index.html" class="external-link">ImageJ</a> returns decreasing distance from the centre of the arena to the edge.</p>
+<p>Accordingly, the lowest value (i.e., 1) corresponds to the edge of the arena (fig. <a href="#fig:edgeDef">4</a>, black line). Hence, the use of a distance matrix may be a a good option to retrieve the location of the edge of an arena or any ROI, whatever its shape.</p>
+<p>However, in the case of using a classic circular or polygonal arena a simpler approach would consist of generating the expected arena edge using <code><a href="../reference/circles.html">circles()</a></code> or <code><a href="../reference/polygons.html">polygons()</a></code> and feeding the former with coordinates of the arena center and the radius length (fig. <a href="#fig:edgeDef">4</a>, red line).</p>
+<p>We can then easily identify whether a particle is detect within or outside the arena by assigning the ROI to each tracklet using the <code><a href="../reference/assignROI.html">assignROI()</a></code> and filtering out the tracklets parts detected outside the arena.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## compute the distance from the edge using "analyseFrag" and the dist2edge modulus</span></span>
+<code class="sourceCode R"><span><span class="co">## assign The ROI (here the arena) to the particles' positions</span></span>
 <span><span class="va">trackDat4</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/analyseTracklets.html">analyseTracklets</a></span><span class="op">(</span><span class="va">trackDat.speedfilt</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>               customFunc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>                 dist2Edge <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>                   <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/dist2Edge.html">dist2Edge</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">edge</span>,</span>
-<span>                                    customFunc <span class="op">=</span> <span class="st">"CircularArena"</span><span class="op">)</span></span>
-<span>               <span class="op">)</span><span class="op">)</span></span>
+<span>                          customFunc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>                            Arena <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>                              <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/assignROI.html">assignROI</a></span><span class="op">(</span></span>
+<span>                                <span class="va">x</span>,</span>
+<span>                                ROIs <span class="op">=</span> <span class="va">edge</span>,</span>
+<span>                                edgeInclude <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                                order <span class="op">=</span> <span class="cn">T</span></span>
+<span>                              <span class="op">)</span></span>
+<span>                          <span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## represent the proportion of particles detected outside the arena</span></span>
-<span><span class="co">## here we consider that a particle is outside when the distance to the egde is positive because 0 correspond to the border location.</span></span>
-<span><span class="co">## extract the vector of distance to the edge</span></span>
-<span><span class="va">dist2EdgeL</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat4</span><span class="op">)</span><span class="op">[[</span><span class="st">"dist2Edge"</span><span class="op">]</span><span class="op">]</span></span>
-<span></span>
-<span><span class="co">## plot particles' distance from the edge distribution before the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">H</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, </span>
-<span>     breaks <span class="op">=</span> <span class="fl">50</span>, </span>
-<span>     main <span class="op">=</span> <span class="st">"Distance of the particles from the edge of \nthe arena before filtering"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">"Particles' distance from the edge"</span>,</span>
-<span>     cex.main<span class="op">=</span><span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0</span>, col <span class="op">=</span> <span class="st">"#660000"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu">bold</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">3</span>, line <span class="op">=</span> <span class="fl">0</span>, adj <span class="op">=</span> <span class="fl">0</span>, padj <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"#336600"</span>, alpha.f <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0</span>, </span>
-<span>                 <span class="fl">0</span>, </span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0</span>, </span>
-<span>                 <span class="fl">0</span>, </span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>          <span class="fl">0</span><span class="op">)</span>, </span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"#660000"</span>, alpha.f <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># create the filter accordingly</span></span>
+<span><span class="co"># draw the tracklet and the arena edges </span></span>
+<span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="va">trackDat4</span>,</span>
+<span>                     timeCol <span class="op">=</span> <span class="st">"runTimelinef"</span>,</span>
+<span>                     add2It <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">edge</span><span class="op">$</span><span class="va">x.pos</span>, y <span class="op">=</span> <span class="va">edge</span><span class="op">$</span><span class="va">y.pos</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:edgeClean"></span>
+<img src="MoveR-Clean-FilterData_files/figure-html/edgeClean-1.png" alt="Micro-wasps trajectories over the whole video timeline, expressed in frame. The arena edges are represented by the black circle." width="100%"><p class="caption">
+Figure 5: Micro-wasps trajectories over the whole video timeline, expressed in frame. The arena edges are represented by the black circle.
+</p>
+</div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># create the filter to remove particles outside the arena</span></span>
 <span><span class="va">filter.out</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/filterFunc.html">filterFunc</a></span><span class="op">(</span></span>
 <span>    <span class="va">trackDat4</span>,</span>
-<span>    toFilter <span class="op">=</span> <span class="st">"dist2Edge"</span>,</span>
+<span>    toFilter <span class="op">=</span> <span class="st">"Arena"</span>,</span>
 <span>    customFunc <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>      <span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">0</span></span>
+<span>      <span class="va">x</span> <span class="op">==</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># apply the filter on the data using the frame rate as minimum duration of the tracklets</span></span>
@@ -527,47 +489,32 @@ Figure 4: Representation of the distance matrix from the arena edge . The contou
 <span>              splitCond <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>              minDur <span class="op">=</span> <span class="va">frameRate</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># plot particles' distance from the edge distribution after the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively (here, the red part should not exist because we have removed the particles detected outside the arena)</span></span>
-<span><span class="va">dist2EdgeLFiltered</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat.borderfilt</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"dist2Edge"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, </span>
-<span>     breaks <span class="op">=</span> <span class="fl">50</span>, </span>
-<span>     main <span class="op">=</span> <span class="st">"Distance of the particles from the edge of \nthe arena after filtering"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">"Particles' distance from the edge"</span>,</span>
-<span>     cex.main<span class="op">=</span><span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0</span>, col <span class="op">=</span> <span class="st">"#660000"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu">bold</span><span class="op">(</span><span class="st">"B"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">3</span>, line <span class="op">=</span> <span class="fl">0</span>, adj <span class="op">=</span> <span class="fl">0</span>, padj <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"#336600"</span>, alpha.f <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0</span>, </span>
-<span>                 <span class="fl">0</span>, </span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0</span>, </span>
-<span>                 <span class="fl">0</span>, </span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>          <span class="fl">0</span><span class="op">)</span>, </span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"#660000"</span>, alpha.f <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:edgeClean"></span>
-<img src="MoveR-Clean-FilterData_files/figure-html/edgeClean-1.png" alt="METHOD 1: Histogram of the distance of the particles from the edge before (A) and after (B) the filtering process removing the moments where the particles are detected outside of the arena. The green area corresponds to the inside of the arena while the red area corresponds to the outside. Here the filtering process is based on distance from the edge computed using the shape of the arena and the dist2Edge function of the MoveR package." width="100%"><p class="caption">
-Figure 5: METHOD 1: Histogram of the distance of the particles from the edge before (A) and after (B) the filtering process removing the moments where the particles are detected outside of the arena. The green area corresponds to the inside of the arena while the red area corresponds to the outside. Here the filtering process is based on distance from the edge computed using the shape of the arena and the dist2Edge function of the MoveR package.
-</p>
-</div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># rename the cleaned dataset for further use</span></span>
-<span><span class="va">trackDat5</span> <span class="op">&lt;-</span> <span class="va">trackDat.borderfilt</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<span><span class="co"># rename the cleaned dataset for further use</span></span>
+<span><span class="va">trackDat5</span> <span class="op">&lt;-</span> <span class="va">trackDat.borderfilt</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># check that the particle detected outside has been removed</span></span>
+<span><span class="co">## retrieve the ROI assignation before and after filtering</span></span>
+<span><span class="va">compar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  before <span class="op">=</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat4</span><span class="op">)</span><span class="op">[[</span><span class="st">"Arena"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>  after <span class="op">=</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat5</span><span class="op">)</span><span class="op">[[</span><span class="st">"Arena"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## create a count table to determine the amount of tracklets parts that are within and outside the arena</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">compar</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">compar</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">compar</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">res</span><span class="op">[</span><span class="va">i</span>, <span class="st">"ROI_1"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"\\&lt;ROI_1\\&gt;"</span>, <span class="va">compar</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">res</span><span class="op">[</span><span class="va">i</span>, <span class="st">"FALSE"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"\\&lt;FALSE\\&gt;"</span>, <span class="va">compar</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">res</span></span></code></pre></div>
+<pre><code>     ROI_1 FALSE</code></pre>
+<p>before 1094821 54
+after 1094821 0
+Apparently the amount of artifact detected outside the arena is null or very low (see fig. <a href="#fig:edgeClean">5</a>. However, by using <code><a href="../reference/assignROI.html">assignROI()</a></code> and excluding the edge some tracklet part are indeed detected outside the arena.</p>
+<p>Then, as expected the filtering step based the location of the particles inside or outside the arena have removed parts of the tracklets (54 occurrences) detected outside the arena (ROI_1).</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># display the information about the filtering process (see ??filterTracklets())</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDat.borderfilt</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 8</span></span>
@@ -579,24 +526,24 @@ Figure 5: METHOD 1: Histogram of the distance of the particles from the edge bef
 <span><span class="co">##  $ TotTrackDuration_after_minDur : int 1094821</span></span>
 <span><span class="co">##  $ %Data_kept_after_filter       : num 100</span></span>
 <span><span class="co">##  $ %Data_kept_after_minDur       : num 100</span></span></code></pre>
-<p>According to the summary of the filtering step based the location of the particles inside or outside the arena, the amount of data removed by the filtering is very low (&lt;0.1%), confirming that there is few tracking artifact outside of the arena (values within the red area in fig. <a href="#fig:edgeClean">5</a>A).</p>
-<p>As expected these artifacts are removed by the filter as shown on the fig. <a href="#fig:edgeClean">5</a>B, where there is no red area anymore. Accordingly, the filter splited only few tracklets in small part resulting in less than 0.1% of data removed because resulting tracklets were shorter than 1 second (25 frames).</p>
-<p>While fig. <a href="#fig:edgeClean">5</a>A&amp;B and the summary give a quantitative view of the amount of data removed by the filtering we can also want to have an idea of the spatio-temporal distribution of the removed data. For this we can use <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> as follow:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># identify the tracklets that are detected outside the arena</span></span>
+<p>In addition, according to the summary of the filtering step, the amount of data removed by the filtering is very low (&lt;0.1%), confirming that there is few tracking artifact outside of the arena (fig. <a href="#fig:edgeClean">5</a>).</p>
+<p>Accordingly, the filter splited only few tracklets in small part resulting in less than 0.1% of data removed because resulting tracklets were shorter than 1 second (25 frames).</p>
+<p>While the count table and the summary of the filtering give a general quantitative view of the amount of data removed by the filtering step one may also want to have an idea of the tracklets identity and the spatio-temporal distribution of the removed data. For this we can use <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> as follow:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># identify the part of the tracklets that are detected outside the arena</span></span>
 <span><span class="va">trackDat4List</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat4</span><span class="op">)</span></span>
-<span><span class="va">OutTracklets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">trackDat4List</span><span class="op">[[</span><span class="st">"trackletId"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">trackDat4List</span><span class="op">[[</span><span class="st">"dist2Edge"</span><span class="op">]</span><span class="op">]</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># plot them</span></span>
+<span><span class="va">OutTracklets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">trackDat4List</span><span class="op">[[</span><span class="st">"trackletId"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">trackDat4List</span><span class="op">[[</span><span class="st">"Arena"</span><span class="op">]</span><span class="op">]</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">OutTracklets</span></span></code></pre></div>
+<p>[1] “Tracklet_2” “Tracklet_3724”</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># plot them</span></span>
 <span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span></span>
 <span>  <span class="va">trackDat4</span>,</span>
 <span>  selTrack <span class="op">=</span> <span class="va">OutTracklets</span>,</span>
 <span>  main <span class="op">=</span> ,</span>
 <span>  cex.main <span class="op">=</span> <span class="fl">0.9</span>,</span>
 <span>  cex.start <span class="op">=</span> <span class="fl">1</span>, <span class="co"># increase the size of the start points of the tracklet (help to locate it, particularly if the particle is still)</span></span>
-<span>  add2It <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">edge</span><span class="op">[</span>, <span class="st">"x.pos"</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">edge</span><span class="op">[</span>, <span class="st">"y.pos"</span><span class="op">]</span>, cex <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
+<span>  add2It <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">edge</span><span class="op">$</span><span class="va">x.pos</span>, y <span class="op">=</span> <span class="va">edge</span><span class="op">$</span><span class="va">y.pos</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:edgeCleanBeforeAfter"></span>
@@ -604,177 +551,14 @@ Figure 5: METHOD 1: Histogram of the distance of the particles from the edge bef
 Figure 6: Representation of the particles’ trajectories detected outside the arena before the filtering process removing the moments where the particles are detected outside of the arena.
 </p>
 </div>
-<p>Here we can see that the points detected outside the arena belong to two tracklets that stayed still over the video-recording (“Tracklet_2” and “Tracklet_3724”). We can thus be confident about the fact that it should be considered as tracking artifacts.</p>
-</div>
-<div class="section level3">
-<h3 id="method-2-filter-by-retrieving-the-distance-from-the-arena-edge-distance-matrix">METHOD 2: Filter by retrieving the distance from the arena edge (distance matrix)<a class="anchor" aria-label="anchor" href="#method-2-filter-by-retrieving-the-distance-from-the-arena-edge-distance-matrix"></a>
-</h3>
-<p>Alternatively in case the arena have a complex shape for which it is difficult to find the shortest distance between the arena edge and a given particle (a.g., a polygonal arena with rounded corner), it is possible to use the matrix of distance from the edge to retrieve distance from the edge for each position of a particle’s trajectory by combining the use of <code><a href="../reference/analyseTracklets.html">analyseTracklets()</a></code> and <code><a href="../reference/locaPos.html">locaPos()</a></code> below.</p>
-<p>It is then possible to specify whether a particle is inside or outside the arena over its whole trajectory.</p>
-<p>Then the procedure is similar than for previous steps:</p>
-<p>specify the filter using <code><a href="../reference/filterFunc.html">filterFunc()</a></code> and filter the data using <code><a href="../reference/filterTracklets.html">filterTracklets()</a></code>.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">trackDat4bis</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/analyseTracklets.html">analyseTracklets</a></span><span class="op">(</span><span class="va">trackDat.speedfilt</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>                                 customFunc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>                                   dist2Edge <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>                                     <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/locaPos.html">locaPos</a></span><span class="op">(</span><span class="va">arenaDist</span>, df <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
-<span>                                   <span class="op">}</span>,</span>
-<span>                                   <span class="co"># extract the distance from the edge from the distance matrix and attribute it to each position from each trajectory.</span></span>
-<span>                                   InOut <span class="op">=</span>  <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>                                     <span class="va">border</span> <span class="op">&lt;-</span> <span class="va">border</span> <span class="co"># specify the value of the border from the distance matrix</span></span>
-<span>                                     <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
-<span>                                       <span class="kw">if</span> <span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">dist2Edge</span><span class="op">[</span><span class="va">y</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>                                         <span class="co"># if the particle is located at a distance above the border value, the particle is considered "In" the arena. </span></span>
-<span>                                         <span class="st">"In"</span></span>
-<span>                                       <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">dist2Edge</span><span class="op">[</span><span class="va">y</span><span class="op">]</span> <span class="op">&lt;=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>                                         <span class="co"># if the particle is located at a value of 0 or below, the particle is considered "Out" of the arena.</span></span>
-<span>                                         <span class="st">"Out"</span></span>
-<span>                                       <span class="op">}</span><span class="op">)</span></span>
-<span>                                   <span class="op">}</span></span>
-<span>                                 <span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># represent the proportion of particles detected outside the arena</span></span>
-<span><span class="co"># here we consider that a particle is outside when the distance to the egde is strictly above 0 because 0 corresponds to everything that is detected outside the arena.</span></span>
-<span><span class="co"># extract the vector of distance to the edge</span></span>
-<span><span class="va">dist2EdgeL</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat4bis</span><span class="op">)</span><span class="op">[[</span><span class="st">"dist2Edge"</span><span class="op">]</span><span class="op">]</span></span>
-<span></span>
-<span><span class="co"># plot particles' distance from the edge distribution before the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">H</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, </span>
-<span>     breaks <span class="op">=</span> <span class="fl">50</span>, </span>
-<span>     main <span class="op">=</span> <span class="st">"Distance of the particles from the edge of \nthe arena before filtering"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">"Particles' distance from the edge"</span>,</span>
-<span>     cex.main<span class="op">=</span><span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0</span>, col <span class="op">=</span> <span class="st">"#660000"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu">bold</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">3</span>, line <span class="op">=</span> <span class="fl">0</span>, adj <span class="op">=</span> <span class="fl">0</span>, padj <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"#336600"</span>, alpha.f <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>, </span>
-<span>                 <span class="fl">0</span>, </span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>, </span>
-<span>                 <span class="fl">0</span>, </span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeL</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>          <span class="fl">0</span><span class="op">)</span>, </span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"#660000"</span>, alpha.f <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># create the filter</span></span>
-<span><span class="va">filter.outbis</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/filterFunc.html">filterFunc</a></span><span class="op">(</span></span>
-<span>    <span class="va">trackDat4bis</span>,</span>
-<span>    toFilter <span class="op">=</span> <span class="st">"InOut"</span>,</span>
-<span>    customFunc <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>      <span class="va">x</span> <span class="op">==</span> <span class="st">"Out"</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span><span class="co"># apply the filter on the data using the frame rate as minimum duration of the tracklets</span></span>
-<span><span class="va">trackDat.borderfiltbis</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/filterTracklets.html">filterTracklets</a></span><span class="op">(</span><span class="va">trackDat4bis</span>,</span>
-<span>                     <span class="va">filter.outbis</span>,</span>
-<span>                     splitCond <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                     minDur <span class="op">=</span> <span class="va">frameRate</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## plot particles' distance from the edge distribution after the filtering, add the edge (vertical line) and color the inner and outer part of the arena in green and red respectively (here, the red part should not exist because we have removed the particles detected outside the arena)</span></span>
-<span><span class="va">dist2EdgeLFiltered</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat.borderfiltbis</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"dist2Edge"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, </span>
-<span>     breaks <span class="op">=</span> <span class="fl">50</span>, </span>
-<span>     main <span class="op">=</span> <span class="st">"Distance of the particles from the edge of \nthe arena after filtering"</span>,</span>
-<span>     xlab <span class="op">=</span> <span class="st">"Particles' distance from the edge"</span>,</span>
-<span>     cex.main<span class="op">=</span><span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fl">0</span>, col <span class="op">=</span> <span class="st">"#660000"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu">bold</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">3</span>, line <span class="op">=</span> <span class="fl">0</span>, adj <span class="op">=</span> <span class="fl">0</span>, padj <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"#336600"</span>, alpha.f <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>, </span>
-<span>                 <span class="fl">0</span>, </span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>, </span>
-<span>                 <span class="fl">0</span>, </span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">dist2EdgeLFiltered</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>          <span class="fl">0</span><span class="op">)</span>, </span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,</span>
-<span>          <span class="fl">0</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>          <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">H</span><span class="op">[[</span><span class="st">"counts"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        col <span class="op">=</span> <span class="fu">grDevices</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grDevices/adjustcolor.html" class="external-link">adjustcolor</a></span><span class="op">(</span><span class="st">"#660000"</span>, alpha.f <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:edgeCleanAlternative"></span>
-<img src="MoveR-Clean-FilterData_files/figure-html/edgeCleanAlternative-1.png" alt="METHOD 2: Histogram of the distance of the particles from the edge before (A) and after (B) the filtering process removing the moments where the particles are detected outside of the arena. The green area corresponds to the inside of the arena while the red area corresponds to the outside. Here the filtering process is based on distance from the edge retrieved from the distance matrix (color thresholding using ImageJ)." width="100%"><p class="caption">
-Figure 7: METHOD 2: Histogram of the distance of the particles from the edge before (A) and after (B) the filtering process removing the moments where the particles are detected outside of the arena. The green area corresponds to the inside of the arena while the red area corresponds to the outside. Here the filtering process is based on distance from the edge retrieved from the distance matrix (color thresholding using ImageJ).
-</p>
-</div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># display the information about the filtering process (see ??filterTracklets())</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDat.borderfiltbis</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 8</span></span>
-<span><span class="co">##  $ Tracknb_before_filter         : int 5803</span></span>
-<span><span class="co">##  $ Tracknb_after_filter          : int 5803</span></span>
-<span><span class="co">##  $ Tracknb_after_minDur          : num 5801</span></span>
-<span><span class="co">##  $ TotTrackDuration_before_filter: int 1094875</span></span>
-<span><span class="co">##  $ TotTrackDuration_after_filter : int 1094823</span></span>
-<span><span class="co">##  $ TotTrackDuration_after_minDur : int 1094821</span></span>
-<span><span class="co">##  $ %Data_kept_after_filter       : num 100</span></span>
-<span><span class="co">##  $ %Data_kept_after_minDur       : num 100</span></span></code></pre>
-<p>Here, the distribution of the distance from the edge is different that from the first method.</p>
-<p>This is mainly due to the fact that the distance matrix performed using color thresholding returns 0 for the particles that are detected outside of the arena rather than a true distance from the edge.</p>
-<p>In addition, because the length of the radius of the arena is about 500 pixels and the grey scale on which the tresholding have been conducted is limited to 256 values (0-255), all particles detected within the second half of the arena radius are considered at the center with a value of 255.</p>
-<p>Also, this behavior explains why the red area highlighting the proportion of particles detected outside the arena is not visible on fig. <a href="#fig:edgeCleanAlternative">7</a>A contrary to fig. <a href="#fig:edgeClean">5</a>A.</p>
-<p>Indeed, here all the particles detected outside have a value of 0 (the red “area” hence corresponds to a vertical line at 0).</p>
-<p>However, as expected, although these differences the results of the filtering is consistent between the two methods, with the two tracklets detected as spurious being identical.</p>
-<p>Indeed, as for the previous method, we can also want to have an idea of the spatio-temporal distribution of the removed data. For this we can use <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> as follow:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># identify the tracklets that are detected outside the arena</span></span>
-<span></span>
-<span><span class="va">trackDat4Listbis</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat4bis</span><span class="op">)</span></span>
-<span><span class="va">OutTracklets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">trackDat4Listbis</span><span class="op">[[</span><span class="st">"trackletId"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">trackDat4Listbis</span><span class="op">[[</span><span class="st">"dist2Edge"</span><span class="op">]</span><span class="op">]</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># plot them</span></span>
-<span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span></span>
-<span>  <span class="va">trackDat4bis</span>,</span>
-<span>  selTrack <span class="op">=</span> <span class="va">OutTracklets</span>,</span>
-<span>  main <span class="op">=</span> ,</span>
-<span>  cex.main <span class="op">=</span> <span class="fl">0.9</span>,</span>
-<span>  cex.start <span class="op">=</span> <span class="fl">1</span>, <span class="co"># increase the size of the start points of the tracklet (help to locate it, particularly if the particle is still)</span></span>
-<span>  add2It <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">edge</span><span class="op">[</span>, <span class="st">"x.pos"</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">edge</span><span class="op">[</span>, <span class="st">"y.pos"</span><span class="op">]</span>, cex <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="figure" style="text-align: center">
-<span style="display:block;" id="fig:edgeCleanBeforeAfterAlternative"></span>
-<img src="MoveR-Clean-FilterData_files/figure-html/edgeCleanBeforeAfterAlternative-1.png" alt="Representation of the particles' trajectories detected outside the arena before the filtering process removing the moments where the particles are detected outside of the arena." width="100%"><p class="caption">
-Figure 8: Representation of the particles’ trajectories detected outside the arena before the filtering process removing the moments where the particles are detected outside of the arena.
-</p>
-</div>
-<p>As observed trough the use of the first method, the points detected outside the arena belong to two tracklets that stayed still over the video-recording (“Tracklet_2” and “Tracklet_3724”) (fig. <a href="#fig:edgeCleanBeforeAfterAlternative">8</a>).</p>
-<p>We can thus be confident about the fact that it should be considered as tracking artifacts. Also, it confirms that the 2 methods give similar outputs, at least for filtering tracklets detected outside the arena.</p>
+<p>Here we can see that the tracklets’ part detected outside the arena belong to two tracklets that stayed still over the video-recording (“Tracklet_2” and “Tracklet_3724”). We can thus be confident about the fact that it should be considered as tracking artifacts.</p>
 <p>Now we have achieved the filtering of the dataset, one would take a look and eventually save a summary of the filtering procedure.</p>
-</div>
 </div>
 <div class="section level2">
 <h2 id="filteringcleaning-summary">Filtering/Cleaning summary<a class="anchor" aria-label="anchor" href="#filteringcleaning-summary"></a>
 </h2>
 <p>Once the filtering/cleaning steps are done, the various filter summaries can be retrieved and easily grouped and eventually saved.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create a summary of each filter results </span></span>
 <span><span class="va">FilterSummary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="st">"cbind"</span>,</span>
 <span>                         <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -816,7 +600,7 @@ Figure 8: Representation of the particles’ trajectories detected outside the a
 <span><span class="co">## cumulative_%Data_kept_after_minDur 2.321307e+01</span></span></code></pre>
 <p>As previously stated, we can indeed see that the filter based on infinite values have removed a lot of data contrary to the other filters. Also, it seems that the minimum duration of the tracklets set to 25 frames (1 second) is appropriate since it remove a small amount of data.</p>
 <p>It is also possible to display a summary of the tracking information of both the initial dataset (i.e., trackDat) and the filtered/cleaned one (trackDat5) using <code><a href="../reference/trackStats.html">trackStats()</a></code> to quickly compare them.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute and display a detailed summary of the tracking information before and after cleaning (see ??trackStats())</span></span>
 <span><span class="va">Data_Trex_stats_before_filter</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/trackStats.html">trackStats</a></span><span class="op">(</span><span class="va">trackDat</span>,</span>
@@ -838,7 +622,7 @@ Figure 8: Representation of the particles’ trajectories detected outside the a
 <span><span class="co">##   ..$ trackDuration_f   : int [1:88] 12074 12079 12079 12079 12079 12083 12084 12084 12084 12084 ...</span></span>
 <span><span class="co">##   ..$ trackDuration_s   : num [1:88] 483 483 483 483 483 ...</span></span>
 <span><span class="co">##   ..$ trackLength_cm    : num [1:88] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span></span></code></pre>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Data_Trex_stats_after_filter</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/trackStats.html">trackStats</a></span><span class="op">(</span><span class="va">trackDat5</span>,</span>
 <span>                    frameR <span class="op">=</span> <span class="va">frameRate</span>,</span>
@@ -864,7 +648,7 @@ Figure 8: Representation of the particles’ trajectories detected outside the a
 <p>Both kind of summaries can then be saved as a .csv file using common function such as <code><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">utils::write.csv()</a></code> or <code><a href="https://Rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">data.table::fwrite()</a></code>.</p>
 <p>Also, the filtered dataset can be saved before using it for further computations.
 As such dataset can be large we recommend to use <code><a href="https://Rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">data.table::fwrite()</a></code> from the data.table package as well as saving the data as .gz archive to save as much disk space as possible (e.g., For this dataset: .csv = 181Mo vs .csv.gz = 62Mo).</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save the cleaned dataset as .csv compressed as .gz</span></span>
 <span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat5</span><span class="op">)</span>,</span>

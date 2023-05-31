@@ -18,11 +18,11 @@ circles(
 )
 }
 \arguments{
-\item{x}{A coordinate vector of circles to plot.}
+\item{x}{A single numeric value or a vector corresponding to the x value of the center of circles.}
 
-\item{y}{A coordinate vector of circles to plot.}
+\item{y}{A single numeric value or a vector corresponding to the y value of the center of circles.}
 
-\item{radius}{A single numeric value or a vector specifying the radius of the circles to plot.}
+\item{radius}{A single numeric value or a vector specifying the radius of the circles to generate.}
 
 \item{Res}{A numeric value corresponding to the resolution of the circles (i.e., the number of points used to draw the circles contour, default = 500).}
 
@@ -40,18 +40,18 @@ circles(
 \item{draw}{A logical value (i.e., TRUE or FALSE) indicating whether the circle(s) should be drawn or not (default = TRUE).}
 }
 \value{
-Draw the circles from the coordinates of the center and a value of the circle radius on an existing plot window or, if there is no active plot window, on a new plot window.
-It also returns a list containing the coordinates of the points simulated to draw the contour of the circle(s).
+This function returns a list containing the coordinates of the points generated on contour of the circle(s). Each element of the list
+correspond to a circle (an ROI). In case only one circle is generated the function returns a dataframe. The function can also draw the circles on an existing plot window or, if there is no active plot window, on a new plot window.
 }
 \description{
-Given x and y coordinates of the circle center as well as the circle radius, this function draw circle(s) and returns a list containing the coordinates of the points simulated to draw the contour of the circle(s).
+Given x and y coordinates of circle(s)' center as well as the circle(s) radius, this function returns a list containing the coordinates of the points making the contour of the circle(s) and draw it.
 }
 \examples{
 
 set.seed(2023)
 plot(NULL, xlim = c(1,120), ylim = c(1,120), xlab = "x", ylab = "y")
 # draw 4 red-border and red-filled circles of different size on a new plot
-circleCoords1 <- circles(
+circleCoords1 <- MoveR::circles(
   x = sample(1:100, 4),
   y = sample(1:100, 4),
   radius = sample(5:15, 4),
@@ -67,7 +67,7 @@ str(circleCoords1)
 
 # draw 2 red-border and red-filled circles and 2 blue-border and blue-filled circles of different size on #' a new plot
 plot(NULL, xlim = c(-10,120), ylim = c(-10,120), xlab = "x", ylab = "y")
-circleCoords2 <- circles(
+circleCoords2 <- MoveR::circles(
   x = sample(1:100, 4),
   y = sample(1:100, 4),
   radius = sample(5:20, 4),
@@ -83,7 +83,7 @@ str(circleCoords2)
 
 }
 \seealso{
-\code{\link[graphics]{polygon}}, \code{\link[graphics]{points}}
+\code{\link[graphics]{locPos}}, \code{\link[graphics]{locROI}}, \code{\link[graphics]{polygon}}, \code{\link[graphics]{points}}
 }
 \author{
 Quentin PETITJEAN

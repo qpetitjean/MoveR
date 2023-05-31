@@ -19,9 +19,7 @@ exploredArea(
 \item{trackDat}{A list of data frame containing tracking information for each tracklet (including a timeline)
 or a data frame containing tracking information for one tracklet.}
 
-\item{binRad}{A numeric value corresponding to the diameter of the typical surface a particle can "explore" around its position
-For instance, the reaction distance of a Trichograms (i.e., a parasitoid micro-wasp) is about 4 mm, in this case, a reasonable value is of order 16 mm^2,
-the diameter of such a cell is hence about 8 mm.}
+\item{binRad}{A numeric value, expressed in pixels, corresponding to the diameter of the typical surface a particle can "explore" around its position.}
 
 \item{imgRes}{A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
 If imgRes is unspecified, the function retrieve it using x and y maximum values + 5\%.}
@@ -75,7 +73,7 @@ MoveR::drawTracklets(TrackList,
 # compute the total surface explored and displays the heatmap for all tracklets
 # NB: Plot can be displayed and/or saved using graph and saveGraph arguments
 MoveR::exploredArea(TrackList,
-                    binRad = 8,
+                    binRad = 20,
                     scale = 1,
                     timeCol = "frame")
 
@@ -87,7 +85,7 @@ ExplorTest <- MoveR::analyseTracklets(TrackList[1:2],
                                     exploredArea = function(x)
                                       MoveR::exploredArea(
                                         x,
-                                        binRad = 8,
+                                        binRad = 20,
                                         scale = 1,
                                         timeCol = "frame"
                                       )

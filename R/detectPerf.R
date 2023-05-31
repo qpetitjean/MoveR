@@ -55,7 +55,7 @@
 #' @author Quentin PETITJEAN
 #'
 #' @examples
-#' ## Not run:
+#' \dontrun{
 #' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -81,7 +81,7 @@
 #' w <- getOption("warn")
 #' options(warn = -1)
 #' 
-#' sensitivity <- MoveR::evalSens(
+#' sensitivity <- MoveR::detectPerf(
 #'   refDat = refDat,
 #'   trackDat = trackDat,
 #'   radius = 50,
@@ -146,10 +146,10 @@
 #'   )
 #' }
 #'
-#' ## End(Not run)
+#' }
 #' @export
 
-evalSens <-
+detectPerf <-
   function(trackDat,
            refDat,
            radius = 20,

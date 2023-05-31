@@ -173,7 +173,7 @@ ANND <- function(trackDat,
       "\n here the function used ",
       min(TimelineStep, na.rm = T),
       ", but perhaps consider resampling the tracklets to better control the behavior of the function", 
-      "\n see MoveR::resamplTracklets()"
+      "\n see MoveR::resampTracklets()"
     )
   }
   if (is.null(Tinterval)) {

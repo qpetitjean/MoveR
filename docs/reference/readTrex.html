@@ -13,7 +13,7 @@ this function returns a list of 9 vectors classically used for further computati
 
 
 Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above
-and the second containing all the elements retrieved from the .npz files (see rawDat argument)."><title>Import Trex tracking output .npz files. — readTrex • MoveR</title><!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png"><link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png"><link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png"><link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png"><link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png"><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><link href="../deps/_Roboto-0.4.0/font.css" rel="stylesheet"><link href="../deps/_JetBrains%20Mono-0.4.0/font.css" rel="stylesheet"><link href="../deps/_Roboto%20Slab-0.4.0/font.css" rel="stylesheet"><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Import Trex tracking output .npz files. — readTrex"><meta property="og:description" content="Given the path of a folder containing multiple Trex outputs (one .npz file per particle/individual),
+and the second containing all the elements retrieved from the .npz files (see rawDat argument)."><title>Import Trex tracking output .npz files. — readTrex • MoveR</title><!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png"><link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png"><link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png"><link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png"><link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png"><link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png"><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.6/font.css" rel="stylesheet"><link href="../deps/JetBrains_Mono-0.4.6/font.css" rel="stylesheet"><link href="../deps/Roboto_Slab-0.4.6/font.css" rel="stylesheet"><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet"><meta property="og:title" content="Import Trex tracking output .npz files. — readTrex"><meta property="og:description" content="Given the path of a folder containing multiple Trex outputs (one .npz file per particle/individual),
 this function returns a list of 9 vectors classically used for further computations using MoveR package:
 'maj.ax': the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).
 'angle': the particle's absolute angle in radians, orientation of the particle according to X-axis.
@@ -63,8 +63,8 @@ and the second containing all the elements retrieved from the .npz files (see ra
     <a class="dropdown-item" href="../articles/MoveR-ImportData.html">Import Data</a>
     <a class="dropdown-item" href="../articles/MoveR-Clean-FilterData.html">Clean/Filter Data</a>
     <a class="dropdown-item" href="../articles/MoveR-ComputeMetrics.html">Compute some metrics</a>
-    <a class="dropdown-item" href="../articles/MoveR-SensitivityAnalysis.html">Conduct Sensitivity Analysis</a>
-    <a class="dropdown-item" href="../articles/MoveR-ParallelComputation.html">Perform Parallel Computation</a>
+    <a class="dropdown-item" href="../articles/MoveR-ParallelComputation.html">Parallel computing</a>
+    <a class="dropdown-item" href="../articles/MoveR-SensitivityAnalysis.html">Detection performances</a>
   </div>
 </li>
 <li class="nav-item">
@@ -164,14 +164,11 @@ and the second containing all the elements retrieved from the .npz files (see ra
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Not run:</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Download the first dataset from the sample data repository</span></span></span>
 <span class="r-in"><span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">1</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Path2Data</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpIBGA5h\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"                          </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Import the list containing the 9 vectors classically used for further computation</span></span></span>
 <span class="r-in"><span><span class="co"># and flip Y coordinates to start on the bottom-left</span></span></span>
@@ -181,16 +178,6 @@ and the second containing all the elements retrieved from the .npz files (see ra
 <span class="r-in"><span>               rawDat <span class="op">=</span> <span class="cn">F</span></span></span>
 <span class="r-in"><span>        <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">Data</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> List of 9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ maj.ax    : num [1:156291] 23.5 23.9 21.6 23.2 21.5 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ angle     : num [1:156291] -0.733 -0.767 -0.761 -0.896 -0.88 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ min.ax    : num [1:156291] NA NA NA NA NA NA NA NA NA NA ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ x.pos     : num [1:156291] 2278 2273 2269 2268 2267 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ y.pos     : num [1:156291] 1527 1522 1519 1515 1514 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ identity  : num [1:156291] 0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ frame     : num [1:156291] 0 1 2 3 4 5 6 7 8 9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ntargets  : num [1:12024] 13 10 8 8 8 8 8 8 8 7 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ timestamps: num [1:12024] 0 0.04 0.08 0.12 0.16 0.2 0.24 0.28 0.32 0.36 ...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation</span></span></span>
 <span class="r-in"><span><span class="co"># and the second list containing all the elements retrieved from .npz files,</span></span></span>
@@ -199,51 +186,8 @@ and the second containing all the elements retrieved from the .npz files (see ra
 <span class="r-in"><span>                   rawDat <span class="op">=</span> <span class="cn">T</span></span></span>
 <span class="r-in"><span>            <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">DataFull</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> List of 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Data_Trex    :List of 9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ maj.ax    : num [1:156291] 23.5 23.9 21.6 23.2 21.5 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ angle     : num [1:156291] -0.733 -0.767 -0.761 -0.896 -0.88 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ min.ax    : num [1:156291] NA NA NA NA NA NA NA NA NA NA ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ x.pos     : num [1:156291] 2278 2273 2269 2268 2267 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ y.pos     : num [1:156291] 633 638 641 645 646 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ identity  : num [1:156291] 0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ frame     : num [1:156291] 0 1 2 3 4 5 6 7 8 9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ntargets  : num [1:12024] 13 10 8 8 8 8 8 8 8 7 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ timestamps: num [1:12024] 0 0.04 0.08 0.12 0.16 0.2 0.24 0.28 0.32 0.36 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ Data_Trex_Raw:List of 31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ BORDER_DISTANCE#pcentroid: num [1:156291] 634 640 644 646 648 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ACCELERATION#pcentroid   : num [1:156291] 0 5716 1187 2206 139 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ACCELERATION#wcentroid   : num [1:156291] 0 4371 1425 2476 1215 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ SPEED#smooth#wcentroid   : num [1:156291] 0 174.9 142.4 87.5 39.4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ANGULAR_A#centroid       : num [1:156291] 0 4001.2 -4063.9 58 -68.1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ANGULAR_V#centroid       : num [1:156291] 0 160.049 -2.506 -0.185 -2.909 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ normalized_midline       : num [1:156291] -0.0717 0.145 0.1258 0.1932 -0.066 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ SPEED#wcentroid          : num [1:156291] 0 174.9 142.4 87.5 39.4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ SPEED#pcentroid          : num [1:156291] 0 228.6 212.1 131.1 83.4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ MIDLINE_OFFSET           : num [1:156291] -0.0801 0.1628 0.1041 0.1977 -0.0543 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ midline_length           : num [1:156291] 23.5 23.9 21.6 23.2 21.5 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ segment_length           : num [1:156291] 2.13 2.17 1.96 2.11 1.96 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ frame_segments           : num [1:7578] 0 16 29 30 31 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ segment_vxys             : num [1:551268] 1 2 3 4 5 6 7 8 9 10 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ X#wcentroid              : num [1:156291] 2278 2273 2269 2268 2267 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ Y#wcentroid              : num [1:156291] 633 638 641 645 646 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ num_pixels               : num [1:156291] 173 171 174 186 169 163 172 196 193 205 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ midline_x                : num [1:156291] 2286 2281 2275 2275 2274 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ midline_y                : num [1:156291] 626 632 635 637 639 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ timestamp                : num [1:156291] 0 40000 80000 120000 160000 200000 240000 280000 320000 360000 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ missing                  : num [1:156291] 0 0 0 0 0 0 0 0 0 0 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ ANGLE                    : num [1:156291] -0.733 -0.767 -0.761 -0.896 -0.88 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ SPEED                    : num [1:156291] 0 43.2 39 132.8 153.4 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ frame                    : num [1:156291] 0 1 2 3 4 5 6 7 8 9 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ time                     : num [1:156291] 0 0.04 0.08 0.12 0.16 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ AX                       : num [1:156291] 0 997 3282 6059 3629 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ AY                       : num [1:156291] 0 414 -4185 -3220 -4406 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ VX                       : num [1:156291] 0 39.9 16.9 121.7 123.1 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ VY                       : num [1:156291] 0 16.6 -35.1 -53.2 -91.5 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ X                        : num [1:156291] 2285 2280 2274 2273 2273 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ Y                        : num [1:156291] 628 634 637 639 641 ...</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## End(Not run) </span></span></span>
+<span class="r-in"><span><span class="op">}</span> </span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -6,8 +6,7 @@
 \alias{MoveR-package}
 \title{MoveR: R Package For Movement Analysis}
 \description{
-A set of functions helping users to process (i.e., filter, clean, draw and analyse) movement data provided by 
-    tracking software.
+A set of functions helping users to process (i.e., filter, clean, draw and analyse) movement data provided by tracking software.
 }
 \seealso{
 Useful links:

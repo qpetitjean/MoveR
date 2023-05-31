@@ -39,18 +39,20 @@ activity2(
 
 \item{na.rm}{A logical value (i.e., TRUE or FALSE) indicating whether NA values should be stripped before the computation proceeds (default = TRUE).}
 
-\item{graph}{A logical value (i.e., TRUE or FALSE) indicating whether the various diagnostics plots should be displayed or not (default = TRUE).}
+\item{graph}{A logical value (i.e., TRUE or FALSE) indicating whether the distribution (3d density map) of the active and inactive states according to the classification (density based clustering) plot should be displayed or not (default = TRUE).}
 }
 \value{
-This function returns the results of the classification (actives vs. inactives) appended to
+This function returns the results of the classification (actives vs. inactives) as numeric value (1 or 0, respectively) appended to
 the original list of data frame containing tracking information for each tracklet.
+Also, if graph argument is TRUE, the function returns the distribution (3d density map) of the active and inactive states according to the classification (density based clustering) in the viewer.
 }
 \description{
 Given a list of data frames containing tracking information and two variable of interest the function use
-density based clustering as introduced in Ester et al. (1996). Also, the function use the DBSCAN method from Hennig (2020) to discriminate active and inactive states in a 2d space.
+density based clustering as introduced in Ester et al. (1996).
+As a result, the function use the DBSCAN method from Hennig (2020) to discriminate active and inactive states in a 2d space by returning numeric values indicating whether the particle is "active" (1) or "inactive" (0).
 }
 \examples{
-## Not run:
+\dontrun{
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -128,12 +130,7 @@ trackdat3 <-
   )
 
 # use density based clustering to classify actives and inactives states in a 2 dimension array (here the speed and the angle variance)
-# when graph = TRUE, several graphical output are displayed:
-# - the distribution of inactives states
-# - the resuls of the density based clustering with the two groups displayed
-# - a similar representation but as hexbinplot, with the count
-# - the final representation of the 2d clustering with the increasing size of the dot representing the increasing number of count
-# - a pie chart representing the proportion of actives vs inactives states
+# when graph = TRUE, the function also display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering)
 
 trackdat3 <- MoveR::activity2(
   trackdat3,
@@ -153,20 +150,20 @@ MoveR::drawTracklets(trackdat3,
           cex.start = 0.1,
           add2It = list(for (i in seq_along(trackdat3)) {
             points(
-              trackdat3[[i]][["x.pos"]][which(trackdat3[[i]][["activity2"]] == "inactive")],
-              trackdat3[[i]][["y.pos"]][which(trackdat3[[i]][["activity2"]] == "inactive")],
+              trackdat3[[i]][["x.pos"]][which(trackdat3[[i]][["activity2"]] == 0)],
+              trackdat3[[i]][["y.pos"]][which(trackdat3[[i]][["activity2"]] == 0)],
               col = "red",
               pch = 19,
               cex = 1.5
             )
           }))
 
-## End(Not run)
+}
 }
 \references{
 \itemize{
-\item{Christian Hennig (2020). fpc: Flexible Procedures for Clustering. R package version 2.2-9. \href{https://CRAN.R-project.org/package=fpc}{https://CRAN.R-project.org/package=fpc}}
-\item{Martin Ester, Hans-Peter Kriegel, Joerg Sander, Xiaowei Xu (1996). A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise. Institute for Computer Science, University of Munich. Proceedings of 2nd International Conference on Knowledge Discovery and Data Mining (KDD-96).}
+\item{Christian, H., (2020). fpc: Flexible Procedures for Clustering. R package version 2.2-9. \href{https://CRAN.R-project.org/package=fpc}{https://CRAN.R-project.org/package=fpc}}
+\item{Ester, M., Kriegel H.P., Sander, J., Xu X., (1996). A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise. Institute for Computer Science, University of Munich. Proceedings of 2nd International Conference on Knowledge Discovery and Data Mining (KDD-96).}
 }
 }
 \seealso{

@@ -37,7 +37,7 @@
 #' \href{https://ctrax.sourceforge.net/}{Ctrax: The Caltech Multiple Walking Fly Tracker}
 #'
 #' @examples
-#' ## Not run:
+#' \dontrun{
 #'
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "Ctrax")
@@ -48,7 +48,7 @@
 #' Data <- MoveR::readCtrax(Path2Data[[1]])
 #' str(Data)
 #'
-#' ## End(Not run)
+#' }
 #' @export
 
 readCtrax <-

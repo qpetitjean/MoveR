@@ -53,7 +53,7 @@
 #'   nrow(x)))
 #'
 #' ## resample the tracklets every 1 seconds
-#' trackListSampled1S <- MoveR::resamplTracklets(trackListV1,
+#' trackListSampled1S <- MoveR::resampTracklets(trackListV1,
 #'                                            timeCol = "TimeSec",
 #'                                            Tstep = 1)
 #'
@@ -66,7 +66,7 @@
 #'
 #' @export
 
-resamplTracklets <-
+resampTracklets <-
   function(trackDat,
            timeCol = NULL,
            Tstep = NULL,

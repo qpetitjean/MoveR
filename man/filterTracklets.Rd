@@ -43,7 +43,7 @@ The function hence returns two sublist, the first containing a summary of the in
 and the second containing a list with the filtered tracklets according to the condition test and "minDur" argument.
 }
 \examples{
-## Not run:
+\dontrun{
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -103,7 +103,7 @@ str(trackDatSize20Dur10$SummaryFiltering)
 ## take a look at the first filtered tracklet
 str(trackDatSize20Dur10$CleanedTracklets[[1]])
 
-## End(Not run)
+}
 }
 \seealso{
 \code{\link{filterFunc}}

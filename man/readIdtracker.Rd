@@ -39,7 +39,7 @@ this function returns a list of 9 vectors classically used for further computati
 Also, by default the function flip y coordinates to start on the bottom-left (see flipY argument).
 }
 \examples{
-## Not run:
+\dontrun{
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "IdTracker")
@@ -55,7 +55,7 @@ Data <-
   )
 str(Data)
 
-## End(Not run) 
+} 
 }
 \references{
 Romero-Ferrero, F., Bergomi, M.G., Hinz, R.C. et al. idtracker.ai: tracking all individuals in small or large collectives of unmarked animals. Nat Methods 16, 179–182 (2019). https://doi.org/10.1038/s41592-018-0295-5.

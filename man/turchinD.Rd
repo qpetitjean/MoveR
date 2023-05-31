@@ -2,89 +2,127 @@
 % Please edit documentation in R/turchinD.R
 \name{turchinD}
 \alias{turchinD}
-\title{Compute the net square displacement (Turchin 1998) - EXPERIMENTAL !!!.}
+\title{Compute the net square displacement (population spread).}
 \usage{
-turchinD(trackDat, turnAngle = NULL, distTraveled = NULL, behavStates = NULL)
+turchinD(
+  trackDat,
+  turnAngle = NULL,
+  distTraveled = NULL,
+  activityStates = NULL,
+  method = c("Turchin", "KS")
+)
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking informations for each tracklet, including a vector
-containing behavioral patterns (e.g., behavioral states, location in areas).}
+\item{trackDat}{A list of data frame containing tracking informations for each tracklet.}
 
 \item{turnAngle}{A character string indicating the name of the variable specifying the turning angles over each trajectories.}
 
 \item{distTraveled}{A character string indicating the name of the variable specifying the distance traveled by the particles.}
 
-\item{behavStates}{A character string indicating the name of the variable specifying behavioral states.}
+\item{activityStates}{A character string indicating the name of the variable specifying activity state (coded as 1 or 0 for active and inactive state, respectively).}
+
+\item{method}{A character string indicating the method used to compute the net square displacement, either "Turchin" or "KS" to use the computation derived from the equations of Turchin's book 2015 edition (corrected version of the chapter 5.3 from 1998) or from Kareiva & Shigesada (1983) (default = "Turchin").}
 }
 \value{
-this function returns the net square displacement value used to infer populations spread according to Turchin (1998).
+this function returns the net square displacement value used to infer populations spread according to the equations derived from Turchin (2015) or Kareiva & Shigesada (1983).
 }
 \description{
 Given a list of data frames containing tracking informations and including the value of turning angles,
-distance traveled and behavioral states (either active or inactive), this function compute the Net square displacement value
-used to infer populations spread according to Turchin (1998).
+distance traveled and activity states (either 1 or 0 for active or inactive state respectively), this function compute the net square displacement value
+used to infer populations spread according to the equations derived from Turchin (2015) or Kareiva & Shigesada (1983).
 }
 \examples{
 
 # simulate a correlated random walk with known parameter to verify Turchin D computation
 ## specify some parameters
-n = 1000
-stepLength = 2
-angularErrorSd = 0.5
-linearErrorSd = 0.2
-angularErrorDist = stats::rnorm(n, sd = angularErrorSd)
-linearErrorDist = stats::rnorm(n, sd = linearErrorSd)
+nn = 1000
+stepLength = 1
+angularErrorSd = pi / 4
 
-## simulate a trajectory
-sim <- trajr::TrajGenerate(
-  n = n,
-  random = TRUE,
-  stepLength = stepLength,
-  angularErrorSd = angularErrorSd,
-  angularErrorDist = function(x) angularErrorDist,
-  linearErrorSd = linearErrorSd,
-  linearErrorDist = function(x) linearErrorDist,
-  fps = 1)
+## create a function to simulate correlated random walk
+myccrw <- function() {
+  disps = runif(nn, min = 0, max = 2 * stepLength)
+  angulos = runif(nn, min = -angularErrorSd, max = angularErrorSd)
+  lesx = rep(0, nn)
+  lesy = rep(0, nn)
+  curangle = runif(1, min = -pi, max = pi)
+  for (t in 2:nn) {
+    curangle = curangle + angulos[t]
+    lesx[t] = lesx[t - 1] + sin(curangle)
+    lesy[t] = lesy[t - 1] + cos(curangle)
+  }
+  return(data.frame(
+    x.pos = lesx + 250,
+    y.pos = lesy + 250,
+    frame = 1:nn
+  ))
+}
 
-## convert it to a data frame to allow MoveR computation
-sim <- data.frame(
-  x.pos = sim[["x"]] - min(sim[["x"]]),
-  y.pos = sim[["y"]] - min(sim[["y"]] ),
-  frame = sim[["time"]]
+# simulated 30 tracklets
+nbr = 30
+simus <- lapply(1:nbr,  function(rrr)
+  myccrw())
+
+# take a look at the simulated data
+MoveR::drawTracklets(simus)
+
+# Manually compute diffusion coefficient through time over all tracklets
+arda = sapply(1:nbr, function(t) {
+  ff = simus[[t]]
+  mimi = sapply(1:length(ff$x.pos), function(d)
+    ((ff$x.pos[d] - 250) ^ 2 + (ff$y.pos[d] - 250) ^ 2))
+  return(mimi)
+})
+mimiz = apply(arda, 1, function(x) mean(x)/(2*2*length(x)))
+
+# plot it 
+plot(
+  x = 1:nn,
+  mimiz,
+  ylim = c(0, 200),
+  xlab = "Number of steps",
+  ylab = "D"
 )
 
-# take a look at the simulated data (here we use list(sim) because the function expect a list of trajectories)
-MoveR::drawTracklets(list(sim), imgRes = c(500,500))
-
-# compute the needed metric on the simulated dataset (here we use list(sim) because the function expect a list of trajectories)
+# compute the needed metrics on simulated tracklets
 simComp <-
   MoveR::analyseTracklets(
-    list(sim),
+    simus,
     customFunc = list(
       ## compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
-      TurnAngle = function(x)
-        MoveR::turnAngle(x, timeCol = "frame", unit = "radians", scale = 1),
+      turnAngle = function(x)
+        MoveR::turnAngle(
+          x,
+          timeCol = "frame",
+          unit = "radians",
+          scale = 1
+        ),
       ## compute distance traveled
       distTraveled = function(x)
-        MoveR::distTraveled(x, step = 1)
+        MoveR::distTraveled(x, step = 1),
+      ## add behavioral states (consider as active all the time)
+      activity = function(x)
+        rep(1, nrow(x))
     )
   )
 
-# add behavioral state (consider as active all the time)
-simComp[[1]]["behavStates"] <- "active"
-
-# compute the Turchin net square displacement from the simulated data
-MoveR::turchinD(
+D <- MoveR::turchinD(
   simComp,
-  turnAngle = "TurnAngle",
+  turnAngle = "turnAngle",
   distTraveled = "distTraveled",
-  behavStates = "behavStates"
+  activityStates = "activity",
+  method = "Turchin"
 )
+
+abline(0, D/nbr , col = "red")
 
 }
 \references{
-Turchin, P. (1998). Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants. Sinauer.
+\itemize{
+\item{Kareiva, P.M., Shigesada, N., (1983). Analyzing insect movement as correlated random walk. Oecologia 56,234–238. \href{https://doi.org/10.1007/BF00379695}{https://doi.org/10.1007/BF00379695}}
+\item{Turchin, P., (2015). Quantitative Analysis of Movement: Measuring and Modeling Population Redistribution in Animals and Plants. Beresta Books, Storrs, Connecticut.}
+}
 }
 \author{
-Quentin PETITJEAN
+Quentin PETITJEAN, Vincent CALCAGNO
 }

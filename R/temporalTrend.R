@@ -161,7 +161,7 @@ temporalTrend <-
         "\n here the function used ",
         min(TimelineStep, na.rm = T),
         ", but perhaps consider resampling the tracklets to better control the behavior of the function", 
-        "\n see resamplTracklets()"
+        "\n see resampTracklets()"
       )
     }
     if (is.null(Tinterval)) {

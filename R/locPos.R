@@ -22,10 +22,11 @@
 #'
 #' @author Quentin PETITJEAN
 #'
-#'
+#' @seealso \code{\link[graphics]{locROI}}, \code{\link[graphics]{circles}}, \code{\link[graphics]{polygon}}
+#' 
 #' @examples
 #'
-#' ## Not run:
+#' \dontrun{
 #' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -61,11 +62,11 @@
 #'     ifelse(x > 254, "center", "edge"))
 #' 
 #' # retrieve the area where the particles
-#' # are located over their whole trajectory using locaPos function
+#' # are located over their whole trajectory using locPos function
 #' trackDat <- MoveR::analyseTracklets(trackDat,
 #'                                     customFunc = list(
 #'                                       Position = function(x)
-#'                                         locaPos(
+#'                                         locPos(
 #'                                           refDat,
 #'                                          x,
 #'                                          Fun = function(y)
@@ -85,11 +86,11 @@
 #'                      ),
 #'                      colId = "Position")
 #' 
-#' ## End(Not run)
+#' }
 #'
 #' @export
 
-locaPos <-
+locPos <-
   function(refDat = NULL,
            df = NULL,
            sep = NULL,
@@ -172,7 +173,7 @@ locaPos <-
         # return a warning message if some values have been not found in refDat
         warning(
           paste0(
-            "locaPos returned NA for some values: y.pos = ",
+            "locPos returned NA for some values: y.pos = ",
             "[", ifelse(!is.null(Fun), Fun(df[["y.pos"]][y]),  df[["y.pos"]][y]),"]",
             ", x.pos = ",
             "[", ifelse(!is.null(Fun), Fun(df[["x.pos"]][y]), df[["x.pos"]][y]), "]",

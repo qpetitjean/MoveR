@@ -38,11 +38,11 @@ In a sack of flexibility, `MoveR` is mainly coded using base `r fontawesome::fa(
 However it still relies on a few dependencies:<br />
 
 <ul>
-<li><a href="https://www.rdocumentation.org/packages/graphics/">graphics</a>, <a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a> and <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a> to load R functions for base graphics.</li><br />
+<li><a href="https://www.rdocumentation.org/packages/graphics">graphics</a>, <a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a>, <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a> and <a href="https://www.rdocumentation.org/packages/plotly">plotly</a> to display graphical elements.</li><br />
 <li><a href="https://github.com/r-lib/progress">progress</a> to display a progress bar showing the advancement of the computations.</li><br />
 <li><a href="https://www.rdocumentation.org/packages/reticulate">reticulate</a> and <a href="https://www.rdocumentation.org/packages/R.matlab">R.matlab</a> to import <a href="https://https://www.python.org/">Python</a> and <a href="https://mathworks.com/products/matlab.html">Matlab</a> formatted data.</li><br />
-<li><a href="https://www.rdocumentation.org/packages/stats">stats</a> to load R functions for basic calculations.</li><br />
-<li><a href="https://www.rdocumentation.org/packages/trajr">trajr</a> to load R functions to compute basic movement metrics (e.g., speed, sinuosity).</li><br />
+<li><a href="https://www.rdocumentation.org/packages/stats">stats</a> and <a href="https://www.rdocumentation.org/packages/pracma">pracma</a> to perform basic and advanced calculations.</li><br />
+<li><a href="https://www.rdocumentation.org/packages/trajr">trajr</a> to load R functions to compute basic movement descriptors (e.g., speed, sinuosity).</li><br />
 </ul>
 
 ## Installation
@@ -77,18 +77,19 @@ More particularly, `MoveR` provides tools to:<br />
 
 <ul>
 <li><strong>IMPORT</strong> the raw data from various video-tracking software such as <a href="https://trex.run">TRex</a>, <a href="https://swarm-lab.github.io/trackR">trackR</a>, <a href="https://ctrax.sourceforge.net/">Ctrax</a> and <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a> (for now).</li><br />
+<li><strong>VISUALIZE</strong> the tracklets of all or specified particles over time.</li><br />
+<li><strong>MANAGE ROIs (regions of interest)</strong> by importing the location of area edges or specifying it from scratch and assign ROIs identity to particle's position over trajectories.</li><br />
 <li><strong>CLEAN/FILTER</strong> the data according to custom functions specified by the user. For instance, it can easily remove suspected tracking errors based on expected particles' size or speed. It is also possible to sample particles' tracklets (i.e., a fragment of particle's trajectory) according to a specified time step or split tracklets' and remove parts that are detected outside an arena or a given area.</li><br />
 <li><strong>EVALUATE</strong> the quantity of data removed over the cleaning/filtering process and check the amount of true and false detection compared to manual annotations.</li><br />
-<li><strong>VISUALIZE</strong> the tracklets of all or specified particles over time.</li><br />
-<li><strong>ANALYSE</strong> the data over tracklets, time, or space. It is possible to compute low (basics) or high (advanced) level metrics over each tracklet and temporal and spatial trends. In a nutshell, Low and High-level metrics return the results of a given computation over each tracklet, while temporal trends functions return the results of a given calculation over time by averaging the value of each tracklet. It is also possible to compute a studentized 95% confidence interval by bootstrapping over the tracklets. Also, it is possible to extract specified spatial trends according to a given pattern set by the user.</li><br />
+<li><strong>ANALYSE</strong> the data over tracklets, time, or space (e.g., across areas). It is possible to compute basics or high (advanced) level descriptors over each tracklet and further investigate temporal trends and/or identify spatial patterns (e.g., sequences of area visited). In a nutshell, Basic and High-level descriptors return the results of a given computation over each tracklet, while temporal trends functions return the results of a given calculation over time by averaging the value of each tracklet. It is also possible to compute a studentized 95% confidence interval by bootstrapping over the tracklets. Also, it is possible to identify specified spatial patterns.</li><br />
 </ul>
 ### Breakthroughs
 
 Besides the high flexibility and unified environment, the primary innovations provided by `MoveR` are the possibility to:<br />
 
 <ul>
-<li><strong>Characterize behavioral states</strong> (i.e., active vs. inactive states) using unsupervised learning methods (i.e., density-based clustering - see actives2 function).</li><br />
-<li><strong>Compute the expected diffusion coefficient D</strong>, a proxy of population dispersal, assuming a correlated random walk model (from Turchin's 1998 result; see turchinD function).</li><br />
+<li><strong>Characterize behavioral states</strong> (i.e., active vs. inactive states) using unsupervised learning methods (i.e., density-based clustering - see activity2 function).</li><br />
+<li><strong>Compute the expected diffusion coefficient D</strong>, a proxy of population dispersal, assuming a correlated random walk model (from Turchin's 1998 result; see turchinD function) - <strong>This solution is currently under development and need further implementation before being stable</strong>.</li><br />
 <li><strong>Identify and extract arbitrary patterns</strong>, in terms of changes among behavioral states, spatial regions or areas of interest, patch crosses, or any other patterns, using a very versatile regular-expression syntax.</li> 
 </ul>
 <img src="man/figures/WorkFlowMoveR.png" height="600" text-align="center"/>

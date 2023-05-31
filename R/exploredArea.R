@@ -7,9 +7,7 @@
 #' @param trackDat A list of data frame containing tracking information for each tracklet (including a timeline)
 #' or a data frame containing tracking information for one tracklet.
 #'
-#' @param binRad A numeric value corresponding to the diameter of the typical surface a particle can "explore" around its position
-#' For instance, the reaction distance of a Trichograms (i.e., a parasitoid micro-wasp) is about 4 mm, in this case, a reasonable value is of order 16 mm^2,
-#' the diameter of such a cell is hence about 8 mm.
+#' @param binRad A numeric value, expressed in pixels, corresponding to the diameter of the typical surface a particle can "explore" around its position.
 #'
 #' @param imgRes A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
 #' If imgRes is unspecified, the function retrieve it using x and y maximum values + 5%.
@@ -60,7 +58,7 @@
 #' # compute the total surface explored and displays the heatmap for all tracklets
 #' # NB: Plot can be displayed and/or saved using graph and saveGraph arguments
 #' MoveR::exploredArea(TrackList,
-#'                     binRad = 8,
+#'                     binRad = 20,
 #'                     scale = 1,
 #'                     timeCol = "frame")
 #'
@@ -72,7 +70,7 @@
 #'                                     exploredArea = function(x)
 #'                                       MoveR::exploredArea(
 #'                                         x,
-#'                                         binRad = 8,
+#'                                         binRad = 20,
 #'                                         scale = 1,
 #'                                         timeCol = "frame"
 #'                                       )
@@ -181,7 +179,7 @@ exploredArea <-
     
     ## Divide the plane in a hexagonal grid, each cell representing a neighborhood that a particule could 'explore' around its position
     ## and count the number of unique cells that the particle has entered in at least once using hexagonal heatmaps, as implemented in hexbin package
-    ## compute the number of bins needed given the perception distance of the insect
+    ## compute the number of bins needed given the perception distance of the particle
     nbins <- imgRes[1] / binRad
     ## apply hexbin to count the number of visited cells
     nbcells <-
@@ -199,7 +197,7 @@ exploredArea <-
     Exploredplot <- hexbin::hexbinplot(
       trackDatList[["y.pos"]] ~
         trackDatList[["x.pos"]],
-      xbins = binRad,
+      xbins = nbins,
       data = trackDatList,
       aspect = '1',
       main = "Heatmap of the explored areas",

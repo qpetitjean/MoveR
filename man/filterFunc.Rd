@@ -21,7 +21,7 @@ Given a list of data frames containing tracking information for each tracklet,
 this function returns a list of vector containing the result of a user defined condition test for each tracklet.
 }
 \examples{
-## Not run:
+\dontrun{
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -41,7 +41,7 @@ str(CondTest1)
 CondTest2 <- MoveR::filterFunc(trackDat, toFilter = "maj.ax", customFunc = function(x) x >= 1 & x <= 20)
 str(CondTest1)
 
-## End(Not run)
+}
 }
 \seealso{
 \code{\link{filterTracklets}}

@@ -16,11 +16,11 @@ a column containing the speed of the particle, whatever the unit, over the track
 is considered as active.}
 }
 \value{
-This function returns a vector containing character strings indicating whether the particle is "active" or "inactive".
+This function returns a vector containing numeric values indicating whether the particle is "active" (1) or "inactive" (0).
 }
 \description{
 Given a data frames containing tracking information for a given tracklet including speed,
-this function return a vector containing character strings indicating whether the particle is "active" or "inactive".
+this function return a vector containing numeric values indicating whether the particle is "active" (1) or "inactive" (0).
 }
 \examples{
 
@@ -55,8 +55,8 @@ TrackDat[["activity1"]] <-
 # draw the particle' trajectory and spot the inactive moments using red dots
 MoveR::drawTracklets(list(TrackDat),
                  add2It = list(points(
-                   TrackDat[["x.pos"]][which(TrackDat[["activity1"]] == "inactive")],
-                   TrackDat[["y.pos"]][which(TrackDat[["activity1"]] == "inactive")],
+                   TrackDat[["x.pos"]][which(TrackDat[["activity1"]] == 0)],
+                   TrackDat[["y.pos"]][which(TrackDat[["activity1"]] ==  0)],
                    col = "red",
                    pch = 19,
                    cex = 1.5

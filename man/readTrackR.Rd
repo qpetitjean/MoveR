@@ -49,7 +49,7 @@ and the second containing all the elements retrieved from the .csv file (see raw
 Also, the function can flip y coordinates (see flipY argument).
 }
 \examples{
-## Not run:
+\dontrun{
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TrackR")
@@ -77,7 +77,7 @@ DataFull <-
 
 str(DataFull)
 
-## End(Not run) 
+} 
 }
 \references{
 \href{https://swarm-lab.github.io/trackR}{trackR}

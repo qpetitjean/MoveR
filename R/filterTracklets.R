@@ -38,7 +38,7 @@
 #' @seealso \code{\link{filterFunc}}
 #'
 #' @examples
-#' ## Not run:
+#' \dontrun{
 #' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -98,7 +98,7 @@
 #' ## take a look at the first filtered tracklet
 #' str(trackDatSize20Dur10$CleanedTracklets[[1]])
 #'
-#' ## End(Not run)
+#' }
 #' @export
 
 filterTracklets <- function(trackDat,

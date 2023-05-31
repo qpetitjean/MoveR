@@ -40,7 +40,7 @@
 #' \href{https://trex.run}{trex.run}
 #'
 #' @examples
-#' ## Not run:
+#' \dontrun{
 #' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -63,7 +63,7 @@
 #'             )
 #' str(DataFull)
 #'
-#' ## End(Not run) 
+#' } 
 #' @export
 
 readTrex = function(trexPath,

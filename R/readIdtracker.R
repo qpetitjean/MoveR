@@ -38,7 +38,7 @@
 #' \href{https://idtrackerai.readthedocs.io/en/latest/}{idtracker.ai}
 #'
 #' @examples
-#' ## Not run:
+#' \dontrun{
 #' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "IdTracker")
@@ -54,7 +54,7 @@
 #'   )
 #' str(Data)
 #'
-#' ## End(Not run) 
+#' } 
 #' @export
 
 readIdtracker <- function(IdtrackerPath,

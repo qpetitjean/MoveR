@@ -36,7 +36,7 @@ this function returns a list of 9 vectors classically used for further computati
 Also, the function can flip y coordinates (see flipY argument).
 }
 \examples{
-## Not run:
+\dontrun{
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "Ctrax")
@@ -47,7 +47,7 @@ Path2Data
 Data <- MoveR::readCtrax(Path2Data[[1]])
 str(Data)
 
-## End(Not run)
+}
 }
 \references{
 Branson, K., Robie, A., Bender, J. et al. High-throughput ethomics in large groups of Drosophila. Nat Methods 6, 451–457 (2009). https://doi.org/10.1038/nmeth.1328.

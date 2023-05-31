@@ -2,7 +2,7 @@ title: MoveR
 url: http://qpetitjean.github.io/MoveR
 
 development:
-  mode: auto
+  mode: release
   version_label: danger
   version_tooltip: "EXPERIMENTAL"
   
@@ -36,10 +36,10 @@ navbar:
       href: articles/MoveR-Clean-FilterData.html
     - text: Compute some metrics
       href: articles/MoveR-ComputeMetrics.html
-    - text: Conduct Sensitivity Analysis
-      href: articles/MoveR-SensitivityAnalysis.html
-    - text: Perform Parallel Computation
+    - text: Parallel computing
       href: articles/MoveR-ParallelComputation.html
+    - text: Detection performances
+      href: articles/MoveR-SensitivityAnalysis.html
   - text: Changelog
     icon: fas fa-history
     href: news/index.html
@@ -55,44 +55,56 @@ reference:
     contents:
       - '`readCtrax`'
       - '`readIdtracker`'
+      - '`readPlain`'
       - '`readTrackR`'
       - '`readTrex`'
+      
+  - title: Visualize
+    desc: Visualize the tracklets of all or specified particles over time.
+    contents:
+      - '`drawTracklets`'  
 
+  - title: Manage ROI
+    desc: Create or retrieve the location of ROI.
+    contents:
+      - '`assignROI`'
+      - '`circles`'
+      - '`locROI`'
+      - '`polygons`'
+      
   - title: Clean/Filter
     desc: Create custom filter to either clean/remove spurious track parts or filter/resample the dataset.
     contents:
-      - '`cutTracklets`'
       - '`filterFunc`'
       - '`filterTracklets`'
       - '`mergeFilters`'
-      - '`resamplTracklets`'
+      - '`resampTracklets`'
 
   - title: Evaluate
     desc: Evaluate the quantity of data removed over the cleaning/filtering process and perform sensitivity analysis between video tracking and manual detection.
     contents:
-      - '`evalSens`'
+      - '`detectPerf`'
       - '`trackStats`'     
- 
-  - title: Visualize
-    desc: Visualize the tracklets of all or specified particles over time.
-    contents:
-      - '`drawTracklets`'       
 
-  - title: Basic Metrics
+  - title: Basic Descriptors
     desc: Performed simple computation over each tracklet. 
     contents:
       - '`activity1`'
-      - '`activity2`'
       - '`analyseTracklets`'
-      - '`ANND`'
       - '`dist2Edge`'
       - '`dist2Pt`'
       - '`distTraveled`'
-      - '`exploredArea`'
       - '`sinuosity`'   
       - '`speed`'
       - '`turnAngle`'
-      - '`turchinD`'  
+      
+  - title: High-Order Descriptors
+    desc: Performed more advanced computation over each tracklet. 
+    contents:
+      - '`activity2`'
+      - '`ANND`'
+      - '`exploredArea`'
+      - '`turchinD`' 
 
   - title: Temporal Trends
     desc: Analyse temporal trends for a given computation over time by averaging the value of each track and compute a studentized 95% confidence interval (bootstrap).
@@ -100,19 +112,20 @@ reference:
       - '`temporalTrend`'
       - '`temporalBoot`'
 
-  - title: Spatial Trends
-    desc: Analyse spatial trends over tracklets according to custom pattern (e.g., displacement across area).
+  - title: Identify Sequences
+    desc: Identify specified sequences over tracklets according to custom pattern (e.g., displacement across area).
     contents:
       - '`IdStateSeq`'
       
   - title: Utilities
     desc: Some utilities functions helping to either import sample data, convert it or locate particles' position.
     contents:
-      - '`circles`'
-      - '`convert2Tracklets`'
       - '`convert2List`'
+      - '`convert2Tracklets`'
+      - '`cutTracklets`'
       - '`DLsampleData`'
-      - '`listGet`'
-      - '`locaPos`' 
       - '`flipYCoords`' 
+      - '`listGet`'
+      - '`locPos`'
       - '`slidWindow`'
+      - '`sortVertices`'

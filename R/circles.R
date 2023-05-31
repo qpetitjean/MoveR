@@ -1,12 +1,12 @@
 #' @title Generate points located on circles contour and draw circle(s).
 #'
-#' @description Given x and y coordinates of the circle center as well as the circle radius, this function draw circle(s) and returns a list containing the coordinates of the points simulated to draw the contour of the circle(s).
+#' @description Given x and y coordinates of circle(s)' center as well as the circle(s) radius, this function returns a list containing the coordinates of the points making the contour of the circle(s) and draw it.
 #'
-#' @param x A coordinate vector of circles to plot.
+#' @param x A single numeric value or a vector corresponding to the x value of the center of circles.
 #'
-#' @param y A coordinate vector of circles to plot.
+#' @param y A single numeric value or a vector corresponding to the y value of the center of circles.
 #'
-#' @param radius A single numeric value or a vector specifying the radius of the circles to plot.
+#' @param radius A single numeric value or a vector specifying the radius of the circles to generate.
 #'
 #' @param Res A numeric value corresponding to the resolution of the circles (i.e., the number of points used to draw the circles contour, default = 500).
 #'
@@ -23,19 +23,19 @@
 #'
 #' @param lty An integer or a vector of integer corresponding to line type to be used for drawing circles border, as in par (default = 1).
 #'
-#' @return Draw the circles from the coordinates of the center and a value of the circle radius on an existing plot window or, if there is no active plot window, on a new plot window.
-#' It also returns a list containing the coordinates of the points simulated to draw the contour of the circle(s).
+#' @return This function returns a list containing the coordinates of the points generated on contour of the circle(s). Each element of the list 
+#' correspond to a circle (an ROI). In case only one circle is generated the function returns a dataframe. The function can also draw the circles on an existing plot window or, if there is no active plot window, on a new plot window.
 #'
 #' @author Quentin PETITJEAN
 #'
-#' @seealso \code{\link[graphics]{polygon}}, \code{\link[graphics]{points}}
+#' @seealso \code{\link[graphics]{locPos}}, \code{\link[graphics]{locROI}}, \code{\link[graphics]{polygon}}, \code{\link[graphics]{points}} 
 #'
 #' @examples
 #'
 #' set.seed(2023)
 #' plot(NULL, xlim = c(1,120), ylim = c(1,120), xlab = "x", ylab = "y")
 #' # draw 4 red-border and red-filled circles of different size on a new plot
-#' circleCoords1 <- circles(
+#' circleCoords1 <- MoveR::circles(
 #'   x = sample(1:100, 4),
 #'   y = sample(1:100, 4),
 #'   radius = sample(5:15, 4),
@@ -51,7 +51,7 @@
 #' 
 #' # draw 2 red-border and red-filled circles and 2 blue-border and blue-filled circles of different size on #' a new plot
 #' plot(NULL, xlim = c(-10,120), ylim = c(-10,120), xlab = "x", ylab = "y")
-#' circleCoords2 <- circles(
+#' circleCoords2 <- MoveR::circles(
 #'   x = sample(1:100, 4),
 #'   y = sample(1:100, 4),
 #'   radius = sample(5:20, 4),
@@ -79,23 +79,23 @@ circles <-
            lty = 1,
            draw = TRUE) {
     if (is.null(x)) {
-      stop("x argument is missing, 2 coordinate vectors are needed to draw the circles")
+      stop("[x] argument is missing, 2 coordinate vectors are needed to draw the circles")
     }
     if (length(x) != length(y)) {
-      stop("x and y arguments has different length: ",
+      stop("[x] and [y] arguments has different length: ",
            length(x),
            ", ",
            length(y))
     }
     if (is.null(radius)) {
-      stop("radius argument is missing, a value is needed to determine the size of the circles")
+      stop("[radius] argument is missing, a value is needed to determine the size of the circles")
     }
     else if (length(radius) == 1) {
       radius <- rep(radius, length(x))
     }
     else if (length(radius) > 1 & length(radius) != length(x)) {
       stop(
-        "radius, x and y arguments has different length: ",
+        "[radius], [x] and [y] arguments has different length: ",
         length(radius),
         ", ",
         length(x),
@@ -108,7 +108,7 @@ circles <-
     }
     else if (length(col) > 1 & length(col) != length(x)) {
       stop(
-        "col, x and y arguments has different length: ",
+        "[col], [x] and [y] arguments has different length: ",
         length(col),
         ", ",
         length(x),
@@ -121,7 +121,7 @@ circles <-
     }
     else if (length(border) > 1 & length(border) != length(x)) {
       stop(
-        "border, x and y arguments has different length: ",
+        "[border], [x] and [y] arguments has different length: ",
         length(border),
         ", ",
         length(x),
@@ -134,7 +134,7 @@ circles <-
     }
     else if (length(lwd) > 1 & length(lwd) != length(x)) {
       stop(
-        "lwd, x and y arguments has different length: ",
+        "[lwd], [x] and [y] arguments has different length: ",
         length(lwd),
         ", ",
         length(x),
@@ -147,7 +147,7 @@ circles <-
     }
     else if (length(lty) > 1 & length(lty) != length(x)) {
       stop(
-        "lty, x and y arguments has different length: ",
+        "[lty], [x] and [y] arguments has different length: ",
         length(lty),
         ", ",
         length(x),
@@ -191,7 +191,7 @@ circles <-
           }
           else if (length(center) > 1 & length(center) != length(x)) {
             stop(
-              "center, x and y arguments has different length: ",
+              "[center], [x] and [y] arguments has different length: ",
               length(center),
               ", ",
               length(x),
@@ -210,6 +210,10 @@ circles <-
       }
       circleList <-
         append(circleList, list(data.frame(x.pos = xtemp, y.pos = ytemp)))
+    }
+    names(circleList) <- paste("ROI", seq(length(circleList)), sep = "_")
+    if(length(circleList) == 1){
+      circleList <- circleList[[1]]
     }
     return(circleList)
   }

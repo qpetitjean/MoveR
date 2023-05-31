@@ -1,7 +1,7 @@
 #' @title Determine active or inactive states according to the speed of a particles along its trajectory.
 #'
 #' @description Given a data frames containing tracking information for a given tracklet including speed, 
-#' this function return a vector containing character strings indicating whether the particle is "active" or "inactive".
+#' this function return a vector containing numeric values indicating whether the particle is "active" (1) or "inactive" (0).
 #'
 #' @param df A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet, as well as 
 #' a column containing the speed of the particle, whatever the unit, over the tracklet.
@@ -11,7 +11,7 @@
 #' @param minSpeed A numeric value expressed in the same unit than speed, corresponding to the threshold above which the particle 
 #' is considered as active.
 #'
-#' @return This function returns a vector containing character strings indicating whether the particle is "active" or "inactive".
+#' @return This function returns a vector containing numeric values indicating whether the particle is "active" (1) or "inactive" (0).
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -48,8 +48,8 @@
 #' # draw the particle' trajectory and spot the inactive moments using red dots
 #' MoveR::drawTracklets(list(TrackDat),
 #'                  add2It = list(points(
-#'                    TrackDat[["x.pos"]][which(TrackDat[["activity1"]] == "inactive")],
-#'                    TrackDat[["y.pos"]][which(TrackDat[["activity1"]] == "inactive")],
+#'                    TrackDat[["x.pos"]][which(TrackDat[["activity1"]] == 0)],
+#'                    TrackDat[["y.pos"]][which(TrackDat[["activity1"]] ==  0)],
 #'                    col = "red",
 #'                    pch = 19,
 #'                    cex = 1.5
@@ -82,8 +82,8 @@ activity1 <- function (df, speedCol = NULL, minSpeed = NULL) {
     )
   } else if (!is.null(minSpeed)) {
     activeRes <- rep(NA, nrow(df))
-    activeRes[which(df[[speedCol]] > minSpeed)] <- "active"
-    activeRes[which(df[[speedCol]] < minSpeed)] <- "inactive"
+    activeRes[which(df[[speedCol]] > minSpeed)] <- 1
+    activeRes[which(df[[speedCol]] < minSpeed)] <- 0
   }
   return(activeRes)
 }

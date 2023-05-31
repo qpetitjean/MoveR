@@ -42,7 +42,7 @@
 #' \href{https://swarm-lab.github.io/trackR}{trackR}
 #'
 #' @examples
-#' ## Not run:
+#' \dontrun{
 #' 
 #' # Download the first dataset from the sample data repository
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TrackR")
@@ -70,7 +70,7 @@
 #'
 #' str(DataFull)
 #'
-#' ## End(Not run) 
+#' } 
 #' @export
 
 readTrackR <- function(trackRPath,

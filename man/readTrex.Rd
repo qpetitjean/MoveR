@@ -40,7 +40,7 @@ Alternatively, the function can returns a list containing 2 sublists, the first 
 and the second containing all the elements retrieved from the .npz files (see rawDat argument).
 }
 \examples{
-## Not run:
+\dontrun{
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -63,7 +63,7 @@ DataFull <- MoveR::readTrex(Path2Data[[1]],
             )
 str(DataFull)
 
-## End(Not run) 
+} 
 }
 \references{
 Tristan Walter, Iain D Couzin (2021) TRex, a fast multi-animal tracking system with markerless identification, and 2D estimation of posture and visual fields eLife 10:e64000.

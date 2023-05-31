@@ -68,7 +68,7 @@ MoveR::dist2Edge(TrackDat[[1]],
 
 
 # Exemple 2: With a a polygonal arena, using a distance matrix to avoid tough computation
-## Not run:
+\dontrun{
 
 # Download the first dataset from the sample data repository
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
@@ -81,21 +81,13 @@ Data <- MoveR::readTrex(Path2Data[[1]])
 trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
 
 # load the distance matrix to the arena edge, an object or the location of one or several areas of interest (here we have created a distance map using ImageJ)
-distMat <-
-  as.matrix(read.delim(Path2Data[[2]],
-                       dec = "."))
-
-#  retrieve the value of the edge limit (1) to plot it
-arenaEdge <-
-  stats::setNames(data.frame(which(distMat == 1, arr.ind = T)),
-                  c("y.pos", "x.pos"))
+# and retrieve the value of the edge limit (1) to plot it
+arenaEdge <- MoveR::locROI(Path2Data[[2]], edgeCrit = 1, xy = 1, order = T)
 
 # draw only the first tracklet
 MoveR::drawTracklets(trackDat,
                  selTrack = 1,
-                 add2It = list(points(
-                   x = arenaEdge[["x.pos"]], y = arenaEdge[["y.pos"]], cex = 0.1
-                 )))
+                 add2It = list(graphics::polygon(x = arenaEdge$x.pos, y = arenaEdge$y.pos)))
 
 # Retrieve the distance from the edge using the distance matrix,
 # because it is tough to compute the distance to the closest part of the arena edge in this case
@@ -107,14 +99,14 @@ MoveR::drawTracklets(trackDat,
 w <- getOption("warn")
 options(warn = -1)
 
-cbind(trackDat[[1]], MoveR::locaPos(distMat, trackDat[[1]], Fun = function(x) round(x, digits = 0)))[950:1000, ]
+cbind(trackDat[[1]], MoveR::locPos(Path2Data[[2]], trackDat[[1]], Fun = function(x) round(x, digits = 0)))[950:1000, ]
 
 options(warn = w)
 
-## End(Not run)
+}
 }
 \seealso{
-\code{\link{dist2Pt}}, \code{\link{locaPos}}
+\code{\link{dist2Pt}}, \code{\link{locPos}}
 }
 \author{
 Quentin PETITJEAN

@@ -17,7 +17,7 @@ pkgdown:
 <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="next">Next &raquo;</a><br />
 
 
-Now that we are familiar with importing and cleaning/filtering raw data from tracking software, we will go deeper by computing various metrics across tracklets and time. 
+Now that we are familiar with importing and cleaning/filtering raw data from tracking software, we will go deeper by computing various metrics over tracklets and time. 
 
 For this example we are selecting the second sample of data available in the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository. For more detail about this dataset see the introduction of the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html">Clean/Filter Data vignette</a>.
 
@@ -42,8 +42,563 @@ trackDat <- MoveR::convert2Tracklets(TRexDat, by = "trackletId")
 
 ```
 
+Okay! now that the data has been retrieved let's start computing metric over each tracklet.
+
+## Compute metrics over tracklets
+
+While the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html">Clean/Filter Data vignette</a> have already given some hint on the use of `analyseTracklets()` (i.e., computation of the particles' speed using `speed()` and distance to the edge using `dist2Edge()`) here we are using it more extensively.
+
+For instance, one would compute the following metrics over each tracklet:
+
+  * the turning angle using `turnAngle()`
+  
+  * the speed using `speed()` - although we already have computed it at the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html">Clean/Filter Data step</a> we need to compute it again to ensure that the values are correct, especially at the start and end of the tracklets because filtering the tracklets may have resulted in spliting them.
+  
+  * the distance traveled using `distTraveled()`
+  
+  * the distance to the edge using `dist2Edge()`
+  
+  * the "simple" activity computed based on speed and a treshold specified by the user using `activity1()`
+  
+  * the sinuosity using `sinuosity()`
+  
+  * the surface explored using `exploredArea()`
+
+<p class="notes">Note that the distance to the edge of the arena does not need to be computed again since we already did it to remove the moments where the particles were detected outside the arena.</p>
+
+Also it is possible to smooth selected metrics over each tracklet using `slidWindow()`. For this example we are smoothing the following metrics using a sliding window of 10 frames (`Tstep` argument): 
+
+  * the mean turning angle and its variance using `circular::var()` from the circular package
+  
+  * the mean speed and its variance
+  
+  * the mean distance traveled
+  
+  * the mean distance to the edge 
+
+<p class="notes">Note that the sinuosity and the surface explored do not need to be smoothed because both functions return a single value for each tracklet (i.e., this value is repeated over the tracklet's duration).</p>
+
+Before computing the listed metrics, we need to specify some parameters, especially for `dist2Edge()`, `activity1()` and `exploredArea()`. 
+
+Indeed, to compute the distance from the edges of the arena we need to import the location of the edge (the region of interest - ROI) from a distance matrix using `locROI()`. 
+
+<p class="notes">Note that generating the distance matrix is an external process that can be achieved using image processing program such as <a href="https://imagej.net/ij/index.html">ImageJ</a>.</p>
+
+```{r arenaEdge,}
+arenaEdge <- MoveR::locROI(Path2Data[[2]], edgeCrit = 1, xy = 1, order = T)
+
+```
+
+Also, to classify the particles between "active" (1) or "inactive" (0) state, we need to find the speed threshold above which a particle is considered as active and feed the `minSpeed` argument with it. To do that, we can plot the distribution of particles' speed and find the valley in the bimodal distribution (fig. \@ref(fig:SpeedTresh)). 
+
+```{r SpeedTresh, results='asis', message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="kernel density estimate of the particles' speed. The bimodal distribution allow to classify activity states between active and inactive based on 1 dimension. Peaks of the distribution are represented by the green vertical lines while the valley corresponding to the treshold above which particles are considered as active is represented by the red vertical line."}
+# as specified we need to compute speed over each tracklet
+trackDat <-
+  MoveR::analyseTracklets(trackDat,
+                          customFunc = list(
+                            speed = function(x)
+                              MoveR::speed(x,
+                                           timeCol = "runTimelinef",
+                                           scale = 1)))
+
+# plot the distribution of particles' speed
+## retrieve the log-transformed speed over all tracklets
+speedLog <- log10(MoveR::convert2List(trackDat)$speed)
+
+## computes kernel density estimates of the distribution and plot it
+speedLogDens <- data.frame(stats::density(speedLog, na.rm = T)[c(1,2)])
+plot(speedLogDens, type = "l")
+
+# find the valley between the two peak of the bimodal distribution using the cardidates package
+## if needed install the package install.packages("cardidates")
+## identify the peaks of the bimodal distribution and keep only the data between the peaks
+peaks <- cardidates::peakwindow(speedLogDens)$peaks$x
+speedLogDensReduced <- speedLogDens[-which(speedLogDens$x < peaks[1] | speedLogDens$x > peaks[2]),]
+
+## the valley correspond to the local minimum between the peaks
+valley <- speedLogDensReduced$x[which.min(speedLogDensReduced$y)]
+
+## add the peaks and the valley to the plot
+abline(v = peaks, col="darkgreen")
+abline(v = valley, col="firebrick")
 
 
+```
+
+```{r valley, echo=TRUE, results='markup'}
+## as the the data were log-transformed we need to back-transform the value of the valley to find the threshold to determine the activity state
+
+activTresh <- 10^valley
+activTresh
+
+```
+
+We have found the threshold above which the particles are considered as active. 
+
+Now need to identify the diameter of the typical surface a particle can "explore" around its position to determine the surface explored over each tracklet. To do that, we need some knowledge about the model species.
+
+In the case of <em>Trichogramma</em> Wajnberg and Colazza (1998) reported that the perception distance (i.e., reaction distance) of an individual is about 4 mm. Accordingly, we can infer that an individual should explore a surrounding surface of 16 mm<sup>2</sup>. The diameter of such a cell is hence 8 mm or 331 pixels which corresponds to the `binRad` argument.
+
+
+```{r binRad, echo=TRUE}
+scaling <- 1 / 413.4 # the scaling of the video - 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ)
+diamSurf <- 0.8 / scaling
+
+```
+
+Now we have everything that is needed to run the computation of the desired metrics the first step consist in specifying a list of custom functions as follow:
+
+```{r CustomFuncDef, echo=TRUE}
+# Specify the batch of function to pass to the analyseTracklet function for metric computation over each tracklet
+customFuncList = list(
+  ## compute
+  ### turning angles
+  turnAngle = function(x)
+    MoveR::turnAngle(
+      x,
+      unit = "radians",
+      timeCol = "runTimelinef",
+      scale = 1
+    ),
+  ###distance traveled
+  distTraveled = function(x)
+    MoveR::distTraveled(x, 
+                        step = 1),
+  ###distance to the edge of the arena based on the form of the arena (here circular)
+  dist2Edge = function(x)
+    MoveR::dist2Edge(x, 
+                     edge = arenaEdge,
+                     customFunc = "CircularArena"),
+  ###activity
+  activity1 = function(x)
+    MoveR::activity1(x, 
+                     speedCol = "speed", 
+                     minSpeed = activTresh),
+  ###sinuosity
+  sinuosity = function(x)
+    MoveR::sinuosity(x, 
+                     timeCol = "runTimelinef", 
+                     scale = 1),
+  ### surface explored
+  explorArea = function(x)
+    MoveR::exploredArea(
+      x,
+      binRad = diamSurf,
+      timeCol = "runTimelinef",
+      scale = 1,
+      graph = F
+    ),
+  ## Smooth
+  ### turning angles
+  slideMeanAngle = function (y)
+    MoveR::slidWindow(y$turnAngle,
+                   Tstep = 10, function (x)
+                     mean(x, na.rm = T)),
+  ### turning angles variance
+  slideVarAngle = function (y)
+    MoveR::slidWindow(circular::circular(y$turnAngle,
+                                      type = "angle",
+                                      units = "radians"),
+                   Tstep = 10, function (x)
+                     circular::var(x, na.rm = T)),
+  ### speed
+  slideMeanSpeed = function (y)
+    MoveR::slidWindow(y$speed,
+                   Tstep = 10, function (x)
+                     mean(x, na.rm = T)),
+  ### speed variance
+  slideVarSpeed = function (y)
+    MoveR::slidWindow(y$speed,
+                   Tstep = 10, function (x)
+                     var(x, na.rm = T)),
+  ### smooth traveled distance
+  slideMeanTraveledDist = function (y)
+    MoveR::slidWindow(y$distTraveled,
+                   Tstep = 10, function (x)
+                     mean(x, na.rm = T)),
+  ### distance to the edge
+  slideMeanDist2Edge = function (y)
+    MoveR::slidWindow(y$dist2Edge,
+                   Tstep = 10, function (x)
+                     mean(x, na.rm = T))
+)
+
+```
+
+<p class="notes">Note that naming each element (function) of the list ensure that the output of the computation is properly named when appended to the data.
+In case list elements are unnamed, the `analyseTracklets()` look for a generic name within the specified `customFunc`. 
+
+For instance, for `turnAngle(x, TimeCol = "runTimelinef", unit = "radians")`, the function can retrieve `turnAngle` but the result can be unexpected in case of more complex function structure such as for `circular::var(circular::circular(x$turnAngle, type = "angle", units = "radians"), na.rm = T)`, here the function will extract `circular::var`.</p>
+
+Everything is ok, let's start the computation using `analyseTracklets()`
+
+```{r AnalyseTracklets, echo=TRUE, results='markup'}
+trackDat2 <-
+  MoveR::analyseTracklets(trackDat,
+                          customFunc = customFuncList)
+
+head(trackDat2[[1]], 20)
+```
+
+Great! as displayed above for the first tracklet, the desired metrics and the smoothed one has been added to the dataset.
+
+<p class="notes">Note that `sinuosity` and `explorArea` return an unique value, in this case, the value is repeated over the whole tracklet.
+
+Also note that as we choose a step of 10 time units (here frames) for each sliding window, the first and last 5 values of the computed metrics return NA.</p>
+
+To summarize, it is easy to run relatively intensive computation on a large set of tracklets and smooth the resulting metrics over each tracklet. While for this example, we have combined `analyseTracklets()`, `slidWindow()` and various modulus (e.g., `speed()`, `sinuosity()`, `turnAngle()`), `analyseTracklets()` is flexible enough to accept any computation specified by the user within the "customFunc" argument.
+
+To go further, while we have identified activity states (i.e., active vs inactive) based on 1 dimension using `active1()`, one may also perform activity states classification trough non-hierarchical clustering in 2 dimensions using `activity2()`. 
+
+## activity states: 2 dimensions non-hierarchical clustering
+
+The `MoveR` package allow to use density based clustering (Henning 2020; Ester et al., 1996) on two a dimensions array to classify particles' between active and inactive states. 
+
+For this purpose, we are using `activity2()` and the previously smoothed speed (log-transformed) and turning angle variance as dimensions to performed non-hierarchical clustering as follow: 
+
+```{r actives2, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
+# use density based clustering to classify actives and inactives states in a 2 dimension array (here the smoothed speed (log) and the angle variance)
+# when graph = TRUE, the function display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering).
+
+trackDat3 <-
+  MoveR::activity2(
+    trackDat = trackDat2,
+    var1 = "slideMeanSpeed",
+    var2 = "slideVarAngle",
+    var1T = log10,
+    var2T = NULL,
+    nbins = 100,
+    eps = 0.15,
+    minPts = 5,
+    na.rm = TRUE,
+    graph = TRUE
+  )
+
+head(trackDat3[[1]], 20)
+```
+
+As expected, a new column (activity2) containing particles' activity states, coded as binary value (1 and 0 for active and inactive state, respectively) is added to each tracklet. 
+
+Also, in case the `graph` argument is `TRUE`, a 3D plot showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) is displayed (see fig. \@ref(fig:actives2)). 
+
+This plot may be helpful as diagnostic plot to check the distribution of data making the two clusters and to check whether the clusters has been identified in an expected way.
+
+Now we have identified activity states according to both 1d (`activity1()`) and 2d (`activity2()`) methods, we can compare the global proportion of both active and inactive state returned by the two functions (see fig. \@ref(fig:PieCharts) below).
+
+```{r PieCharts, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Pie chart representing the proportion of active (green) and inactive (red) state over the whole dataset computed using activity1 (A) and activity2 (B) functions."}
+# compare the amount of active and inactive state between activity1() and activity2() functions
+trackDatL <- MoveR::convert2List(trackDat3)
+par(mfrow=c(1,2))
+for (i in c(1:2)) {
+  ## compute the proportion of active and inactive states resulting from the activity1 and activity2 functions
+  act <- length(which(trackDatL[[paste0("activity", i)]] == 1)) / length(trackDatL[[paste0("activity", i)]][-c(which(is.na(trackDatL[[paste0("activity", i)]])))]) * 100
+  inact <- length(which(trackDatL[[paste0("activity", i)]] == 0)) / length(trackDatL[[paste0("activity", i)]][-c(which(is.na(trackDatL[[paste0("activity", i)]])))]) * 100
+  ## pie chart of behavioral state proportion for both results
+  pie(
+  main = paste0("Proportion of active vs. inactive states\nfor activity", i, "()"),
+  cex.main = 0.8,
+  c(act, inact),
+  labels = paste(round(
+    data.frame(active = act,
+               inactive = inact),
+    digits = 2
+  ), "%", sep = ""),
+  col = c("#99CC66", "#993333")
+)
+legend(
+  .2,
+  1.5,
+  c("active", "inactive"),
+  cex = 0.8,
+  fill = c("#99CC66", "#993333")
+)
+}
+
+```
+Here we can see that the `activity1()` returns about 2% less active state than `activity2()` while it seems relatively low, `activity2()` identify the inactive state more precisely allowing to consider particles that move slowly as active. 
+
+Indeed, the general idea behind this kind of activity classification is that the more particle speed increase, the more the trajectory of the particle is straight, although it depend on the model species studied. One can thus choose the classification method to use according to its own system.
+
+## Global exploration pattern
+
+While we have already computed the surface explored over each tracklet using `exploredArea()` combined with `analyseTracklets()`, one would also compute the total surface explored over the whole dataset and quickly check if the particles' displacements are homogeneously distributed in space (`graph` = TRUE).
+
+<p class="notes">Note that `exploredArea` also allow to save the heatmap with or without displaying it by specifying a saving function or a logical value (TRUE) in the `saveGraph` argument.</p>
+
+```{r ExploredArea, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Heatmap of the area visited by the particles. Here we used the reaction distance of <em>Trichogramma</em> according to Wajnberg and Colazza (1998) to infer the diameter of the area an individual can perceive (about 8 mm or 330 pixels)."}
+
+# Total surface explored
+Totexplored <- MoveR::exploredArea(
+  trackDat3,
+  binRad = diamSurf,
+  timeCol = "runTimelinef",
+  scale = 1,
+  graph = T
+)
+
+```
+According to the fig. \@ref(fig:ExploredArea), we can see that the particles have, to a certain extent, visited the arena homogeneously but seems to move further on the upper left corner of the arena. Also, the total surface explored by the particle reached 1894443 pixels<sup>2</sup>. 
+
+To further investigate particular movement patterns across various areas the manage ROI set of functions, including `circles()`, `polygons()`, `locROI` and `assignROI`, allows to play with the specification of some ROI and then identify movement patterns across area using `IdStateSeq()`.
+
+## Sociability index: ANND function
+
+While `MoveR` does not focus on the study of interaction among particles, we have implemented the possibility to compute the Average Nearest Neighbor Distance (ANND) among particles. The ANND is commonly viewed as an index of sociability in gregarious groups of individuals. 
+
+Hence, using `ANND()` one can compute the Average Nearest Neighbor distance across all particles and time unit. In addition , the function allow to perform a bootstrap over time unit to compute studentize 95% confidence interval around the ANND. 
+
+For this example, we are computing the ANND and studentize 95% confidence interval every 125 frames (i.e., 5 seconds) over 500 bootstrap sampling.
+
+```{r ANND, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the Average Nearest Neighbor Distance (ANND, purple line) and studentize 95% confidence interval among <em>Trichogramma</em> individuals over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line) expressed in pixels. The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
+
+# compute the ANND and studentize 95% confidence interval (bootstrap)
+ANNDRes <- MoveR::ANND(
+    trackDat3,
+    timeCol = "runTimelinef",
+    sampling = 10 * 25,
+    scale = 1,
+    bootn = 500
+)
+
+# Retrieve the results and add the timeline of the temperature values to the dataset
+ANNDResPlot <- merge(ANNDRes$ANND, trackDatL[c(8,10)], by = "runTimelinef")
+
+# import a custom function to plot the results
+source("https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/main/RScripts/Strains_plotFunc.r")
+
+# plot the ANND and studentize 95% confidence interval as an envelope as well as the number of detection over the experiment.
+strains_plot(
+    finalDatList = trackDatL, # the cleaned dataset, needed to compute the average number of individuals over the video
+    smoothDf = ANNDResPlot, # the smoothed dataset
+    TempAxis = "y", # position of the temperature axis
+    TempCol = "Measured_Temp_Deg_C", # name of the temperature column
+    TempScale = NULL, # a vector containing 2 values (same unit as TempCol) indicating lower and upper limit of the temperature axis (either x or y)
+    TimeCol = "runTimelinef", # name of the time column,
+    TimeLimit = c((20*60*25), (70*60*25)), # a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis
+    nbrIndcounted = 24, # the number\r of individual manually counted
+    IC = list(ANNDmean = ANNDResPlot), # a list of datasets containing 95%Ci
+    variables = "ANNDmean", # a vector containing the names of variables to plot (names of columns present in both smoothDf and IC)
+    colvariable = c("purple"), # A vector containing the color of each variable on the plot
+    scaleVariable = list(c(0,300)), # a list containing vectors which indicates the upper and lower value to specify the scale for each variable
+    Lab = c("ANND (pixels)"))
+
+```
+
+According to the fig. \@ref(fig:ANND), the ANND is relatively steady over the temperature ramp, although it tend to increase a bit. 
+
+Also, we can see on the upper panel that the relative number of detected individual is quite good with about 100% of detection at the start of the experiment and slightly decrease over time to reach about 65%. 
+
+The decrease of the amount of detection is mainly due to the fact that over 45&#8451; most of the individual stop any motion, probably because they died. But further investigation on other traits may shed the light about what is going on here.
+
+## Temporal trends
+
+Indeed, while we have previously computed several metrics over each tracklet, we need to investigate how these metrics might be altered over time and hence over the temperature ramp. 
+
+To do that, we first should specify a list of custom function to feed `temporalTrend()`. Here we are using some of the previously computed metrics but one can implement any other metrics and subsequent computation (e.g., mean, var). 
+
+For instance, 
+
+  * the mean sinuosity over time
+  
+  * the mean speed of active individual only
+  
+  * the mean speed of all individual
+  
+  * the mean activity (using results of `activity2()`)
+  
+  * the mean distance to the edge
+  
+  * the mean distance traveled.
+
+<p class="notes">Note that `temporalTrend()` allow to analyse only specific part of the timeline by specifying the `Tinterval` argument. More importantly, and as tracklets might present different length, the function allow to weighed the results of the custom functions according to the tracklet length of the tracklets by using the `wtd` argument.</p>
+
+As the results of the computation are smoothed over time, the `sampling` and `Tstep` arguments should be specified to define the sampling step (i.e., the resolution) use for the computation and the size of the sliding window used for smoothing, respectively. 
+
+Here, we are using a sampling step of 20 seconds (20 seconds * 25 fps) and a sliding window of 1.5 minutes (90 seconds * 25 fps)
+
+```{r TemporalTrend, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the various metrics (sinuosity, speed for active state, speed including all activity states, activity, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames."}
+# specify a list of custom function to smooth the existing metrics over time
+customFuncList <- list(
+  # smooth sinuosity over time
+  sinuosity =
+    function(x) {
+      mean(x$sinuosity, na.rm = T)
+    },
+  # smooth speed over time for active states only
+  speed_active =
+    function(x) {
+      ifelse(nrow(x[which(!is.na(x$activity2) &
+                            x$activity2 == 1), ]) == 0, NA,
+             mean(x$slideMeanSpeed[which(!is.na(x$activity2) &
+                                           x$activity2 == 1)], na.rm = T))
+    },
+  # smooth speed over time whatever the states
+  speed_all =
+    function(x) {
+      mean(x$slideMeanSpeed, na.rm = T)
+    },
+  # smooth activity states over time
+  activity =
+    function(x) {
+      if (nrow(x[!is.na(x$activity2), ]) == 0) {
+        NA
+      } else {
+        nrow(x[!is.na(x$activity2) &
+                 x$activity2 == 1, ]) / nrow(x[!is.na(x$activity2), ])
+      }
+    },
+  # smooth the distance to the edge whatever the states over time
+  Dist2Edge =
+    function(x) {
+      mean(x$slideMeanDist2Edge, na.rm = T)
+    },
+  # smooth the distance traveled whatever the states over time
+  TraveledDist =
+    function(x) {
+      mean(x$slideMeanTraveledDist, na.rm = T)
+    }
+)
+
+# compute the smoothed metrics over time
+TemporalRes_wtd <- MoveR::temporalTrend(
+  trackDat3,
+  timeCol = "runTimelinef",
+  customFunc = customFuncList,
+  Tstep = 90 * 25,
+  sampling = 20 * 25,
+  wtd = TRUE
+)
+
+# plot the result
+par(mfrow = c(2, 3))
+for (p in seq_along(TemporalRes_wtd)){
+  plot(
+    NULL,
+    ylim = c(round(
+      min(TemporalRes_wtd[[p]][,1], na.rm = T),
+      digits = 1),
+    round(
+      max(TemporalRes_wtd[[p]][,1], na.rm = T),
+      digits = 1
+    )),
+    xlim = c(
+      min(TemporalRes_wtd[[p]]$runTimelinef, na.rm = T),
+      max(TemporalRes_wtd[[p]]$runTimelinef, na.rm = T)
+    ),
+    main = names(TemporalRes_wtd)[p],
+    ylab = names(TemporalRes_wtd)[p],
+    xlab = "Time (frames)"
+  )
+lines(TemporalRes_wtd[[p]][,1] ~ TemporalRes_wtd[[p]]$runTimelinef , col = "red")
+}
+
+```
+Here we are, after a quick look at this panel of graph (fig. \@ref(fig:TemporalTrend)) it seems that there is a common trend across all metrics with a tipping point marking either a drastic decrease or increase depending on the considered metric. 
+
+More particularly, there is a drop on speed (whatever which metric is considered), activity, distance to the edge (here the more the value is negative, the more the individuals far from the edge) and distance traveled while there is an increase of sinuosity. 
+
+While this observation is encouraging, we need to check whether the variability around the computed values are small enough too support it. This could then help us to find the tipping point (i.e., temperature threshold) which hampered <em>Trichogramma</em>'s movements. 
+
+Accordingly, let's start computing studentized 95% confidence interval using `temporalTrend()`: 
+
+```{r TemporalBoot, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the various metrics (i.e., sinuosity, speed for including active state only, speed including all activity states, activity, distance to the edge of the arena and distance traveled by the individuals) over the experiment timeline expressed in frames."}
+
+TemporalResBOOT_wtd <-
+  MoveR::temporalBoot(
+    trackDat = trackDat3,
+    timeCol = "runTimelinef",
+    customFunc = customFuncList,
+    Tstep = 90 * 25,
+    sampling = 20 * 25,
+    bootn = 500,
+    wtd = TRUE
+  )
+
+# retrieve the CI from the output of temporalBoot
+boot.ci <- TemporalResBOOT_wtd[[c(which(names(TemporalResBOOT_wtd) == "BootCiStudent"))]]
+
+# remove the NA to allow draw the CI as an envelope
+boot.ci.NoNA <- lapply(boot.ci, function(x) na.omit(x))
+
+
+par(mfrow = c(2, 3))
+for (p in seq_along(boot.ci.NoNA)) {
+  plot(
+    NULL,
+    ylim = c(round(min(boot.ci.NoNA[[p]][, "2.5%"], na.rm = T),
+                   digits = 1),
+             round(max(boot.ci.NoNA[[p]][, "2.5%"], na.rm = T),
+                   digits = 1)),
+    xlim = c(
+      min(boot.ci.NoNA[[p]]$runTimelinef, na.rm = T),
+      max(boot.ci.NoNA[[p]]$runTimelinef, na.rm = T)
+    ),
+    main = names(boot.ci.NoNA)[p],
+    ylab = names(boot.ci.NoNA)[p],
+    xlab = "Time (frames)"
+  )
+  lines(boot.ci.NoNA[[p]][, "mean"] ~ boot.ci.NoNA[[p]]$runTimelinef , col = "red")
+  polygon(
+    x = c(boot.ci.NoNA[[p]]$runTimelinef,
+          rev(boot.ci.NoNA[[p]]$runTimelinef)),
+    y = c(boot.ci.NoNA[[p]]$`2.5%`, rev(boot.ci.NoNA[[p]]$`97.5%`)),
+    col = rgb(1, 0, 0, 0.1),
+    border = NA,
+    density = NA
+  )
+}
+
+```
+
+Great! now that we have computed the studentized 95% CI, we can see that the distance to the edge is very variable (fig. \@ref(fig:TemporalBoot)) compared to the others metrics. 
+
+Also, as the speed metrics and the distance traveled exhibit very similar trends we can use a more synthetic view of the results by plotting the sinuosity, the activity and the speed (for all individuals) on the same plot.
+
+
+```{r SynthPlot, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the activity, sinuosity and speed of <em>Trichogramma</em> individuals and studentize 95% confidence interval over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line). The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
+
+# import a custom function to plot the results
+source("https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/main/RScripts/Strains_plotFunc.r")
+
+# plot the activity, speed and sinuosity and studentize 95% confidence interval as an envelope as well as the number of detection over the experiment.
+strains_plot(
+    finalDatList = trackDatL, # the cleaned dataset, needed to compute the average number of individuals over the video
+    smoothDf = TemporalRes_wtd, # a list of smoothed datasets
+    TempAxis = "y", # position of the temperature axis
+    TempCol = "Measured_Temp_Deg_C", # name of the temperature column
+    TimeCol = "runTimelinef", # name of the time column,
+    TimeLimit = c((20*60*25), (70*60*25)), # a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis
+    nbrIndcounted = 24, # the number\r of individual manually counted
+    IC = boot.ci.NoNA, # a list of datasets containing 95%Ci
+    variables = c("activity" , "speed_active", "sinuosity"), # a vector containing the names of variables to plot (names of columns present in both smoothDf and IC)
+    colvariable = c("#339999", "#6600CC", "#669933"), # A vector containing the color of each variable on the plot
+    scaleVariable = list(c(0, max(boot.ci.NoNA[["activity"]]$`2.5%`, na.rm=T)), 
+                               c(0, max(boot.ci.NoNA[["speed_active"]]$`2.5%`, na.rm=T)), 
+                               c(0, max(boot.ci.NoNA[["sinuosity"]]$`2.5%`, na.rm=T))), # a list containing vectors which indicates the upper and lower value to specify the scale for each variable
+    Lab = list(
+            "Activity (%)",
+            expression("Speed (" * list(px.s ^ -1) * ")"),
+            "Sinuosity"
+          ))
+
+```
+
+Great! We now have a better look at the effect of temperature on <em>Trichogramma</em>'s movements (see fig. \@ref(fig:SynthPlot)) and can now retrieve a temperature threshold at which movements start to decrease (about 38&#8451;) or even stop (CTmax about 40&#8451;).
+
+As these computation may be relatively intensive, and hence time consuming, depending on the size of the dataset (i.e., number of individuals tracked, duration of the tracking), the amount of metrics to compute and the sampling resolution (i.e., `sampling` argument) specified in `temporalTrend` and `temporalBoot`, it is easily possible to run the computation in parallel (across several thread of a personal computer). 
+
+Luckily, this is the topic of the next tutorial.
+
+Happy coding.
 
 <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="next">Next &raquo;</a><br />
 
+
+## References
+
+  * Christian, H., (2020). fpc: Flexible Procedures for Clustering. R package version 2.2-9. \href{https://CRAN.R-project.org/package=fpc}{https://CRAN.R-project.org/package=fpc}}
+
+  * Ester, M., Kriegel H.P., Sander, J., Xu X., (1996). A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise. Institute for Computer Science, University of Munich. Proceedings of 2nd International Conference on Knowledge Discovery and Data Mining (KDD-96)
+  
+  * Wajnberg, E., Colazza, S., (1998). Genetic variability in the area searched by a parasitic wasp: analysis from automatic video tracking of the walking path. Journal of Insect Physiology 44, 437–444. https://doi.org/10.1016/S0022-1910(98)00032-8
+  

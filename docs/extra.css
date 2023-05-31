@@ -2,7 +2,6 @@
 /* spacing ----------------------------------------------- */
 
 h1, h2, h3 {
-  font-weight: 700;
   letter-spacing: 1.2pt;
 }
 
@@ -30,10 +29,16 @@ h3 {
   margin-top: 1.5em;
 }
 
+/* Navbar toggle button color ----------------------------------------------- */
+
+.navbar-toggler-icon { 
+  color: rgba(255, 255, 255, 1);
+}
+
 /* Previous/next buttons ----------------------------------------------- */
 
 .previous {
-  font-weight: bold;
+  font-weight: 500;
   text-decoration: none!important;
   float: left;
   background-color: rgba(24, 188, 156, 1);
@@ -41,7 +46,7 @@ h3 {
 }
 
 .next {
-  font-weight: bold;
+  font-weight: 500;
   text-decoration: none!important;
   float: right;
   background-color: rgba(24, 188, 156, 1);
@@ -53,6 +58,5 @@ h3 {
 .caption {
   font-style: italic;
   font-size: 0.8rem;
-  color: rgba(218, 165, 32, 1);
+  color: rgba(188, 134, 11, 1);
 }
-
