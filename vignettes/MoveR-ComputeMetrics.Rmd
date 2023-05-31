@@ -503,7 +503,7 @@ for (p in seq_along(TemporalRes_wtd)) {
     ylab = names(TemporalRes_wtd)[p],
     xlab = "Time (frames)"
   )
-  lines(TemporalRes_wtd[[p]][, 1] ~ TemporalRes_wtd[[p]]$runTimelinef , col = "red")
+  lines(TemporalRes_wtd[[p]][, 1] ~ TemporalRes_wtd[[p]]$runTimelinef , col = "darkred")
 }
 
 ```
@@ -551,7 +551,7 @@ for (p in seq_along(boot.ci.NoNA)) {
     ylab = names(boot.ci.NoNA)[p],
     xlab = "Time (frames)"
   )
-  lines(boot.ci.NoNA[[p]][, "mean"] ~ boot.ci.NoNA[[p]]$runTimelinef , col = "red")
+  lines(boot.ci.NoNA[[p]][, "mean"] ~ boot.ci.NoNA[[p]]$runTimelinef , col = "darkred")
   polygon(
     x = c(boot.ci.NoNA[[p]]$runTimelinef,
           rev(boot.ci.NoNA[[p]]$runTimelinef)),
