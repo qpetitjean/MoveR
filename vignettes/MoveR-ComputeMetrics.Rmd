@@ -274,17 +274,17 @@ trackDat3 <-
 
 ```
 
-```{r actives2Showdata, echo=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
-htmltools::includeHTML("https://raw.githubusercontent.com/qpetitjean/MoveR/Main/man/figures/activity2-3Dplot.html")
-```
-
 ```{r actives2Showdata, echo=TRUE, results='markup'}
 head(trackDat3[[1]], 20)
 ```
 
 As expected, a new column (activity2) containing particles' activity states, coded as binary value (1 and 0 for active and inactive state, respectively) is added to each tracklet. 
 
-Also, in case the `graph` argument is `TRUE`, a 3D plot showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) is displayed (see fig. \@ref(fig:actives2)). 
+Also, in case the `graph` argument is `TRUE`, a 3D plot showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) is displayed (see fig. \@ref(fig:actives2-3Dplot)). 
+
+```{r actives2-3Dplot, echo=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
+htmltools::includeHTML("https://raw.githubusercontent.com/qpetitjean/MoveR/Main/man/figures/activity2-3Dplot.html")
+```
 
 This plot may be helpful as diagnostic plot to check the distribution of data making the two clusters and to check whether the clusters has been identified in an expected way.
 
