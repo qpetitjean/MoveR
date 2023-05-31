@@ -284,7 +284,7 @@ Also, in case the `graph` argument is `TRUE`, a 3D plot showing the distribution
 
 ```{r actives2-3Dplot, echo=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
 
-load("C:/Users/quent/Desktop/Test/activity2-3Dplot.Rdata")
+load(url("https://github.com/qpetitjean/MoveR/raw/Main/man/figures/activity2-3Dplot.Rdata"))
 
     # draw the plot
       fig <- plotly::plot_ly(x=~colnames(dens), y=~rownames(dens), contours = list(
@@ -329,7 +329,6 @@ load("C:/Users/quent/Desktop/Test/activity2-3Dplot.Rdata")
         )
       )
       fig
-
 ```
 
 This plot may be helpful as diagnostic plot to check the distribution of data making the two clusters and to check whether the clusters has been identified in an expected way.
