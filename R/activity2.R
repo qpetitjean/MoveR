@@ -26,6 +26,8 @@
 #'
 #' @param graph A logical value (i.e., TRUE or FALSE) indicating whether the distribution (3d density map) of the active and inactive states according to the classification (density based clustering) plot should be displayed or not (default = TRUE). 
 #'
+#' @param saveGraph A logical value (i.e., TRUE or FALSE) indicating whether the 3d plot should be saved as a .html file in the hardrive (within the working directory) or the path specifying where to save the plot (see \code{\link[htmlwidgets]{saveWidget}}) (default = FALSE). 
+#' 
 #'
 #' @return This function returns the results of the classification (actives vs. inactives) as numeric value (1 or 0, respectively) appended to
 #' the original list of data frame containing tracking information for each tracklet. 
@@ -162,7 +164,8 @@ activity2 <-
            minPts = NULL,
            scale = TRUE,
            na.rm = TRUE,
-           graph = TRUE) {
+           graph = TRUE,
+           saveGraph = FALSE) {
     # retrieve var1 and var2 from the dataset and transform them if needed
     trackdatL <- MoveR::convert2List(trackDat)
     var1n <- var1
@@ -222,7 +225,7 @@ activity2 <-
     }
     if (length(which(is.infinite(tempDf[["var2"]]))) > 0) {
       tempDf <- tempDf[-c(which(is.infinite(tempDf[["var2"]]))),]
-      warning("var1 contains infinite values, these values has been removed")
+      warning("var2 contains infinite values, these values has been removed")
     }
     if (nrow(tempDf) == 0) {
       stop("In var1 and var2 NA and Inf values has been removed but no data remain")
@@ -423,7 +426,7 @@ activity2 <-
       1
     trackdatL[["activity2"]] <- toClust[["activity"]]
     
-    if (isTRUE(graph)) {
+    if (isTRUE(graph) | isTRUE(saveGraph) | is.character(saveGraph)) {
       # display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering)
       ## retrieve the result of the classification in the matrix of counts
       ZPlot <-
@@ -492,7 +495,12 @@ activity2 <-
           zaxis = list(title = "counts (sqrt)")
         )
       )
-      print(fig)
+      if(isTRUE(graph)){
+      print(fig)}
+      if(isTRUE(saveGraph)){
+        htmlwidgets::saveWidget(fig, file.path(getwd(), "activity2-3Dplot.html"))}
+      if(is.character(saveGraph)){
+        htmlwidgets::saveWidget(fig, saveGraph)}
     }
     Res <- MoveR::convert2Tracklets(trackdatL, by = "trackletId")
     return(Res)

@@ -15,7 +15,8 @@ activity2(
   minPts = NULL,
   scale = TRUE,
   na.rm = TRUE,
-  graph = TRUE
+  graph = TRUE,
+  saveGraph = FALSE
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ activity2(
 \item{na.rm}{A logical value (i.e., TRUE or FALSE) indicating whether NA values should be stripped before the computation proceeds (default = TRUE).}
 
 \item{graph}{A logical value (i.e., TRUE or FALSE) indicating whether the distribution (3d density map) of the active and inactive states according to the classification (density based clustering) plot should be displayed or not (default = TRUE).}
+
+\item{saveGraph}{A logical value (i.e., TRUE or FALSE) indicating whether the 3d plot should be saved as a .html file in the hardrive (within the working directory) or the path specifying where to save the plot (see \code{\link[htmlwidgets]{saveWidget}}) (default = FALSE).}
 }
 \value{
 This function returns the results of the classification (actives vs. inactives) as numeric value (1 or 0, respectively) appended to
