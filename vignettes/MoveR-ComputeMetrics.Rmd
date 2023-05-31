@@ -321,7 +321,7 @@ load(url("https://github.com/qpetitjean/MoveR/raw/Main/man/figures/activity2-3Dp
       )
       fig <- plotly::layout(
         fig,
-        title = '3D density plot and 95% ellipsis of the inactive state',
+        title = "3D density plot of activity states",
         scene1 = list(
           xaxis = list(title = var2n),
           yaxis = list(title = var1n),
@@ -332,7 +332,11 @@ load(url("https://github.com/qpetitjean/MoveR/raw/Main/man/figures/activity2-3Dp
 widgetframe::frameWidget(widgetframe::frameableWidget(fig), height = 400, width = '95%')
 ```
 
-This plot may be helpful as diagnostic plot to check the distribution of data making the two clusters and to check whether the clusters has been identified in an expected way.
+This plot may be helpful as diagnostic plot to check the distribution of the data making the two clusters and to check whether the clusters has been identified in an expected way. 
+
+<p class="notes"> Indeed, note that to identify the clusters we assume that the distribution of inactive states follow a Gaussian (i.e., normal) distribution within the 2 dimensions space. 
+
+The activity state lying within the 95% confidence interval ellipsis of the distribution as well as those that hold values below the major radius of the ellipsis on the x axis and below the minor radius on the y axis are considered as inactive (0) while the remaining one are considered as active (1).</p>
 
 Now we have identified activity states according to both 1d (`activity1()`) and 2d (`activity2()`) methods, we can compare the global proportion of both active and inactive state returned by the two functions (see fig. \@ref(fig:PieCharts) below).
 

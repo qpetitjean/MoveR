@@ -488,7 +488,7 @@ activity2 <-
       )
       fig <- plotly::layout(
         fig,
-        title = '3D density plot and 95% ellipsis of the inactive state',
+        title = '3D density plot of activity states',
         scene1 = list(
           xaxis = list(title = var2n),
           yaxis = list(title = var1n),
