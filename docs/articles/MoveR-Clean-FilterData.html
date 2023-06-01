@@ -62,6 +62,7 @@
     <a class="dropdown-item" href="../articles/MoveR-ImportData.html">Import Data</a>
     <a class="dropdown-item" href="../articles/MoveR-Clean-FilterData.html">Clean/Filter Data</a>
     <a class="dropdown-item" href="../articles/MoveR-ComputeMetrics.html">Compute some metrics</a>
+    <a class="dropdown-item" href="../articles/MoveR-PatternId.html">Sequences identification</a>
     <a class="dropdown-item" href="../articles/MoveR-ParallelComputation.html">Parallel computing</a>
     <a class="dropdown-item" href="../articles/MoveR-SensitivityAnalysis.html">Detection performances</a>
   </div>
@@ -103,7 +104,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Clean/Filter Data</h1>
             
-            <h4 data-toc-skip class="date">2023-05-30</h4>
+            <h4 data-toc-skip class="date">2023-06-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-Clean-FilterData.Rmd" class="external-link"><code>vignettes/MoveR-Clean-FilterData.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-Clean-FilterData.Rmd</code></div>
@@ -127,13 +128,16 @@ Figure 1:  Frames extracted from a video recording of 24 parasitic micro-wasps (
 <h2 id="import-sample-data-from-github">Import sample data from github<a class="anchor" aria-label="anchor" href="#import-sample-data-from-github"></a>
 </h2>
 <p>Let’s download the data, import and convert them to a list of tracklets (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="external-link">Import Data vignette</a> for detailed procedure).</p>
-<p>Note that we have included some extra data that are related to this dataset within the “raw tracking data” when we have reduced the dataset:</p>
-<ul>
-<li><p>the timeline expressed in frame (may be different from the default frame list because the data come from merged videos)</p></li>
-<li><p>the temperature at which the individuals are exposed over the assay</p></li>
-</ul>
-<p>These extra information will be useful to conduct further analyses in this tutorial and some others.
-For instance, we can automatically determine the frame rate of the video-recording using the timeline and timestamps (usually made using the default frame list instead of timeline).</p>
+<p class="notes">
+Note that we have included some extra data that are related to this dataset within the “raw tracking data” when we have reduced the dataset:<br></p>
+<li>
+the timeline expressed in frame (may be different from the default frame list because the data comes from merged videos)
+</li>
+<br><li>
+the temperature at which the individuals are exposed over the assay.
+</li>
+<br> These extra information will be useful to conduct further analyses in this tutorial and some others.<br> For instance, we can automatically determine the frame rate of the video-recording using the timeline and timestamps (usually made using the default frame list instead of timeline).
+
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dl the second dataset from the sample data repository</span></span>
 <span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">2</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span>
@@ -193,8 +197,9 @@ For instance, we can automatically determine the frame rate of the video-recordi
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/mergeFilters.html">mergeFilters</a></span><span class="op">(</span>filters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">filter.InfX</span>, <span class="va">filter.InfY</span><span class="op">)</span>,</span>
 <span>                     cond <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Now, that the filter is properly specified the dataset can be filtered to remove infinite values detected on both x and y coordinates using <code><a href="../reference/filterTracklets.html">filterTracklets()</a></code>.</p>
-<p>Note that in case a particle is lost and detected again during a very short time period, the function may return small tracklets which may be considered useless.</p>
-<p>These small tracklets can be removed by specifying the minimum duration above which tracklet should be kept using the <code>minDur</code> argument.</p>
+<p class="notes">
+Note that in case a particle is lost and detected again during a very short time period, the function may return small tracklets which may be considered useless. These small tracklets can be removed by specifying the minimum duration above which tracklet should be kept using the <code>minDur</code> argument.
+</p>
 <p>For this example, we are keeping only the tracklets lasting more than one second by setting minDur to 25 frames which correspond to 1 second, or to the frame rate of the video (hence we can use the frameRate object defined above).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># filter infinite values according to the previously specified filters</span></span>
@@ -399,13 +404,9 @@ Figure 3: Histogram of the Log-transformed speed of the particles and 999th quan
 <span><span class="co"># to the lower value of the distance matrix (i.e., 1).</span></span>
 <span><span class="co"># Also specifying the order argument as TRUE ensure that the points delimiting the arena edge are sorted clockwise, making easy to draw the edge.</span></span>
 <span><span class="va">edge</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/locROI.html">locROI</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, edgeCrit <span class="op">=</span> <span class="fl">1</span>, xy <span class="op">=</span> <span class="fl">1</span>, order <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span><span class="co"># the coordinates of the arena edge are stored in the edge object</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">edge</span><span class="op">)</span></span></code></pre></div>
-<p>‘data.frame’: 4098 obs. of 2 variables:
-$ y.pos: int 10 10 10 10 10 10 10 10 10 10 …
-$ x.pos: int 920 919 918 917 916 915 914 913 912 911 …</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># it is then easy to draw the arena edge</span></span>
+<span><span class="co"># here the coordinates of the arena edge are stored in the edge object</span></span>
+<span></span>
+<span><span class="co"># it is then easy to draw the arena edge</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="cn">NULL</span>, </span>
 <span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[</span>, <span class="st">"x.pos"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>     ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[</span>, <span class="st">"y.pos"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -438,17 +439,13 @@ $ x.pos: int 920 919 918 917 916 915 914 913 912 911 …</p>
 Figure 4: Representation of centre and edge of the arena retrieved from a distance matrix generated using color tresholding in imageJ. The position of the arena edge can be extracted from the distance matrix as the lowest value of distance matrix (i.e., 1) and the centre of the arena as the mean of the edge x and y coordinates.
 </p>
 </div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># the coordinates of the arena edge are then stored in the ArenaEdge object</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">ArenaEdge</span><span class="op">)</span></span></code></pre></div>
-<p>‘data.frame’: 500 obs. of 2 variables:
-$ x.pos: num 1438 1438 1438 1437 1437 …
-$ y.pos: num 524 530 537 543 550 …</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># here the coordinates of the arena edge are then stored in the ArenaEdge object</span></span></code></pre></div>
 <p>Here the distance matrix generated using <a href="https://imagej.net/ij/index.html" class="external-link">ImageJ</a> returns decreasing distance from the centre of the arena to the edge.</p>
 <p>Accordingly, the lowest value (i.e., 1) corresponds to the edge of the arena (fig. <a href="#fig:edgeDef">4</a>, black line). Hence, the use of a distance matrix may be a a good option to retrieve the location of the edge of an arena or any ROI, whatever its shape.</p>
 <p>However, in the case of using a classic circular or polygonal arena a simpler approach would consist of generating the expected arena edge using <code><a href="../reference/circles.html">circles()</a></code> or <code><a href="../reference/polygons.html">polygons()</a></code> and feeding the former with coordinates of the arena center and the radius length (fig. <a href="#fig:edgeDef">4</a>, red line).</p>
 <p>We can then easily identify whether a particle is detect within or outside the arena by assigning the ROI to each tracklet using the <code><a href="../reference/assignROI.html">assignROI()</a></code> and filtering out the tracklets parts detected outside the arena.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## assign The ROI (here the arena) to the particles' positions</span></span>
 <span><span class="va">trackDat4</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/analyseTracklets.html">analyseTracklets</a></span><span class="op">(</span><span class="va">trackDat.speedfilt</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>,</span>
@@ -472,7 +469,8 @@ $ y.pos: num 524 530 537 543 550 …</p>
 Figure 5: Micro-wasps trajectories over the whole video timeline, expressed in frame. The arena edges are represented by the black circle.
 </p>
 </div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p>Apparently the amount of artifact detected outside the arena is null or very low (see fig. <a href="#fig:edgeClean">5</a>. However, by using <code><a href="../reference/assignROI.html">assignROI()</a></code> and excluding the edge some tracklet part are indeed detected outside the arena.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create the filter to remove particles outside the arena</span></span>
 <span><span class="va">filter.out</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/filterFunc.html">filterFunc</a></span><span class="op">(</span></span>
@@ -487,9 +485,13 @@ Figure 5: Micro-wasps trajectories over the whole video timeline, expressed in f
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/filterTracklets.html">filterTracklets</a></span><span class="op">(</span><span class="va">trackDat4</span>,</span>
 <span>              <span class="va">filter.out</span>,</span>
 <span>              splitCond <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>              minDur <span class="op">=</span> <span class="va">frameRate</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># rename the cleaned dataset for further use</span></span>
+<span>              minDur <span class="op">=</span> <span class="va">frameRate</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in MoveR::filterTracklets(trackDat4, filter.out, splitCond = TRUE, : For Tracklet_2: </span></span>
+<span><span class="co">## All the new tracklets created after filtering are shorter than minDur, no tracklet returned</span></span></code></pre>
+<pre><code><span><span class="co">## Warning in MoveR::filterTracklets(trackDat4, filter.out, splitCond = TRUE, : For Tracklet_3724: </span></span>
+<span><span class="co">## All the new tracklets created after filtering are shorter than minDur, no tracklet returned</span></span></code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># rename the cleaned dataset for further use</span></span>
 <span><span class="va">trackDat5</span> <span class="op">&lt;-</span> <span class="va">trackDat.borderfilt</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># check that the particle detected outside has been removed</span></span>
@@ -509,12 +511,11 @@ Figure 5: Micro-wasps trajectories over the whole video timeline, expressed in f
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">res</span></span></code></pre></div>
-<pre><code>     ROI_1 FALSE</code></pre>
-<p>before 1094821 54
-after 1094821 0
-Apparently the amount of artifact detected outside the arena is null or very low (see fig. <a href="#fig:edgeClean">5</a>. However, by using <code><a href="../reference/assignROI.html">assignROI()</a></code> and excluding the edge some tracklet part are indeed detected outside the arena.</p>
+<pre><code><span><span class="co">##          ROI_1 FALSE</span></span>
+<span><span class="co">## before 1094821    54</span></span>
+<span><span class="co">## after  1094821     0</span></span></code></pre>
 <p>Then, as expected the filtering step based the location of the particles inside or outside the arena have removed parts of the tracklets (54 occurrences) detected outside the arena (ROI_1).</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># display the information about the filtering process (see ??filterTracklets())</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDat.borderfilt</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 8</span></span>
@@ -529,13 +530,19 @@ Apparently the amount of artifact detected outside the arena is null or very low
 <p>In addition, according to the summary of the filtering step, the amount of data removed by the filtering is very low (&lt;0.1%), confirming that there is few tracking artifact outside of the arena (fig. <a href="#fig:edgeClean">5</a>).</p>
 <p>Accordingly, the filter splited only few tracklets in small part resulting in less than 0.1% of data removed because resulting tracklets were shorter than 1 second (25 frames).</p>
 <p>While the count table and the summary of the filtering give a general quantitative view of the amount of data removed by the filtering step one may also want to have an idea of the tracklets identity and the spatio-temporal distribution of the removed data. For this we can use <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> as follow:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># identify the part of the tracklets that are detected outside the arena</span></span>
 <span><span class="va">trackDat4List</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat4</span><span class="op">)</span></span>
 <span><span class="va">OutTracklets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">trackDat4List</span><span class="op">[[</span><span class="st">"trackletId"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">trackDat4List</span><span class="op">[[</span><span class="st">"Arena"</span><span class="op">]</span><span class="op">]</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">OutTracklets</span></span></code></pre></div>
-<p>[1] “Tracklet_2” “Tracklet_3724”</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<pre><code><span><span class="co">## [1] "Tracklet_2"    "Tracklet_3724"</span></span></code></pre>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># identify the part of the tracklets that are detected outside the arena</span></span>
+<span><span class="va">trackDat4List</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat4</span><span class="op">)</span></span>
+<span><span class="va">OutTracklets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">trackDat4List</span><span class="op">[[</span><span class="st">"trackletId"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">trackDat4List</span><span class="op">[[</span><span class="st">"Arena"</span><span class="op">]</span><span class="op">]</span> <span class="op">==</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">OutTracklets</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Tracklet_2"    "Tracklet_3724"</span></span></code></pre>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot them</span></span>
 <span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span></span>
 <span>  <span class="va">trackDat4</span>,</span>
@@ -558,7 +565,7 @@ Figure 6: Representation of the particles’ trajectories detected outside the a
 <h2 id="filteringcleaning-summary">Filtering/Cleaning summary<a class="anchor" aria-label="anchor" href="#filteringcleaning-summary"></a>
 </h2>
 <p>Once the filtering/cleaning steps are done, the various filter summaries can be retrieved and easily grouped and eventually saved.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create a summary of each filter results </span></span>
 <span><span class="va">FilterSummary</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="st">"cbind"</span>,</span>
 <span>                         <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -600,7 +607,7 @@ Figure 6: Representation of the particles’ trajectories detected outside the a
 <span><span class="co">## cumulative_%Data_kept_after_minDur 2.321307e+01</span></span></code></pre>
 <p>As previously stated, we can indeed see that the filter based on infinite values have removed a lot of data contrary to the other filters. Also, it seems that the minimum duration of the tracklets set to 25 frames (1 second) is appropriate since it remove a small amount of data.</p>
 <p>It is also possible to display a summary of the tracking information of both the initial dataset (i.e., trackDat) and the filtered/cleaned one (trackDat5) using <code><a href="../reference/trackStats.html">trackStats()</a></code> to quickly compare them.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compute and display a detailed summary of the tracking information before and after cleaning (see ??trackStats())</span></span>
 <span><span class="va">Data_Trex_stats_before_filter</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/trackStats.html">trackStats</a></span><span class="op">(</span><span class="va">trackDat</span>,</span>
@@ -622,7 +629,7 @@ Figure 6: Representation of the particles’ trajectories detected outside the a
 <span><span class="co">##   ..$ trackDuration_f   : int [1:88] 12074 12079 12079 12079 12079 12083 12084 12084 12084 12084 ...</span></span>
 <span><span class="co">##   ..$ trackDuration_s   : num [1:88] 483 483 483 483 483 ...</span></span>
 <span><span class="co">##   ..$ trackLength_cm    : num [1:88] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span></span></code></pre>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Data_Trex_stats_after_filter</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/trackStats.html">trackStats</a></span><span class="op">(</span><span class="va">trackDat5</span>,</span>
 <span>                    frameR <span class="op">=</span> <span class="va">frameRate</span>,</span>
@@ -648,7 +655,7 @@ Figure 6: Representation of the particles’ trajectories detected outside the a
 <p>Both kind of summaries can then be saved as a .csv file using common function such as <code><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">utils::write.csv()</a></code> or <code><a href="https://Rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">data.table::fwrite()</a></code>.</p>
 <p>Also, the filtered dataset can be saved before using it for further computations.
 As such dataset can be large we recommend to use <code><a href="https://Rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">data.table::fwrite()</a></code> from the data.table package as well as saving the data as .gz archive to save as much disk space as possible (e.g., For this dataset: .csv = 181Mo vs .csv.gz = 62Mo).</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save the cleaned dataset as .csv compressed as .gz</span></span>
 <span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat5</span><span class="op">)</span>,</span>
@@ -659,8 +666,9 @@ As such dataset can be large we recommend to use <code><a href="https://Rdatatab
 <span>  na <span class="op">=</span> <span class="st">"NA"</span>,</span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Now that the filtering/cleaning process is achieved, we can move to data analysis through various metrics computations.</p>
-<p>Note, however, that ones would add or replace some of the filters that have been used in this example depending on the model species and the study’ aims.</p>
-<p>Accordingly, the various function developed in the MoveR package are very flexible and allow the user to specify custom functions to break limits.</p>
+<p class="notes">
+Note, however, that ones would add or replace some of the filters that have been used in this example depending on the model species and the study’ aims. Accordingly, the various function developed in the MoveR package are very flexible and allow the user to specify custom functions to break limits.
+</p>
 <p>For more insight how to use MoveR to run further computation check the next tutorials.</p>
 <p><strong>Happy coding.</strong></p>
 <p><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="external-link previous">« Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ComputeMetrics.html" class="external-link next">Next »</a><br></p>

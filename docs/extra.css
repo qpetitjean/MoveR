@@ -31,17 +31,24 @@ h3 {
 
 /* Navbar toggle button color ----------------------------------------------- */
 
-.navbar-toggler-icon { 
+.navbar-toggler { 
   color: rgba(255, 255, 255, 1);
 }
 
+
+/* Navbar link color ----------------------------------------------- */
+
+/*.nav-link {
+  color: rgb(24, 188, 156, 1);
+} */
+  
 /* Previous/next buttons ----------------------------------------------- */
 
 .previous {
   font-weight: 500;
   text-decoration: none!important;
   float: left;
-  background-color: rgba(24, 188, 156, 1);
+  background-color: rgba(24, 188, 156, .8);
   color: rgba(255, 255, 255, 1);
 }
 
@@ -49,7 +56,7 @@ h3 {
   font-weight: 500;
   text-decoration: none!important;
   float: right;
-  background-color: rgba(24, 188, 156, 1);
+  background-color: rgba(24, 188, 156, .8);
   color: rgba(255, 255, 255, 1);
 }
 
@@ -59,4 +66,12 @@ h3 {
   font-style: italic;
   font-size: 0.8rem;
   color: rgba(188, 134, 11, 1);
+}
+
+/* Notes Frames ----------------------------------------------- */
+
+.notes {
+  border: solid rgba(24, 188, 156, 0.6);
+  background-color: rgba(111, 200, 186, 0.5);
+  color: rgba(0, 0, 0, 1);
 }

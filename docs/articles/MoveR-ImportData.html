@@ -62,6 +62,7 @@
     <a class="dropdown-item" href="../articles/MoveR-ImportData.html">Import Data</a>
     <a class="dropdown-item" href="../articles/MoveR-Clean-FilterData.html">Clean/Filter Data</a>
     <a class="dropdown-item" href="../articles/MoveR-ComputeMetrics.html">Compute some metrics</a>
+    <a class="dropdown-item" href="../articles/MoveR-PatternId.html">Sequences identification</a>
     <a class="dropdown-item" href="../articles/MoveR-ParallelComputation.html">Parallel computing</a>
     <a class="dropdown-item" href="../articles/MoveR-SensitivityAnalysis.html">Detection performances</a>
   </div>
@@ -103,7 +104,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Import Data</h1>
             
-            <h4 data-toc-skip class="date">2023-05-30</h4>
+            <h4 data-toc-skip class="date">2023-06-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-ImportData.Rmd" class="external-link"><code>vignettes/MoveR-ImportData.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-ImportData.Rmd</code></div>
@@ -130,18 +131,21 @@ Figure 1: Frames extracted from a video recording of 12 parasitic micro-wasps (g
 <span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">1</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Path2Data</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpwB9euz\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span></span>
-<span><span class="co">## [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpwB9euz\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span></span>
-<span><span class="co">## [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpwB9euz\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpeqeDl6\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span></span>
+<span><span class="co">## [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpeqeDl6\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span></span>
+<span><span class="co">## [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpeqeDl6\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"</span></span></code></pre>
 <p>The function download the data from the <a href="https://github.com/qpetitjean/MoveR_SampleData" class="external-link">MoveR_SampleData</a> github repository and returns a vector containing the path to the raw data and the distance matrix helping to locate the edge of the arena and the reference data corresponding to the location particles (manually detected) over several frames (the latters will be useful in another tutorial).</p>
-<p>Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the <code>dir</code> argument from <code><a href="../reference/DLsampleData.html">DLsampleData()</a></code>.
-In any case, the function look for previous occurrence of the sample data to avoid multiple downloading.</p>
+<p class="notes">
+Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the <code>dir</code> argument from <code><a href="../reference/DLsampleData.html">DLsampleData()</a></code>. In any case, the function look for previous occurrence of the sample data to avoid multiple downloading.
+</p>
 </div>
 <div class="section level2">
 <h2 id="import-sample-data-into-r-environment">Import sample data into R environment<a class="anchor" aria-label="anchor" href="#import-sample-data-into-r-environment"></a>
 </h2>
-<p>Once the sample data has been downloaded or retrieved we use <code><a href="../reference/readTrex.html">readTrex()</a></code> to import the data into <svg aria-hidden="true" role="img" viewbox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:steelblue;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"></path></svg> environment.<br>
-Note that the same result can be achieved trough the use of <code><a href="../reference/readCtrax.html">readCtrax()</a></code>, <code><a href="../reference/readIdtracker.html">readIdtracker()</a></code> or <code><a href="../reference/readTrackR.html">readTrackR()</a></code> depending on the input data.</p>
+<p>Once the sample data has been downloaded or retrieved we use <code><a href="../reference/readTrex.html">readTrex()</a></code> to import the data into <svg aria-hidden="true" role="img" viewbox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:steelblue;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"></path></svg> environment.<br></p>
+<p class="notes">
+Note that the same result can be achieved trough the use of <code><a href="../reference/readCtrax.html">readCtrax()</a></code>, <code><a href="../reference/readIdtracker.html">readIdtracker()</a></code> or <code><a href="../reference/readTrackR.html">readTrackR()</a></code> depending on the input data.
+</p>
 <p>Here the raw tracking data are located in the ./MoveR_SampleData-main/sample_1/TREXOutput directory which is the first element of the Path2Data vector.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Import the sample data</span></span>
@@ -160,7 +164,9 @@ Note that the same result can be achieved trough the use of <code><a href="../re
 <span><span class="co">##  $ ntargets  : num [1:12024] 13 10 8 8 8 8 8 8 8 7 ...</span></span>
 <span><span class="co">##  $ timestamps: num [1:12024] 0 0.04 0.08 0.12 0.16 0.2 0.24 0.28 0.32 0.36 ...</span></span></code></pre>
 <p>The function import the data as a list of 9 elements that are the most useful and further used by various functions of the MoveR package.</p>
-<p>Note that output of the various “read” functions is standardized. However, it is also possible to import the output as returned by the tracking software by specifying rawDat = TRUE.</p>
+<p class="notes">
+Note that output of the various <code>read</code> functions is standardized. However, it is also possible to import the output as returned by the tracking software by specifying rawDat = TRUE.
+</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Import the sample data</span></span>
 <span><span class="va">DataFull</span> <span class="op">&lt;-</span></span>
@@ -212,7 +218,7 @@ Note that the same result can be achieved trough the use of <code><a href="../re
 <span><span class="co">##   ..$ X                        : num [1:156291] 2285 2280 2274 2273 2273 ...</span></span>
 <span><span class="co">##   ..$ Y                        : num [1:156291] 628 634 637 639 641 ...</span></span></code></pre>
 <p>In this case, the output of the function returns a list containing 2 sublists, the first corresponding to the one mentioned above and the second containing all the elements as returned by the tracking software.</p>
-<p>Also, the argument <code>mirrorY</code>, can be used to revert the y coordinates. Indeed some tracking software sets the origin of the y axis on the bottom-left while other use the upper-left corner of the video (see <code>??readTrex()</code> for more insight).</p>
+<p>Also, the argument <code>mirrorY</code>, can be used to revert the y coordinates. Indeed some tracking software sets the origin of the y axis on the bottom-left while other use the upper-left corner of the video (see <code><a href="../reference/readTrex.html">readTrex()</a></code> for more insight).</p>
 </div>
 <div class="section level2">
 <h2 id="convert-the-data-to-a-list-of-particles-tracks-tracklets">Convert the data to a list of particles tracks (tracklets)<a class="anchor" aria-label="anchor" href="#convert-the-data-to-a-list-of-particles-tracks-tracklets"></a>
@@ -270,7 +276,9 @@ For instance, here we are displaying the data frame containing the characteristi
 <h2 id="first-look-at-the-trajectories">First look at the trajectories<a class="anchor" aria-label="anchor" href="#first-look-at-the-trajectories"></a>
 </h2>
 <p>Using <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code>, it is easy to visualize the trajectories included in the dataset (see fig. <a href="#fig:drawTracklets1">2</a>A below), or to focus on the trajectories described only by some particles, here the fifth’ first (see fig. <a href="#fig:drawTracklets1">2</a>B below).</p>
-<p>Note that <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> needs an argument <code>timeCol</code> specifying the timeline of the video (here “frame”). One can also specify the resolution of the video to set x and y limits of the plot but as default, the <code>imgRes</code> argument use the maximum values recorded in x and y + 5% to set the plots limits (see drawTracklets documentation).</p>
+<p class="notes">
+Note that <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> needs an argument <code>timeCol</code> specifying the timeline of the video (here “frame”). One can also specify the resolution of the video to set x and y limits of the plot but as default, the <code>imgRes</code> argument use the maximum values recorded in x and y + 5% to set the plots limits (see drawTracklets documentation).
+</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># split the graphical window in 2 columns</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
@@ -339,7 +347,9 @@ Figure 2: Micro-wasps trajectories over the whole video timeline, expressed in f
 Figure 3: Micro-wasps trajectories over specified part of the video timeline, expressed in frame. A. all trajectories are represented over a time window of 1000 frames (between 1 and 999 frames). B. all trajectories are represented over two time windows of 1000 frames duration (between 6000 and 6999 and 11000 and 11999 frames). The trajectories are colored according to the moments at which they are recorded.
 </p>
 </div>
-<p>Note that it is also possible to represent specified tracklets over given time window(s) by combining the <code>selFrags</code> and <code>timeWin</code> arguments respectively.</p>
+<p class="notes">
+Note that it is also possible to represent specified tracklets over given time window(s) by combining the <code>selFrags</code> and <code>timeWin</code> arguments respectively.
+</p>
 <p>Finally, drawTracklets allow to color the particles’ tracks according to categorical variable, such as the identity of the particle (see fig. <a href="#fig:drawTracklets3">4</a>A below).</p>
 <p>However, here the identity of the particles is a numerical variable, we hence need to convert it to a factor, for instance by appending “Tricho” (i.e., part of the micro-wasps genus name) in front of each id. For this purpose, the easiest way is to use the “convert2List” function, transform the identity variable then convert back the data as a list of tracklet using convert2Tracklets as follow:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
