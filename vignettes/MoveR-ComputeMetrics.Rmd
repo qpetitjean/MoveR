@@ -225,10 +225,7 @@ customFuncList = list(
 
 ```
 
-<p class="notes">Note that naming each element (function) of the list ensure that the output of the computation is properly named when appended to the data.
-In case list elements are unnamed, the `analyseTracklets()` look for a generic name within the specified `customFunc`. 
-
-For instance, for `turnAngle(x, TimeCol = "runTimelinef", unit = "radians")`, the function can retrieve `turnAngle` but the result can be unexpected in case of more complex function structure such as for `circular::var(circular::circular(x$turnAngle, type = "angle", units = "radians"), na.rm = T)`, here the function will extract `circular::var`.</p>
+<p class="notes">Note that naming each element (function) of the list ensure that the output of the computation is properly named when appended to the data. In case list elements are unnamed, the `analyseTracklets()` look for a generic name within the specified `customFunc`. <br />For instance, for `turnAngle(x, TimeCol = "runTimelinef", unit = "radians")`, the function can retrieve `turnAngle` but the result can be unexpected in case of more complex function structure such as for `circular::var(circular::circular(x$turnAngle, type = "angle", units = "radians"), na.rm = T)`, here the function will extract `circular::var`.</p>
 
 Everything is ok, let's start the computation using `analyseTracklets()`
 
@@ -242,9 +239,7 @@ head(trackDat2[[1]], 20)
 
 Great! as displayed above for the first tracklet, the desired metrics and the smoothed one has been added to the dataset.
 
-<p class="notes">Note that `sinuosity` and `explorArea` return an unique value, in this case, the value is repeated over the whole tracklet.
-
-Also note that as we choose a step of 10 time units (here frames) for each sliding window, the first and last 5 values of the computed metrics return NA.</p>
+<p class="notes">Note that `sinuosity` and `explorArea` return an unique value, in this case, the value is repeated over the whole tracklet. Also note that as we choose a step of 10 time units (here frames) for each sliding window, the first and last 5 values of the computed metrics return NA.</p>
 
 To summarize, it is easy to run relatively intensive computation on a large set of tracklets and smooth the resulting metrics over each tracklet. While for this example, we have combined `analyseTracklets()`, `slidWindow()` and various modulus (e.g., `speed()`, `sinuosity()`, `turnAngle()`), `analyseTracklets()` is flexible enough to accept any computation specified by the user within the "customFunc" argument.
 
@@ -282,10 +277,8 @@ As expected, a new column (activity2) containing particles' activity states, cod
 
 Also, in case the `graph` argument is `TRUE`, a 3D plot showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) is displayed (see fig. \@ref(fig:actives2-3Dplot)). 
 
-```{r actives2-3Dplot, echo=FALSE, widgetframe_isolate_widgets = TRUE, widgetframe_self_contained = FALSE, widgetframe_widgets_dir = 'widgets', fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
-
+```{r actives2-3Dplot, echo=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
 load(url("https://github.com/qpetitjean/MoveR/raw/Main/man/figures/activity2-3Dplot.Rdata"))
-
     # draw the plot
       fig <- plotly::plot_ly(x=~colnames(dens), y=~rownames(dens), contours = list(
         z = list(
@@ -328,15 +321,14 @@ load(url("https://github.com/qpetitjean/MoveR/raw/Main/man/figures/activity2-3Dp
           zaxis = list(title = "counts (sqrt)")
         )
       )
-      
-widgetframe::frameWidget(widgetframe::frameableWidget(fig), height = 400, width = '95%')
+fig
+
 ```
 
 This plot may be helpful as diagnostic plot to check the distribution of the data making the two clusters and to check whether the clusters has been identified in an expected way. 
 
-<p class="notes"> Indeed, note that to identify the clusters we assume that the distribution of inactive states follow a Gaussian (i.e., normal) distribution within the 2 dimensions space. 
+<p class="notes">Indeed, note that to identify the clusters we assume that the distribution of inactive states follow a Gaussian (i.e., normal) distribution within the 2 dimensions space. <br />The activity state lying within the 95% confidence interval ellipsis of the distribution as well as those that hold values below the major radius of the ellipsis on the x axis and below the minor radius on the y axis are considered as inactive (0) while the remaining one are considered as active (1).</p>
 
-The activity state lying within the 95% confidence interval ellipsis of the distribution as well as those that hold values below the major radius of the ellipsis on the x axis and below the minor radius on the y axis are considered as inactive (0) while the remaining one are considered as active (1).</p>
 
 Now we have identified activity states according to both 1d (`activity1()`) and 2d (`activity2()`) methods, we can compare the global proportion of both active and inactive state returned by the two functions (see fig. \@ref(fig:PieCharts) below).
 
@@ -404,7 +396,7 @@ Hence, using `ANND()` one can compute the Average Nearest Neighbor distance acro
 
 For this example, we are computing the ANND and studentize 95% confidence interval every 20 seconds (i.e., 20 seconds * 25 frames) over 500 bootstrap sampling.
 
-```{r ANND, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', fig.asp = 0.7, out.width="100%", fig.cap="Evolution of the Average Nearest Neighbor Distance (ANND, purple line) and studentize 95% confidence interval among <em>Trichogramma</em> individuals over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line) expressed in pixels. The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
+```{r ANND, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the Average Nearest Neighbor Distance (ANND, purple line) and studentize 95% confidence interval among <em>Trichogramma</em> individuals over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line) expressed in pixels. The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
 
 # compute the ANND and studentize 95% confidence interval (bootstrap)
 ANNDRes <- MoveR::ANND(
@@ -423,20 +415,22 @@ source("https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/mai
 
 # plot the ANND and studentize 95% confidence interval as an envelope as well as the number of detection over the experiment.
 strains_plot(
-    finalDatList = trackDatL, # the cleaned dataset, needed to compute the average number of individuals over the video
-    smoothDf = ANNDResPlot, # the smoothed dataset
-    TempAxis = "y", # position of the temperature axis
-    TempCol = "Measured_Temp_Deg_C", # name of the temperature column
-    TempScale = NULL, # a vector containing 2 values (same unit as TempCol) indicating lower and upper limit of the temperature axis (either x or y)
-    TimeCol = "runTimelinef", # name of the time column,
-    TimeLimit = c((25*60*25), (70*60*25)), # a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis
-    nbrIndcounted = 24, # the number\r of individual manually counted
-    IC = list(ANNDmean = ANNDResPlot), # a list of datasets containing 95%Ci
-    variables = "ANNDmean", # a vector containing the names of variables to plot (names of columns present in both smoothDf and IC)
-    colvariable = c("purple"), # A vector containing the color of each variable on the plot
-    scaleVariable = list(c(0,300)), # a list containing vectors which indicates the upper and lower value to specify the scale for each variable
+    finalDatList = trackDatL, 
+    smoothDf = ANNDResPlot, 
+    TempAxis = "y", 
+    TempCol = "Measured_Temp_Deg_C", 
+    TempScale = c(35,45,2),
+    TimeCol = "runTimelinef", 
+    TimeLimit = c((25*60*25), (70*60*25)), 
+    nbrIndcounted = 24, 
+    IC = list(ANNDmean = ANNDResPlot), 
+    variables = "ANNDmean", 
+    colvariable = c("#D3139F"),
+    scaleVariable = list(c(0,300)), 
     Lab = "ANND (pixels)",
-    xTick = 5)
+    cex.lab = 1,
+    xTick = 5,
+    InnerSpace = 0.51)
 
 ```
 
@@ -619,7 +613,7 @@ Great! now that we have computed the studentized 95% CI, we can see that the dis
 Also, as the speed metrics, the distance traveled and the surface explored exhibit very similar trends we can hence use a more synthetic view of the results by plotting the sinuosity, the activity and the speed (for all individuals) on the same plot.
 
 
-```{r SynthPlot, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', fig.asp = 0.7, out.width="100%", fig.cap="Evolution of the activity, sinuosity and speed of <em>Trichogramma</em> individuals and studentize 95% confidence interval over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line). The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
+```{r SynthPlot, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the activity, sinuosity and speed of <em>Trichogramma</em> individuals and studentize 95% confidence interval over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line). The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
 # import a custom function to plot the results
 source(
   "https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/main/RScripts/Strains_plotFunc.r"
@@ -628,43 +622,35 @@ source(
 # plot the activity, speed and sinuosity and studentize 95% confidence interval as an envelope as well as the number of detection over the experiment.
 strains_plot(
   finalDatList = trackDatL,
-  # the cleaned dataset, needed to compute the average number of individuals over the video
   smoothDf = TemporalRes_wtd,
-  # a list of smoothed datasets
   TempAxis = "y",
-  # position of the temperature axis
   TempCol = "Measured_Temp_Deg_C",
-  # name of the temperature column
+  TempScale = c(35,45,2),
   TimeCol = "runTimelinef",
-  # name of the time column,
   TimeLimit = c((25 * 60 * 25), (70 * 60 * 25)),
-  # a vector containing 2 values (same unit as TimeCol) indicating lower and upper limit of the x axis
   nbrIndcounted = 24,
-  # the number\r of individual manually counted
   IC = boot.ci.NoNA,
-  # a list of datasets containing 95%Ci
   variables = c("activity" , "speed_active", "sinuosity"),
-  # a vector containing the names of variables to plot (names of columns present in both smoothDf and IC)
   colvariable = c("#339999", "#6600CC", "#669933"),
-  # A vector containing the color of each variable on the plot
-  scaleVariable = list(c(0, 1),
-                       c(0, 14),
-                       c(0, 5)),
-  # a list containing vectors which indicates the upper and lower value to specify the scale for each variable
+  scaleVariable = list(c(0, 1, 0.2),
+                       c(0, 12.5, 2.5),
+                       c(0, 5, 1)),
   Lab = list("Activity (%)",
              expression("Speed (" * list(px.s ^ -1) * ")"),
-             "Sinuosity"), # a list specifying the y axis labels
-  xTick = 5 # the increment between each x axis tick
+             "Sinuosity"),
+  cex.lab = 0.8,
+  xTick = 5,
+  InnerSpace = 0.51,
+  YlabSpace = 1.125
 )
 
 ```
 
-Great! We now have a better look at the effect of temperature on <em>Trichogramma</em>'s movements (see fig. \@ref(fig:SynthPlot)) and can now retrieve a temperature threshold at which movements start to decrease (about 38&#8451;) or even stop (CTmax about 40&#8451;).
+Great! We now have a better look at the effect of temperature on <em>Trichogramma</em>'s movements (see fig. \@ref(fig:SynthPlot)) and can now retrieve a temperature threshold at which movements start to decrease (about 38&#8451;) or even stop (CTmax about 41&#8451;).
 
 As these computation may be relatively intensive, and hence time consuming, depending on the size of the dataset (i.e., number of individuals tracked, duration of the tracking), the amount of metrics to compute and the sampling resolution (i.e., `sampling` argument) specified in `temporalTrend` and `temporalBoot`, it is easily possible to run the computation in parallel (across several thread of a personal computer, tutorial in progress). 
 
-
-Happy coding.
+<strong>Happy coding.</strong>
 
 <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-Clean-FilterData.html" class="previous">&laquo; Previous</a><a href="https://qpetitjean.github.io/MoveR/articles/MoveR-SensitivityAnalysis.html" class="next">Next &raquo;</a><br />
 

@@ -38,15 +38,7 @@ knitr::include_graphics(
 
 Let's download the data, import and convert them to a list of tracklets (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html">Import Data vignette</a> for detailed procedure).
 
-<p class="notes">
-Note that we have included some extra data that are related to this dataset within the "raw tracking data" when we have reduced the dataset: 
-
-  * the timeline expressed in frame (may be different from the default frame list because the data come from merged videos)
-
-  * the temperature at which the individuals are exposed over the assay 
-
-These extra information will be useful to conduct further analyses in this tutorial and some others.
-For instance, we can automatically determine the frame rate of the video-recording using the timeline and timestamps (usually made using the default frame list instead of timeline).</p>
+<p class="notes">Note that we have included some extra data that are related to this dataset within the "raw tracking data" when we have reduced the dataset:<br /><li>the timeline expressed in frame (may be different from the default frame list because the data comes from merged videos)</li><br /><li>the temperature at which the individuals are exposed over the assay.</li><br /> These extra information will be useful to conduct further analyses in this tutorial and some others.<br /> For instance, we can automatically determine the frame rate of the video-recording using the timeline and timestamps (usually made using the default frame list instead of timeline).</p>
 
 ```{r DLsampleData, echo=TRUE}
 # dl the second dataset from the sample data repository
@@ -532,9 +524,7 @@ data.table::fwrite(
 
 Now that the filtering/cleaning process is achieved, we can move to data analysis through various metrics computations.
 
-<p class="notes">Note, however, that ones would add or replace some of the filters that have been used in this example depending on the model species and the study' aims. 
-
-Accordingly, the various function developed in the MoveR package are very flexible and allow the user to specify custom functions to break limits.</p>
+<p class="notes">Note, however, that ones would add or replace some of the filters that have been used in this example depending on the model species and the study' aims. Accordingly, the various function developed in the MoveR package are very flexible and allow the user to specify custom functions to break limits.</p>
 
 For more insight how to use MoveR to run further computation check the next tutorials. 
 
