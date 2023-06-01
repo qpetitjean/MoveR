@@ -89,7 +89,7 @@ Besides the high flexibility and unified environment, the primary innovations pr
 
 <ul>
 <li><strong>Characterize behavioral states</strong> (i.e., active vs. inactive states) using unsupervised learning methods (i.e., density-based clustering - see activity2 function).</li><br />
-<li><strong>Compute the expected diffusion coefficient D</strong>, a proxy of population dispersal, assuming a correlated random walk model (from Turchin's 1998 result; see turchinD function) - <strong>This solution is currently under development and need further implementation before being stable</strong>.</li><br />
+<li><strong>Compute the expected diffusion coefficient D</strong>, a proxy of population dispersal, assuming a correlated random walk model (from Turchin's 2015 result; see turchinD function)</li><br />
 <li><strong>Identify and extract arbitrary patterns</strong>, in terms of changes among behavioral states, spatial regions or areas of interest, patch crosses, or any other patterns, using a very versatile regular-expression syntax.</li> 
 </ul>
 <img src="man/figures/WorkFlowMoveR.png" height="600" text-align="center"/>

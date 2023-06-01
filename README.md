@@ -170,9 +170,7 @@ density-based clustering - see activity2 function).
 <li>
 <strong>Compute the expected diffusion coefficient D</strong>, a proxy
 of population dispersal, assuming a correlated random walk model (from
-Turchin’s 1998 result; see turchinD function) - <strong>This solution is
-currently under development and need further implementation before being
-stable</strong>.
+Turchin’s 2015 result; see turchinD function)
 </li>
 <br />
 <li>

@@ -36,6 +36,8 @@ navbar:
       href: articles/MoveR-Clean-FilterData.html
     - text: Compute some metrics
       href: articles/MoveR-ComputeMetrics.html
+    - text: Sequences identification
+      href: articles/MoveR-PatternId.html
     - text: Parallel computing
       href: articles/MoveR-ParallelComputation.html
     - text: Detection performances

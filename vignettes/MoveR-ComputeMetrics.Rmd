@@ -661,9 +661,8 @@ strains_plot(
 
 Great! We now have a better look at the effect of temperature on <em>Trichogramma</em>'s movements (see fig. \@ref(fig:SynthPlot)) and can now retrieve a temperature threshold at which movements start to decrease (about 38&#8451;) or even stop (CTmax about 40&#8451;).
 
-As these computation may be relatively intensive, and hence time consuming, depending on the size of the dataset (i.e., number of individuals tracked, duration of the tracking), the amount of metrics to compute and the sampling resolution (i.e., `sampling` argument) specified in `temporalTrend` and `temporalBoot`, it is easily possible to run the computation in parallel (across several thread of a personal computer). 
+As these computation may be relatively intensive, and hence time consuming, depending on the size of the dataset (i.e., number of individuals tracked, duration of the tracking), the amount of metrics to compute and the sampling resolution (i.e., `sampling` argument) specified in `temporalTrend` and `temporalBoot`, it is easily possible to run the computation in parallel (across several thread of a personal computer, tutorial in progress). 
 
-Luckily, this is the topic of the next tutorial.
 
 Happy coding.
 

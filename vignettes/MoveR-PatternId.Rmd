@@ -1,0 +1,15 @@
+---
+title: "Identify behavioral state sequences"
+description: "A tutorial about how to identify particular change of state or areas using the MoveR package."
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    fig_caption: true
+    number_sections: false
+    global_numbering: false
+    link-citations: yes
+    css: pkgdown/extra.css
+pkgdown:
+  as_is: true
+---
+TODO
