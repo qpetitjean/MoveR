@@ -24,14 +24,9 @@
 #'
 #' @param na.rm A logical value (i.e., TRUE or FALSE) indicating whether NA values should be stripped before the computation proceeds (default = TRUE).
 #'
-#' @param graph A logical value (i.e., TRUE or FALSE) indicating whether the distribution (3d density map) of the active and inactive states according to the classification (density based clustering) plot should be displayed or not (default = TRUE). 
-#'
-#' @param saveGraph A logical value (i.e., TRUE or FALSE) indicating whether the 3d plot should be saved as a .html file in the hardrive (within the working directory) or the path specifying where to save the plot (see \code{\link[htmlwidgets]{saveWidget}}) (default = FALSE). 
-#' 
 #'
 #' @return This function returns the results of the classification (actives vs. inactives) as numeric value (1 or 0, respectively) appended to
 #' the original list of data frame containing tracking information for each tracklet. 
-#' Also, if graph argument is TRUE, the function returns the distribution (3d density map) of the active and inactive states according to the classification (density based clustering) in the viewer.
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -122,7 +117,6 @@
 #'   )
 #'
 #' # use density based clustering to classify actives and inactives states in a 2 dimension array (here the speed and the angle variance)
-#' # when graph = TRUE, the function also display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering)
 #'
 #' trackdat3 <- MoveR::activity2(
 #'   trackdat3,
@@ -133,9 +127,65 @@
 #'   eps = 0.15,
 #'   minPts = 5,
 #'   scale = TRUE,
-#'   na.rm = TRUE,
-#'   graph = TRUE
+#'   na.rm = TRUE
 #' )
+#'
+#' ## optional, it is possible to draw the distribution of the count in 2 dimension space 
+#' # compute the count matrix in the 2d space with the same parameter than activity2 function
+#' trackDatL <- MoveR::convert2List(trackDat3)
+#' outP <- MoveR::countMat(x = log10(trackDatL[["slideMeanSpeed"]]), 
+#'                  y = trackDatL[["slideVarAngle"]],
+#'                  groups = trackDatL[["activity2"]],
+#'                  nbins = 100,
+#'                  output = "matrix")
+#' 
+#' # retrieve max and min value of sqrt-transformed count over the groups for plotting
+#' maxVal <- max(unlist(lapply(outP, function(z) max(sqrt(z)))))
+#' minVal <- min(unlist(lapply(outP, function(z) min(sqrt(z)))))
+#' 
+#' # draw the plot using plotly (3d interactive plot)
+#' library(plotly)
+#' fig <- plotly::plot_ly(x=~colnames(outP[[1]]), y=~rownames(outP[[1]]), contours = list(
+#'   z = list(
+#'     show = TRUE,
+#'     start = round(minVal,-2),
+#'     project = list(z = TRUE),
+#'     end = round(maxVal,-2),
+#'     size = max(maxVal) / 10,
+#'     color = "white"
+#'   )
+#' ))
+#' # add inactive layer
+#' fig <- plotly::add_surface(
+#'   p = fig,
+#'   z = sqrt(outP[[1]]),
+#'   opacity = 0.8,
+#'   colorscale = "Hot",
+#'   cmin = min(sqrt(outP[[1]])),
+#'   cmax = max(sqrt(outP[[1]])),
+#'   colorbar = list(title = "inactive\ncounts (sqrt)")
+#' )
+#' # add active layer
+#' fig <- plotly::add_surface(
+#'   p = fig,
+#'   z = sqrt(outP[[2]]),
+#'   opacity = 1,
+#'   colorscale = list(
+#'     c(0, 0.25, 1),
+#'     c("rgb(20,20,20)", "rgb(58,139,44)", "rgb(234,239,226)")
+#'   ),
+#'   colorbar = list(title = "active\ncounts (sqrt)")
+#' )
+#' fig <- plotly::layout(
+#'   fig,
+#'   title = '3D density plot of activity states',
+#'   scene1 = list(
+#'     xaxis = list(title = "slideMeanSpeed (log10)"),
+#'     yaxis = list(title = "slideVarAngle"),
+#'     zaxis = list(title = "counts (sqrt)")
+#'   )
+#' )
+#' fig
 #'
 #' # draw the particle' trajectory and spot the inactive moments using red dots
 #' MoveR::drawTracklets(trackdat3,
@@ -163,9 +213,7 @@ activity2 <-
            eps = NULL,
            minPts = NULL,
            scale = TRUE,
-           na.rm = TRUE,
-           graph = TRUE,
-           saveGraph = FALSE) {
+           na.rm = TRUE) {
     # retrieve var1 and var2 from the dataset and transform them if needed
     trackdatL <- MoveR::convert2List(trackDat)
     var1n <- var1
@@ -234,51 +282,16 @@ activity2 <-
       nbins = 100
       warning("nbins argument is unspecified, default value is 100")
     }
-    nbins <- rep(nbins, 2)
+    
+    # build the count matrix within the 2d space
     x = tempDf[["var2"]]
     y = tempDf[["var1"]]
-    ## specify groups of values according to nbins
-    x.cuts <-
-      seq(from = min(x),
-          to = max(x),
-          length = nbins[1] + 1)
-    y.cuts <-
-      seq(from = min(y),
-          to = max(y),
-          length = nbins[2] + 1)
-    index.x <- cut(x, x.cuts, include.lowest = TRUE)
-    index.y <- cut(y, y.cuts, include.lowest = TRUE)
-    ## compute the matrix of count according to each cuts
-    m <- tapply(x, list(index.x, index.y), base::length)
-    m[is.na(m)] <- 0
-    
-    ## check the occurrence of 0
-    m0 <- m
-    m0[m > 0] <- 1
-    
-    ## transform m as dataframe
-    mdf <-
-      data.frame(rows = rownames(m)[row(m)],
-                 vars = colnames(m)[col(m)],
-                 values = c(m))
-    names(mdf) <- c("x", "y", "value")
-    mdfL <-
-      lapply(seq(ncol(mdf) - 1), function(z)
-        gsub('^.|.$', "", mdf[, z]))
-    mdf2 <-
-      cbind(data.frame(do.call("cbind", mdfL)), value = mdf[["value"]])
-    xcomp <- strsplit(as.character(mdf2[["X1"]]), ",", fixed = TRUE)
-    ycomp <- strsplit(as.character(mdf2[["X2"]]), ",", fixed = TRUE)
-    xcomp <-
-      unlist(lapply(xcomp, function(x)
-        mean(as.numeric(x), na.rm = T)))
-    ycomp <-
-      unlist(lapply(ycomp, function(x)
-        mean(as.numeric(x), na.rm = T)))
-    mdf3 <-
-      data.frame(x = xcomp,
-                 y = ycomp,
-                 value = mdf2[["value"]])
+    mdf3 <- MoveR::countMat(
+      x = x,
+      y = y,
+      nbins = nbins,
+      output = "data.frame"
+    )[-4]
     mdf3[["spots"]] <- rep(NA)
     
     ## use the total number of count divided by the square of bins to specify a treshold for hot and cold spots
@@ -288,7 +301,7 @@ activity2 <-
         x * (unique(nbins) ^ 2) / 100))
     ### loop trough treshold increments
     for (uptresh in IncTresh) {
-      hotLim <- sum(m) / (unique(nbins) ^ 2 - uptresh)
+      hotLim <- sum(mdf3[["value"]]) / (unique(nbins) ^ 2 - uptresh)
       Hot = which(mdf3[["value"]] > hotLim,
                   arr.ind = TRUE)
       mdf3[["spots"]][Hot] <- "Hot"
@@ -426,82 +439,6 @@ activity2 <-
       1
     trackdatL[["activity2"]] <- toClust[["activity"]]
     
-    if (isTRUE(graph) | isTRUE(saveGraph) | is.character(saveGraph)) {
-      # display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering)
-      ## retrieve the result of the classification in the matrix of counts
-      ZPlot <-
-        t(apply(mdf3[, c(1, 2)], 1, function(i)
-          solve(SigSqrt, i - mu)))
-      mdf3[["insideInact"]] <-
-        rowSums(ZPlot ^ 2) < stats::qchisq(0.95, df = ncol(ZPlot))
-      ## apply the thresholds previously computed
-      mdf3[["insideInact"]][which(mdf3["x"] > XtreshInact &
-                                    mdf3["y"] < majRadInact[["y"]][which(XtreshInact == majRadInact[["x"]])])] <-
-        TRUE
-      mdf3[["insideInact"]][which(mdf3["x"] > minRadInact[["x"]][which(YtreshInact == minRadInact[["y"]])] &
-                                    mdf3["y"] < YtreshInact)] <-
-        TRUE
-      mdf3[["activity"]] <- rep(NA, nrow(mdf3))
-      mdf3[["activity"]][which(mdf3[["insideInact"]] == TRUE)] <-
-        0
-      mdf3[["activity"]][which(mdf3[["insideInact"]] == FALSE)] <-
-        1
-      # convert the result to density matrix
-      l1 <- mdf3[which(mdf3["activity"] == 0), ]
-      l2 <- mdf3[which(mdf3["activity"] == 1), ]
-      dens <- stats::xtabs(value ~ y + x, mdf3[-c(4, 5, 6)])
-      dens1 <- stats::xtabs(value ~ y + x, l1[-c(4, 5, 6)])
-      dens2 <- stats::xtabs(value ~ y + x, l2[-c(4, 5, 6)])
-      
-      # draw the plot
-      fig <- plotly::plot_ly(x=~colnames(dens), y=~rownames(dens), contours = list(
-        z = list(
-          show = TRUE,
-          start = round(min(sqrt(dens)),-2),
-          project = list(z = TRUE),
-          end = round(max(sqrt(dens)),-2),
-          size = max(sqrt(dens)) / 10,
-          color = "white"
-        )
-      ))
-      ## add inactive layer
-      fig <- plotly::add_surface(
-        p = fig,
-        z = sqrt(dens),
-        opacity = 0.8,
-        colorscale = "Hot",
-        cmin = min(sqrt(dens1)),
-        cmax = max(sqrt(dens1)),
-        colorbar = list(title = "inactive\ncounts (sqrt)")
-      )
-      ## add active layer
-      fig <- plotly::add_surface(
-        p = fig,
-        z = sqrt(dens2),
-        opacity = 1,
-        colorscale = list(
-          c(0, 0.25, 1),
-          c("rgb(20,20,20)", "rgb(58,139,44)", "rgb(234,239,226)")
-        ),
-        #colorscale = "Greens",
-        colorbar = list(title = "active\ncounts (sqrt)")
-      )
-      fig <- plotly::layout(
-        fig,
-        title = '3D density plot of activity states',
-        scene1 = list(
-          xaxis = list(title = var2n),
-          yaxis = list(title = var1n),
-          zaxis = list(title = "counts (sqrt)")
-        )
-      )
-      if(isTRUE(graph)){
-      print(fig)}
-      if(isTRUE(saveGraph)){
-        htmlwidgets::saveWidget(fig, file.path(getwd(), "activity2-3Dplot.html"))}
-      if(is.character(saveGraph)){
-        htmlwidgets::saveWidget(fig, saveGraph)}
-    }
     Res <- MoveR::convert2Tracklets(trackdatL, by = "trackletId")
     return(Res)
   }

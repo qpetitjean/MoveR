@@ -39,7 +39,6 @@ Imports:
     reticulate (>= 1.20),
     stats (>= 4.1.0),
     trajr (>= 1.4.0),
-    plotly (>= 4.10.1),
     pracma (>= 2.4.2)
 Suggests: 
     knitr,

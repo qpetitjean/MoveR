@@ -33,10 +33,9 @@ few dependencies:<br />
 <ul>
 <li>
 <a href="https://www.rdocumentation.org/packages/graphics">graphics</a>,
-<a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a>,
-<a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a> and
-<a href="https://www.rdocumentation.org/packages/plotly">plotly</a> to
-display graphical elements.
+<a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a>
+and <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a>
+to display graphical elements.
 </li>
 <br />
 <li>
@@ -170,7 +169,7 @@ density-based clustering - see activity2 function).
 <li>
 <strong>Compute the expected diffusion coefficient D</strong>, a proxy
 of population dispersal, assuming a correlated random walk model (from
-Turchin’s 2015 result; see turchinD function)
+Turchin’s 2015 result; see Dcoef function)
 </li>
 <br />
 <li>

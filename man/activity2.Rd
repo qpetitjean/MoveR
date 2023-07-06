@@ -14,9 +14,7 @@ activity2(
   eps = NULL,
   minPts = NULL,
   scale = TRUE,
-  na.rm = TRUE,
-  graph = TRUE,
-  saveGraph = FALSE
+  na.rm = TRUE
 )
 }
 \arguments{
@@ -39,15 +37,10 @@ activity2(
 \item{scale}{A logical value (i.e., TRUE or FALSE) indicating whether the data should be centered (i.e., values minus the mean) and scaled (divided by the standard deviation) (default = TRUE).}
 
 \item{na.rm}{A logical value (i.e., TRUE or FALSE) indicating whether NA values should be stripped before the computation proceeds (default = TRUE).}
-
-\item{graph}{A logical value (i.e., TRUE or FALSE) indicating whether the distribution (3d density map) of the active and inactive states according to the classification (density based clustering) plot should be displayed or not (default = TRUE).}
-
-\item{saveGraph}{A logical value (i.e., TRUE or FALSE) indicating whether the 3d plot should be saved as a .html file in the hardrive (within the working directory) or the path specifying where to save the plot (see \code{\link[htmlwidgets]{saveWidget}}) (default = FALSE).}
 }
 \value{
 This function returns the results of the classification (actives vs. inactives) as numeric value (1 or 0, respectively) appended to
 the original list of data frame containing tracking information for each tracklet.
-Also, if graph argument is TRUE, the function returns the distribution (3d density map) of the active and inactive states according to the classification (density based clustering) in the viewer.
 }
 \description{
 Given a list of data frames containing tracking information and two variable of interest the function use
@@ -133,7 +126,6 @@ trackdat3 <-
   )
 
 # use density based clustering to classify actives and inactives states in a 2 dimension array (here the speed and the angle variance)
-# when graph = TRUE, the function also display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering)
 
 trackdat3 <- MoveR::activity2(
   trackdat3,
@@ -144,9 +136,65 @@ trackdat3 <- MoveR::activity2(
   eps = 0.15,
   minPts = 5,
   scale = TRUE,
-  na.rm = TRUE,
-  graph = TRUE
+  na.rm = TRUE
 )
+
+## optional, it is possible to draw the distribution of the count in 2 dimension space 
+# compute the count matrix in the 2d space with the same parameter than activity2 function
+trackDatL <- MoveR::convert2List(trackDat3)
+outP <- MoveR::countMat(x = log10(trackDatL[["slideMeanSpeed"]]), 
+                 y = trackDatL[["slideVarAngle"]],
+                 groups = trackDatL[["activity2"]],
+                 nbins = 100,
+                 output = "matrix")
+
+# retrieve max and min value of sqrt-transformed count over the groups for plotting
+maxVal <- max(unlist(lapply(outP, function(z) max(sqrt(z)))))
+minVal <- min(unlist(lapply(outP, function(z) min(sqrt(z)))))
+
+# draw the plot using plotly (3d interactive plot)
+library(plotly)
+fig <- plotly::plot_ly(x=~colnames(outP[[1]]), y=~rownames(outP[[1]]), contours = list(
+  z = list(
+    show = TRUE,
+    start = round(minVal,-2),
+    project = list(z = TRUE),
+    end = round(maxVal,-2),
+    size = max(maxVal) / 10,
+    color = "white"
+  )
+))
+# add inactive layer
+fig <- plotly::add_surface(
+  p = fig,
+  z = sqrt(outP[[1]]),
+  opacity = 0.8,
+  colorscale = "Hot",
+  cmin = min(sqrt(outP[[1]])),
+  cmax = max(sqrt(outP[[1]])),
+  colorbar = list(title = "inactive\ncounts (sqrt)")
+)
+# add active layer
+fig <- plotly::add_surface(
+  p = fig,
+  z = sqrt(outP[[2]]),
+  opacity = 1,
+  colorscale = list(
+    c(0, 0.25, 1),
+    c("rgb(20,20,20)", "rgb(58,139,44)", "rgb(234,239,226)")
+  ),
+  colorbar = list(title = "active\ncounts (sqrt)")
+)
+fig <- plotly::layout(
+  fig,
+  title = '3D density plot of activity states',
+  scene1 = list(
+    xaxis = list(title = "slideMeanSpeed (log10)"),
+    yaxis = list(title = "slideVarAngle"),
+    zaxis = list(title = "counts (sqrt)")
+  )
+)
+fig
 
 # draw the particle' trajectory and spot the inactive moments using red dots
 MoveR::drawTracklets(trackdat3,

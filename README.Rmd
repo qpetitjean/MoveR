@@ -38,7 +38,7 @@ In a sack of flexibility, `MoveR` is mainly coded using base `r fontawesome::fa(
 However it still relies on a few dependencies:<br />
 
 <ul>
-<li><a href="https://www.rdocumentation.org/packages/graphics">graphics</a>, <a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a>, <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a> and <a href="https://www.rdocumentation.org/packages/plotly">plotly</a> to display graphical elements.</li><br />
+<li><a href="https://www.rdocumentation.org/packages/graphics">graphics</a>, <a href="https://www.rdocumentation.org/packages/grDevices">grDevices</a> and <a href="https://www.rdocumentation.org/packages/hexbin">hexbin</a> to display graphical elements.</li><br />
 <li><a href="https://github.com/r-lib/progress">progress</a> to display a progress bar showing the advancement of the computations.</li><br />
 <li><a href="https://www.rdocumentation.org/packages/reticulate">reticulate</a> and <a href="https://www.rdocumentation.org/packages/R.matlab">R.matlab</a> to import <a href="https://https://www.python.org/">Python</a> and <a href="https://mathworks.com/products/matlab.html">Matlab</a> formatted data.</li><br />
 <li><a href="https://www.rdocumentation.org/packages/stats">stats</a> and <a href="https://www.rdocumentation.org/packages/pracma">pracma</a> to perform basic and advanced calculations.</li><br />
@@ -89,7 +89,7 @@ Besides the high flexibility and unified environment, the primary innovations pr
 
 <ul>
 <li><strong>Characterize behavioral states</strong> (i.e., active vs. inactive states) using unsupervised learning methods (i.e., density-based clustering - see activity2 function).</li><br />
-<li><strong>Compute the expected diffusion coefficient D</strong>, a proxy of population dispersal, assuming a correlated random walk model (from Turchin's 2015 result; see turchinD function)</li><br />
+<li><strong>Compute the expected diffusion coefficient D</strong>, a proxy of population dispersal, assuming a correlated random walk model (from Turchin's 2015 result; see Dcoef function)</li><br />
 <li><strong>Identify and extract arbitrary patterns</strong>, in terms of changes among behavioral states, spatial regions or areas of interest, patch crosses, or any other patterns, using a very versatile regular-expression syntax.</li> 
 </ul>
 <img src="man/figures/WorkFlowMoveR.png" height="600" text-align="center"/>

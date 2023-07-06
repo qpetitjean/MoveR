@@ -253,7 +253,6 @@ For this purpose, we are using `activity2()` and the previously smoothed speed (
 
 ```{r actives2, echo=TRUE, message=FALSE, warning=FALSE}
 # use density based clustering to classify actives and inactives states in a 2 dimension array (here the smoothed speed (log) and the angle variance)
-# when graph = TRUE, the function display the distribution (3d density map) of the active and inactive states according to the classification (density based clustering).
 
 trackDat3 <-
   MoveR::activity2(
@@ -263,8 +262,7 @@ trackDat3 <-
     var1T = log10,
     nbins = 100,
     eps = 0.15,
-    minPts = 5,
-    graph = TRUE
+    minPts = 5
   )
 
 ```
@@ -275,57 +273,68 @@ head(trackDat3[[1]], 20)
 
 As expected, a new column (activity2) containing particles' activity states, coded as binary value (1 and 0 for active and inactive state, respectively) is added to each tracklet. 
 
-Also, in case the `graph` argument is `TRUE`, a 3D plot showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) is displayed (see fig. \@ref(fig:actives2-3Dplot)). 
+Also, using `countMat()` it is possible to build the matrix of count in the two dimensions array used to classify particles' between active and inactive states and then build a 3D plot (e.g., using <a href="https://plotly.com/r/getting-started/">plotly</a>) showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) (see fig. \@ref(fig:actives2-3Dplot)). 
 
 ```{r actives2-3Dplot, echo=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
-load(url("https://github.com/qpetitjean/MoveR/raw/Main/man/figures/activity2-3Dplot.Rdata"))
-    # draw the plot
-      fig <- plotly::plot_ly(x=~colnames(dens), y=~rownames(dens), contours = list(
-        z = list(
-          show = TRUE,
-          start = round(min(sqrt(dens)),-2),
-          project = list(z = TRUE),
-          end = round(max(sqrt(dens)),-2),
-          size = max(sqrt(dens)) / 10,
-          color = "white"
-        )
-      ))
-      ## add inactive layer
-      fig <- plotly::add_surface(
-        p = fig,
-        z = sqrt(dens),
-        opacity = 0.8,
-        colorscale = "Hot",
-        cmin = min(sqrt(dens1)),
-        cmax = max(sqrt(dens1)),
-        colorbar = list(title = "inactive\ncounts (sqrt)")
-      )
-      ## add active layer
-      fig <- plotly::add_surface(
-        p = fig,
-        z = sqrt(dens2),
-        opacity = 1,
-        colorscale = list(
-          c(0, 0.25, 1),
-          c("rgb(20,20,20)", "rgb(58,139,44)", "rgb(234,239,226)")
-        ),
-        #colorscale = "Greens",
-        colorbar = list(title = "active\ncounts (sqrt)")
-      )
-      fig <- plotly::layout(
-        fig,
-        title = "3D density plot of activity states",
-        scene1 = list(
-          xaxis = list(title = var2n),
-          yaxis = list(title = var1n),
-          zaxis = list(title = "counts (sqrt)")
-        )
-      )
-fig
+ # compute the count matrix in the 2d space with the same parameter than activity2 function
+ trackDatL <- MoveR::convert2List(trackDat3)
+ outP <- MoveR::countMat(x = log10(trackDatL[["slideMeanSpeed"]]), 
+                  y = trackDatL[["slideVarAngle"]],
+                  groups = trackDatL[["activity2"]],
+                  nbins = 100,
+                  output = "matrix")
+ 
+ # retrieve max and min value of sqrt-transformed count over the groups for plotting
+ maxVal <- max(unlist(lapply(outP, function(z) max(sqrt(z)))))
+ minVal <- min(unlist(lapply(outP, function(z) min(sqrt(z)))))
+ 
+ # draw the plot using plotly (3d interactive plot)
+ library(plotly)
+ fig <- plotly::plot_ly(x=~colnames(outP[[1]]), y=~rownames(outP[[1]]), contours = list(
+   z = list(
+     show = TRUE,
+     start = round(minVal,-2),
+     project = list(z = TRUE),
+     end = round(maxVal,-2),
+     size = max(maxVal) / 10,
+     color = "white"
+   )
+ ))
+ # add inactive layer
+ fig <- plotly::add_surface(
+   p = fig,
+   z = sqrt(outP[[1]]),
+   opacity = 0.8,
+   colorscale = "Hot",
+   cmin = min(sqrt(outP[[1]])),
+   cmax = max(sqrt(outP[[1]])),
+   colorbar = list(title = "inactive\ncounts (sqrt)")
+ )
+ # add active layer
+ fig <- plotly::add_surface(
+   p = fig,
+   z = sqrt(outP[[2]]),
+   opacity = 1,
+   colorscale = list(
+     c(0, 0.25, 1),
+     c("rgb(20,20,20)", "rgb(58,139,44)", "rgb(234,239,226)")
+   ),
+   colorbar = list(title = "active\ncounts (sqrt)")
+ )
+ fig <- plotly::layout(
+   fig,
+   title = '3D density plot of activity states',
+   scene1 = list(
+     xaxis = list(title = "slideMeanSpeed (log10)"),
+     yaxis = list(title = "slideVarAngle"),
+     zaxis = list(title = "counts (sqrt)")
+   )
+ )
+ fig
 
 ```
 
-This plot may be helpful as diagnostic plot to check the distribution of the data making the two clusters and to check whether the clusters has been identified in an expected way. 
+This plot may be helpful as diagnostic plot to check the distribution of the data making the two clusters and to check whether the clusters has been identified in an expected way. The count matrix can also be computed before using `activity2()` to check for global distribution of the count in the specified 2d space.  
 
 <p class="notes">Indeed, note that to identify the clusters we assume that the distribution of inactive states follow a Gaussian (i.e., normal) distribution within the 2 dimensions space. <br />The activity state lying within the 95% confidence interval ellipsis of the distribution as well as those that hold values below the major radius of the ellipsis on the x axis and below the minor radius on the y axis are considered as inactive (0) while the remaining one are considered as active (1).</p>
 
