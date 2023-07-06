@@ -9,7 +9,7 @@ turnAngle(
   timeCol = NULL,
   unit = c("radians", "degrees"),
   compass = NULL,
-  scale = NULL
+  scale = 1
 )
 }
 \arguments{
@@ -20,6 +20,9 @@ turnAngle(
 \item{unit}{A character string indicating whether the function should returns turning angle in radians or degrees.}
 
 \item{compass}{A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).}
+
+\item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
+(e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.}
 }
 \value{
 This function returns a vector containing the values of turning angle over a trajectory.

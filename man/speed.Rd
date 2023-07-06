@@ -4,14 +4,14 @@
 \alias{speed}
 \title{Compute particle's speed over a trajectory.}
 \usage{
-speed(df, scale = NULL, timeCol = NULL)
+speed(df, scale = 1, timeCol = NULL)
 }
 \arguments{
 \item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet, as well as
 a column containing time information, whatever the unit, over the trajectory.}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-(e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.}
+(e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.}
 
 \item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
 }

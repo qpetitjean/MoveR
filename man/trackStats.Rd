@@ -7,8 +7,8 @@
 trackStats(
   trackDat,
   frameR = NULL,
-  scale = NULL,
-  units = NULL,
+  scale = 1,
+  units = "pixels",
   progress = TRUE
 )
 }
@@ -19,7 +19,7 @@ trackStats(
 (optional).}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-(e.g., size in cm / size in pixels, (default = 1).}
+(e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.}
 
 \item{units}{A character string specifying the spatial unit of the coordinates after scaling (default = "pixels").}
 

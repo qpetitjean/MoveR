@@ -24,7 +24,7 @@ or a data frame containing tracking information for one tracklet.}
 \item{imgRes}{A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
 If imgRes is unspecified, the function retrieve it using x and y maximum values + 5\%.}
 
-\item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates (optional).}
+\item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates (default = 1).}
 
 \item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
 

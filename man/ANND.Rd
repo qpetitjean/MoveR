@@ -9,7 +9,7 @@ ANND(
   timeCol = NULL,
   Tinterval = NULL,
   sampling = NULL,
-  scale = NULL,
+  scale = 1,
   bootn = 0,
   progress = TRUE
 )
@@ -25,6 +25,9 @@ specifying the time window on which the computation is performed (default is nul
 \item{sampling}{A numeric value expressed in the timeline unit and specifying the subsampling step used to
 to perform the computation (it allow to make computation faster). In other words, it determine the resolution of the
 returned results (e.g., a value of 5000 mean that values will be computed every 5000 time unit).}
+
+\item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
+(e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.}
 
 \item{bootn}{A numeric value corresponding to the number of bootstrap sampling used to compute studentize 95\% confidence interval (default = 0, meaning bootstrap will be not performed).}
 
