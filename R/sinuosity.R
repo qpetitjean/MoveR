@@ -9,7 +9,7 @@
 #' a column containing time information, whatever the unit, over the tracklet.
 #'
 #' @param scale A ratio corresponding to the scaling factor which should be applied to the trajectory coordinates.
-#' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.
+#' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.
 #'
 #' @param segL A numeric value expressed in the unit specified by user and corresponding
 #' to the length of the resampling step needed to discretize the input trajectory (optional)
@@ -50,7 +50,7 @@
 #' @export
 
 sinuosity <- function(df,
-                      scale = NULL,
+                      scale = 1,
                       segL = NULL,
                       timeCol = NULL,
                       compass = NULL) {
@@ -63,12 +63,6 @@ sinuosity <- function(df,
     stop(
       "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
     )
-  }
-  if (is.null(scale)) {
-    warning(
-      "the scaling factor to be applied to the trajectory coordinates is missing, default is 1/1"
-    )
-    scale = 1 / 1
   }
   if (is.null(timeCol)) {
     stop(

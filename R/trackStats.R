@@ -32,7 +32,7 @@
 #' (optional).
 #'
 #' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-#' (e.g., size in cm / size in pixels, (default = 1).
+#' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.
 #'
 #' @param units A character string specifying the spatial unit of the coordinates after scaling (default = "pixels").
 #'
@@ -86,17 +86,10 @@
 
 trackStats = function(trackDat,
                       frameR = NULL,
-                      scale = NULL,
-                      units = NULL,
+                      scale = 1,
+                      units = "pixels",
                       progress = TRUE) {
-  if (is.null(units)) {
-    units <- "pixels"
-    warning("units argument is missing, default value is pixels")
-  }
-  if (is.null(scale)) {
-    scale <- 1
-    warning("scale argument is missing, default value is 1 (i.e., no scaling)")
-  }
+
   if (is.null(frameR)) {
     warning("frameR argument is missing, metrics expressed in seconds will return NA")
   }

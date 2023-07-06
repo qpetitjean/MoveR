@@ -12,6 +12,8 @@
 #'
 #' @param compass A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).
 #'
+#' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
+#' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.
 #'
 #' @return This function returns a vector containing the values of turning angle over a trajectory.
 #'
@@ -50,7 +52,7 @@ turnAngle <-
            timeCol = NULL,
            unit = c("radians", "degrees"),
            compass = NULL,
-           scale = NULL) {
+           scale = 1) {
     if (is.null(MoveR::listGet(df, "x.pos"))) {
       stop(
         "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
@@ -60,12 +62,6 @@ turnAngle <-
       stop(
         "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
       )
-    }
-    if (is.null(scale)) {
-      warning(
-        "the scaling factor to be applied to the trajectory coordinates is missing, default is 1"
-      )
-      scale = 1 / 1
     }
     if (is.null(timeCol)) {
       stop(

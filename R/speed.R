@@ -9,7 +9,7 @@
 #' a column containing time information, whatever the unit, over the trajectory.
 #'
 #' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-#' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}.
+#' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.
 #'
 #' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
 #'
@@ -65,7 +65,7 @@
 #' @export
 
 speed <- function(df,
-                  scale = NULL,
+                  scale = 1,
                   timeCol = NULL) {
   if (is.null(MoveR::listGet(df, "x.pos"))) {
     stop(
@@ -76,12 +76,6 @@ speed <- function(df,
     stop(
       "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
     )
-  }
-  if (is.null(scale)) {
-    warning(
-      "the scaling factor to be applied to the trajectory coordinates is missing, default is 1"
-    )
-    scale = 1 / 1
   }
   if (is.null(timeCol)) {
     stop(
