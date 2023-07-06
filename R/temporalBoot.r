@@ -274,7 +274,7 @@ temporalBoot <-
       # initialize progress bar
       total = length(Newtimeline)
       pb <-
-        progress::progress_bar$new(format = "frame processing [:bar] :current/:total (:percent)", total = total)
+        progress::progress_bar$new(format = "Time processing [:bar] :current/:total (:percent)", total = total)
       pb$tick(0)
     }
     for (i in Newtimeline) {

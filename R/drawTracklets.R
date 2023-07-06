@@ -160,7 +160,7 @@ drawTracklets <- function(trackDat,
                           cex.start = 0.5,
                           progress = TRUE) {
   if (is.null(names(trackDat))) {
-    names(trackDat) <- seq(length(trackDat))
+    names(trackDat) <- seq_along(trackDat)
   }
   # compute the duration of the video according to timeCol argument
   viDur <-
@@ -230,74 +230,75 @@ drawTracklets <- function(trackDat,
     line = 1.5,
     adj = c(0.5, 0.5)
   )
+  
   ## add axis labels
-  ### ylabel
-  graphics::mtext(
-    ylab,
-    cex = cex.lab,
-    side = 2,
-    line = 2,
-    adj = c(0.5, 0.5)
-  )
-  ### xlabel
-  graphics::mtext(
-    xlab,
-    cex = cex.lab,
-    side = 1,
-    line = 2,
-    adj = c(0.5, 0.5)
-  )
-  ## draw y axis
-  graphics::segments(
-    x0 = 0,
-    y0 = ScaleY[1],
-    x1 = 0,
-    y1 = max(ScaleY)
-  )
-  graphics::text(
-    rep(0, length(ScaleY)),
-    ScaleY,
-    ScaleY,
-    xpd = TRUE,
-    srt = ifelse(length(srt) > 1, srt[2], srt),
-    cex = cex.axis,
-    pos = 2
-  )
-  graphics::text(
-    rep(0, length(ScaleY)),
-    ScaleY,
-    "-",
-    xpd = TRUE,
-    srt = 0,
-    adj = c(0.8, 0.25)
-  )
-  ## draw x axis
-  graphics::segments(
-    x0 = ScaleX[1],
-    y0 = 0,
-    x1 = max(ScaleX),
-    y1 = 0
-  )
-  if (ScaleX[1] == ScaleY[1]) {
-    ScaleX <- ScaleX[-which(ScaleX == 0)]
+  axisLab <- c(xlab, ylab)
+  for (l in 1:2) {
+    graphics::mtext(
+      axisLab[l],
+      cex = cex.lab,
+      side = l,
+      line = 2,
+      adj = c(0.5, 0.5)
+    )
   }
-  graphics::text(
-    ScaleX,
-    rep(0, length(ScaleX)),
-    ScaleX,
-    xpd = TRUE,
-    srt = ifelse(length(srt) > 1, srt[1], srt),
-    adj = c(0.5, 1.8),
-    cex = cex.axis
-  )
-  graphics::text(
-    ScaleX,
-    rep(0, length(ScaleX)),
-    "-",
-    xpd = TRUE,
-    srt = 90,
-    adj = c(1, 0.3)
-  )
+  # draw axes
+  Scales <- list(ScaleX = ScaleX, ScaleY = ScaleY)
+  ScalesLab <- Scales
+  if (ScaleX[1] == ScaleY[1]) {
+    ScalesLab[["ScaleX"]] <-
+      ScalesLab[["ScaleX"]][-which(ScalesLab[["ScaleX"]] == 0)]
+  }
+  for (j in seq_along(Scales)) {
+    graphics::segments(
+      x0 = ifelse(names(Scales)[j] == "ScaleY", min(ScaleX), get(names(Scales)[j])[1]),
+      y0 = ifelse(names(Scales)[j] == "ScaleY", get(names(Scales)[j])[1], 0),
+      x1 = ifelse(names(Scales)[j] == "ScaleY", min(ScaleX), max(get(names(
+        Scales
+      )[j]))),
+      y1 = ifelse(names(Scales)[j] == "ScaleY", max(get(names(
+        Scales
+      )[j])), 0)
+    )
+    
+    graphics::text(
+      ifelse(
+        names(ScalesLab)[j] == rep("ScaleY", length(ScalesLab[[j]])),
+        rep(min(ScalesLab[[j]]), length(ScalesLab[[j]])),
+        ScalesLab[[j]]
+      ),
+      ifelse(
+        names(ScalesLab)[j] == rep("ScaleY", length(ScalesLab[[j]])),
+        ScalesLab[[j]],
+        rep(0, length(ScalesLab[[j]]))
+      ),
+      ScalesLab[[j]],
+      xpd = TRUE,
+      srt = ifelse(length(srt) > 1, srt[2], srt),
+      cex = cex.axis,
+      pos = ifelse(names(ScalesLab)[j] == "ScaleY", 2, 1)
+    )
+    graphics::text(
+      ifelse(
+        names(ScalesLab)[j] == rep("ScaleY", length(ScalesLab[[j]])),
+        rep(min(ScaleX), length(get(
+          names(ScalesLab)[j]
+        ))),
+        ScalesLab[[j]]
+      ),
+      ifelse(
+        names(ScalesLab)[j] == rep("ScaleY", length(get(
+          names(ScalesLab)[j]
+        ))),
+        ScalesLab[[j]],
+        rep(0, length(ScalesLab[[j]]))
+      ),
+      "-",
+      xpd = TRUE,
+      srt = ifelse(names(ScalesLab)[j] == "ScaleY", 0, 90),
+      adj = c(0.8, 0.25)
+    )
+  }
   
   ## in case legend argument is TRUE, create a legend
   if (isTRUE(legend)) {
@@ -307,15 +308,19 @@ drawTracklets <- function(trackDat,
       ScaleVal <-
         pretty(c(min(colVal, na.rm = T), max(colVal, na.rm = T)), n = 5)
       ScaleLegtemp <- which(colVal %in% ScaleVal)
-        for (val in which(!ScaleVal %in% colVal)) {
-          if (val == length(ScaleVal)) {
-            ScaleLegtemp <-
-              c(ScaleLegtemp, max(ScaleLegtemp + mean(diff(ScaleLegtemp))))
-          } else if (val == 1) {
-            ScaleLegtemp <-
-              c(min(ScaleLegtemp - mean(diff(ScaleLegtemp))), ScaleLegtemp)
-          }
+      for (val in which(!ScaleVal %in% colVal)) {
+        if (val == length(ScaleVal)) {
+          ScaleLegtemp <-
+            c(ScaleLegtemp, max(ScaleLegtemp + mean(diff(
+              ScaleLegtemp
+            ))))
+        } else if (val == 1) {
+          ScaleLegtemp <-
+            c(min(ScaleLegtemp - mean(diff(
+              ScaleLegtemp
+            ))), ScaleLegtemp)
         }
+      }
       if (max(nchar(ScaleVal)) >= 5) {
         ScaleVal <- format(ScaleVal, scientific = TRUE)
       } else{
@@ -326,7 +331,7 @@ drawTracklets <- function(trackDat,
       ScaleLeg[1] <- ScaleLeg[1] + (2.5 * max(ScaleY) / 100)
       ScaleLeg[length(ScaleLeg)] <-
         ScaleLeg[length(ScaleLeg)] - (5 * max(ScaleY) / 100)
-
+      
       legend_image <-
         grDevices::as.raster(matrix(coloration, ncol = 1))
       graphics::rasterImage(
@@ -425,7 +430,7 @@ drawTracklets <- function(trackDat,
       timeWin <- timeWin
     }
     ## cut the tracklets to draw only the specified part
-    NewTrackList <- lapply(seq(length(timeWin)),
+    NewTrackList <- lapply(seq_along(timeWin),
                            function(p)
                              MoveR::cutTracklets(
                                trackDat,
@@ -437,80 +442,50 @@ drawTracklets <- function(trackDat,
     NewTrackList <- unlist(NewTrackList, recursive = FALSE)
   }
   
+  if (length(colVal) < length(coloration)) {
+    coloration <- coloration[1:length(colVal)]
+  }
   coloration <-
     data.frame(colors = coloration, colVal = colVal[!is.na(colVal)])
   
   # plot all tracklets according to timeWin
   if (is.null(selTrack)) {
+    iter <- seq_along(NewTrackList)
+  } else{
+    iter <- selTrack
+  }
+  if (isTRUE(progress)) {
+    # initialize progress bar
+    total = length(iter)
+    pb <-
+      progress::progress_bar$new(format = "Drawing Tracklets [:bar] :current/:total (:percent)", total = total)
+    pb$tick(0)
+  }
+  for (f in iter) {
+    NewTrackList[[f]]$colorpal <-
+      coloration[match(as.character(MoveR::listGet(NewTrackList[[f]], colId)),
+                       as.character(coloration[["colVal"]][!is.na(colVal)])), "colors"]
+    graphics::points(
+      NewTrackList[[f]]$x.pos[1],
+      NewTrackList[[f]]$y.pos[1],
+      col = NewTrackList[[f]]$colorpal[1],
+      pch = 19,
+      cex = cex.start
+    )
+    with(
+      NewTrackList[[f]],
+      graphics::segments(
+        head(x.pos,-1),
+        head(y.pos,-1),
+        x.pos[-1],
+        y.pos[-1],
+        NewTrackList[[f]]$colorpal,
+        lwd = lwd
+      )
+    )
     if (isTRUE(progress)) {
-      # initialize progress bar
-      total = length(NewTrackList)
-      pb <-
-        progress::progress_bar$new(format = "Drawing Tracklets [:bar] :current/:total (:percent)", total = total)
-      pb$tick(0)
-    }
-    for (f in seq(length(NewTrackList))) {
-      NewTrackList[[f]]$colorpal <-
-        coloration[match(as.character(MoveR::listGet(NewTrackList[[f]], colId)),
-                         as.character(coloration[["colVal"]][!is.na(colVal)])), "colors"]
-      graphics::points(
-        NewTrackList[[f]]$x.pos[1],
-        NewTrackList[[f]]$y.pos[1],
-        col = NewTrackList[[f]]$colorpal[1],
-        pch = 19,
-        cex = cex.start
-      )
-      with(
-        NewTrackList[[f]],
-        graphics::segments(
-          head(x.pos, -1),
-          head(y.pos, -1),
-          x.pos[-1],
-          y.pos[-1],
-          NewTrackList[[f]]$colorpal,
-          lwd = lwd
-        )
-      )
-      if (isTRUE(progress)) {
-        # progress bar
-        pb$tick(1)
-      }
-    }
-  } else {
-    # plot only the selected tracklets according to timeWin color
-    if (isTRUE(progress)) {
-      # initialize progress bar
-      total = length(selTrack)
-      pb <-
-        progress::progress_bar$new(format = "Drawing Tracklets [:bar] :current/:total (:percent)", total = total)
-      pb$tick(0)
-    }
-    for (f in selTrack) {
-      NewTrackList[[f]]$colorpal <-
-        coloration[match(as.character(MoveR::listGet(NewTrackList[[f]], colId)),
-                         as.character(coloration[["colVal"]][!is.na(colVal)])), "colors"]
-      graphics::points(
-        NewTrackList[[f]]$x.pos[1],
-        NewTrackList[[f]]$y.pos[1],
-        col = NewTrackList[[f]]$colorpal,
-        pch = 19,
-        cex = cex.start
-      )
-      with(
-        NewTrackList[[f]],
-        graphics::segments(
-          head(x.pos, -1),
-          head(y.pos, -1),
-          x.pos[-1],
-          y.pos[-1],
-          NewTrackList[[f]]$colorpal,
-          lwd = lwd
-        )
-      )
-      if (isTRUE(progress)) {
-        # progress bar
-        pb$tick(1)
-      }
+      # progress bar
+      pb$tick(1)
     }
   }
 }
