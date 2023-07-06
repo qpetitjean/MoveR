@@ -106,7 +106,7 @@ reference:
       - '`activity2`'
       - '`ANND`'
       - '`exploredArea`'
-      - '`turchinD`' 
+      - '`DCoef`' 
 
   - title: Temporal Trends
     desc: Analyse temporal trends for a given computation over time by averaging the value of each track and compute a studentized 95% confidence interval (bootstrap).
