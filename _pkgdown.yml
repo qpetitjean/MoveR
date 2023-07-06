@@ -124,6 +124,7 @@ reference:
     contents:
       - '`convert2List`'
       - '`convert2Tracklets`'
+      - '`countMat`'
       - '`cutTracklets`'
       - '`DLsampleData`'
       - '`flipYCoords`' 
