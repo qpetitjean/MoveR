@@ -137,7 +137,7 @@ We have found the threshold above which the particles are considered as active.
 
 Now need to identify the diameter of the typical surface a particle can "explore" around its position to determine the surface explored over each tracklet. To do that, we need some knowledge about the model species.
 
-In the case of <em>Trichogramma</em> Wajnberg and Colazza (1998) reported that the perception distance (i.e., reaction distance) of an individual is about 4 mm. Accordingly, we can infer that an individual should explore a surrounding surface of 16 mm<sup>2</sup>. The diameter of such a cell is hence 8 mm or 331 pixels which corresponds to the `binRad` argument.
+In the case of <em>Trichogramma</em>, Wajnberg and Colazza (1998) reported that the perception distance (i.e., reaction distance) of an individual is about 4 mm. Accordingly, we can infer that an individual should explore a surrounding surface of 16 mm<sup>2</sup>. The diameter of such a cell is hence 8 mm or 331 pixels which corresponds to the `binRad` argument.
 
 
 ```{r binRad, echo=TRUE}
@@ -273,9 +273,9 @@ head(trackDat3[[1]], 20)
 
 As expected, a new column (activity2) containing particles' activity states, coded as binary value (1 and 0 for active and inactive state, respectively) is added to each tracklet. 
 
-Also, using `countMat()` it is possible to build the matrix of count in the two dimensions array used to classify particles' between active and inactive states and then build a 3D plot (e.g., using <a href="https://plotly.com/r/getting-started/">plotly</a>) showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) (see fig. \@ref(fig:actives2-3Dplot)). 
+Also, using `countMat()` it is possible to build the matrix of count in the two dimensions array used to classify particles' between active and inactive states and then build a 3D plot (e.g., using <a href="https://plotly.com/r/getting-started/">plotly</a>) showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) (see fig. \@ref(fig:actives2-3DplotInsert)). 
 
-```{r actives2-3Dplot, echo=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
+```{r actives2-3Dplot, message=FALSE, warning=FALSE, echo = T, results = 'hide'}
  # compute the count matrix in the 2d space with the same parameter than activity2 function
  trackDatL <- MoveR::convert2List(trackDat3)
  outP <- MoveR::countMat(x = log10(trackDatL[["slideMeanSpeed"]]), 
@@ -288,8 +288,7 @@ Also, using `countMat()` it is possible to build the matrix of count in the two 
  maxVal <- max(unlist(lapply(outP, function(z) max(sqrt(z)))))
  minVal <- min(unlist(lapply(outP, function(z) min(sqrt(z)))))
  
- # draw the plot using plotly (3d interactive plot)
- library(plotly)
+ # draw the plot using plotly R package (3d interactive plot)
  fig <- plotly::plot_ly(x=~colnames(outP[[1]]), y=~rownames(outP[[1]]), contours = list(
    z = list(
      show = TRUE,
@@ -325,13 +324,16 @@ Also, using `countMat()` it is possible to build the matrix of count in the two 
    fig,
    title = '3D density plot of activity states',
    scene1 = list(
-     xaxis = list(title = "slideMeanSpeed (log10)"),
-     yaxis = list(title = "slideVarAngle"),
+     xaxis = list(title = "Speed (log10)"),
+     yaxis = list(title = "Angle variance"),
      zaxis = list(title = "counts (sqrt)")
    )
  )
  fig
 
+```
+```{r actives2-3DplotInsert, echo=FALSE, warning = FALSE, message=FALSE, fig.align = 'center', out.width="100%", fig.cap="3d density map of the active and inactive states according to the non-hierarchical classification (density based clustering) performed on smoothed particles speed (log-transformed) and turning angle variance. here the distribution of active and inactive state are represented as a gradient of dark-green to white and dark-red to white according to the increasing number of counts."}
+knitr::include_graphics('https://github.com/qpetitjean/MoveR/raw/Main/man/figures/3DactivityPlot.png')
 ```
 
 This plot may be helpful as diagnostic plot to check the distribution of the data making the two clusters and to check whether the clusters has been identified in an expected way. The count matrix can also be computed before using `activity2()` to check for global distribution of the count in the specified 2d space.  
@@ -560,7 +562,7 @@ for (p in seq_along(TemporalRes_wtd)) {
 }
 
 ```
-Here we are, after a quick look at this panel of graph (fig. \@ref(fig:TemporalTrend)) it seems that there is a common trend across all metrics with a tipping point marking either a drastic decrease or increase depending on the considered metric. 
+Here we are, after a quick look at this panel of plots (fig. \@ref(fig:TemporalTrend)) it seems that there is a common trend across all metrics with a tipping point marking either a drastic decrease or increase depending on the considered metric. 
 
 More particularly, there is a drop on speed (whatever which metric is considered), activity, surface explored, distance to the edge (here the more the value is negative, the more the individuals far from the edge) and distance traveled while there is an increase of sinuosity. 
 
@@ -666,7 +668,7 @@ As these computation may be relatively intensive, and hence time consuming, depe
 
 ## References
 
-  * Christian, H., (2020). fpc: Flexible Procedures for Clustering. R package version 2.2-9. \href{https://CRAN.R-project.org/package=fpc}{https://CRAN.R-project.org/package=fpc}}
+  * Christian, H., (2020). <a href="https://CRAN.R-project.org/package=fpc">fpc: Flexible Procedures for Clustering</a>. R package version 2.2-9.
 
   * Ester, M., Kriegel H.P., Sander, J., Xu X., (1996). A Density-Based Algorithm for Discovering Clusters in Large Spatial Databases with Noise. Institute for Computer Science, University of Munich. Proceedings of 2nd International Conference on Knowledge Discovery and Data Mining (KDD-96)
   
