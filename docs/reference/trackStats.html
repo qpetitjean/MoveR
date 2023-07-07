@@ -144,8 +144,8 @@ this function returns 2 sublists containing a summary of video and tracklets dat
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">trackStats</span><span class="op">(</span></span>
 <span>  <span class="va">trackDat</span>,</span>
 <span>  frameR <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  scale <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  units <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  units <span class="op">=</span> <span class="st">"pixels"</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -163,7 +163,7 @@ this function returns 2 sublists containing a summary of video and tracklets dat
 
 <dt>scale</dt>
 <dd><p>A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-(e.g., size in cm / size in pixels, (default = 1).</p></dd>
+(e.g., size in cm / size in pixels; see <code><a href="https://rdrr.io/pkg/trajr/man/TrajScale.html" class="external-link">TrajScale</a>, default = 1</code>.</p></dd>
 
 
 <dt>units</dt>

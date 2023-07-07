@@ -91,7 +91,7 @@ if bootn parameter is above 0, the function compute studentize 95 % CI using boo
 <span>  timeCol <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Tinterval <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sampling <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  scale <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  bootn <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -116,6 +116,11 @@ specifying the time window on which the computation is performed (default is nul
 <dd><p>A numeric value expressed in the timeline unit and specifying the subsampling step used to
 to perform the computation (it allow to make computation faster). In other words, it determine the resolution of the
 returned results (e.g., a value of 5000 mean that values will be computed every 5000 time unit).</p></dd>
+
+
+<dt>scale</dt>
+<dd><p>A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
+(e.g., size in cm / size in pixels; see <code><a href="https://rdrr.io/pkg/trajr/man/TrajScale.html" class="external-link">TrajScale</a>, default = 1</code>.</p></dd>
 
 
 <dt>bootn</dt>

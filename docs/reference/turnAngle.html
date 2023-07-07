@@ -88,7 +88,7 @@ this function returns a vector containing the value of turning angle along the c
 <span>  timeCol <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  unit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"radians"</span>, <span class="st">"degrees"</span><span class="op">)</span>,</span>
 <span>  compass <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  scale <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  scale <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -108,6 +108,11 @@ this function returns a vector containing the value of turning angle along the c
 
 <dt>compass</dt>
 <dd><p>A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).</p></dd>
+
+
+<dt>scale</dt>
+<dd><p>A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
+(e.g., size in cm / size in pixels; see <code><a href="https://rdrr.io/pkg/trajr/man/TrajScale.html" class="external-link">TrajScale</a>, default = 1</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -79,7 +79,13 @@
     <loc>http://qpetitjean.github.io/MoveR/reference/convert2Tracklets.html</loc>
   </url>
   <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/countMat.html</loc>
+  </url>
+  <url>
     <loc>http://qpetitjean.github.io/MoveR/reference/cutTracklets.html</loc>
+  </url>
+  <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/DCoef.html</loc>
   </url>
   <url>
     <loc>http://qpetitjean.github.io/MoveR/reference/detectPerf.html</loc>

@@ -31,7 +31,6 @@ knitr::include_graphics(
   c('https://github.com/qpetitjean/MoveR_SampleData/raw/main/sample_2/2021-03-01-ISA17150-chaud.gif',
     'https://github.com/qpetitjean/MoveR_SampleData/raw/main/sample_2/Sample2_ReducedData.png')
   )
-## Make GIF
 ```
 
 ## Import sample data from github

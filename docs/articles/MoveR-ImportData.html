@@ -104,7 +104,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Import Data</h1>
             
-            <h4 data-toc-skip class="date">2023-06-01</h4>
+            <h4 data-toc-skip class="date">2023-07-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-ImportData.Rmd" class="external-link"><code>vignettes/MoveR-ImportData.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-ImportData.Rmd</code></div>
@@ -131,9 +131,9 @@ Figure 1: Frames extracted from a video recording of 12 parasitic micro-wasps (g
 <span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">1</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Path2Data</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpeqeDl6\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span></span>
-<span><span class="co">## [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpeqeDl6\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span></span>
-<span><span class="co">## [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpeqeDl6\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpemKM0v\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span></span>
+<span><span class="co">## [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpemKM0v\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span></span>
+<span><span class="co">## [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpemKM0v\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"</span></span></code></pre>
 <p>The function download the data from the <a href="https://github.com/qpetitjean/MoveR_SampleData" class="external-link">MoveR_SampleData</a> github repository and returns a vector containing the path to the raw data and the distance matrix helping to locate the edge of the arena and the reference data corresponding to the location particles (manually detected) over several frames (the latters will be useful in another tutorial).</p>
 <p class="notes">
 Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the <code>dir</code> argument from <code><a href="../reference/DLsampleData.html">DLsampleData()</a></code>. In any case, the function look for previous occurrence of the sample data to avoid multiple downloading.
