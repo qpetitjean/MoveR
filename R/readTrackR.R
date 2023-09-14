@@ -39,7 +39,7 @@
 #' @seealso \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 #'
 #' @references 
-#' \href{https://swarm-lab.github.io/trackR}{trackR}
+#' \href{https://swarm-lab.github.io/trackR}{trackR - Multi-object tracking with R}
 #'
 #' @examples
 #' \dontrun{
@@ -99,7 +99,7 @@ readTrackR <- function(trackRPath,
   
   # if flipY = TRUE, flip the Y coordinates according to image height
   if (flipY == TRUE) {
-    trackDat$y = flipYCoords(trackDat$y, imgHeight = imgHeight)
+    trackDat[["y"]] <- flipYCoords(trackDat[["y"]], imgHeight = imgHeight)
   }
   # create ntargets, the number of particles detected for each frame (not in Raw output of TrackR)
   ntargets <- unlist(lapply(unique(trackDat[["frame"]]), function(x)
