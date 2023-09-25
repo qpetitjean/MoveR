@@ -4,30 +4,49 @@
 \alias{slidWindow}
 \title{Sliding window.}
 \usage{
-slidWindow(x, Tstep, customFunc)
+slidWindow(
+  x,
+  Tstep,
+  statistic = c("sum", "mean", "median", "var", "sd", "circular.var"),
+  na.rm = TRUE
+)
 }
 \arguments{
 \item{x}{A vector containing data to smooth.}
 
 \item{Tstep}{A numeric value corresponding to the length of the sliding window (i.e., the number of values).}
 
-\item{customFunc}{A function used to perform the computation over the sliding window.}
+\item{statistic}{A character string indicating the computation to preform over the sliding window. The following arguments are currently supported:
+\itemize{
+\item{'sum' = sum the values over each sliding window.}
+\item{'mean' = average the values over each sliding window.}
+\item{'median' = compute the median over each sliding window.}
+\item{'var' = compute the variance over each sliding window.}
+\item{'sd' = compute the standard deviation over each sliding window.}
+\item{'circular.var' = compute the variance of circular data (angular values expressed in radians) over each sliding window.}
+}}
+
+\item{na.rm}{A logical value (i.e., TRUE or FALSE) indicating whether NA values should be stripped before the computation proceeds (default = TRUE).
+In case na.rm = TRUE and the selected statistic argument is 'median', the function use the '+Big_alternate' method to compute the median while ignoring NA values (see the help page of the \code{\link[stats]{runmed}} function for more information).}
 }
 \value{
 A vector of the same length than the input data (x) which contains the smoothed data.
 }
 \description{
 Given a vector containing numeric data, this function returns a vector of smoothed data
-by performing the specified computation over the input vector by moving a centered sliding window.
+by performing the computation specified by the 'statistic' argument over the input vector moving through centered sliding window.
 }
 \examples{
 
 set.seed(2023) 
 # compute smoothed mean over a sliding window of 15 time unit in length
-slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) mean(x, na.rm = T))
+slidWindow( x = rnorm(150), Tstep = 15, statistic = 'mean',  na.rm = TRUE)
 # compute smoothed variance over a sliding window of 15 time unit in length
-slidWindow( x = rnorm(150), Tstep = 15, customFunc = function (x) var(x, na.rm = T))
+slidWindow( x = rnorm(150), Tstep = 15, statistic = 'var',  na.rm = TRUE)
 
+}
+\seealso{
+\code{\link[stats]{runmed}}, \code{\link[stats]{filter}}
 }
 \author{
 Quentin PETITJEAN

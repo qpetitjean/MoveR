@@ -83,7 +83,7 @@ str(circleCoords2)
 
 }
 \seealso{
-\code{\link[graphics]{locPos}}, \code{\link[graphics]{locROI}}, \code{\link[graphics]{polygon}}, \code{\link[graphics]{points}}
+\code{\link[MoveR]{locPos}}, \code{\link[MoveR]{locROI}}, \code{\link[MoveR]{polygons}}, \code{\link[graphics]{polygon}}, \code{\link[graphics]{points}}
 }
 \author{
 Quentin PETITJEAN
