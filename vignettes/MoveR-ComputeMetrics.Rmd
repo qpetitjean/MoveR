@@ -68,7 +68,7 @@ For instance, one would compute the following metrics over each tracklet:
 
 Also it is possible to smooth selected metrics over each tracklet using `slidWindow()`. For this example we are smoothing the following metrics using a sliding window of 10 frames (`Tstep` argument): 
 
-  * the mean turning angle and its variance using `circular::var()` from the circular package
+  * the mean turning angle and its variance
   
   * the mean speed and its variance
   
@@ -192,35 +192,41 @@ customFuncList = list(
   ### turning angles
   slideMeanAngle = function (y)
     MoveR::slidWindow(y$turnAngle,
-                   Tstep = 10, function (x)
-                     mean(x, na.rm = T)),
+                   Tstep = 10, 
+                   statistic = "mean", 
+                   na.rm = T),
   ### turning angles variance
   slideVarAngle = function (y)
     MoveR::slidWindow(circular::circular(y$turnAngle,
                                       type = "angle",
                                       units = "radians"),
-                   Tstep = 10, function (x)
-                     circular::var(x, na.rm = T)),
+                   Tstep = 10, 
+                   statistic = "circular.var", 
+                   na.rm = T),
   ### speed
   slideMeanSpeed = function (y)
     MoveR::slidWindow(y$speed,
-                   Tstep = 10, function (x)
-                     mean(x, na.rm = T)),
+                   Tstep = 10, 
+                   statistic = "mean", 
+                   na.rm = T),
   ### speed variance
   slideVarSpeed = function (y)
     MoveR::slidWindow(y$speed,
-                   Tstep = 10, function (x)
-                     var(x, na.rm = T)),
+                   Tstep = 10, 
+                   statistic = "var", 
+                   na.rm = T),
   ### smooth traveled distance
   slideMeanTraveledDist = function (y)
     MoveR::slidWindow(y$distTraveled,
-                   Tstep = 10, function (x)
-                     mean(x, na.rm = T)),
+                   Tstep = 10, 
+                   statistic = "mean", 
+                   na.rm = T),
   ### distance to the edge
   slideMeanDist2Edge = function (y)
     MoveR::slidWindow(y$dist2Edge,
-                   Tstep = 10, function (x)
-                     mean(x, na.rm = T))
+                   Tstep = 10, 
+                   statistic = "mean", 
+                   na.rm = T)
 )
 
 ```

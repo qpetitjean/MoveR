@@ -55,6 +55,7 @@ reference:
   - title: Import
     desc: Import raw data from various video tracking software into R env.
     contents:
+      - '`readAnimalTA`'
       - '`readCtrax`'
       - '`readIdtracker`'
       - '`readPlain`'
@@ -107,6 +108,7 @@ reference:
       - '`ANND`'
       - '`exploredArea`'
       - '`DCoef`' 
+      - '`MSD`' 
 
   - title: Temporal Trends
     desc: Analyse temporal trends for a given computation over time by averaging the value of each track and compute a studentized 95% confidence interval (bootstrap).

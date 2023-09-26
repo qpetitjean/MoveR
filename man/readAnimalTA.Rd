@@ -50,7 +50,7 @@ Path2Data
 # Import the list containing the 9 vectors classically used for further computation
 # and flip Y coordinates to start on the top-left
 Data <-
-  MoveR::readTrackR(Path2Data[[1]],
+  MoveR::readAnimalTA(Path2Data[[1]],
          flipY = T,
          imgHeight = 2160,
          rawDat = F
@@ -62,7 +62,7 @@ str(Data)
 # also do not flip Y coordinates (start on the bottom-left)
 
 DataFull <-
-  MoveR::readTrackR(Path2Data[[1]],
+  MoveR::readAnimalTA(Path2Data[[1]],
     rawDat = T
   )
 

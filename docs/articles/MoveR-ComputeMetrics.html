@@ -104,7 +104,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Compute some metrics</h1>
             
-            <h4 data-toc-skip class="date">2023-07-07</h4>
+            <h4 data-toc-skip class="date">2023-09-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-ComputeMetrics.Rmd" class="external-link"><code>vignettes/MoveR-ComputeMetrics.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-ComputeMetrics.Rmd</code></div>
@@ -153,7 +153,7 @@ Note that the distance to the edge of the arena does not need to be computed aga
 </p>
 <p>Also it is possible to smooth selected metrics over each tracklet using <code><a href="../reference/slidWindow.html">slidWindow()</a></code>. For this example we are smoothing the following metrics using a sliding window of 10 frames (<code>Tstep</code> argument):</p>
 <ul>
-<li><p>the mean turning angle and its variance using <code><a href="https://rdrr.io/pkg/circular/man/variance.html" class="external-link">circular::var()</a></code> from the circular package</p></li>
+<li><p>the mean turning angle and its variance</p></li>
 <li><p>the mean speed and its variance</p></li>
 <li><p>the mean distance traveled</p></li>
 <li><p>the mean distance to the edge</p></li>
@@ -262,35 +262,41 @@ Figure 1: kernel density estimate of the particles’ speed. The bimodal distrib
 <span>  <span class="co">### turning angles</span></span>
 <span>  slideMeanAngle <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
 <span>    <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/slidWindow.html">slidWindow</a></span><span class="op">(</span><span class="va">y</span><span class="op">$</span><span class="va">turnAngle</span>,</span>
-<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>                     <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                   statistic <span class="op">=</span> <span class="st">"mean"</span>, </span>
+<span>                   na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
 <span>  <span class="co">### turning angles variance</span></span>
 <span>  slideVarAngle <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
 <span>    <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/slidWindow.html">slidWindow</a></span><span class="op">(</span><span class="fu">circular</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/circular/man/circular.html" class="external-link">circular</a></span><span class="op">(</span><span class="va">y</span><span class="op">$</span><span class="va">turnAngle</span>,</span>
 <span>                                      type <span class="op">=</span> <span class="st">"angle"</span>,</span>
 <span>                                      units <span class="op">=</span> <span class="st">"radians"</span><span class="op">)</span>,</span>
-<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>                     <span class="fu">circular</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/circular/man/variance.html" class="external-link">var</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                   statistic <span class="op">=</span> <span class="st">"circular.var"</span>, </span>
+<span>                   na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
 <span>  <span class="co">### speed</span></span>
 <span>  slideMeanSpeed <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
 <span>    <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/slidWindow.html">slidWindow</a></span><span class="op">(</span><span class="va">y</span><span class="op">$</span><span class="va">speed</span>,</span>
-<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>                     <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                   statistic <span class="op">=</span> <span class="st">"mean"</span>, </span>
+<span>                   na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
 <span>  <span class="co">### speed variance</span></span>
 <span>  slideVarSpeed <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
 <span>    <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/slidWindow.html">slidWindow</a></span><span class="op">(</span><span class="va">y</span><span class="op">$</span><span class="va">speed</span>,</span>
-<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>                     <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                   statistic <span class="op">=</span> <span class="st">"var"</span>, </span>
+<span>                   na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
 <span>  <span class="co">### smooth traveled distance</span></span>
 <span>  slideMeanTraveledDist <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
 <span>    <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/slidWindow.html">slidWindow</a></span><span class="op">(</span><span class="va">y</span><span class="op">$</span><span class="va">distTraveled</span>,</span>
-<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>                     <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                   statistic <span class="op">=</span> <span class="st">"mean"</span>, </span>
+<span>                   na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
 <span>  <span class="co">### distance to the edge</span></span>
 <span>  slideMeanDist2Edge <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
 <span>    <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/slidWindow.html">slidWindow</a></span><span class="op">(</span><span class="va">y</span><span class="op">$</span><span class="va">dist2Edge</span>,</span>
-<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>                     <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span>
+<span>                   Tstep <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>                   statistic <span class="op">=</span> <span class="st">"mean"</span>, </span>
+<span>                   na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p class="notes">
 Note that naming each element (function) of the list ensure that the output of the computation is properly named when appended to the data. In case list elements are unnamed, the <code><a href="../reference/analyseTracklets.html">analyseTracklets()</a></code> look for a generic name within the specified <code>customFunc</code>. <br>For instance, for <code>turnAngle(x, TimeCol = "runTimelinef", unit = "radians")</code>, the function can retrieve <code>turnAngle</code> but the result can be unexpected in case of more complex function structure such as for <code>circular::var(circular::circular(x$turnAngle, type = "angle", units = "radians"), na.rm = T)</code>, here the function will extract <code><a href="https://rdrr.io/pkg/circular/man/variance.html" class="external-link">circular::var</a></code>.
@@ -349,64 +355,64 @@ Note that naming each element (function) of the list ensure that the output of t
 <span><span class="co">## 2   2.8945991   0.10071409         0  4.097819   94722.15             NA</span></span>
 <span><span class="co">## 3  -1.4333993   0.26017052         0  4.097819   94722.15             NA</span></span>
 <span><span class="co">## 4  -2.7932937   0.21399122         0  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 5   0.7595711   0.04826507         0  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 6   1.0396458   0.40498167         0  4.097819   94722.15     -0.6145500</span></span>
-<span><span class="co">## 7  -2.6996207   0.30837970         0  4.097819   94722.15     -0.2470643</span></span>
-<span><span class="co">## 8  -0.4989445   0.09570492         0  4.097819   94722.15     -0.5766720</span></span>
-<span><span class="co">## 9   0.3309640   0.09401691         0  4.097819   94722.15     -0.2002835</span></span>
-<span><span class="co">## 10 -3.1304721   0.56407927         0  4.097819   94722.15      0.3511861</span></span>
-<span><span class="co">## 11  3.0603075   0.48748878         0  4.097819   94722.15      0.5054759</span></span>
-<span><span class="co">## 12 -0.4014782   0.06696614         0  4.097819   94722.15      0.4478788</span></span>
-<span><span class="co">## 13  2.3304855   0.10322724         0  4.097819   94722.15      0.9781119</span></span>
-<span><span class="co">## 14  2.7214030   0.13205952         0  4.097819   94722.15      1.1591985</span></span>
-<span><span class="co">## 15  2.3024685   0.05659485         0  4.097819   94722.15      1.3629575</span></span>
-<span><span class="co">## 16  0.4636754   0.08056082         0  4.097819   94722.15      1.7512710</span></span>
-<span><span class="co">## 17  2.6027098   0.11350467         0  4.097819   94722.15      1.7192587</span></span>
-<span><span class="co">## 18  1.3119219   0.04716597         0  4.097819   94722.15      2.0475425</span></span>
-<span><span class="co">## 19  2.3685536   0.06905213         0  4.097819   94722.15      1.5778359</span></span>
-<span><span class="co">## 20  0.7526626   0.11835048         0  4.097819   94722.15      1.1360680</span></span>
+<span><span class="co">## 5   0.7595711   0.04826507         0  4.097819   94722.15     -0.6145500</span></span>
+<span><span class="co">## 6   1.0396458   0.40498167         0  4.097819   94722.15     -0.2470643</span></span>
+<span><span class="co">## 7  -2.6996207   0.30837970         0  4.097819   94722.15     -0.5766720</span></span>
+<span><span class="co">## 8  -0.4989445   0.09570492         0  4.097819   94722.15     -0.2002835</span></span>
+<span><span class="co">## 9   0.3309640   0.09401691         0  4.097819   94722.15      0.3511861</span></span>
+<span><span class="co">## 10 -3.1304721   0.56407927         0  4.097819   94722.15      0.5054759</span></span>
+<span><span class="co">## 11  3.0603075   0.48748878         0  4.097819   94722.15      0.4478788</span></span>
+<span><span class="co">## 12 -0.4014782   0.06696614         0  4.097819   94722.15      0.9781119</span></span>
+<span><span class="co">## 13  2.3304855   0.10322724         0  4.097819   94722.15      1.1591985</span></span>
+<span><span class="co">## 14  2.7214030   0.13205952         0  4.097819   94722.15      1.3629575</span></span>
+<span><span class="co">## 15  2.3024685   0.05659485         0  4.097819   94722.15      1.7512710</span></span>
+<span><span class="co">## 16  0.4636754   0.08056082         0  4.097819   94722.15      1.7192587</span></span>
+<span><span class="co">## 17  2.6027098   0.11350467         0  4.097819   94722.15      2.0475425</span></span>
+<span><span class="co">## 18  1.3119219   0.04716597         0  4.097819   94722.15      1.5778359</span></span>
+<span><span class="co">## 19  2.3685536   0.06905213         0  4.097819   94722.15      1.1360680</span></span>
+<span><span class="co">## 20  0.7526626   0.11835048         0  4.097819   94722.15      1.2199804</span></span>
 <span><span class="co">##    slideVarAngle slideMeanSpeed slideVarSpeed slideMeanTraveledDist</span></span>
 <span><span class="co">## 1             NA             NA            NA                    NA</span></span>
 <span><span class="co">## 2             NA             NA            NA                    NA</span></span>
 <span><span class="co">## 3             NA             NA            NA                    NA</span></span>
 <span><span class="co">## 4             NA             NA            NA                    NA</span></span>
-<span><span class="co">## 5             NA             NA            NA                    NA</span></span>
-<span><span class="co">## 6      0.9295268     0.17510733  0.0161964567            0.21400452</span></span>
-<span><span class="co">## 7      0.8381583     0.21400452  0.0295267675            0.25777921</span></span>
-<span><span class="co">## 8      0.9264664     0.25777921  0.0327100097            0.25440442</span></span>
-<span><span class="co">## 9      0.8828520     0.25440442  0.0340018192            0.23871009</span></span>
-<span><span class="co">## 10     0.8142052     0.23871009  0.0362638385            0.23051692</span></span>
-<span><span class="co">## 11     0.7342879     0.23051692  0.0373851765            0.23134990</span></span>
-<span><span class="co">## 12     0.7909803     0.23134990  0.0370547556            0.19890781</span></span>
-<span><span class="co">## 13     0.7208400     0.19890781  0.0350619184            0.17942031</span></span>
-<span><span class="co">## 14     0.5647072     0.17942031  0.0341188046            0.17456642</span></span>
-<span><span class="co">## 15     0.4369973     0.17456642  0.0352573980            0.17206994</span></span>
-<span><span class="co">## 16     0.4714105     0.17206994  0.0357665888            0.12749706</span></span>
-<span><span class="co">## 17     0.4454715     0.12749706  0.0168051498            0.09016746</span></span>
-<span><span class="co">## 18     0.3009847     0.09016746  0.0008771468            0.09096670</span></span>
-<span><span class="co">## 19     0.4129182     0.09096670  0.0008423269            0.09243493</span></span>
-<span><span class="co">## 20     0.5688037     0.09243493  0.0009038864            0.09400368</span></span>
+<span><span class="co">## 5      0.9295268     0.17510733  0.0161964567            0.21400452</span></span>
+<span><span class="co">## 6      0.8381583     0.21400452  0.0295267675            0.25777921</span></span>
+<span><span class="co">## 7      0.9264664     0.25777921  0.0327100097            0.25440442</span></span>
+<span><span class="co">## 8      0.8828520     0.25440442  0.0340018192            0.23871009</span></span>
+<span><span class="co">## 9      0.8142052     0.23871009  0.0362638385            0.23051692</span></span>
+<span><span class="co">## 10     0.7342879     0.23051692  0.0373851765            0.23134990</span></span>
+<span><span class="co">## 11     0.7909803     0.23134990  0.0370547556            0.19890781</span></span>
+<span><span class="co">## 12     0.7208400     0.19890781  0.0350619184            0.17942031</span></span>
+<span><span class="co">## 13     0.5647072     0.17942031  0.0341188046            0.17456642</span></span>
+<span><span class="co">## 14     0.4369973     0.17456642  0.0352573980            0.17206994</span></span>
+<span><span class="co">## 15     0.4714105     0.17206994  0.0357665888            0.12749706</span></span>
+<span><span class="co">## 16     0.4454715     0.12749706  0.0168051498            0.09016746</span></span>
+<span><span class="co">## 17     0.3009847     0.09016746  0.0008771468            0.09096670</span></span>
+<span><span class="co">## 18     0.4129182     0.09096670  0.0008423269            0.09243493</span></span>
+<span><span class="co">## 19     0.5688037     0.09243493  0.0009038864            0.09400368</span></span>
+<span><span class="co">## 20     0.5897723     0.09400368  0.0010666324            0.10311890</span></span>
 <span><span class="co">##    slideMeanDist2Edge</span></span>
 <span><span class="co">## 1                  NA</span></span>
 <span><span class="co">## 2                  NA</span></span>
 <span><span class="co">## 3                  NA</span></span>
 <span><span class="co">## 4                  NA</span></span>
-<span><span class="co">## 5                  NA</span></span>
-<span><span class="co">## 6           -56.82530</span></span>
-<span><span class="co">## 7           -56.86250</span></span>
-<span><span class="co">## 8           -56.86986</span></span>
-<span><span class="co">## 9           -56.88181</span></span>
-<span><span class="co">## 10          -56.91028</span></span>
-<span><span class="co">## 11          -56.91587</span></span>
-<span><span class="co">## 12          -56.91747</span></span>
-<span><span class="co">## 13          -56.89605</span></span>
-<span><span class="co">## 14          -56.88329</span></span>
-<span><span class="co">## 15          -56.87281</span></span>
-<span><span class="co">## 16          -56.87045</span></span>
+<span><span class="co">## 5           -56.82530</span></span>
+<span><span class="co">## 6           -56.86250</span></span>
+<span><span class="co">## 7           -56.86986</span></span>
+<span><span class="co">## 8           -56.88181</span></span>
+<span><span class="co">## 9           -56.91028</span></span>
+<span><span class="co">## 10          -56.91587</span></span>
+<span><span class="co">## 11          -56.91747</span></span>
+<span><span class="co">## 12          -56.89605</span></span>
+<span><span class="co">## 13          -56.88329</span></span>
+<span><span class="co">## 14          -56.87281</span></span>
+<span><span class="co">## 15          -56.87045</span></span>
+<span><span class="co">## 16          -56.85451</span></span>
 <span><span class="co">## 17          -56.85451</span></span>
-<span><span class="co">## 18          -56.85451</span></span>
-<span><span class="co">## 19          -56.86466</span></span>
-<span><span class="co">## 20          -56.85294</span></span></code></pre>
+<span><span class="co">## 18          -56.86466</span></span>
+<span><span class="co">## 19          -56.85294</span></span>
+<span><span class="co">## 20          -56.85560</span></span></code></pre>
 <p>Great! as displayed above for the first tracklet, the desired metrics and the smoothed one has been added to the dataset.</p>
 <p class="notes">
 Note that <code>sinuosity</code> and <code>explorArea</code> return an unique value, in this case, the value is repeated over the whole tracklet. Also note that as we choose a step of 10 time units (here frames) for each sliding window, the first and last 5 values of the computed metrics return NA.
@@ -482,64 +488,64 @@ Note that <code>sinuosity</code> and <code>explorArea</code> return an unique va
 <span><span class="co">## 2   2.8945991   0.10071409         0  4.097819   94722.15             NA</span></span>
 <span><span class="co">## 3  -1.4333993   0.26017052         0  4.097819   94722.15             NA</span></span>
 <span><span class="co">## 4  -2.7932937   0.21399122         0  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 5   0.7595711   0.04826507         0  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 6   1.0396458   0.40498167         0  4.097819   94722.15     -0.6145500</span></span>
-<span><span class="co">## 7  -2.6996207   0.30837970         0  4.097819   94722.15     -0.2470643</span></span>
-<span><span class="co">## 8  -0.4989445   0.09570492         0  4.097819   94722.15     -0.5766720</span></span>
-<span><span class="co">## 9   0.3309640   0.09401691         0  4.097819   94722.15     -0.2002835</span></span>
-<span><span class="co">## 10 -3.1304721   0.56407927         0  4.097819   94722.15      0.3511861</span></span>
-<span><span class="co">## 11  3.0603075   0.48748878         0  4.097819   94722.15      0.5054759</span></span>
-<span><span class="co">## 12 -0.4014782   0.06696614         0  4.097819   94722.15      0.4478788</span></span>
-<span><span class="co">## 13  2.3304855   0.10322724         0  4.097819   94722.15      0.9781119</span></span>
-<span><span class="co">## 14  2.7214030   0.13205952         0  4.097819   94722.15      1.1591985</span></span>
-<span><span class="co">## 15  2.3024685   0.05659485         0  4.097819   94722.15      1.3629575</span></span>
-<span><span class="co">## 16  0.4636754   0.08056082         0  4.097819   94722.15      1.7512710</span></span>
-<span><span class="co">## 17  2.6027098   0.11350467         0  4.097819   94722.15      1.7192587</span></span>
-<span><span class="co">## 18  1.3119219   0.04716597         0  4.097819   94722.15      2.0475425</span></span>
-<span><span class="co">## 19  2.3685536   0.06905213         0  4.097819   94722.15      1.5778359</span></span>
-<span><span class="co">## 20  0.7526626   0.11835048         0  4.097819   94722.15      1.1360680</span></span>
+<span><span class="co">## 5   0.7595711   0.04826507         0  4.097819   94722.15     -0.6145500</span></span>
+<span><span class="co">## 6   1.0396458   0.40498167         0  4.097819   94722.15     -0.2470643</span></span>
+<span><span class="co">## 7  -2.6996207   0.30837970         0  4.097819   94722.15     -0.5766720</span></span>
+<span><span class="co">## 8  -0.4989445   0.09570492         0  4.097819   94722.15     -0.2002835</span></span>
+<span><span class="co">## 9   0.3309640   0.09401691         0  4.097819   94722.15      0.3511861</span></span>
+<span><span class="co">## 10 -3.1304721   0.56407927         0  4.097819   94722.15      0.5054759</span></span>
+<span><span class="co">## 11  3.0603075   0.48748878         0  4.097819   94722.15      0.4478788</span></span>
+<span><span class="co">## 12 -0.4014782   0.06696614         0  4.097819   94722.15      0.9781119</span></span>
+<span><span class="co">## 13  2.3304855   0.10322724         0  4.097819   94722.15      1.1591985</span></span>
+<span><span class="co">## 14  2.7214030   0.13205952         0  4.097819   94722.15      1.3629575</span></span>
+<span><span class="co">## 15  2.3024685   0.05659485         0  4.097819   94722.15      1.7512710</span></span>
+<span><span class="co">## 16  0.4636754   0.08056082         0  4.097819   94722.15      1.7192587</span></span>
+<span><span class="co">## 17  2.6027098   0.11350467         0  4.097819   94722.15      2.0475425</span></span>
+<span><span class="co">## 18  1.3119219   0.04716597         0  4.097819   94722.15      1.5778359</span></span>
+<span><span class="co">## 19  2.3685536   0.06905213         0  4.097819   94722.15      1.1360680</span></span>
+<span><span class="co">## 20  0.7526626   0.11835048         0  4.097819   94722.15      1.2199804</span></span>
 <span><span class="co">##    slideVarAngle slideMeanSpeed slideVarSpeed slideMeanTraveledDist</span></span>
 <span><span class="co">## 1             NA             NA            NA                    NA</span></span>
 <span><span class="co">## 2             NA             NA            NA                    NA</span></span>
 <span><span class="co">## 3             NA             NA            NA                    NA</span></span>
 <span><span class="co">## 4             NA             NA            NA                    NA</span></span>
-<span><span class="co">## 5             NA             NA            NA                    NA</span></span>
-<span><span class="co">## 6      0.9295268     0.17510733  0.0161964567            0.21400452</span></span>
-<span><span class="co">## 7      0.8381583     0.21400452  0.0295267675            0.25777921</span></span>
-<span><span class="co">## 8      0.9264664     0.25777921  0.0327100097            0.25440442</span></span>
-<span><span class="co">## 9      0.8828520     0.25440442  0.0340018192            0.23871009</span></span>
-<span><span class="co">## 10     0.8142052     0.23871009  0.0362638385            0.23051692</span></span>
-<span><span class="co">## 11     0.7342879     0.23051692  0.0373851765            0.23134990</span></span>
-<span><span class="co">## 12     0.7909803     0.23134990  0.0370547556            0.19890781</span></span>
-<span><span class="co">## 13     0.7208400     0.19890781  0.0350619184            0.17942031</span></span>
-<span><span class="co">## 14     0.5647072     0.17942031  0.0341188046            0.17456642</span></span>
-<span><span class="co">## 15     0.4369973     0.17456642  0.0352573980            0.17206994</span></span>
-<span><span class="co">## 16     0.4714105     0.17206994  0.0357665888            0.12749706</span></span>
-<span><span class="co">## 17     0.4454715     0.12749706  0.0168051498            0.09016746</span></span>
-<span><span class="co">## 18     0.3009847     0.09016746  0.0008771468            0.09096670</span></span>
-<span><span class="co">## 19     0.4129182     0.09096670  0.0008423269            0.09243493</span></span>
-<span><span class="co">## 20     0.5688037     0.09243493  0.0009038864            0.09400368</span></span>
+<span><span class="co">## 5      0.9295268     0.17510733  0.0161964567            0.21400452</span></span>
+<span><span class="co">## 6      0.8381583     0.21400452  0.0295267675            0.25777921</span></span>
+<span><span class="co">## 7      0.9264664     0.25777921  0.0327100097            0.25440442</span></span>
+<span><span class="co">## 8      0.8828520     0.25440442  0.0340018192            0.23871009</span></span>
+<span><span class="co">## 9      0.8142052     0.23871009  0.0362638385            0.23051692</span></span>
+<span><span class="co">## 10     0.7342879     0.23051692  0.0373851765            0.23134990</span></span>
+<span><span class="co">## 11     0.7909803     0.23134990  0.0370547556            0.19890781</span></span>
+<span><span class="co">## 12     0.7208400     0.19890781  0.0350619184            0.17942031</span></span>
+<span><span class="co">## 13     0.5647072     0.17942031  0.0341188046            0.17456642</span></span>
+<span><span class="co">## 14     0.4369973     0.17456642  0.0352573980            0.17206994</span></span>
+<span><span class="co">## 15     0.4714105     0.17206994  0.0357665888            0.12749706</span></span>
+<span><span class="co">## 16     0.4454715     0.12749706  0.0168051498            0.09016746</span></span>
+<span><span class="co">## 17     0.3009847     0.09016746  0.0008771468            0.09096670</span></span>
+<span><span class="co">## 18     0.4129182     0.09096670  0.0008423269            0.09243493</span></span>
+<span><span class="co">## 19     0.5688037     0.09243493  0.0009038864            0.09400368</span></span>
+<span><span class="co">## 20     0.5897723     0.09400368  0.0010666324            0.10311890</span></span>
 <span><span class="co">##    slideMeanDist2Edge activity2</span></span>
 <span><span class="co">## 1                  NA        NA</span></span>
 <span><span class="co">## 2                  NA        NA</span></span>
 <span><span class="co">## 3                  NA        NA</span></span>
 <span><span class="co">## 4                  NA        NA</span></span>
-<span><span class="co">## 5                  NA        NA</span></span>
-<span><span class="co">## 6           -56.82530         0</span></span>
-<span><span class="co">## 7           -56.86250         0</span></span>
-<span><span class="co">## 8           -56.86986         0</span></span>
-<span><span class="co">## 9           -56.88181         0</span></span>
-<span><span class="co">## 10          -56.91028         0</span></span>
-<span><span class="co">## 11          -56.91587         0</span></span>
-<span><span class="co">## 12          -56.91747         0</span></span>
-<span><span class="co">## 13          -56.89605         0</span></span>
-<span><span class="co">## 14          -56.88329         0</span></span>
-<span><span class="co">## 15          -56.87281         0</span></span>
-<span><span class="co">## 16          -56.87045         0</span></span>
+<span><span class="co">## 5           -56.82530         0</span></span>
+<span><span class="co">## 6           -56.86250         0</span></span>
+<span><span class="co">## 7           -56.86986         0</span></span>
+<span><span class="co">## 8           -56.88181         0</span></span>
+<span><span class="co">## 9           -56.91028         0</span></span>
+<span><span class="co">## 10          -56.91587         0</span></span>
+<span><span class="co">## 11          -56.91747         0</span></span>
+<span><span class="co">## 12          -56.89605         0</span></span>
+<span><span class="co">## 13          -56.88329         0</span></span>
+<span><span class="co">## 14          -56.87281         0</span></span>
+<span><span class="co">## 15          -56.87045         0</span></span>
+<span><span class="co">## 16          -56.85451         0</span></span>
 <span><span class="co">## 17          -56.85451         0</span></span>
-<span><span class="co">## 18          -56.85451         0</span></span>
-<span><span class="co">## 19          -56.86466         0</span></span>
-<span><span class="co">## 20          -56.85294         0</span></span></code></pre>
+<span><span class="co">## 18          -56.86466         0</span></span>
+<span><span class="co">## 19          -56.85294         0</span></span>
+<span><span class="co">## 20          -56.85560         0</span></span></code></pre>
 <p>As expected, a new column (activity2) containing particles’ activity states, coded as binary value (1 and 0 for active and inactive state, respectively) is added to each tracklet.</p>
 <p>Also, using <code><a href="../reference/countMat.html">countMat()</a></code> it is possible to build the matrix of count in the two dimensions array used to classify particles’ between active and inactive states and then build a 3D plot (e.g., using <a href="https://plotly.com/r/getting-started/" class="external-link">plotly</a>) showing the distribution of active and inactive states within the specified space (here, smoothed speed (log-transformed) and turning angle variance) (see fig. <a href="#fig:actives2-3DplotInsert">2</a>).</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
