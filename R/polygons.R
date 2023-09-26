@@ -32,7 +32,7 @@
 #'
 #' @author Quentin PETITJEAN
 #'
-#' @seealso \code{\link[graphics]{circles}}, \code{\link[graphics]{locPos}}, \code{\link[graphics]{locROI}}, \code{\link[graphics]{points}} 
+#' @seealso \code{\link[MoveR]{circles}}, \code{\link[MoveR]{locPos}}, \code{\link[MoveR]{locROI}}, \code{\link[graphics]{points}}, \code{\link[graphics]{polygon}} 
 #'
 #' @examples
 #'

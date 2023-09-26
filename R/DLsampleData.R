@@ -7,7 +7,7 @@
 #'
 #' @param dir The path to the directory where the sample dataset is saved, by default, the function will save it in a temporary directory (optional).
 #'
-#' @param tracker A character string corresponding to the name of the tracking software from which data have to be downloaded: Ctrax, IdTracker, TrackR and/or TRex. By default the function returns the path
+#' @param tracker A character string corresponding to the name of the tracking software from which data have to be downloaded: AnimalTA, Ctrax, IdTracker, TrackR and/or TRex. By default the function returns the path
 #' to sample data from each tracking software.
 #'
 #' @return This function returns a vector containing the path to: 
@@ -37,7 +37,7 @@
 
 DLsampleData <-
   function(dataSet = c(1, 2),
-           tracker = c("Ctrax", "IdTracker", "TrackR", "TRex"),
+           tracker = c("AnimalTA", "Ctrax", "IdTracker", "TrackR", "TRex"),
            dir = NULL) {
     # select the sample dataset
     if (dataSet != 1 &
@@ -48,7 +48,7 @@ DLsampleData <-
     } else{
       sampleData <- paste("sample", dataSet, sep = "_")
     }
-    if (!tracker %in% c("Ctrax", "IdTracker", "TrackR", "TRex")) {
+    if (!tracker %in% c("AnimalTA", "Ctrax", "IdTracker", "TrackR", "TRex")) {
       stop(
         "tracker argument is misspelled, please indicate from which tracking software data have to be downloaded: Ctrax, IdTracker, TrackR and/or TRex"
       )

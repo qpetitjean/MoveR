@@ -6,14 +6,14 @@
 \usage{
 DLsampleData(
   dataSet = c(1, 2),
-  tracker = c("Ctrax", "IdTracker", "TrackR", "TRex"),
+  tracker = c("AnimalTA", "Ctrax", "IdTracker", "TrackR", "TRex"),
   dir = NULL
 )
 }
 \arguments{
 \item{dataSet}{A numeric value, either 1 or 2 corresponding to the desired sampled dataset.}
 
-\item{tracker}{A character string corresponding to the name of the tracking software from which data have to be downloaded: Ctrax, IdTracker, TrackR and/or TRex. By default the function returns the path
+\item{tracker}{A character string corresponding to the name of the tracking software from which data have to be downloaded: AnimalTA, Ctrax, IdTracker, TrackR and/or TRex. By default the function returns the path
 to sample data from each tracking software.}
 
 \item{dir}{The path to the directory where the sample dataset is saved, by default, the function will save it in a temporary directory (optional).}
