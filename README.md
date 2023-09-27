@@ -187,7 +187,7 @@ regular-expression syntax.
 Please cite this package as:
 
 > PETITJEAN Quentin (2023) MoveR: An R package to ease animal movement
-> analyses. R package version 0.0.0.9000.
+> analyses. R package version 0.2.0.
 
 ## Code of Conduct
 

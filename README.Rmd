@@ -22,7 +22,6 @@ MoveR <img src="man/figures/hexsticker.png" height="120" align="right"/>
 <!-- badges: start -->
 <img alt="GitHub" src="https://img.shields.io/github/license/qpetitjean/MoveR"><br />
 [![CRAN status](https://www.r-pkg.org/badges/version/MoveR)](https://CRAN.R-project.org/package=MoveR)<br />
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)<br />
 <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/qpetitjean/MoveR?include_prereleases">
 <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/qpetitjean/MoveR"><br />
 <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/qpetitjean/MoveR">&nbsp;
@@ -99,7 +98,7 @@ Besides the high flexibility and unified environment, the primary innovations pr
 Please cite this package as: 
 
 > PETITJEAN Quentin (`r format(Sys.Date(), "%Y")`) MoveR: An R 
-package to ease animal movement analyses. R package version 0.0.0.9000.
+package to ease animal movement analyses. R package version 0.2.0.
 
 
 ## Code of Conduct
