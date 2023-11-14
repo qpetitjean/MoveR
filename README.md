@@ -8,8 +8,6 @@
 <img alt="GitHub" src="https://img.shields.io/github/license/qpetitjean/MoveR"><br />
 [![CRAN
 status](https://www.r-pkg.org/badges/version/MoveR)](https://CRAN.R-project.org/package=MoveR)<br />
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)<br />
 <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/qpetitjean/MoveR?include_prereleases">
 <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/qpetitjean/MoveR"><br />
 <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/qpetitjean/MoveR"> 
@@ -22,6 +20,11 @@ The `MoveR`
 style="width:1.13em;height:1em" /> package aims to help users analyze
 the output of automated video-tracking solutions in a reproducible,
 reliable and open framework.
+
+> Preprint is now available here:
+> <https://biorxiv.org/cgi/content/short/2023.11.08.566216v1><br />
+> Documentation website is available here:
+> <https://qpetitjean.github.io/MoveR/>
 
 ## Dependencies
 
@@ -186,8 +189,9 @@ regular-expression syntax.
 
 Please cite this package as:
 
-> PETITJEAN Quentin (2023) MoveR: An R package to ease animal movement
-> analyses. R package version 0.2.0.
+> Petitjean Q, Lartigue S, Cointe M, Ris N, Calcagno V. MoveR: an R
+> package for easy processing and analysis of animal video-tracking
+> data. 2023. bioRxiv., 2023.11.08.566216.
 
 ## Code of Conduct
 

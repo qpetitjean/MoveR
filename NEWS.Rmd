@@ -4,7 +4,7 @@ output: github_document
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# MoveR release v0.2.0
+# v0.2.0
 
 * Add readAnimalTA function to import tracking data from AnimalTA software.
 * Add MSD to compute mean square displacement of particles according to the equations derived from Kareiva & Shigesada (1983) or Turchin (2015).
@@ -14,7 +14,7 @@ NB: while it increases the speed of the slidWindow function, it also make it les
 * some minor modifications in readTrackR function
 
 
-# MoveR dev. release v0.1.0
+# v0.1.0
 
 * This is the development release of the MoveR package.
 * This version is still under active development and might be unstable.

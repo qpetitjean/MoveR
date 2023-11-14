@@ -2,9 +2,9 @@ citHeader("To cite MoveR in publications use:")
 
 bibentry(
   bibtype = "Manual",
-  title   = "MoveR: {An} {R} package to ease animal movement analyses",
-  author  = c(person("PETITJEAN Quentin"), person("CALCAGNO Vincent")),
-  year    = "2021",
-  note    = "R package version 0.2.0",
-  url     = "https://github.com/qpetitjean/MoveR"
+  title   = "MoveR: an R package for easy processing and analysis of animal video-tracking data. 2023",
+  author  = c(person("Petitjean Q"), person("Lartigue S"), person("Cointe M"), person("Ris N"), person("Calcagno V")),
+  year    = "2023",
+  note    = "bioRxiv, 2023.11.08.566216 - R package version 0.2.0",
+  url     = "https://biorxiv.org/cgi/content/short/2023.11.08.566216v1"
 )
