@@ -32,7 +32,8 @@
 #' @param frameR A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video (optional, only used to compute timestamps).
 #'
 #'
-#' @return A list containing either a list of 6 elements classically used for further computations.
+#' @return A list containing a list of 6 elements classically used for further computations. 
+#' In case the input data (plainTab) contains other columns, those columns are also appended to the returned list.
 #'
 #'
 #' @author Quentin PETITJEAN
@@ -101,7 +102,7 @@ readPlain <- function(plainTab,
   
   pos <- c()
   for (i in c(id, timeCol, "X", "Y")) {
-    posTemp <- grep(i, names(trackDat), fixed = T)
+    posTemp <- which(i == names(trackDat))
     if (length(posTemp) == 0) {
       stop(
         "[",
@@ -142,5 +143,13 @@ readPlain <- function(plainTab,
       unique(trackDat[[timeCol]]) / frameR
     )
   )
+  
+  # in case the plain tracking output contains other columns than those used by MoveR append them to the output list
+  if(ncol(trackDat) > length(pos)){
+    datCol <- seq(ncol(trackDat))
+    colAdd <- which(!datCol %in% pos)
+    toadd <- trackDat[,colAdd]
+    Data <- c(Data, as.list(toadd))
+  }
   return(Data)
 }
