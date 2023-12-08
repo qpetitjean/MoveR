@@ -34,7 +34,8 @@ corresponding to the height of the image or video resolution (optional, only use
 \item{frameR}{A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video (optional, only used to compute timestamps).}
 }
 \value{
-A list containing either a list of 6 elements classically used for further computations.
+A list containing a list of 6 elements classically used for further computations.
+In case the input data (plainTab) contains other columns, those columns are also appended to the returned list.
 }
 \description{
 Given the path of a table file (e.g., .txt or .csv, see \code{\link[utils]{read.table}}) or an already imported tibble, dataframe or list of vectors
