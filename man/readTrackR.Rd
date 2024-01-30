@@ -4,13 +4,7 @@
 \alias{readTrackR}
 \title{Import TrackR tracking output .csv file.}
 \usage{
-readTrackR(
-  trackRPath,
-  flipY = FALSE,
-  imgHeight = NULL,
-  frameR = NULL,
-  rawDat = FALSE
-)
+readTrackR(trackRPath, flipY = FALSE, imgHeight = NULL, rawDat = FALSE)
 }
 \arguments{
 \item{trackRPath}{The full path of the TrackR output file (.csv).}
@@ -20,18 +14,17 @@ readTrackR(
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
 corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
 
-\item{frameR}{A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video (optional, only used to compute timestamps).}
-
-\item{rawDat}{TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .csv file (see \href{https://swarm-lab.github.io/trackR}{trackR}),
-may drastically increase the size of the object returned by the function (default = FALSE).}
+\item{rawDat}{A logical value (i.e., TRUE or FALSE) indicating whether all other elements retrieved from the tracking output should appended to the tracklets data (see \href{https://swarm-lab.github.io/trackR}{trackR}).
+Note that this may drastically increase the size of the object returned by the function (default = FALSE).}
 }
 \value{
-A list containing either a list of 9 elements classically used for further computations or a list containing 2 sublists, the first corresponding to the one previously mentioned
-and the second containing all the elements retrieved from the .csv file (see rawDat argument). Also, by default the function returns y coordinates starting on the bottom-left.
+An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.
+In case \link{rawDat} argument is TRUE, it also append all the others elements returned by the tracking software (for TrackR it corresponds to "n" the number of pixels covered by the object in a given frame).
+Also, by default the function returns y coordinates starting on the bottom-left.
 }
 \description{
 Given the path of the .csv file corresponding to TrackR output,
-this function returns a list of 9 vectors classically used for further computations using MoveR package:
+this function returns an object of class "tracklets", a list of tracklets (data frame) containing 7 elements classically used for further computations using MoveR package:
 \itemize{
 \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
 \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to y-axis.}
@@ -40,13 +33,10 @@ this function returns a list of 9 vectors classically used for further computati
 \item{'y.pos': }{y position of the particle's centroid.}
 \item{'identity': }{the particle's identity given by the tracking software.}
 \item{'frame': }{the video frame number at which the measurements has been made.}
-\item{'ntargets': }{the number of particle tracked over each frame.}
-\item{'timestamps': }{the elapsed time over each frame, in seconds.}
 }
 
-Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above
-and the second containing all the elements retrieved from the .csv file (see rawDat argument).
-Also, the function can flip y coordinates (see flipY argument).
+The function can also append all the others elements returned by the tracking software (see \link{rawDat} argument)
+Also, the function can flip y coordinates (see \link{flipY} argument).
 }
 \examples{
 \dontrun{
@@ -55,27 +45,12 @@ Also, the function can flip y coordinates (see flipY argument).
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TrackR")
 Path2Data
 
-# Import the list containing the 9 vectors classically used for further computation
-# and flip Y coordinates to start on the top-left
-Data <-
-  MoveR::readTrackR(Path2Data[[1]],
-         flipY = T,
-         imgHeight = 2160,
-         rawDat = F
-  )
-str(Data)
-
-# Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
-# and the second list containing all the elements retrieved from .csv file,
+# Import the data as an object of class "tracklets"
 # also do not flip Y coordinates (start on the bottom-left)
-
-DataFull <-
-  MoveR::readTrackR(Path2Data[[1]],
-    rawDat = T,
-    frameR = 25
-  )
-
-str(DataFull)
+Data <-
+  MoveR::readTrackR(Path2Data[[1]])
+  
+str(Data)
 
 } 
 }
@@ -83,7 +58,7 @@ str(DataFull)
 \href{https://swarm-lab.github.io/trackR}{trackR - Multi-object tracking with R}
 }
 \seealso{
-\code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
+\code{\link{readAnimalTA}} \code{\link{readCtrax}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 }
 \author{
 Quentin PETITJEAN

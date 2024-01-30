@@ -1,11 +1,10 @@
 #' @title Identify and extract specified patterns/sequences from tracklets.
 #'
-#' @description Given a list of data frames containing tracking informations including a vector
+#' @description Given an object of class "tracklets" containing a list of tracklets including a vector
 #' containing behavioral patterns (e.g., behavioral states, location in areas) for each tracklet,
 #' the function identify and extract tracklets parts that contains the specified pattern.
 #'
-#'
-#' @param trackDat A list of data frame containing tracking informations for each tracklet, including a vector
+#' @param trackDat An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations including a vector
 #' containing behavioral patterns (e.g., behavioral states, location in areas).
 #'
 #' @param Bstate The name of the column indicating the state of the particle along each tracklet.
@@ -31,7 +30,7 @@
 #' TrackL <-
 #'   100:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 #' id <- 0
-#' TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+#' TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
 #'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
 #'     id <<- id + 1
 #'     data.frame(
@@ -40,7 +39,7 @@
 #'       frame = j$time,
 #'       identity = paste("Tracklet", id, sep = "_")
 #'     )
-#' }), seq(TrackN))
+#' }), seq(TrackN)))
 #' 
 #' # draw all tracklets and the area of interest
 #' MoveR::drawTracklets(TrackList)
@@ -54,7 +53,7 @@
 #'  TrackList,
 #'   customFunc = list(
 #'     dist2ArenaEdge = function(x)
-#'       MoveR::dist2Edge(x, ArenaEdge[[1]], customFunc = "CircularArena"),
+#'       MoveR::dist2Edge(x, ArenaEdge, customFunc = "CircularArena"),
 #'     InOut =
 #'       function(x)
 #'         ifelse(x["dist2ArenaEdge"] < 0, "IN", "OUT")
@@ -93,23 +92,12 @@ IdStateSeq <-
            pattern = NULL,
            perl = FALSE,
            fixed = FALSE) {
-    if (is.null(Bstate)) {
-      stop(
-        "Bstate argument is missing, a column containing behavioral state information is needed to find the specified pattern"
-      )
+    
+    error <- .errorCheck(trackDat = trackDat, Bstate = Bstate, pattern = pattern)
+    if(!is.null(error)){
+      stop(error)
     }
-    if (is.null(unlist(lapply(trackDat, function(x) {
-      MoveR::listGet(x, Bstate)
-    })))) {
-      stop(
-        "Bstate column is misspelled or is missing from tracklet list, a column containing behavioral state information is needed to find the specified pattern"
-      )
-    }
-    if (is.null(pattern)) {
-      stop(
-        "pattern argument is missing, a regular expression is needed to specify which part of the tracklets have to be extracted"
-      )
-    }
+    
     # transform the vector indicating the state of the individual as character
     # string for each tracklet
     toMatch <-

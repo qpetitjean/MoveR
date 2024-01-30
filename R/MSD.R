@@ -1,13 +1,13 @@
 #' @title Compute Mean Square Displacement (MSD).
 #'
-#' @description Given a list of data frames containing tracking informations and including the value of turning angles,
+#' @description Given an object of class "tracklets" containing a list of tracklets and including the value of turning angles,
 #' distance traveled and activity states (either 1 or 0 for active or inactive state respectively), this function compute the mean square displacement value
 #' corresponding to a measure of the deviation of a particle's position according to a reference position over time. Computation can be performed
 #' through the use of the equations derived from Kareiva & Shigesada (1983) or Turchin (2015). In a nutshell the Turchin's equation for MSD is a simplified version of the 
 #' Kareiva & Shigesada' equation, assuming symmetric turning angles. 
 #'
 #'
-#' @param trackDat A list of data frame containing tracking informations for each tracklet.
+#' @param trackDat An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).
 #'
 #' @param turnAngle A character string indicating the name of the variable specifying the turning angles over each trajectories.
 #'
@@ -57,8 +57,8 @@
 #'
 #' # simulated 30 tracklets
 #' nbr = 30
-#' simus <- lapply(1:nbr,  function(rrr)
-#'   myccrw())
+#' simus <- MoveR::trackletsClass(lapply(1:nbr,  function(rrr)
+#'   myccrw()))
 #'
 #' # take a look at the simulated data
 #' MoveR::drawTracklets(simus)
@@ -124,38 +124,28 @@ MSD <-
            activityStates = NULL,
            method = c("Turchin", "KS")) {
     if (length(method) > 1) {
-      method = "KS"
+      method = "Turchin"
       warning(
         "No method selected to compute the mean square displacement (MSD), default method is ['Turchin']"
       )
     }
+
+    error <- .errorCheck(trackDat = trackDat, turnAngle = turnAngle, distTraveled = distTraveled)
+    if(!is.null(error)){
+      stop(error)
+    }
+    
     trackdatL <- MoveR::convert2List(trackDat)
-    if (is.null(turnAngle) |
-        is.null(MoveR::listGet(trackdatL, turnAngle))) {
-      stop(
-        "turnAngle argument is missing or misspelled, a column containing the values of particles' turning angle is needed to compute net square displacement"
-      )
-    } else {
-      turnAngle <- trackdatL[[turnAngle]]
-    }
-    if (is.null(distTraveled) |
-        is.null(MoveR::listGet(trackdatL, distTraveled))) {
-      stop(
-        "distTraveled argument is missing or misspelled, a column containing the distance traveled by the particles is needed to compute net square displacement"
-      )
-    } else {
-      distTraveled <- trackdatL[[distTraveled]]
-    }
+    turnAngle <- trackdatL[[turnAngle]]
+    distTraveled <- trackdatL[[distTraveled]]
+    
     if (is.null(activityStates) |
         is.null(MoveR::listGet(trackdatL, activityStates))) {
       warning(
-        "activityStates argument is missing or misspelled, particles will be assumed active all the time"
+        "[activityStates] argument is missing or misspelled, particles will be assumed active all the time"
       )
       ## create vector with 1 (active) everywhere
-      activityStates <-
-        rep(1, unique(unlist(lapply(
-          trackdatL, length
-        ))))
+      activityStates <- rep(1, unique(unlist(lapply(trackdatL, length))))
     } else {
       activityStates <- trackdatL[[activityStates]]
     }

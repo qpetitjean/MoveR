@@ -49,7 +49,7 @@ The function download the data from the <a href="https://github.com/qpetitjean/M
 
 Once the sample data has been downloaded or retrieved we use `readTrex()` to import the data into `r fontawesome::fa("r-project", fill = "steelblue")` environment.<br />
 
-<p class="notes">Note that the same result can be achieved trough the use of `readCtrax()`, `readIdtracker()` or `readTrackR()` depending on the input data.</p>
+<p class="notes">Note that the same result can be achieved trough the use of `readAnimalTA()`, `readCtrax()`, `readIdtracker()`, `readPlain()` or `readTrackR()` depending on the input data. Accordingly, make sure to select the `read` function that corresponds to the chosen example dataset or to your own input data.</p>
 
 Here the raw tracking data are located in the ./MoveR_SampleData-main/sample_1/TREXOutput directory which is the first element of the Path2Data vector.
 
@@ -58,13 +58,19 @@ Here the raw tracking data are located in the ./MoveR_SampleData-main/sample_1/T
 Data <-
   MoveR::readTrex(Path2Data[[1]])
 
-str(Data)
+# check the class, number of tracklets and their id
+class(Data)
+length(Data)
+names(Data)
+
+# display the data for the first particle only
+str(Data[[1]])
 
 ```
 
-The function import the data as a list of 9 elements that are the most useful and further used by various functions of the MoveR package. 
+The function import the data as an object of class "tracklets", a list of tracklets (data frame) numbered according to the identity specified by the tracking software and containing 7 elements classically used for further computations using the MoveR package. 
 
-<p class="notes">Note that output of the various `read` functions is standardized. However, it is also possible to import the output as returned by the tracking software by specifying rawDat = TRUE.</p>
+<p class="notes">Note that, by default, the output of the various `read` functions is standardized. However, it is also possible to import other elements that are specific to the tracking software used by specifying rawDat = TRUE.</p>
 
 ```{r ImportFullDat, echo=TRUE, results='markup'}
 # Import the sample data
@@ -72,47 +78,41 @@ DataFull <-
   MoveR::readTrex(Path2Data[[1]],
                   rawDat = TRUE)
 
-str(DataFull)
+# display the data for the first particle only
+str(DataFull[[1]])
 
 ```
 
-In this case, the output of the function returns a list containing 2 sublists, the first corresponding to the one mentioned above and the second containing all the elements as returned by the tracking software.
+In this case, the function still returns an object of class "tracklets" but each tracklet now contains more information, according to the elements returned by the tracking software, here <a href="https://trex.run">TRex</a> (e.g., "BORDER_DISTANCE.pcentroid", "ACCELERATION.pcentroid", "ANGULAR_A.centroid").
 
 Also, the argument `mirrorY`, can be used to revert the y coordinates. Indeed some tracking software sets the origin of the y axis on the bottom-left while other use the upper-left corner of the video (see `readTrex()` for more insight).
 
-## Convert the data to a list of particles tracks (tracklets)
+## Read and add some information to a tracklets object
 
-In order to ease the readability and computation performed on tracking data, the list of elements describing the tracking output need to be converted as a list of particles tracks called tracklets. 
+Now that we have imported the tracking data, we either check or set some additional information about the tracking session that can be useful for further data processing. More especially, as the frame rate, the scale and the resolution of the video/image are used by several functions it is possible to encode them into the tracklets object using `setInfo()` or to access them using `getInfo()` as follow:
 
-To ease further computation, graphical representation and manual inspection the data are converted to a list of tracklets based on particles' identity using `convert2Tracklets()`. 
-Here we use only the 7 first element of Data because the last two (i.e., ntargets and timestamps) do not carry the same amount of information and are not useful for the next steps of this tutorial.
+```{r set-get, echo=TRUE, results='markup'}
+# check the additional information retrieved from the tracking output (depends on the tracking software used)
+getInfo(trackdat)
 
-```{r Convert, echo=TRUE, results='markup'}
-# convert the data to a list of tracklets
-# NB: remove ntargets and timestamps because their length is lower than other variables
-trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
-
-str(trackDat[1:3]) # display only the 3 first tracklets
+# set the the image resolution, but not the scale as it will not be useful for this tutorial
+trackdat <- setInfo(trackdat, imgRes = c(3840, 2160))
 
 ```
 
-Now we can easily look at the trajectory for a given particle by selecting its identity.
-For instance, here we are displaying the data frame containing the characteristics of the first particle track.
+As displayed, the frame rate (frameR) is automatically retrieved from the tracking output but this is not the case for the scale (scale) and the image resolution (imgRes). Accordingly, we can easily specify the image resolution using `setInfo()` but as the scale will not be useful in this section we can leave the slot empty. 
 
-```{r FirstParticle, results='markup'}
-# display the data for the first particle only
-str(trackDat[["1"]])
+<p class="notes">Note that the MoveR package's functions (e.g., `speed()`, `drawTracklets()`) using this additional information (i.e., frameR, scale, imgRes) will automatically retrieve them from the tracklets object, except if they are manually encoded in a given function, allowing to avoid unnecessary repetition of code.</p>
 
-```
 
-It is then easy to look at the particles trajectories.
+Now we have imported the data as tracklets object, it is easy to look at the particles trajectories.
 
 ## First look at the trajectories
 
 Using `drawTracklets()`, it is easy to visualize the trajectories included in the dataset (see fig. \@ref(fig:drawTracklets1)A below), or to focus on the trajectories described only by some particles, here the fifth' first (see fig. \@ref(fig:drawTracklets1)B below).
 
 
-<p class="notes">Note that `drawTracklets()` needs an argument `timeCol` specifying the timeline of the video (here "frame"). One can also specify the resolution of the video to set x and y limits of the plot but as default, the `imgRes` argument use the maximum values recorded in x and y + 5% to set the plots limits (see drawTracklets documentation).</p>
+<p class="notes">Note that `drawTracklets()` needs an argument `timeCol` specifying the timeline of the video (here "frame", which is the default value). One can also specify the resolution of the video to set x and y limits of the plot either manually or once for all trough `setInfo()` (see above) but in case neither of this option has been chosen, the `imgRes` argument use the maximum values recorded in x and y + 5% to set the plots limits (see `drawTracklets()` documentation).</p>
 
 ```{r drawTracklets1, echo=TRUE, fig.show="hold", fig.align='center', message=FALSE, warning=FALSE, out.width="100%", fig.width=12, fig.height=5, dpi = 300, fig.cap="Micro-wasps trajectories over the whole video timeline, expressed in frame. A. all trajectories are represented. B. only the first 5 tracklets are represented. The trajectories are colored according to the moments at which they are recorded."}
 # split the graphical window in 2 columns

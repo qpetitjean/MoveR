@@ -1,6 +1,6 @@
 #' @title Compute sensitivity index for particles detection.
 #'
-#' @description Given a list of tracklets containing cartesian coordinates of particles over time
+#' @description Given an object of class "tracklets" containing a list of tracklets
 #' and a dataframe containing the "true" (i.e., manually detected) coordinates of the particles, this function
 #' compare the location of the particles performed manually and by the tracking software to return a list of
 #' informations related to sensitivity analysis:
@@ -28,7 +28,7 @@
 #'    }
 #' }
 #'
-#' @param trackDat A list of data frame containing tracking information for each tracklet (i.e., x.pos, y.pos, frame).
+#' @param trackDat An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).
 #'
 #' @param refDat A dataframe containing "true" x and y coordinates of the particles (e.g., manually detected using imageJ)
 #' as well as a column specifying the time (e.g., frame). In case the the particles are located over several time unit
@@ -38,13 +38,13 @@
 #' used to determine whether values are considered similar to those within the refDat or not (default = 20).
 #'
 #' @param imgRes A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
-#' If imgRes is unspecified, the function retrieve it using x and y maximum values + 5%.
+#' If imgRes is unspecified, the function try to retrieve it from tracklets object attribute or approximate it using x and y maximum values + 5%.
 #'
 #' @param timeCol A character string corresponding to the name of the column containing time information (default = "frame")
 #'
 #' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
-#' @return A list of dataframes summarizing the results of the sensitivity analysis:
+#' @return A list of data frames summarizing the results of the sensitivity analysis:
 #' \itemize{
 #'          \item{"SensitivityStats": }{sensitivity index, n, standard deviation, standard error (sd, se are only computed if refDat contains particle's position over several time units).}
 #'          \item{"SensitivityDetails": }{a data frame containing detailed sensitivity index and time units on which test have been performed.}
@@ -62,12 +62,12 @@
 #' Path2Data
 #' 
 #' # Import the list containing the 9 vectors classically used for further computation
-#' Data <- MoveR::readTrex(Path2Data[[1]],
+#' trackDat <- MoveR::readTrex(Path2Data[[1]],
 #'                         flipY = T,
 #'                         imgHeight = 2160)
 #' 
-#' # convert it to a list of tracklets
-#' trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
+#' # add the information about image resolution to the tracklet object
+#' trackDat <- setInfo(trackDat, imgRes = c(3840, 2160))
 #' 
 #' # load the reference dataset (a dataframe containing manually detected position of the particle's over time unit)
 #' refDat <-
@@ -156,29 +156,46 @@ detectPerf <-
            imgRes = c(NA, NA),
            timeCol = "frame",
            progress = TRUE) {
+    
+    error <- .errorCheck(trackDat = trackDat, refDat = refDat)
+    if(!is.null(error)){
+      stop(error)
+    }
+    
     # transform refDat to a list of dataframe according to timeCol
     if (is.data.frame(refDat)) {
       refDat <- split(refDat, refDat[[timeCol]])
     }
     
-    # if imgRes is unspecified retrieve it approximately using the maximum value in x and y coordinates
+    # if imgRes is unspecified; it try to retrieve it from tracklets object attribute else, 
+    # retrieve it approximately using the maximum value in x and y coordinates
     if (TRUE %in% is.na(imgRes)) {
-      xCoords <- unlist(lapply(trackDat, function(x)
-        MoveR::listGet(x, "x.pos")))
-      if (length(which(is.infinite(xCoords)) > 0)) {
-        xCoords <- xCoords[!is.infinite(xCoords)]
+      if (!is.null(MoveR::getInfo(trackDat, "imgRes"))) {
+        imgRes <- MoveR::getInfo(trackDat, "imgRes")
+      } else{
+        xCoords <- unlist(lapply(trackDat, function(x)
+          MoveR::listGet(x, "x.pos")))
+        if (length(which(is.infinite(xCoords)) > 0)) {
+          xCoords <- xCoords[!is.infinite(xCoords)]
+        }
+        width <-
+          round(max(xCoords, na.rm = T) + 5 * max(xCoords, na.rm = T) / 100, 0)
+        
+        yCoords <- unlist(lapply(trackDat, function(x)
+          MoveR::listGet(x, "y.pos")))
+        if (length(which(is.infinite(yCoords)) > 0)) {
+          yCoords <- yCoords[!is.infinite(yCoords)]
+        }
+        height <-
+          round(max(yCoords, na.rm = T) + 5 * max(yCoords, na.rm = T) / 100, 0)
+        
+        imgRes <- c(width, height)
       }
-      width <- round(max(xCoords) + 5 * max(xCoords) / 100, 0)
-      
-      yCoords <- unlist(lapply(trackDat, function(x)
-        MoveR::listGet(x, "y.pos")))
-      if (length(which(is.infinite(yCoords)) > 0)) {
-        yCoords <- yCoords[!is.infinite(yCoords)]
-      }
-      height <- round(max(yCoords) + 5 * max(yCoords) / 100, 0)
-      
-      imgRes <- c(width, height)
     }
+    
+    # convert the tracklets obj to a VarList obj that is used to match moment where true position are detected
+    trackT <- MoveR::convert2List(trackDat)
+    trackT <- as.data.frame(trackT[1:length(trackT)])
     
     # initialize the dataframe and vector to retrieve the results
     sensitiv <-
@@ -226,7 +243,7 @@ detectPerf <-
           " in refDat :",
           "\n",
           timeCol,
-          "column is not found, verify that timeCol argument correspond to the name of the time column
+          "column is not found, verify that [timeCol] argument correspond to the name of the time column
          or append a column containing the time in the reference dataframe"
         )
       } else if (length(unique(refDat[[h]][[timeCol]])) > 1) {
@@ -259,7 +276,6 @@ detectPerf <-
         # 2- check whether the tracklets pass through reference point or not
         
         ## subsetting trackDat according to the time (timeCol) were true position were recorded
-        trackT <- as.data.frame(MoveR::convert2List(trackDat))
         trackTsub <-
           trackT[trackT[[timeCol]] == unique(refDat[[h]][[timeCol]]), ]
         

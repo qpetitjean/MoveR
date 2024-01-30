@@ -4,7 +4,7 @@
 \alias{flipYCoords}
 \title{flip y coordinates.}
 \usage{
-flipYCoords(YCoords, imgHeight = NA)
+flipYCoords(YCoords, imgHeight = NULL)
 }
 \arguments{
 \item{YCoords}{A vector containing y coordinates for some particles.}
@@ -27,7 +27,7 @@ TrackN <- 1 # the number of tracklet to simulate
 TrackL <-
   10000 # the length of the tracklets or a sequence to randomly sample tracklet length
 id <- 0
-TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+TrackList <-  MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
     id <<- id + 1
     data.frame(
@@ -36,7 +36,7 @@ TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
       frame = j$time,
       identity = paste("Tracklet", id, sep = "_")
    )
-  }), seq(TrackN))
+  }), seq(TrackN)))
 
 # convert the list of tracklets to a simple list of variables
 trackDatList <- MoveR::convert2List(TrackList)
@@ -47,19 +47,20 @@ imgHeight <- max(trackDatList[["y.pos"]], na.rm = T)
 # use flipYCoords to flip y coords
 trackDatList[["y.pos"]] <-
   MoveR::flipYCoords(trackDatList[["y.pos"]], imgHeight = imgHeight)
+  
+# rename the identity of the flipped tracklet by adding "bis"
+trackDatList[["identity"]] <-
+ gsub("$", "Bis", trackDatList[["identity"]])
 
 # convert the new dataset to a list of tracklet
-trackDatflipped <-
-  MoveR::convert2Tracklets(trackDatList, by = "trackletId")
-
-# rename the identity of the flipped tracklet Tracklet_1_Bis
-trackDatflipped[[1]][["identity"]] <-
-  gsub("Tracklet_1", "Tracklet_1_Bis", trackDatflipped[[1]][["identity"]])
+ trackDatList <- trackDatList[-length(trackDatList)]
+ trackDatflipped <-
+   MoveR::convert2Tracklets(trackDatList, by = "identity")
 
 # draw the result
 # here we can see that both trajectory are flipped, with the original trajectory
 # drawed in black and the flipped one in red
-MoveR::drawTracklets(c(TrackList, trackDatflipped),
+MoveR::drawTracklets(MoveR::trackletsClass(c(TrackList, trackDatflipped),
                      colId = "identity")
 
 }

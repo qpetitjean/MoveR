@@ -1,6 +1,6 @@
 #' @title Summary statistics of the tracking data.
 #'
-#' @description Given a list of tracking tracklets containing cartesian coordinates,
+#' @description Given an object of class "tracklets", a list of tracklets (data frame) containing at least cartesian coordinates and time,
 #' this function returns 2 sublists containing a summary of video and tracklets data:
 #'
 #' \itemize{
@@ -26,7 +26,7 @@
 #'       }
 #'    }
 #'  }
-#' @param trackDat A list of data frame containing tracking information for each tracklet (i.e., x.pos, y.pos, frame).
+#' @param trackDat An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).
 #'
 #' @param frameR A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video
 #' (optional).
@@ -53,13 +53,13 @@
 #' TrackN <- 500 # the number of tracklet to simulate
 #' TrackL <- 1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 #' 
-#' TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+#' TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
 #'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j)
 #'     data.frame(
 #'       x.pos = j$x - min(j$x),
 #'       y.pos = j$y - min(j$y),
 #'       frame = j$time
-#'     )), seq(TrackN))
+#'     )), seq(TrackN)))
 #' 
 #' # compute and display tracking summary
 #' TrackSummary <- MoveR::trackStats(TrackList,
@@ -86,14 +86,24 @@
 
 trackStats = function(trackDat,
                       frameR = NULL,
-                      scale = 1,
+                      scale = NULL,
                       units = "pixels",
                       progress = TRUE) {
-
-  if (is.null(frameR)) {
-    warning("frameR argument is missing, metrics expressed in seconds will return NA")
+  error <- .errorCheck(trackDat = trackDat)
+  if(!is.null(error)){
+    stop(error)
   }
-  
+  if (is.null(frameR) && !is.null(MoveR::getInfo(trackDat, "frameR"))){
+    frameR <- MoveR::getInfo(trackDat, "frameR")
+  } else if (is.null(frameR) && is.null(MoveR::getInfo(trackDat, "frameR"))) {
+    warning("[frameR] argument is missing, metrics expressed in seconds will return NA")
+  }
+  # if scale argument is null try to retrieve it from tracklets object or set it to the default value: 1
+  if (is.null(scale) && !is.null(MoveR::getInfo(trackDat, "scale"))){
+    scale <- MoveR::getInfo(trackDat, "scale")
+  } else if (is.null(scale) && is.null(MoveR::getInfo(trackDat, "scale"))) {
+    scale <- 1
+  }
   # compute some basic summary about video
   ## compute the duration of the video in frame
   videoDuration_f <-
@@ -197,5 +207,9 @@ trackStats = function(trackDat,
   names(Summary$TrackletSummary)[[8]] <- TrackLength_u
   # display the summary
   str(Summary)
-  return(Summary)
+  
+  warning("trackStats is deprecated. Please use summary instead.", 
+          call. = FALSE)
+  
+  return(invisible(Summary))
 }

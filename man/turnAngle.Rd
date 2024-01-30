@@ -6,7 +6,7 @@
 \usage{
 turnAngle(
   df,
-  timeCol = NULL,
+  timeCol = "frame",
   unit = c("radians", "degrees"),
   compass = NULL,
   scale = 1
@@ -15,9 +15,9 @@ turnAngle(
 \arguments{
 \item{df}{A data frame containing x, y coordinates columns named "x.pos", "y.pos" for a given tracklet.}
 
-\item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
+\item{timeCol}{A character string corresponding to the name of the column containing Time information (default = 'frame').}
 
-\item{unit}{A character string indicating whether the function should returns turning angle in radians or degrees.}
+\item{unit}{A character string indicating whether the function should returns turning angle in radians or degrees (default = "radians").}
 
 \item{compass}{A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).}
 

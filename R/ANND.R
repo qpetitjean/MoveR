@@ -1,20 +1,20 @@
 #' @title Compute Average Nearest Neighbour Distance (ANND) among tracklets.
 #'
-#' @description Given a list of data frames containing tracking information for each tracklet (including the timeline)
+#' @description Given an object of class "tracklets" containing a list of tracklets,
 #' this function returns the Average Nearest Neighbour Distance among tracklets along a specified timeline. Also, 
 #' if bootn parameter is above 0, the function compute studentize 95 % CI using bootstrapping method.
 #'
 #'
-#' @param trackDat A list of data frame containing tracking information for each tracklet (including a timeline).
+#' @param trackDat An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).
 #'
-#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
+#' @param timeCol A character string corresponding to the name of the column containing Time information (default = 'frame').
 #'
 #' @param Tinterval A vector containing two numeric values expressed in the timeline unit and
 #' specifying the time window on which the computation is performed (default is null, meaning the computation will be performed on the whole timeline).
 #'
 #' @param sampling A numeric value expressed in the timeline unit and specifying the subsampling step used to
 #' to perform the computation (it allow to make computation faster). In other words, it determine the resolution of the
-#' returned results (e.g., a value of 5000 mean that values will be computed every 5000 time unit).
+#' returned results (e.g., a value of 5000 mean that values will be computed every 5000 time unit) (default = 1).
 #' 
 #' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
 #' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.
@@ -59,7 +59,7 @@
 #' TrackL <-
 #'   100:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 #' id <- 0
-#' TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+#' TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
 #'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
 #'     id <<- id + 1
 #'     data.frame(
@@ -68,7 +68,7 @@
 #'       frame = j$time,
 #'       identity = paste("Tracklet", id, sep = "_")
 #'     )
-#'   }), seq(TrackN))
+#'   }), seq(TrackN)))
 #' 
 #' # compute the ANND with a sampling of 100 time unit
 #' ANNDRes <-
@@ -135,25 +135,26 @@
 #' @export
 
 ANND <- function(trackDat,
-                 timeCol = NULL,
+                 timeCol = 'frame',
                  Tinterval = NULL,
-                 sampling = NULL,
-                 scale = 1,
+                 sampling = 1,
+                 scale = NULL,
                  bootn = 0,
                  progress = TRUE) {
   # define a timeline according to the max duration of the video and a step parameter.
   # Nearest neighbour distance will be computed at each point of the timeline and then averaged
-  if (is.null(timeCol) |
-      !(timeCol %in% unlist(lapply(trackDat, names)))) {
+  if (!(timeCol %in% unlist(lapply(trackDat, names)))) {
     stop(
-      "timeCol argument is missing or is not found in the provided dataset, timeCol might be misspelled"
+      "timeCol argument [", 
+      timeCol,"] is not found in the provided dataset, timeCol might be misspelled"
     )
   }
-  if (is.null(sampling)) {
-    sampling = 1
-    warning(
-      "sampling argument is NULL, default value is 1 meaning that ANND will be computed for each time unit"
-    )
+  
+  # if scale argument is null try to retrieve it from tracklets object or set it to the default value: 1
+  if (is.null(scale) && !is.null(MoveR::getInfo(trackDat, "scale"))){
+    scale <- MoveR::getInfo(trackDat, "scale")
+  } else if (is.null(scale) && is.null(MoveR::getInfo(trackDat, "scale"))) {
+    scale <- 1
   }
   
   # define the timeline
@@ -241,7 +242,7 @@ ANND <- function(trackDat,
   for (t in Newtimeline) {
     # select the tracklets that are detected in the selected timeline part and
     # Cut them according the selected part of the timeline
-    WhoWhen <- MoveR::cutTracklets(trackDat, function (x)
+    WhoWhen <- .cutTracklets(trackDat, function (x)
       x[[timeCol]] %in% t)
     # identify the number of tracklets present at t
     # it assume that each tracklet is independant from other

@@ -1,10 +1,10 @@
 #' @title Perform custom computation over a tracklet list.
 #'
-#' @description Given a list of data frames containing tracking information for each tracklet and
+#' @description Given an object of class "tracklets" containing a list of tracklets and
 #' a custom function (or list of functions), this function iterate trough the tracklet lists to perform the specified computation
-#' and returns the original list of data frames with the result of the analysis appended.
+#' and returns the original object of class "tracklets" with the result of the analysis appended.
 #'
-#' @param trackDat A list of data frame containing tracking information for each tracklet.
+#' @param trackDat An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.
 #'
 #' @param customFunc A function or a list of functions used to perform the computation over all tracklets
 #' NB: in case customFunc is a list of unnamed function it will try to retrieve their names by returning the first character string
@@ -12,8 +12,7 @@
 #'
 #' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
-#' @return this function returns the original list of data frames (i.e., tracklet)
-#' with the result of the specified computation appended.
+#' @return this function returns an object of class "tracklets" with the result of the specified computation appended to each tracklet.
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -26,7 +25,7 @@
 #' TrackL <-
 #'   1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 #' id <- 0
-#' TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+#' TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
 #'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
 #'     id <<- id + 1
 #'     data.frame(
@@ -35,11 +34,10 @@
 #'       frame = j$time,
 #'       identity = paste("Tracklet", id, sep = "_")
 #'     )
-#'   }), seq(TrackN))
+#'   }), seq(TrackN)))
 #'
 #' # check the tracklets
-#' MoveR::drawTracklets(TrackList,
-#'                  timeCol = "frame")
+#' MoveR::drawTracklets(TrackList)
 #'
 #' # Run some computation on the dataset using analyseTracklets
 #' TrackList2 <-
@@ -48,17 +46,12 @@
 #'     customFunc = list(
 #'       # specify a first function to compute speed over each tracklet (a modulus present within the MoveR package)
 #'       speed = function(x)
-#'         MoveR::speed(x,
-#'                      timeCol = "frame",
-#'                      scale = 1),
+#'         MoveR::speed(x),
 #'       # compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
 #'       TurnAngle = function(x)
 #'         MoveR::turnAngle(
 #'           x,
-#'           timeCol = "frame",
-#'           unit = "radians",
-#'           scale = 1
-#'         ),
+#'           unit = "radians"),
 #'       # convert the time expressed in frame in second using a conversion factor of 25 frame per second
 #'       TimeSec = function(x)
 #'         x[["frame"]] / 25,
@@ -99,12 +92,15 @@
 #'
 #' @export
 
-analyseTracklets <- function(trackDat,
-                             customFunc,
+analyseTracklets <- function(trackDat = NULL,
+                             customFunc = NULL,
                              progress = TRUE) {
-  if (is.null(customFunc)) {
-    stop("customFunc argument is missing, a customFunc is needed to compute metric")
+
+  error <- .errorCheck(trackDat = trackDat, customFunc = customFunc)
+  if(!is.null(error)){
+    stop(error)
   }
+  
   # if customFunc is a unnamed list of function, retrieve function names
   if (is.list(customFunc)) {
     if (is.null(names(customFunc))) {
@@ -155,7 +151,7 @@ analyseTracklets <- function(trackDat,
           "[",j,"]",
           " in tracklet ",
           "[",i,"]",
-          ", analyseTracklets returned NA, perhaps check customFunc argument:\n",
+          ", [analyseTracklets] returned NA, perhaps check [customFunc] argument:\n",
           TryFunc
         )
       } else if (inherits(TryFunc, "simpleWarning")) {

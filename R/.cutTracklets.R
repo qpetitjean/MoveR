@@ -7,8 +7,8 @@
 #'
 #' @param customFunc A function used to cut/subset the tracklets.
 #'
-#' @return A list of data frames containing subsetted tracking information for each tracklet according to
-#' the conditions specified by the customFunc argument.
+#' @return An object of class "tracklets" containing a list of tracklets with tracking informations. The returned tracklets are shortened according to
+#' the conditions specified by the customFunc argument; the function is not exported.
 #'
 #'
 #' @author Quentin PETITJEAN
@@ -21,20 +21,20 @@
 #' TrackN <- 20 # the number of tracklet to simulate
 #' TrackL <- 1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 #' 
-#' TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+#' TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
 #'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j)
 #'     data.frame(
 #'       x.pos = j$x - min(j$x),
 #'       y.pos = j$y - min(j$y),
 #'       frame = j$time
-#'     )), seq(TrackN))
+#'     )), seq(TrackN)))
 #'
 #' # example 1 :
 #' ## cut the tracklets by keeping only the part drawn during the first 25 seconds of the video
 #' ### create a time sequence from 0 to 25 seconds (25 seconds * 25 frames)
 #' TimeSeq <- seq(0, 25 * 1, by = 1) 
 #' ### cut the tracklets
-#' trackDatSub <- MoveR::cutTracklets(TrackList,
+#' trackDatSub <- .cutTracklets(TrackList,
 #'                       customFunc = function(x)
 #'                       x[["frame"]] %in% TimeSeq)
 #' 
@@ -50,9 +50,8 @@
 #'                  cex.leg = 0.8,
 #'                  main = "")
 #'
-#' @export
 
-cutTracklets <- function(trackDat, customFunc) {
+.cutTracklets <- function(trackDat, customFunc) {
   if (class(trackDat) == "data.frame") {
     trackDat <- list(trackDat)
   }
@@ -73,5 +72,12 @@ cutTracklets <- function(trackDat, customFunc) {
   # store the selected tracklets part in a list
   output <- stats::setNames(lapply(names(WhoWhen), function(w)
     trackDat[[w]][c(WhoWhen[[w]]),]), names(WhoWhen))
+  output <- trackletsClass(output)
+  
+  if(inherits(trackDat, "tracklets")){
+    storedInfo <- MoveR::getInfo(trackDat)
+    output <-  MoveR::setInfo(output, storedInfo[[1]],  storedInfo[[2]],  storedInfo[[3]])
+  }
+
   return(output)
 }

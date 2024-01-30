@@ -7,7 +7,7 @@
 filterTracklets(trackDat, filter, splitCond = TRUE, minDur = 1, progess = TRUE)
 }
 \arguments{
-\item{trackDat}{A list of data frames containing tracking information for each tracklet}
+\item{trackDat}{An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).}
 
 \item{filter}{A list of vector as returned by filterFunc and containing the result of a condition test.}
 
@@ -31,16 +31,16 @@ This function returns a list containing two sublists:
 \item{"\%Data_kept_after_filter": }{the percent of records remaining afer the filtering.}
 \item{"\%Data_kept_after_minDur": }{the percent of records remaining afer the filtering for the tracklets that have a number of records above "minDur" argument only.}
 }}
-\item{"CleanedTracklets": }{a list of data frames containing the filtered tracklets according to the condition test specified by filterFunc and "minDur" argument.}
+\item{"CleanedTracklets": }{An object of class "tracklets" containing the filtered tracklets according to the condition test specified by filterFunc and "minDur" argument.}
 }
 }
 \description{
-Given a list of data frame containing tracking information for each tracklet and the result
+Given an object of class "tracklets" containing a list of tracklets and the result
 of a specified condition' test as returned by filterFunc this function remove the values that do not meet the condition
 of the test and split the tracklets accordingly. Also by specifying an additional "minDur" argument,
 filtered tracklets that have a low number of records can be removed.
 The function hence returns two sublist, the first containing a summary of the information about the tracklets before and after filtering
-and the second containing a list with the filtered tracklets according to the condition test and "minDur" argument.
+and the second containing a tracklets object with the filtered tracklets according to the condition test and "minDur" argument.
 }
 \examples{
 \dontrun{
@@ -49,11 +49,8 @@ and the second containing a list with the filtered tracklets according to the co
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 Path2Data
 
-# Import the list containing the 9 vectors classically used for further computation
-Data <- MoveR::readTrex(Path2Data[[1]])
-
-# convert it to a list of tracklets
-trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
+# Import the data as an object of class "tracklets"
+trackDat <- MoveR::readTrex(Path2Data[[1]])
 
 # example 1:
 ## test for the presence of infinite value in x.pos, if infinite values are detected, the result is TRUE

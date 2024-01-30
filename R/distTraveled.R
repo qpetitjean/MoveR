@@ -41,16 +41,11 @@
 #' @export
 
 distTraveled <- function(df, step = 1){
-  if(is.null(listGet(df, "x.pos"))){
-    stop(
-      "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
-    )
+  error <- .errorCheck(df = df, x.pos = "x.pos", y.pos = "y.pos")
+  if(!is.null(error)){
+    stop(error)
   }
-  if(is.null(listGet(df, "y.pos"))){
-    stop(
-      "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
-    )
-  }
+  
   Res <-
     sapply(seq(1, nrow(df), by = step), function(i)
       sqrt((df[["x.pos"]][i + 1] - df[["x.pos"]][i])^ 2 +

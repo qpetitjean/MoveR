@@ -1,12 +1,12 @@
-#' @title Convert a list of tracklets to list of variables.
+#' @title Convert a tracklets object to list of variables.
 #'
-#' @description Given a list containing 1 or more data frames containing the data for each tracklets
-#' the function reduce the list by concatenating the tracklets data frame into a list based on the variables 
-#' included within each tracklet data frame. I also add the identity of the tracklets as a new variable named "trackletId".
+#' @description Given an object of class "tracklets" containing a list of tracklets,
+#' this function concatenate the tracklets data frame into a list based on the variables (varList object)
+#' included within each tracklet. It also add the identity of the tracklets as a new variable named "trackletId".
 #'
-#' @param trackDat A list of data frame containing tracking information for each tracklet (e.g., x.pos, y.pos, frame).
+#' @param trackDat An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).
 #'
-#' @return A list of vectors corresponding to the variables retrieved from the tracklets.
+#' @return An object of class varList corresponding to a list of variables (vectors) retrieved from the tracklets.
 #'
 #' @author Quentin PETITJEAN
 #' 
@@ -21,7 +21,7 @@
 #' TrackL <-
 #'   1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 #' id <- 0
-#' TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+#' TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
 #'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
 #'     id <<- id + 1
 #'     data.frame(
@@ -30,7 +30,7 @@
 #'       frame = j$time,
 #'      identity = paste("Tracklet", id, sep = "_")
 #'     )
-#'   }), seq(TrackN))
+#'   }), seq(TrackN)))
 #' 
 #' # convert the list of tracklets to a simple list of variables
 #'  trackDatList <- MoveR::convert2List(TrackList)
@@ -39,11 +39,20 @@
 #' @export
 
 convert2List <- function(trackDat) {
+
+  error <- .errorCheck(trackDat = trackDat)
+  if(!is.null(error)){
+    stop(error)
+  }
+  
+  storedInfo <- MoveR::getInfo(trackDat)
   # convert the tracklets' list to a data frame and add the tracklet id
   trackDatdf <- do.call("rbind", trackDat)
   trackDatdf[["trackletId"]] <-
     gsub("[.][0-9]*", "", rownames(trackDatdf))
   # then transform the data frame to a list
   trackDatList <- as.list(trackDatdf)
+  class(trackDatList) <- "varList"
+  trackDatList <- MoveR::setInfo(trackDatList, storedInfo[[1]],  storedInfo[[2]],  storedInfo[[3]])
   return(trackDatList)
 } 

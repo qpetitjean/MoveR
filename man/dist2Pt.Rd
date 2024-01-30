@@ -31,13 +31,13 @@ TrackL <-
   100 # the length of the tracklet or a sequence to randomly sample tracklet's length
 TrackDatTemp <-
   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)
-TrackDat <- list(
+TrackDat <- MoveR::trackletsClass(list(
   data.frame(
     x.pos = TrackDatTemp[["x"]] - min(TrackDatTemp[["x"]]),
     y.pos = TrackDatTemp[["y"]] - min(TrackDatTemp[["y"]]),
     frame = TrackDatTemp[["time"]]
   )
-)
+))
 # generate x and y coordinates for two objects located close to the particle trajectory
 Objn <- 2 # the number of object to simulate
 obj <- do.call("rbind", lapply(seq(Objn), function(i)

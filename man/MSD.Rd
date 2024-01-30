@@ -13,7 +13,7 @@ MSD(
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking informations for each tracklet.}
+\item{trackDat}{An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).}
 
 \item{turnAngle}{A character string indicating the name of the variable specifying the turning angles over each trajectories.}
 
@@ -27,7 +27,7 @@ MSD(
 this function returns the Mean Square Displacement (MSD) value according to the equations derived from Turchin (2015) or Kareiva & Shigesada (1983).
 }
 \description{
-Given a list of data frames containing tracking informations and including the value of turning angles,
+Given an object of class "tracklets" containing a list of tracklets and including the value of turning angles,
 distance traveled and activity states (either 1 or 0 for active or inactive state respectively), this function compute the mean square displacement value
 corresponding to a measure of the deviation of a particle's position according to a reference position over time. Computation can be performed
 through the use of the equations derived from Kareiva & Shigesada (1983) or Turchin (2015). In a nutshell the Turchin's equation for MSD is a simplified version of the
@@ -62,8 +62,8 @@ myccrw <- function() {
 
 # simulated 30 tracklets
 nbr = 30
-simus <- lapply(1:nbr,  function(rrr)
-  myccrw())
+simus <- MoveR::trackletsClass(lapply(1:nbr,  function(rrr)
+  myccrw()))
 
 # take a look at the simulated data
 MoveR::drawTracklets(simus)

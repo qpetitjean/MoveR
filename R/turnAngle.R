@@ -6,9 +6,9 @@
 #'
 #' @param df A data frame containing x, y coordinates columns named "x.pos", "y.pos" for a given tracklet.
 #'
-#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
+#' @param timeCol A character string corresponding to the name of the column containing Time information (default = 'frame').
 #'
-#' @param unit A character string indicating whether the function should returns turning angle in radians or degrees.
+#' @param unit A character string indicating whether the function should returns turning angle in radians or degrees (default = "radians").
 #'
 #' @param compass A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).
 #'
@@ -49,29 +49,14 @@
 
 turnAngle <-
   function(df,
-           timeCol = NULL,
+           timeCol = 'frame',
            unit = c("radians", "degrees"),
            compass = NULL,
            scale = 1) {
-    if (is.null(MoveR::listGet(df, "x.pos"))) {
-      stop(
-        "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
-      )
-    }
-    if (is.null(MoveR::listGet(df, "y.pos"))) {
-      stop(
-        "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
-      )
-    }
-    if (is.null(timeCol)) {
-      stop(
-        "timeCol argument is missing: the name of the column carying time information is needed to compute turning angle"
-      )
-    }
-    if (is.null(MoveR::listGet(df, timeCol))) {
-      stop(
-        "timeCol argument is misspelled or is absent from the input df: the name of the column carying time information is needed to compute turning angle"
-      )
+
+    error <- .errorCheck(df = df, x.pos = "x.pos", y.pos = "y.pos" , timeCol = timeCol)
+    if(!is.null(error)){
+      stop(error)
     }
     
     trj <-
@@ -87,10 +72,10 @@ turnAngle <-
       base::append(turnAngle, NA, after = length(turnAngle))
     
     if (length(unit) > 1) {
-      warning("unit argument is not specified, default value is radians")
+      unit <- "radians"
       turnAngle <- turnAngle
     } else if (!unit == "degrees" & !unit == "radians") {
-      stop("unit argument seems misspelled, choose either radians or degrees")
+      stop("[unit] argument seems misspelled, choose either radians or degrees")
     } else if (unit == "radians") {
       turnAngle <- turnAngle
     } else if (unit == "degrees") {

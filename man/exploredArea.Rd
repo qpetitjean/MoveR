@@ -8,7 +8,7 @@ exploredArea(
   trackDat,
   binRad = NULL,
   imgRes = c(NA, NA),
-  scale = 1,
+  scale = NULL,
   timeCol = "frame",
   timeWin = list(c(0, Inf)),
   graph = TRUE,
@@ -16,13 +16,13 @@ exploredArea(
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking information for each tracklet (including a timeline)
+\item{trackDat}{An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame),
 or a data frame containing tracking information for one tracklet.}
 
 \item{binRad}{A numeric value, expressed in pixels, corresponding to the diameter of the typical surface a particle can "explore" around its position.}
 
 \item{imgRes}{A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
-If imgRes is unspecified, the function retrieve it using x and y maximum values + 5\%.}
+If imgRes is unspecified, the function try to retrieve it from tracklets object attribute or approximate it using x and y maximum values + 5\%.}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates (default = 1).}
 
@@ -42,7 +42,7 @@ This function returns the total surface explored in a geometrically consistent a
 graph argument is TRUE, it displays an heatmap (i.e., hexbin plot) of the explored areas.
 }
 \description{
-Given a list of tracking tracklets containing cartesian coordinates, and a value of
+Given an object of class "tracklets" containing a list of tracklets or a dataframe containing the information for a given tracklet, and a value of
 reaction distance this function displays an heatmap (i.e., hexbin plot) of the explored areas and returns the
 total surface explored in a geometrically consistent and scalable manner.
 }
@@ -55,7 +55,7 @@ TrackN <- 40 # the number of tracklet to simulate
 TrackL <-
   1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 id <- 0
-TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
     id <<- id + 1
     data.frame(
@@ -64,11 +64,10 @@ TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
       frame = j$time,
       identity = paste("Tracklet", id, sep = "_")
     )
-  }), seq(TrackN))
+  }), seq(TrackN)))
 
 # check the tracklets
-MoveR::drawTracklets(TrackList,
-                 timeCol = "frame")
+MoveR::drawTracklets(TrackList)
 
 # compute the total surface explored and displays the heatmap for all tracklets
 # NB: Plot can be displayed and/or saved using graph and saveGraph arguments
@@ -80,7 +79,8 @@ MoveR::exploredArea(TrackList,
 # compute the surface explored for each tracklet and display (but do not save) the heatmap for the 2 first tracklets
 # by combining exploredArea and analyseTracklets, the surface explored for each tracklet is appended to the data
 # of the corresponding tracklets.
-ExplorTest <- MoveR::analyseTracklets(TrackList[1:2],
+subTracklets <- MoveR::trackletsClass(TrackList[1:2])
+ExplorTest <- MoveR::analyseTracklets(subTracklets,
                                   customFunc = list(
                                     exploredArea = function(x)
                                       MoveR::exploredArea(

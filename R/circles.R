@@ -204,7 +204,7 @@ circles <-
             y[i],
             pch = ifelse(isTRUE(center[i]), "+", center[i]),
             col = border[i],
-            cex = radius[i] / 6
+            cex = max(min(radius[i] / 72 / 0.01 / sqrt(length(center)), 2), 0.1)/2
           )
         }
       }

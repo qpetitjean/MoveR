@@ -15,9 +15,9 @@
 #' to the length of the resampling step needed to discretize the input trajectory (optional)
 #' see \code{\link[trajr]{TrajRediscretize}}.
 #'
-#' @param timeCol A character string corresponding to the name of the column containing Time information (e.g., "frame").
+#' @param timeCol A character string corresponding to the name of the column containing Time information (default = 'frame').
 #'
-#' @param compass.direction A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).
+#' @param compass A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).
 #'
 #' @return This function returns a value of sinuosity for a given tracklet according to \code{\link[trajr]{TrajSinuosity2}} from the \code{\link[trajr]{trajr}} package.
 #'
@@ -52,29 +52,14 @@
 sinuosity <- function(df,
                       scale = 1,
                       segL = NULL,
-                      timeCol = NULL,
+                      timeCol = 'frame',
                       compass = NULL) {
-  if (is.null(MoveR::listGet(df, "x.pos"))) {
-    stop(
-      "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
-    )
+
+  error <- .errorCheck(df = df, x.pos = "x.pos", y.pos = "y.pos" , timeCol = timeCol)
+  if(!is.null(error)){
+    stop(error)
   }
-  if (is.null(MoveR::listGet(df, "y.pos"))) {
-    stop(
-      "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
-    )
-  }
-  if (is.null(timeCol)) {
-    stop(
-      "timeCol argument is missing: the name of the column carying time information is needed to compute speed"
-    )
-  }
-  if (is.null(MoveR::listGet(df, timeCol))) {
-    stop(
-      "timeCol argument is misspelled or is absent from the input df: the name of the column carying time information is needed to compute speed"
-    )
-  }
-  
+
   trj <-
     trajr::TrajFromCoords(df[, c("x.pos", "y.pos", timeCol)],
                           timeCol = 3, 

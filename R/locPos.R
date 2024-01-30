@@ -34,14 +34,11 @@
 #' 
 #' # Import the list containing the 9 vectors classically used for further computation
 #' # and flip Y coordinates to start on the bottom-left
-#' Data <- MoveR::readTrex(Path2Data[[1]],
+#' trackDat <- MoveR::readTrex(Path2Data[[1]],
 #'                         flipY = T,
 #'                         imgHeight = 2160,
 #'                         rawDat = F)
-#' str(Data)
-#' 
-#' # convert it to a list of tracklets
-#' trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
+#' str(trackDat)
 #' 
 #' # Import the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or
 #' # the location of one or several areas of interest (here we have created a distance map using ImageJ)
@@ -96,26 +93,12 @@ locPos <-
            sep = NULL,
            dec = NULL,
            Fun = NULL) {
-    if (is.null(refDat)) {
-      stop(
-        "refDat argument is missing, the function need a reference matrix to retrieve the location of the given particle"
-      )
+
+    error <- .errorCheck(refDat = refDat, df = df, x.pos = "x.pos", y.pos = "y.pos")
+    if(!is.null(error)){
+      stop(error)
     }
-    if (is.null(df)) {
-      stop(
-        "df argument is missing, \nthe function need a data frame containing x and y coordinates of a given particules along a trajectory to retrieve its location"
-      )
-    }
-    if (!is.data.frame(df)) {
-      stop(
-        "df is not a dataframe, \nconsider transforming the data, the function need a data frame containing x and y coordinates of a given particules along a trajectory to retrieve its location"
-      )
-    }
-    if (!is.data.frame(df)) {
-      stop(
-        "df does not contain x.pos and y.pos, \nverify that x and y coordinates of the particles are present in the df or are named x.pos and y.pos"
-      )
-    }
+    
     if (!is.data.frame(refDat) &
         !is.matrix(refDat) &
         !is.array(refDat) & is.character(refDat)) {
@@ -133,7 +116,7 @@ locPos <-
           sep <- "\t"
           warning(
             paste(
-              "sep argument is missing, for a .txt file default field separator is",
+              "[sep] argument is missing, for a .txt file default field separator is",
               deparse("\t"),
               sep = " "
             )
@@ -145,7 +128,7 @@ locPos <-
           sep <- ";"
           warning(
             paste(
-              "sep argument is missing, for a .csv file default field separator is",
+              "[sep] argument is missing, for a .csv file default field separator is",
               deparse(";"),
               sep = " "
             )
@@ -154,7 +137,7 @@ locPos <-
         refDat <- as.matrix(read.csv(refDat, sep = sep, dec = dec))
       } else{
         stop(
-          "The extension of refDat is unknown (supported extension: .txt and .csv), \nconsider loading the matrix in R environment and call it within refDat argument"
+          "The extension of [refDat] is unknown (supported extension: .txt and .csv), \nconsider loading the matrix in R environment and call it within refDat argument"
         )
       }
     } else {
@@ -177,7 +160,7 @@ locPos <-
             "[", ifelse(!is.null(Fun), Fun(df[["y.pos"]][y]),  df[["y.pos"]][y]),"]",
             ", x.pos = ",
             "[", ifelse(!is.null(Fun), Fun(df[["x.pos"]][y]), df[["x.pos"]][y]), "]",
-            ", these values have been not found in refDat."
+            ", these values have been not found in [refDat]."
           )
         )
       }

@@ -1,16 +1,16 @@
 #' @title Compute the total surface explored and display the corresponding heatmap.
 #'
-#' @description Given a list of tracking tracklets containing cartesian coordinates, and a value of
+#' @description Given an object of class "tracklets" containing a list of tracklets or a dataframe containing the information for a given tracklet, and a value of
 #'  reaction distance this function displays an heatmap (i.e., hexbin plot) of the explored areas and returns the
 #'  total surface explored in a geometrically consistent and scalable manner.
 #'
-#' @param trackDat A list of data frame containing tracking information for each tracklet (including a timeline)
+#' @param trackDat An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame), 
 #' or a data frame containing tracking information for one tracklet.
 #'
 #' @param binRad A numeric value, expressed in pixels, corresponding to the diameter of the typical surface a particle can "explore" around its position.
 #'
 #' @param imgRes A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
-#' If imgRes is unspecified, the function retrieve it using x and y maximum values + 5%.
+#' If imgRes is unspecified, the function try to retrieve it from tracklets object attribute or approximate it using x and y maximum values + 5%.
 #'
 #' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates (default = 1).
 #'
@@ -40,7 +40,7 @@
 #' TrackL <-
 #'   1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 #' id <- 0
-#' TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+#' TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
 #'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
 #'     id <<- id + 1
 #'     data.frame(
@@ -49,11 +49,10 @@
 #'       frame = j$time,
 #'       identity = paste("Tracklet", id, sep = "_")
 #'     )
-#'   }), seq(TrackN))
+#'   }), seq(TrackN)))
 #'
 #' # check the tracklets
-#' MoveR::drawTracklets(TrackList,
-#'                  timeCol = "frame")
+#' MoveR::drawTracklets(TrackList)
 #'
 #' # compute the total surface explored and displays the heatmap for all tracklets
 #' # NB: Plot can be displayed and/or saved using graph and saveGraph arguments
@@ -65,7 +64,8 @@
 #' # compute the surface explored for each tracklet and display (but do not save) the heatmap for the 2 first tracklets
 #' # by combining exploredArea and analyseTracklets, the surface explored for each tracklet is appended to the data
 #' # of the corresponding tracklets.
-#' ExplorTest <- MoveR::analyseTracklets(TrackList[1:2],
+#' subTracklets <- MoveR::trackletsClass(TrackList[1:2])
+#' ExplorTest <- MoveR::analyseTracklets(subTracklets,
 #'                                   customFunc = list(
 #'                                     exploredArea = function(x)
 #'                                       MoveR::exploredArea(
@@ -83,34 +83,47 @@ exploredArea <-
   function(trackDat,
            binRad = NULL,
            imgRes = c(NA, NA),
-           scale = 1,
+           scale = NULL,
            timeCol = "frame",
            timeWin = list(c(0, Inf)),
            graph = TRUE,
            saveGraph = FALSE) {
     if (is.null(binRad)) {
       stop(
-        "binRad argument is missing, \na numeric value specifying the diameter of the cell a particle can explore is needed to compute the surface explored"
+        "[binRad] argument is missing, \na numeric value specifying the diameter of the cell a particle can explore is needed to compute the surface explored"
       )
     }
-    
-    # if imgRes is unspecified retrieve it approximately using the maximum value in x and y coordinates
-    if (class(trackDat) == "list" & length(trackDat) >= 1) {
+    # if scale argument is null try to retrieve it from tracklets object or set it to the default value: 1
+    if (is.null(scale) && !is.null(MoveR::getInfo(trackDat, "scale"))){
+      scale <- MoveR::getInfo(trackDat, "scale")
+    } else if (is.null(scale) && is.null(MoveR::getInfo(trackDat, "scale"))) {
+      scale <- 1
+    }
+    # if imgRes is unspecified, try to retrieve it from tracklets object attribute else, 
+    # retrieve it approximately using the maximum value in x and y coordinates
+    if (class(trackDat) == "tracklets" & length(trackDat) >= 1) {
       if (TRUE %in% is.na(imgRes)) {
-        xCoords <- unlist(lapply(trackDat, function(x)
-          MoveR::listGet(x, "x.pos")))
-        if (length(which(is.infinite(xCoords)) > 0)) {
-          xCoords <- xCoords[!is.infinite(xCoords)]
+        if (!is.null(MoveR::getInfo(trackDat, "imgRes"))) {
+          imgRes <- MoveR::getInfo(trackDat, "imgRes")
+        } else{
+          xCoords <- unlist(lapply(trackDat, function(x)
+            MoveR::listGet(x, "x.pos")))
+          if (length(which(is.infinite(xCoords)) > 0)) {
+            xCoords <- xCoords[!is.infinite(xCoords)]
+          }
+          width <-
+            round(max(xCoords, na.rm = T) + 5 * max(xCoords, na.rm = T) / 100, 0)
+          
+          yCoords <- unlist(lapply(trackDat, function(x)
+            MoveR::listGet(x, "y.pos")))
+          if (length(which(is.infinite(yCoords)) > 0)) {
+            yCoords <- yCoords[!is.infinite(yCoords)]
+          }
+          height <-
+            round(max(yCoords, na.rm = T) + 5 * max(yCoords, na.rm = T) / 100, 0)
+          
+          imgRes <- c(width, height)
         }
-        width <- round(max(xCoords) + 5 * max(xCoords) / 100, 0)
-        
-        yCoords <- unlist(lapply(trackDat, function(x)
-          MoveR::listGet(x, "y.pos")))
-        if (length(which(is.infinite(yCoords)) > 0)) {
-          yCoords <- yCoords[!is.infinite(yCoords)]
-        }
-        height <- round(max(yCoords) + 5 * max(yCoords) / 100, 0)
-        imgRes <- c(width, height)
       }
     } else{
       if (TRUE %in% is.na(imgRes)) {
@@ -131,12 +144,12 @@ exploredArea <-
     # Select only the part of the tracklets included in the selected time Window
     if (!is.list(timeWin)) {
       stop(
-        "timeWin argument should be a list of vector(s) containing starting and ending value of each time window interval"
+        "[timeWin] argument should be a list of vector(s) containing starting and ending value of each time window interval"
       )
     }
     if (max(unlist(lapply(timeWin, length))) > 2) {
       stop(
-        "timeWin argument contains a vector of length > 2, \ntimeWin should be a list of vector(s) containing 2 values (start and end of the time window interval)"
+        "[timeWin] argument contains a vector of length > 2, \n[timeWin] should be a list of vector(s) containing 2 values (start and end of the time window interval)"
       )
     }
     InfLoc <-
@@ -144,7 +157,7 @@ exploredArea <-
         which(x == Inf)), function(y)
           length(y) > 0)))
     if (length(InfLoc) > 0) {
-      if (class(trackDat) == "list" & length(trackDat) >= 1) {
+      if (class(trackDat) == "tracklets" & length(trackDat) >= 1) {
         timeWin[[InfLoc]][which(timeWin[[InfLoc]] == Inf)] <-
           max(unlist(lapply(trackDat, function(x)
             max(MoveR::listGet(x, timeCol)))))
@@ -159,7 +172,7 @@ exploredArea <-
     # select the part of the tracklets that are included in timeWin
     WhoWhen <- lapply(seq(length(timeWin)),
                       function(p)
-                        MoveR::cutTracklets(
+                        .cutTracklets(
                           trackDat,
                           customFunc = function(x)
                             x[[timeCol]] >= timeWin[[p]][[1]] &
@@ -168,7 +181,7 @@ exploredArea <-
     WhoWhen <- unlist(WhoWhen, recursive = FALSE)
     
     # Then, convert the list of tracklet as an unique list (only in case there is several tracklet in trackDat)
-    trackDatList <- MoveR::convert2List(WhoWhen)
+    trackDatList <- MoveR::convert2List(MoveR::trackletsClass(WhoWhen))
     
     # Compute the surface of a regular hexagon as follow: 3*side*apothem
     # where:

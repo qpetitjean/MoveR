@@ -40,8 +40,7 @@ TrackDat <-
   )
 
 # draw the simulated particle's trajectory
-MoveR::drawTracklets(list(TrackDat),
-                     timeCol = "frame")
+MoveR::drawTracklets(trackletsClass(list(TrackDat)))
 
 # generate the coordinates of three circular ROIs and add them to the plot
 ROIs <- MoveR::circles(

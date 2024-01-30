@@ -1,19 +1,19 @@
 #' @title Resampling tracklets.
 #'
-#' @description Given a list of data frame containing tracking informations for each tracklet,
+#' @description Given an object of class "tracklets" containing a list of tracklets,
 #' this function returns a list of resampled tracklets according to the length of the resampling
 #' step specified by the Tstep argument.
 #'
 #'
-#' @param trackDatA A list of data frame containing tracking informations for each tracklet.
+#' @param trackDatA An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).
 #'
-#' @param timeCol A character string corresponding to the name of the column containing time information (e.g., "frame").
+#' @param timeCol A character string corresponding to the name of the column containing time information (default = 'frame').
 #'
 #' @param Tstep A numeric value corresponding to the length of the resampling step according to the time unit used in timeCol (e.g., frame).
 #'
 #' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
-#' @return A list of data frame containing the resampled tracklets.
+#' @return An object of class "tracklets" containing the resampled tracklets.
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -27,13 +27,13 @@
 #' trackL <-
 #'   100:1000 # the length of the tracklets or a sequence to randomly sample tracklets length
 #'
-#' trackList <- stats::setNames(lapply(lapply(seq(trackN), function(i)
+#' trackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(trackN), function(i)
 #'   trajr::TrajGenerate(sample(trackL, 1), random = TRUE, fps = 1)), function(j)
 #'     data.frame(
 #'       x.pos = j$x - min(j$x),
 #'       y.pos = j$y - min(j$y),
 #'       frame = j$time
-#'     )), seq(trackN))
+#'     )), seq(trackN)))
 #'
 #' # check the tracklets
 #' MoveR::drawTracklets(trackList,
@@ -68,22 +68,15 @@
 
 resampTracklets <-
   function(trackDat,
-           timeCol = NULL,
+           timeCol = 'frame',
            Tstep = NULL,
            progress = TRUE) {
-    if (is.null(Tstep)) {
-      stop(
-        "Tstep argument is missing: a value corresponding to the resampling step is needed to resample the data"
-      )
+    
+    error <- .errorCheck(trackDat = trackDat, timeCol = timeCol, Tstep = Tstep)
+    if(!is.null(error)){
+      stop(error)
     }
-    if (is.null(timeCol)) {
-      stop(
-        "timeCol argument is missing: the name of the column carying time information is needed to resample the data"
-      )
-    }
-    if (is.data.frame(trackDat)) {
-      trackDat <- list(trackDat)
-    }
+
     if (isTRUE(progress)) {
       # initialize progress bar
       total = length(trackDat)
@@ -159,9 +152,8 @@ resampTracklets <-
         pb$tick(1)
       }
     }
-    
-    if (length(trackDat) == 1) {
-      trackDat <- trackDat[[1]]
-    }
+    trackDat <- MoveR::trackletsClass(trackDat)
+    storedInfo <- MoveR::getInfo(trackDat)
+    trackDat <-  MoveR::setInfo(trackDat, storedInfo[[1]],  storedInfo[[2]],  storedInfo[[3]])
     return(trackDat)
   }

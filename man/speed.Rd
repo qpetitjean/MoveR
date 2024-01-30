@@ -4,23 +4,33 @@
 \alias{speed}
 \title{Compute particle's speed over a trajectory.}
 \usage{
-speed(df, scale = 1, timeCol = NULL)
+speed(
+  df,
+  scale = 1,
+  timeCol = "frame",
+  frameR = 1,
+  timeU = c("f", "s", "m", "h", "d")
+)
 }
 \arguments{
 \item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet, as well as
 a column containing time information, whatever the unit, over the trajectory.}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-(e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.}
+(e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}, default = 1).}
 
-\item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
+\item{timeCol}{A character string corresponding to the name of the column containing Time information (default = 'frame').}
+
+\item{frameR}{A numeric value indicating the frame rate of the video, used to convert the speed value according to desired time unit, see also timeU argument (default = 1).}
+
+\item{timeU}{A character string indicating the time unit in which the speed values should be converted, "f"=frame, "s"=second, "m"=minute, "h"=hour, "d"=day (default = "f").}
 }
 \value{
 This function returns a vector containing the values of speed over a trajectory.
 }
 \description{
 Given a data frames containing tracking information for a given tracklet,
-this function scale tracklet path and returns a vector containing the value of
+this function scale tracklet path, convert it to a desired time unit and returns a vector containing the value of
 speed along this tracklet.
 }
 \examples{
@@ -45,7 +55,7 @@ TrackDat <-
 TrackDat[["speedFrame"]] <-
   MoveR::speed(TrackDat, scale = 1, timeCol = "frame")
 
-# to compute the speed according to another time unit, a new column containing the new timeline is needed
+# to compute the speed according to another time unit, a new column containing the new timeline could be used
 # here we consider that the frame rate is 25 frame per second
 TrackDat[["second"]] <- TrackDat[["frame"]] / 25
 
@@ -55,12 +65,18 @@ TrackDat[["speedSec"]] <-
 
 str(TrackDat)
 
+# alternatively, we can use the frameR and timeU arguments to specify the frame rate and the desired time unit within the function
+TrackDat[["speedSec2"]] <-
+  MoveR::speed(TrackDat, scale = 1, timeCol = "frame", frameR = 25, timeU = "s")
+
+str(TrackDat)
+
 # it is also possible to resample the tracklet before computing speed, here every 10 time unit (i.e., frame)
 sampledFragDat <-
-  MoveR::resampTracklets(TrackDat, timeCol = "frame",  Tstep = 10)
+  MoveR::resampTracklets(MoveR::trackletsClass(list(TrackDat)), timeCol = "frame",  Tstep = 10)[[1]]
 
 # and then compute the speed of the particle over its trajectory
-sampledFragDat[["speed"]] <-
+sampledFragDat[["speedResampl"]] <-
   MoveR::speed(sampledFragDat, scale = 1, timeCol = "frame")
 
 str(sampledFragDat) 

@@ -33,7 +33,7 @@
 #' 
 #' # compute the speed of the particle along its trajectory
 #' TrackDat[["speed"]] <-
-#'   MoveR::speed(TrackDat, scale = 1, timeCol = "frame")
+#'   MoveR::speed(TrackDat)
 #' 
 #' # we can then define the speed treshold above which the particle is considered actives using quantiles
 #' # here we use the 0.025 quantile to find the minimum speed treshold
@@ -46,7 +46,7 @@
 #'   MoveR::activity1(TrackDat, speedCol = "speed", minSpeed = 10 ^ tresh)
 #' 
 #' # draw the particle' trajectory and spot the inactive moments using red dots
-#' MoveR::drawTracklets(list(TrackDat),
+#' MoveR::drawTracklets(MoveR::trackletsClass(list(TrackDat)),
 #'                  add2It = list(points(
 #'                    TrackDat[["x.pos"]][which(TrackDat[["activity1"]] == 0)],
 #'                    TrackDat[["y.pos"]][which(TrackDat[["activity1"]] ==  0)],
@@ -57,30 +57,16 @@
 #'
 #' @export
 
-activity1 <- function (df, speedCol = NULL, minSpeed = NULL) {
-  if(is.null(MoveR::listGet(df, "x.pos"))){
-    stop(
-      "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
-    )
+activity1 <- function (df,
+                       speedCol = NULL,
+                       minSpeed = NULL) {
+  
+  error <- .errorCheck(df = df, x.pos = "x.pos", y.pos = "y.pos", speedCol = speedCol, minSpeed = minSpeed)
+  if(!is.null(error)){
+    stop(error)
   }
-  if(is.null(MoveR::listGet(df, "y.pos"))){
-    stop(
-      "x.pos column is missing or might be misspelled: x coordinates are needed to compute euclidian distance"
-    )
-  }
-  if (is.null(speedCol)) {
-    stop(
-      "speedCol argument is missing: the name of the column carying speed of the particle along its trajectory is needed to determine activity state"
-    )}
-  if(is.null(MoveR::listGet(df, speedCol))){
-    stop(
-      "speedCol argument is misspelled or is absent from the input df: the name of the column carying speed of the particle along its trajectory is needed to determine activity state"
-    )}
-  if (is.null(minSpeed)) {
-    stop(
-      "minSpeed argument is missing: impossible to determine whether the particle is active or not without a minimum speed treshold"
-    )
-  } else if (!is.null(minSpeed)) {
+
+  if (!is.null(minSpeed)) {
     activeRes <- rep(NA, nrow(df))
     activeRes[which(df[[speedCol]] > minSpeed)] <- 1
     activeRes[which(df[[speedCol]] < minSpeed)] <- 0

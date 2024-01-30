@@ -1,7 +1,7 @@
 #' @title Import Ctrax tracking output .mat file.
 #'
 #' @description Given the path of the .mat file corresponding to Ctrax output,
-#' this function returns a list of 9 vectors classically used for further computations using MoveR package:
+#' this function returns an object of class "tracklets", a list of tracklets (data frame) containing 7 elements classically used for further computations using MoveR package:
 #' \itemize{
 #'    \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
 #'    \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to y-axis.}
@@ -10,11 +10,9 @@
 #'    \item{'y.pos': }{y position of the particle's centroid.}
 #'    \item{'identity': }{the particle's identity given by the tracking software.}
 #'    \item{'frame': }{the video frame number at which the measurements has been made.}
-#'    \item{'ntargets': }{the number of particle tracked over each frame.}
-#'    \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 #' }
 #'
-#' Also, the function can flip y coordinates (see flipY argument).
+#' Also, the function can flip y coordinates (see [flipY] argument).
 #'
 #' @param ctraxPath The full path of the Ctrax output file (.mat).
 #'
@@ -24,13 +22,13 @@
 #' corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).
 #'
 #'
-#' @return A list containing 9 elements classically used for further computations.
+#' @return An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.
 #' Also, by default the function returns y coordinates starting on the bottom-left.
 #'
 #'
 #' @author Quentin PETITJEAN, Vincent CALCAGNO
 #'
-#' @seealso \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
+#' @seealso \code{\link{readAnimalTA}} \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 #'
 #' @references
 #' Branson, K., Robie, A., Bender, J. et al. High-throughput ethomics in large groups of Drosophila. Nat Methods 6, 451–457 (2009). https://doi.org/10.1038/nmeth.1328.
@@ -43,8 +41,8 @@
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "Ctrax")
 #' Path2Data
 #'
-#' # Import the list containing the 9 vectors classically used for further computation
-#' # and do not flip Y coordinates to start on the bottom-left
+#' # Import the data as an object of class "tracklets"
+#' # and do not flip Y coordinates (start on the bottom-left)
 #' Data <- MoveR::readCtrax(Path2Data[[1]])
 #' str(Data)
 #'
@@ -55,10 +53,10 @@ readCtrax <-
   function(ctraxPath,
            flipY = FALSE,
            imgHeight = NULL) {
-    if (flipY == TRUE & is.null(imgHeight)) {
-      stop(
-        "imgHeight argument is missing, the height of the image resolution is needed to flip y coordinates"
-      )
+    
+    error <- .errorCheck(imgHeight = imgHeight)
+    if (flipY == TRUE & !is.null(error)) {
+      stop(error)
     }
     
     # Import output files from Ctrax
@@ -67,21 +65,21 @@ readCtrax <-
       stop("No such file or directory : undefined or wrong path supplied")
       
     } else {
-      Ctrax_Raw <- R.matlab::readMat(ctraxPath)
+      CtraxRaw <- R.matlab::readMat(ctraxPath)
     }
     
     # generate a vector containing the corresponding frame number for each row of the dataset
     frame <- c()
-    frame_out <- 0
-    for (t in Ctrax_Raw[["ntargets"]]) {
-      frame <- c(frame, rep(frame_out, times = t))
-      frame_out <-  frame_out + 1
+    frameOut <- 0
+    for (t in CtraxRaw[["ntargets"]]) {
+      frame <- c(frame, rep(frameOut, times = t))
+      frameOut <-  frameOut + 1
     }
-    
+
     # append the frame vector to the list of df
-    Ctrax_Raw[["frame"]] <- frame
-    Ctrax_Raw <-
-      Ctrax_Raw[c(
+    CtraxRaw[["frame"]] <- frame
+    CtraxRaw <-
+      CtraxRaw[c(
         "maj.ax",
         "angle",
         "min.ax",
@@ -95,8 +93,18 @@ readCtrax <-
     
     # if flipY = TRUE, flip the Y coordinates according to image height
     if (flipY == TRUE) {
-      Ctrax_Raw$y.pos <-
-        flipYCoords(Ctrax_Raw$y.pos, imgHeight = imgHeight)
+      CtraxRaw$y.pos <-
+        flipYCoords(CtraxRaw$y.pos, imgHeight = imgHeight)
     }
-    return(Ctrax_Raw)
+    
+    # retrieve some information about tracking
+    frameR <- max(CtraxRaw[["frame"]], na.rm=T) / max(CtraxRaw[["timestamps"]], na.rm=T)
+    
+    # create a tracklets class object to return
+    CtraxRaw <- MoveR::convert2Tracklets(CtraxRaw[-c(8,9)])
+    
+    # fill some attributes
+    CtraxRaw <- MoveR::setInfo(CtraxRaw, frameR = frameR)
+
+    return(CtraxRaw)
   }

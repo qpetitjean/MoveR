@@ -40,6 +40,9 @@ TRexDat <- data.table::fread(
 # convert the data to a list of tracklets
 trackDat <- MoveR::convert2Tracklets(TRexDat, by = "trackletId")
 
+# set some useful information
+trackDat <- MoveR::setInfo(trackDat, frameR = 25, scale = 1/413.4, imgRes = c(1920, 1080)) 
+
 ```
 
 Okay! now that the data has been retrieved let's start computing metric over each tracklet.
@@ -141,8 +144,7 @@ In the case of <em>Trichogramma</em>, Wajnberg and Colazza (1998) reported that 
 
 
 ```{r binRad, echo=TRUE}
-scaling <- 1 / 413.4 # the scaling of the video - 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ)
-diamSurf <- 0.8 / scaling
+diamSurf <- 0.8 / MoveR::getInfo(trackDat, "scale")
 
 ```
 

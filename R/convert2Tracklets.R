@@ -5,9 +5,9 @@
 #'
 #' @param trackDatList A list of vector corresponding to the variable characterizing the tracking data.
 #'
-#' @param by A character vector identifying the tracklets to join by.
+#' @param by A character vector identifying the tracklets to join by (default = 'identity').
 #'
-#' @return A list of data frames corresponding the tracking data for each tracklets.
+#' @return An object of class "tracklets" containing a list of tracklets with tracking informations.
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -22,7 +22,7 @@
 #' TrackL <-
 #'   1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 #' id <- 0
-#' TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+#' TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
 #'   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
 #'     id <<- id + 1
 #'     data.frame(
@@ -31,10 +31,11 @@
 #'       frame = j$time,
 #'      identity = paste("Tracklet", id, sep = "_")
 #'     )
-#'   }), seq(TrackN))
+#'   }), seq(TrackN)))
 #' 
 #'  # convert the list of tracklets to a simple list of variables
 #'  trackDatList <- MoveR::convert2List(TrackList)
+#'  str(trackDatList)
 #'  
 #'  # convert back the list of variables to a list of tracklet based on tracklets identity
 #'  trackDat <- MoveR::convert2Tracklets(trackDatList, by = "trackletId")
@@ -42,12 +43,9 @@
 #'
 #' @export
 
-convert2Tracklets <- function(trackDatList, by = NULL) {
+convert2Tracklets <- function(trackDatList, by = 'identity') {
   # convert trackDatList to a dataframe
-  if (is.null(by)) {
-    stop("by argument is missing: impossible to join tracklets without an identifier")
-  }
-  if (inherits(try(as.data.frame(trackDatList), silent = T)
+  if (inherits(try(as.data.frame(trackDatList[1:length(trackDatList)]), silent = T)
                , "try-error")) {
     diff <-
       unlist(lapply(trackDatList, length))[!duplicated(unlist(lapply(trackDatList, length)))]
@@ -59,11 +57,16 @@ convert2Tracklets <- function(trackDatList, by = NULL) {
       deparse(names(diff))
     )
   } else {
-    trackDatDf <- as.data.frame(trackDatList)
+    trackDatDf <- as.data.frame(trackDatList[1:length(trackDatList)])
   }
   # convert the dataframe trackDatDf to a list of tracklets
   trackDat <-
     split(trackDatDf, listGet(trackDatDf, by))
+  trackDat <- MoveR::trackletsClass(trackDat)
   
+  if(inherits(trackDatList, "varList")){
+    storedInfo <- MoveR::getInfo(trackDatList)
+    trackDat <-  MoveR::setInfo(trackDat, storedInfo[[1]],  storedInfo[[2]],  storedInfo[[3]])
+  }
   return(trackDat)
 }

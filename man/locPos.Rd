@@ -38,14 +38,11 @@ Path2Data
 
 # Import the list containing the 9 vectors classically used for further computation
 # and flip Y coordinates to start on the bottom-left
-Data <- MoveR::readTrex(Path2Data[[1]],
+trackDat <- MoveR::readTrex(Path2Data[[1]],
                         flipY = T,
                         imgHeight = 2160,
                         rawDat = F)
-str(Data)
-
-# convert it to a list of tracklets
-trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
+str(trackDat)
 
 # Import the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or
 # the location of one or several areas of interest (here we have created a distance map using ImageJ)

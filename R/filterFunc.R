@@ -1,15 +1,15 @@
 #' @title Create and test a custom filter on tracklets.
 #'
-#' @description Given a list of data frames containing tracking information for each tracklet, 
+#' @description Given an object of class "tracklets" containing a list of tracklets, 
 #' this function returns a list of vector containing the result of a user defined condition test for each tracklet.
 #'
-#' @param trackDat A list of data frames containing tracking information for each tracklet (e.g., x.pos, y.pos, frame).
+#' @param trackDat An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).
 #'
 #' @param toFilter An element of the tracklet's data frame (a column name) from which condition will be verified.
 #' 
 #' @param customFunc A custom function containing condition(s) to be applied to toFilter argument.
 #'
-#' @return A list of vector of the same length than the tracklets list containing the result of a user specified condition test for each tracklet.
+#' @return A list of vector of the same length than the tracklets object containing the result of a user specified condition test for each tracklet.
 #'
 #' @author Quentin PETITJEAN
 #' 
@@ -23,10 +23,7 @@
 #' Path2Data
 #'
 #' # Import the list containing the 9 vectors classically used for further computation
-#' Data <- MoveR::readTrex(Path2Data[[1]])
-#'
-#' # convert it to a list of tracklets
-#' trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
+#' trackDat <- MoveR::readTrex(Path2Data[[1]])
 #'
 #' # example 1: test for the presence of infinite value in x.pos, if infinite values are detected, the result is TRUE 
 #' CondTest1 <- MoveR::filterFunc(trackDat, toFilter = "x.pos", customFunc = function(x) is.infinite(x))
@@ -49,7 +46,7 @@ filterFunc <- function(trackDat,
         selCol <- listGet(trackDat[[i]], toFilter)
         if (is.null(selCol)) {
           stop(
-            "toFilter argument is not found in the provided dataset, toFilter might be misspelled"
+            "[toFilter] argument is not found in the provided dataset, toFilter might be misspelled"
           )
         } else {
           filter[[i]] <-
@@ -58,11 +55,11 @@ filterFunc <- function(trackDat,
       }
     } else {
       stop(
-        "toFilter argument is missing, impossible to test condition specified in customFunc"
+        "[toFilter] argument is missing, impossible to test condition specified in customFunc"
       )
     }
   } else {
-    stop("customFunc argument is missing, no condition to test")
+    stop("[customFunc] argument is missing, no condition to test")
   }
   names(filter) <- names(trackDat)
   return(filter)

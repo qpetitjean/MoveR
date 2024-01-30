@@ -1,7 +1,7 @@
 #' @title Import idtracker.ai tracking output .npy file.
 #'
 #' @description Given the path of the .npy file corresponding to idtracker output,
-#' this function returns a list of 9 vectors classically used for further computations using MoveR package:
+#' this function returns an object of class "tracklets", a list of tracklets (data frame) containing 7 elements classically used for further computations using MoveR package:
 #' \itemize{
 #'    \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse), returns NA since it is not present in the Idtracker output.}
 #'    \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to y-axis, returns NA since it is not present in the Idtracker output.}
@@ -10,28 +10,24 @@
 #'    \item{'y.pos': }{y position of the particle's centroid.}
 #'    \item{'identity': }{the particle's identity given by the tracking software.}
 #'    \item{'frame': }{the video frame number at which the measurements has been made.}
-#'    \item{'ntargets': }{the number of particle tracked over each frame.}
-#'    \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 #' }
 #' 
-#' Also, by default the function flip y coordinates to start on the bottom-left (see flipY argument).
+#' Also, the function can flip y coordinates (see [flipY] argument).
 #'
 #' @param IdtrackerPath The full path of the idtrackerai output file (.npy).
 #'
-#' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the top-left (default = FALSE).
+#' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the bottom-left (default = FALSE).
 #' 
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
 #' corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).
 #'
-#' @param frameR A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video 
-#' (optional, only used to compute timestamps).
 #'
-#' @return A list containing 9 elements classically used for further computations.
-#' Also, by default the function returns y coordinates starting on the bottom-left.
+#' @return An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.
+#' Also, by default the function returns y coordinates starting on the top-left.
 #'
 #' @author Quentin PETITJEAN
 #'
-#' @seealso \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{flipYCoords}}
+#' @seealso \code{\link{readAnimalTA}} \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{flipYCoords}}
 #'
 #' @references 
 #' Romero-Ferrero, F., Bergomi, M.G., Hinz, R.C. et al. idtracker.ai: tracking all individuals in small or large collectives of unmarked animals. Nat Methods 16, 179–182 (2019). https://doi.org/10.1038/s41592-018-0295-5.
@@ -49,8 +45,7 @@
 #' Data <-
 #'   MoveR::readIdtracker(Path2Data[[1]],
 #'          flipY = T,
-#'          imgHeight = 2160,
-#'          frameR = 25
+#'          imgHeight = 2160
 #'   )
 #' str(Data)
 #'
@@ -58,19 +53,14 @@
 #' @export
 
 readIdtracker <- function(IdtrackerPath,
-                          flipY = TRUE,
-                          imgHeight = NULL,
-                          frameR = NULL) {
-  if (flipY == TRUE & is.null(imgHeight)) {
-    stop(
-      "imgHeight argument is missing, the height of the image resolution is needed to flip y coordinates"
-    )
+                          flipY = FALSE,
+                          imgHeight = NULL) {
+  
+  error <- .errorCheck(imgHeight = imgHeight)
+  if (flipY == TRUE & !is.null(error)) {
+    stop(error)
   }
-  if (is.null(frameR)) {
-    warning(
-      "frameR argument is missing: timestamps returned NA, a frame rate value is needed to compute timestamps"
-    )
-  }
+
   # import numpy python module to read .npy files
   np <-
     reticulate::import("numpy")
@@ -82,41 +72,34 @@ readIdtracker <- function(IdtrackerPath,
     stop("No such file or directory : undefined or wrong path supplied")
     
   } else {
-    idtracker_data <-
+    idtrackerData <-
       np$load(IdtrackerPath,
               allow_pickle = TRUE)
   }
   
   # create x.pos and y.pos vectors containing cartesian coordinates for all detected particles
-  x.pos <- c(idtracker_data[[1]]$trajectories[, , 1])
-  y.pos <- c(idtracker_data[[1]]$trajectories[, , 2])
+  x.pos <- c(idtrackerData[[1]]$trajectories[, , 1])
+  y.pos <- c(idtrackerData[[1]]$trajectories[, , 2])
   
   # create identity and frame vector containing the numeric identity and the sequence of frame for each particle, respectively
   identity <-
     unlist(lapply(seq(ncol(
-      idtracker_data[[1]]$trajectories[, , 2]
+      idtrackerData[[1]]$trajectories[, , 2]
     )),
     function(x)
       rep(
-        x, nrow(idtracker_data[[1]]$trajectories[, , 1])
+        x, nrow(idtrackerData[[1]]$trajectories[, , 1])
       )))
   frame <-
     unlist(lapply(seq(ncol(
-      idtracker_data[[1]]$trajectories[, , 2]
+      idtrackerData[[1]]$trajectories[, , 2]
     )),
     function(x)
       seq(nrow(
-        idtracker_data[[1]]$trajectories[, , 1]
+        idtrackerData[[1]]$trajectories[, , 1]
       ))))
   
-  # create ntargets vector containing the number of particles detected within each frame
-  ntargets <-
-    unlist(lapply(seq(nrow(idtracker_data[[1]]$trajectories[, , 1])),
-                  function(x)
-                    length(idtracker_data[[1]]$trajectories[, , 1][x, ]) - length(which(
-                      is.na(idtracker_data[[1]]$trajectories[, , 1][x, ])
-                    ))))
-  
+
   # if flipY = TRUE, flip the Y coordinates according to image height
   if (flipY == TRUE) {
     y.pos = flipYCoords(y.pos, imgHeight = imgHeight)
@@ -129,13 +112,15 @@ readIdtracker <- function(IdtrackerPath,
     x.pos = x.pos,
     y.pos = y.pos,
     identity = identity,
-    frame = frame,
-    ntargets = ntargets,
-    timestamps = ifelse(
-      rep(is.null(frameR), length(unique(frame))),
-      rep(NA, length(unique(frame))),
-      unique(frame) / frameR
-    )
+    frame = frame
   )
+  
+  # create a tracklets class object to return
+  idtrackerRaw <- MoveR::convert2Tracklets(idtrackerRaw)
+  
+  # fill some attributes
+  idtrackerRaw <- MoveR::setInfo(idtrackerRaw, frameR = idtrackerData[[1]]$frames_per_second)
+  
+  
   return(idtrackerRaw)
 }

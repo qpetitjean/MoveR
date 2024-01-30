@@ -6,25 +6,25 @@
 \usage{
 ANND(
   trackDat,
-  timeCol = NULL,
+  timeCol = "frame",
   Tinterval = NULL,
-  sampling = NULL,
-  scale = 1,
+  sampling = 1,
+  scale = NULL,
   bootn = 0,
   progress = TRUE
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking information for each tracklet (including a timeline).}
+\item{trackDat}{An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).}
 
-\item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
+\item{timeCol}{A character string corresponding to the name of the column containing Time information (default = 'frame').}
 
 \item{Tinterval}{A vector containing two numeric values expressed in the timeline unit and
 specifying the time window on which the computation is performed (default is null, meaning the computation will be performed on the whole timeline).}
 
 \item{sampling}{A numeric value expressed in the timeline unit and specifying the subsampling step used to
 to perform the computation (it allow to make computation faster). In other words, it determine the resolution of the
-returned results (e.g., a value of 5000 mean that values will be computed every 5000 time unit).}
+returned results (e.g., a value of 5000 mean that values will be computed every 5000 time unit) (default = 1).}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
 (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}, default = 1}.}
@@ -59,7 +59,7 @@ this function returns a list containing three elements:
 }
 }
 \description{
-Given a list of data frames containing tracking information for each tracklet (including the timeline)
+Given an object of class "tracklets" containing a list of tracklets,
 this function returns the Average Nearest Neighbour Distance among tracklets along a specified timeline. Also,
 if bootn parameter is above 0, the function compute studentize 95 \% CI using bootstrapping method.
 }
@@ -72,7 +72,7 @@ TrackN <- 50 # the number of tracklet to simulate
 TrackL <-
   100:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 id <- 0
-TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
     id <<- id + 1
     data.frame(
@@ -81,7 +81,7 @@ TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
       frame = j$time,
       identity = paste("Tracklet", id, sep = "_")
     )
-  }), seq(TrackN))
+  }), seq(TrackN)))
 
 # compute the ANND with a sampling of 100 time unit
 ANNDRes <-

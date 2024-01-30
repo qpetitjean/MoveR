@@ -271,7 +271,7 @@ polygons <-
           y[j],
           pch = ifelse(isTRUE(center[j]), "+", center[j]),
           col = border[j],
-          cex = min(c(width[j], height[j])) / 6
+          cex = max(min(min(c(width[j], height[j])) / 72 / 0.01 / sqrt(length(center)), 2), 0.1)/2 
         )
       }
     }

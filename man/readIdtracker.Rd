@@ -4,26 +4,23 @@
 \alias{readIdtracker}
 \title{Import idtracker.ai tracking output .npy file.}
 \usage{
-readIdtracker(IdtrackerPath, flipY = TRUE, imgHeight = NULL, frameR = NULL)
+readIdtracker(IdtrackerPath, flipY = FALSE, imgHeight = NULL)
 }
 \arguments{
 \item{IdtrackerPath}{The full path of the idtrackerai output file (.npy).}
 
-\item{flipY}{A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the top-left (default = FALSE).}
+\item{flipY}{A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the bottom-left (default = FALSE).}
 
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
 corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
-
-\item{frameR}{A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video
-(optional, only used to compute timestamps).}
 }
 \value{
-A list containing 9 elements classically used for further computations.
-Also, by default the function returns y coordinates starting on the bottom-left.
+An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.
+Also, by default the function returns y coordinates starting on the top-left.
 }
 \description{
 Given the path of the .npy file corresponding to idtracker output,
-this function returns a list of 9 vectors classically used for further computations using MoveR package:
+this function returns an object of class "tracklets", a list of tracklets (data frame) containing 7 elements classically used for further computations using MoveR package:
 \itemize{
 \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse), returns NA since it is not present in the Idtracker output.}
 \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to y-axis, returns NA since it is not present in the Idtracker output.}
@@ -32,11 +29,9 @@ this function returns a list of 9 vectors classically used for further computati
 \item{'y.pos': }{y position of the particle's centroid.}
 \item{'identity': }{the particle's identity given by the tracking software.}
 \item{'frame': }{the video frame number at which the measurements has been made.}
-\item{'ntargets': }{the number of particle tracked over each frame.}
-\item{'timestamps': }{the elapsed time over each frame, in seconds.}
 }
 
-Also, by default the function flip y coordinates to start on the bottom-left (see flipY argument).
+Also, the function can flip y coordinates (see \link{flipY} argument).
 }
 \examples{
 \dontrun{
@@ -50,8 +45,7 @@ Path2Data
 Data <-
   MoveR::readIdtracker(Path2Data[[1]],
          flipY = T,
-         imgHeight = 2160,
-         frameR = 25
+         imgHeight = 2160
   )
 str(Data)
 
@@ -62,7 +56,7 @@ Romero-Ferrero, F., Bergomi, M.G., Hinz, R.C. et al. idtracker.ai: tracking all 
 \href{https://idtrackerai.readthedocs.io/en/latest/}{idtracker.ai}
 }
 \seealso{
-\code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{flipYCoords}}
+\code{\link{readAnimalTA}} \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{flipYCoords}}
 }
 \author{
 Quentin PETITJEAN

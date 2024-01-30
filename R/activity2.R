@@ -1,10 +1,10 @@
 #' @title Determine active or inactive states according to density based clustering method.
 #'
-#' @description Given a list of data frames containing tracking information and two variable of interest the function use
+#' @description Given an object of class "tracklets" containing a list of tracklets which contain two variable of interest the function use
 #' density based clustering as introduced in Ester et al. (1996). 
 #' As a result, the function use the DBSCAN method from Hennig (2020) to discriminate active and inactive states in a 2d space by returning numeric values indicating whether the particle is "active" (1) or "inactive" (0).
 #'
-#' @param trackDat A list of data frame containing tracking information for each tracklet.
+#' @param trackDat An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.
 #'
 #' @param var1 A character string indicating the name of the variable to use as the first dimension.
 #'
@@ -26,7 +26,7 @@
 #'
 #'
 #' @return This function returns the results of the classification (actives vs. inactives) as numeric value (1 or 0, respectively) appended to
-#' the original list of data frame containing tracking information for each tracklet. 
+#' each tracklet of the "tracklets" object. 
 #'
 #' @author Quentin PETITJEAN
 #'
@@ -46,10 +46,7 @@
 #' Path2Data
 #'
 #' # Import the list containing the 9 vectors classically used for further computation
-#' Data <- MoveR::readTrex(Path2Data[[1]])
-#'
-#' # convert it to a list of tracklets
-#' trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
+#' trackDat <- MoveR::readTrex(Path2Data[[1]])
 #'
 #' # infinite values that are present in the tracking output should be removed
 #' ## define the filter
@@ -68,12 +65,11 @@
 #'                      splitCond = TRUE,
 #'                      minDur = 100)
 #'
-#' ### remove some tracklet to speed up the computation
-#' trackdat2 <- trackDat.Infilt[[2]][1:75]
+#' ### retrieve the list of tracklets
+#' trackdat2 <- trackDat.Infilt[[2]]
 #'
 #' # check the tracklet
-#' MoveR::drawTracklets(trackdat2,
-#'                  timeCol = "frame")
+#' MoveR::drawTracklets(trackdat2)
 #'
 #' # add some metric to the dataset to perform 2d clustering (speed and turning angle)
 #' # and smooth them by computing the mean value over a 10 frames' sliding window
@@ -84,35 +80,22 @@
 #'     customFunc = list(
 #'       # specify a first function to compute speed over each tracklet (a modulus present within the MoveR package)
 #'       speed = function(x)
-#'         MoveR::speed(x,
-#'                      timeCol = "frame",
-#'                      scale = 1),
+#'         MoveR::speed(x),
 #'       # compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
 #'       TurnAngle = function(x)
-#'         MoveR::turnAngle(
-#'           x,
-#'           timeCol = "frame",
-#'           unit = "radians",
-#'           scale = 1
-#'         ),
+#'         MoveR::turnAngle(x),
 #'       # smooth variance of turning angles
 #'       SlideVarAngle = function (y)
 #'         MoveR::slidWindow(y$TurnAngle,
-#'                        Tstep = Tstep, function (x)
-#'                          circular::var(
-#'                            circular::circular(
-#'                              x,
-#'                              type = "angle",
-#'                              units = "radians",
-#'                              zero = 0
-#'                            ),
-#'                            na.rm = T
-#'                          )),
+#'                        Tstep = Tstep, 
+#'                        statistic = 'circular.var',
+#'                        na.rm = TRUE),
 #'       # smooth speed
-#'       SlidemeanSpeed = function (y)
+#'       slideMeanSpeed = function (y)
 #'         MoveR::slidWindow(y$speed,
-#'                        Tstep = Tstep, function (x)
-#'                          mean(x, na.rm = T))
+#'                        Tstep = Tstep, 
+#'                        statistic = 'mean', 
+#'                        na.rm = TRUE)
 #'     )
 #'   )
 #'
@@ -120,7 +103,7 @@
 #'
 #' trackdat3 <- MoveR::activity2(
 #'   trackdat3,
-#'   var1 = "SlidemeanSpeed",
+#'   var1 = "slideMeanSpeed",
 #'   var2 = "SlideVarAngle",
 #'   var1T = log10,
 #'   nbins = 100,
@@ -132,9 +115,9 @@
 #'
 #' ## optional, it is possible to draw the distribution of the count in 2 dimension space 
 #' # compute the count matrix in the 2d space with the same parameter than activity2 function
-#' trackDatL <- MoveR::convert2List(trackDat3)
+#' trackDatL <- MoveR::convert2List(trackdat3)
 #' outP <- MoveR::countMat(x = log10(trackDatL[["slideMeanSpeed"]]), 
-#'                  y = trackDatL[["slideVarAngle"]],
+#'                  y = trackDatL[["SlideVarAngle"]],
 #'                  groups = trackDatL[["activity2"]],
 #'                  nbins = 100,
 #'                  output = "matrix")
@@ -252,12 +235,12 @@ activity2 <-
     # if minPts or eps argument are null return an error
     if (is.null(eps)) {
       stop(
-        "eps argument is missing, specifying a maximum distance around cluster's members is needed."
+        "[eps] argument is missing, specifying a maximum distance around cluster's members is needed."
       )
     }
     if (is.null(minPts)) {
       stop(
-        "minPts argument is missing, specifying a minimum number of point per cluster is needed."
+        "[minPts] argument is missing, specifying a minimum number of point per cluster is needed."
       )
     }
     
@@ -280,7 +263,7 @@ activity2 <-
     }
     if (is.null(nbins)) {
       nbins = 100
-      warning("nbins argument is unspecified, default value is 100")
+      warning("[nbins] argument is unspecified, default value is 100")
     }
     
     # build the count matrix within the 2d space
@@ -364,7 +347,7 @@ activity2 <-
     }
     if (!exists("inactivClust", inherits = FALSE)) {
       stop(
-        "failed to identify active and inactive cluster: no cluster identified, perhaps eps and minPts arguments should be modified."
+        "failed to identify active and inactive cluster: no cluster identified, perhaps [eps] and [minPts] arguments should be modified."
       )
     }
     names(inactivClust) <-

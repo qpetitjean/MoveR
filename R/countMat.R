@@ -80,7 +80,7 @@ countMat <- function(x = NULL,
   
   if (length(output) > 1) {
     output <- "matrix"
-    warning("output argument is unspecified, default value is matrix")
+    warning("[output] argument is unspecified, default value is matrix")
   }
   # in case x and y have different length, return an error message.
   if (length(x) != length(y)) {

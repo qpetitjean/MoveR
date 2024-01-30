@@ -185,6 +185,45 @@ regular-expression syntax.
 
 <img src="man/figures/WorkFlowMoveR.png" height="600" text-align="center"/>
 
+### Roadmap/future development
+
+<table border="1">
+<tr>
+<th>
+What
+</th>
+<th>
+When
+</th>
+</tr>
+<tr>
+<td>
+Publish the three missing “How to” - parallel computation, sequences
+identification, performance detection.
+</td>
+<td>
+mid-2024
+</td>
+</tr>
+<tr>
+<td>
+Providing functions to convert “tracklets” objects to other formats used
+in other libraries such as “sf”.
+</td>
+<td>
+mid-2024
+</td>
+</tr>
+<tr>
+<td>
+speed up MoveR’s computation.
+</td>
+<td>
+Continuous implementation
+</td>
+</tr>
+</table>
+
 ## Citation
 
 Please cite this package as:

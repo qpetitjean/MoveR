@@ -14,16 +14,17 @@ readTrex(trexPath, flipY = FALSE, imgHeight = NULL, rawDat = FALSE)
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
 corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
 
-\item{rawDat}{TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .npz files (see \href{https://trex.run}{trex.run}),
-may drastically increase the size of the object returned by the function (default = FALSE).}
+\item{rawDat}{A logical value (i.e., TRUE or FALSE) indicating whether all other elements retrieved from the tracking output should appended to the tracklets data (see \href{https://trex.run}{trex.run}),
+Note that this may drastically increase the size of the object returned by the function (default = FALSE).}
 }
 \value{
-A list containing either a list of 9 elements classically used for further computations or a list containing 2 sublists, the first corresponding to the one previously mentioned
-and the second containing all the elements retrieved from the .npz files (see rawDat argument). Also, by default the function flip y coordinates to start on the bottom-left.
+An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.
+In case \link{rawDat} argument is TRUE, it also append all the others elements returned by the tracking software (for TRex it corresponds to several metrics see \href{https://trex.run}{trex.run} for more details).
+Also, by default the function returns y coordinates starting on the top-left.
 }
 \description{
 Given the path of a folder containing multiple Trex outputs (one .npz file per particle/individual),
-this function returns a list of 9 vectors classically used for further computations using MoveR package:
+this function returns an object of class "tracklets", a list of tracklets (data frame) containing 7 elements classically used for further computations using MoveR package:
 \itemize{
 \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
 \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to X-axis.}
@@ -32,12 +33,10 @@ this function returns a list of 9 vectors classically used for further computati
 \item{'y.pos': }{y position of the particle's centroid.}
 \item{'identity': }{the particle's identity given by the tracking software.}
 \item{'frame': }{the video frame number at which the measurements has been made.}
-\item{'ntargets': }{the number of particle tracked over each frame.}
-\item{'timestamps': }{the elapsed time over each frame, in seconds.}
 }
 
-Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above
-and the second containing all the elements retrieved from the .npz files (see rawDat argument).
+The function can also append all the others elements returned by the tracking software (see \link{rawDat} argument)
+Also, the function can flip y coordinates (see \link{flipY} argument).
 }
 \examples{
 \dontrun{
@@ -46,22 +45,15 @@ and the second containing all the elements retrieved from the .npz files (see ra
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 Path2Data
 
-# Import the list containing the 9 vectors classically used for further computation
+# Import the data as an object of class "tracklets"
 # and flip Y coordinates to start on the bottom-left
 Data <- MoveR::readTrex(Path2Data[[1]],
                flipY = T,
                imgHeight = 2160,
                rawDat = F
         )
+        
 str(Data)
-
-# Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
-# and the second list containing all the elements retrieved from .npz files,
-# also do not flip Y coordinates (start on the top-left)
-DataFull <- MoveR::readTrex(Path2Data[[1]],
-                   rawDat = T
-            )
-str(DataFull)
 
 } 
 }
@@ -70,7 +62,7 @@ Tristan Walter, Iain D Couzin (2021) TRex, a fast multi-animal tracking system w
 \href{https://trex.run}{trex.run}
 }
 \seealso{
-\code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
+\code{\link{readAnimalTA}} \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 }
 \author{
 Quentin PETITJEAN

@@ -4,15 +4,15 @@
 \alias{convert2Tracklets}
 \title{Convert a list of variables to list of tracklets.}
 \usage{
-convert2Tracklets(trackDatList, by = NULL)
+convert2Tracklets(trackDatList, by = "identity")
 }
 \arguments{
 \item{trackDatList}{A list of vector corresponding to the variable characterizing the tracking data.}
 
-\item{by}{A character vector identifying the tracklets to join by.}
+\item{by}{A character vector identifying the tracklets to join by (default = 'identity').}
 }
 \value{
-A list of data frames corresponding the tracking data for each tracklets.
+An object of class "tracklets" containing a list of tracklets with tracking informations.
 }
 \description{
 Given a list containing vectors corresponding to the various variable of tracking data
@@ -27,7 +27,7 @@ TrackN <- 3 # the number of tracklet to simulate
 TrackL <-
   1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 id <- 0
-TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
     id <<- id + 1
     data.frame(
@@ -36,10 +36,11 @@ TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
       frame = j$time,
      identity = paste("Tracklet", id, sep = "_")
     )
-  }), seq(TrackN))
+  }), seq(TrackN)))
 
  # convert the list of tracklets to a simple list of variables
  trackDatList <- MoveR::convert2List(TrackList)
+ str(trackDatList)
  
  # convert back the list of variables to a list of tracklet based on tracklets identity
  trackDat <- MoveR::convert2Tracklets(trackDatList, by = "trackletId")

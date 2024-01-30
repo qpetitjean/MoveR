@@ -3,7 +3,6 @@
 #' @description Given a vector containing numeric data, this function returns a vector of smoothed data 
 #' by performing the computation specified by the 'statistic' argument over the input vector moving through centered sliding window.
 #'
-#'
 #' @param x A vector containing data to smooth.
 #'
 #' @param Tstep A numeric value corresponding to the length of the sliding window (i.e., the number of values).
@@ -31,9 +30,10 @@
 #' 
 #' set.seed(2023) 
 #' # compute smoothed mean over a sliding window of 15 time unit in length
-#' slidWindow( x = rnorm(150), Tstep = 15, statistic = 'mean',  na.rm = TRUE)
+#' slidWindow(x = rnorm(150), Tstep = 15, statistic = 'mean',  na.rm = TRUE)
+#' 
 #' # compute smoothed variance over a sliding window of 15 time unit in length
-#' slidWindow( x = rnorm(150), Tstep = 15, statistic = 'var',  na.rm = TRUE)
+#' slidWindow(x = rnorm(150), Tstep = 15, statistic = 'var',  na.rm = TRUE)
 #' 
 #' @export
 
@@ -44,12 +44,12 @@ slidWindow <-
             na.rm = TRUE) {
     if (length(statistic) > 1) {
       stop(
-        "statistic argument is unspecified, choose either 'sum', 'mean', 'median', 'var', 'sd' or 'circular.var'"
+        "[statistic] argument is unspecified, choose either 'sum', 'mean', 'median', 'var', 'sd' or 'circular.var'"
       )
     }
     if (!statistic %in% c("sum", "mean", "median", "var", "sd", "circular.var")) {
       stop(
-        "statistic argument is wrong or misspelled, choose either 'sum', 'mean', 'median', 'var', 'sd' or 'circular.var'"
+        "[statistic] argument is wrong or misspelled, choose either 'sum', 'mean', 'median', 'var', 'sd' or 'circular.var'"
       )
     }
     if(isTRUE(na.rm) & statistic == "sum" | isTRUE(na.rm) & statistic == "mean"){

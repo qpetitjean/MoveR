@@ -13,11 +13,11 @@ dist2Edge(df, edge, customFunc)
 arena or any object edge.}
 
 \item{customFunc}{A function used to specify the formula allowing to compute the distance between a given object or arena edge and the particle over its trajectory.
-It is possible to call already implemented methods for Circular arena by calling customFunc = "CircularArena".}
+It is possible to call already implemented methods for circular or polygonal arena by calling customFunc = "CircularArena" or customFunc = "PolygonArena", respectively.}
 }
 \value{
 This function returns a vector containing the distance between each points of the
-trajectory and the closest point of the object edge. Negative values indicate increasing distance
+trajectory and the closest point of the object edge. If customFunc argument is an already implemented method (i.e., "CircularArena", "PolygonArena") negative values indicate increasing distance
 from the edge of the object in the direction of its center (the particle is considered inside) and vice versa.
 }
 \description{
@@ -28,24 +28,23 @@ trajectory and the closest point to the object edge.
 }
 \examples{
 
-# Exemple 1: With a circular arena
-
-set.seed(2023)
 # generate a dummy tracklet
+set.seed(2023)
 ## start to specify some parameters to generate the tracklet
 TrackL <-
   100 # the length of the tracklet or a sequence to randomly sample tracklet's length
 
 TrackDatTemp <-
   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)
-TrackDat <- list(
+TrackDat <- MoveR::trackletsClass(list(
   data.frame(
     x.pos = TrackDatTemp[["x"]] - min(TrackDatTemp[["x"]]),
     y.pos = TrackDatTemp[["y"]] - min(TrackDatTemp[["y"]]),
     frame = TrackDatTemp[["time"]]
   )
-)
+))
 
+# Exemple 1: With a circular arena
 # simulate a circular arena of 20 pixels radius and centered on the particle trajectory
 arenaEdge <-  as.data.frame(MoveR::circles(mean(TrackDat[[1]][["x.pos"]]),
                             mean(TrackDat[[1]][["y.pos"]]),
@@ -56,7 +55,7 @@ str(arenaEdge)
 # draw the tracklet and the arena edge
 MoveR::drawTracklets(TrackDat,
                  imgRes = c(80, 80),
-                 add2It = list(points(
+                 add2It = list(graphics::polygon(
                    x = arenaEdge[["x.pos"]], y = arenaEdge[["y.pos"]], cex = 0.1
                  )))
 
@@ -66,8 +65,32 @@ MoveR::dist2Edge(TrackDat[[1]],
                  edge = arenaEdge,
                  customFunc = "CircularArena")
 
+# Exemple 2: With a a polygonal arena
+# simulate a circular arena of 20 pixels radius and centered on the particle trajectory
+arenaEdge <-  as.data.frame(MoveR::polygons(mean(TrackDat[[1]][["x.pos"]]),
+                                           mean(TrackDat[[1]][["y.pos"]]),
+                                           width = 40,
+                                           height = 40,
+                                           sides = 4,
+                                           rotation = (45 * pi) / (180),
+                                           draw = F))
+str(arenaEdge)
 
-# Exemple 2: With a a polygonal arena, using a distance matrix to avoid tough computation
+# draw the tracklet and the arena edge
+MoveR::drawTracklets(TrackDat,
+                     imgRes = c(80, 80),
+                     add2It = list(graphics::polygon(
+                       x = arenaEdge[["x.pos"]], y = arenaEdge[["y.pos"]], cex = 0.1
+                     )))
+
+# Compute the distance to the closest part of the edge based on the form of the arena (here circular)
+# Negative values indicate increasing distance from the edge of the object in the direction of its center (the particle is considered inside) and vice versa.
+MoveR::dist2Edge(TrackDat[[1]],
+                 edge = arenaEdge,
+                 customFunc = "PolygonArena")
+
+# Exemple 3: With a polygonal arena, using a distance matrix to avoid tough computation
+
 \dontrun{
 
 # Download the first dataset from the sample data repository
@@ -75,10 +98,7 @@ Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 Path2Data
 
 # Import the list containing the 9 vectors classically used for further computation
-Data <- MoveR::readTrex(Path2Data[[1]])
-
-# convert it to a list of tracklets
-trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
+trackDat <- MoveR::readTrex(Path2Data[[1]])
 
 # load the distance matrix to the arena edge, an object or the location of one or several areas of interest (here we have created a distance map using ImageJ)
 # and retrieve the value of the edge limit (1) to plot it
@@ -90,20 +110,17 @@ MoveR::drawTracklets(trackDat,
                  add2It = list(graphics::polygon(x = arenaEdge$x.pos, y = arenaEdge$y.pos)))
 
 # Retrieve the distance from the edge using the distance matrix,
-# because it is tough to compute the distance to the closest part of the arena edge in this case
-# we can use another sister function helping to retrieve the distance to the edge from the distance
-# matrix
+# because it is tough and time consuming to compute the distance to the closest part of the arena edge in this case (lot of vertices on this polygon)
+# we can use another sister function helping to retrieve the distance to the edge from the distance matrix
 
 ## NB: here NAs are introduced because some tracklets in the raw data have Inf values in x and y.pos, which usually produce a warning message
 ## here the warning has been silenced but in this case retrieving the distance from the edge should be preceded by a filtering step to remove Inf values (see \code{\link{filterTracklets}})
 w <- getOption("warn")
 options(warn = -1)
-
-cbind(trackDat[[1]], MoveR::locPos(Path2Data[[2]], trackDat[[1]], Fun = function(x) round(x, digits = 0)))[950:1000, ]
-
+MoveR::locPos(Path2Data[[2]], trackDat[[1]], Fun = function(x) round(x, digits = 0))[950:1000] # display only the 50 position between the indices 950 and 1000
 options(warn = w)
-
 }
+
 }
 \seealso{
 \code{\link{dist2Pt}}, \code{\link{locPos}}

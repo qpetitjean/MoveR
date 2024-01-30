@@ -11,8 +11,7 @@ readPlain(
   id = "identity",
   timeCol = "frame",
   flipY = FALSE,
-  imgHeight = NULL,
-  frameR = NULL
+  imgHeight = NULL
 )
 }
 \arguments{
@@ -30,27 +29,23 @@ readPlain(
 
 \item{imgHeight}{A numeric value expressed in pixels, the length of Y axis
 corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
-
-\item{frameR}{A numeric value expressed in frames per second, the frequency at which frames are recorded/displayed in the video (optional, only used to compute timestamps).}
 }
 \value{
-A list containing a list of 6 elements classically used for further computations.
-In case the input data (plainTab) contains other columns, those columns are also appended to the returned list.
+An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.
+In case the input data (plainTab) contains other columns, those columns are also appended to the returned tracklets object
 }
 \description{
 Given the path of a table file (e.g., .txt or .csv, see \code{\link[utils]{read.table}}) or an already imported tibble, dataframe or list of vectors
 containing x and y coordinates (named X and Y respectively), the identity of the particle(s) and time,
-this function returns a list of 6 vectors classically used for further computations using MoveR package:
+this function returns an object of class "tracklets", a list of tracklets (data frame) containing 7 elements classically used for further computations using MoveR package:
 \itemize{
 \item{'x.pos': }{x position of the particle's centroid.}
 \item{'y.pos': }{y position of the particle's centroid.}
 \item{'identity': }{the particle's identity given by the tracking software.}
 \item{'frame': }{the video frame number at which the measurements has been made.}
-\item{'ntargets': }{the number of particle tracked over each frame.}
-\item{'timestamps': }{the elapsed time over each frame, in seconds.}
 }
 
-Also, the function can flip y coordinates (see flipY argument).
+Also, the function can flip y coordinates (see \link{flipY} argument).
 }
 \examples{
 
@@ -71,17 +66,16 @@ TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
 ## convert it to a simple list of vector
 plainTab <- MoveR::convert2List(TrackList)
 
-# Import the list containing the 6 vectors classically used for further computation (the function can also retrieve the plainTab from a table file by giving the full path to the file)
+# Import the data as an object of class "tracklets" (the function can also retrieve the plainTab from a table file by giving the full path to the file)
+# also do not flip Y coordinates (start on the bottom-left)
 Data <-
   MoveR::readPlain(plainTab,
-                   id = "trackletId",
-                   timeCol = "frame",
-                   frameR = 1)
+                   id = "trackletId")
 str(Data)
 
 }
 \seealso{
-\code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}, \code{\link[utils]{read.table}}
+\code{\link{readAnimalTA}} \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}, \code{\link[utils]{read.table}}
 }
 \author{
 Quentin PETITJEAN

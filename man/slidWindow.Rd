@@ -40,9 +40,10 @@ by performing the computation specified by the 'statistic' argument over the inp
 
 set.seed(2023) 
 # compute smoothed mean over a sliding window of 15 time unit in length
-slidWindow( x = rnorm(150), Tstep = 15, statistic = 'mean',  na.rm = TRUE)
+slidWindow(x = rnorm(150), Tstep = 15, statistic = 'mean',  na.rm = TRUE)
+
 # compute smoothed variance over a sliding window of 15 time unit in length
-slidWindow( x = rnorm(150), Tstep = 15, statistic = 'var',  na.rm = TRUE)
+slidWindow(x = rnorm(150), Tstep = 15, statistic = 'var',  na.rm = TRUE)
 
 }
 \seealso{

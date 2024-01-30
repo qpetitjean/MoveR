@@ -40,7 +40,7 @@ TrackDat <- data.frame(
 
 # compute the speed of the particle along its trajectory
 TrackDat[["speed"]] <-
-  MoveR::speed(TrackDat, scale = 1, timeCol = "frame")
+  MoveR::speed(TrackDat)
 
 # we can then define the speed treshold above which the particle is considered actives using quantiles
 # here we use the 0.025 quantile to find the minimum speed treshold
@@ -53,7 +53,7 @@ TrackDat[["activity1"]] <-
   MoveR::activity1(TrackDat, speedCol = "speed", minSpeed = 10 ^ tresh)
 
 # draw the particle' trajectory and spot the inactive moments using red dots
-MoveR::drawTracklets(list(TrackDat),
+MoveR::drawTracklets(MoveR::trackletsClass(list(TrackDat)),
                  add2It = list(points(
                    TrackDat[["x.pos"]][which(TrackDat[["activity1"]] == 0)],
                    TrackDat[["y.pos"]][which(TrackDat[["activity1"]] ==  0)],

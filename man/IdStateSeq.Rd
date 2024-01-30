@@ -13,7 +13,7 @@ IdStateSeq(
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking informations for each tracklet, including a vector
+\item{trackDat}{An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations including a vector
 containing behavioral patterns (e.g., behavioral states, location in areas).}
 
 \item{Bstate}{The name of the column indicating the state of the particle along each tracklet.}
@@ -30,7 +30,7 @@ The parts of the tracklets corresponding to the specified pattern are grouped in
 (e.g. the first detected pattern extracted from the first tracklet is located in the list named tracklet_1 and is named tracklet_1.1).
 }
 \description{
-Given a list of data frames containing tracking informations including a vector
+Given an object of class "tracklets" containing a list of tracklets including a vector
 containing behavioral patterns (e.g., behavioral states, location in areas) for each tracklet,
 the function identify and extract tracklets parts that contains the specified pattern.
 }
@@ -43,7 +43,7 @@ TrackN <- 10 # the number of tracklet to simulate
 TrackL <-
   100:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 id <- 0
-TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
     id <<- id + 1
     data.frame(
@@ -52,7 +52,7 @@ TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
       frame = j$time,
       identity = paste("Tracklet", id, sep = "_")
     )
-}), seq(TrackN))
+}), seq(TrackN)))
 
 # draw all tracklets and the area of interest
 MoveR::drawTracklets(TrackList)
@@ -66,7 +66,7 @@ TrackListV2 <- MoveR::analyseTracklets(
  TrackList,
   customFunc = list(
     dist2ArenaEdge = function(x)
-      MoveR::dist2Edge(x, ArenaEdge[[1]], customFunc = "CircularArena"),
+      MoveR::dist2Edge(x, ArenaEdge, customFunc = "CircularArena"),
     InOut =
       function(x)
         ifelse(x["dist2ArenaEdge"] < 0, "IN", "OUT")

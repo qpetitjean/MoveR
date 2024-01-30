@@ -14,7 +14,7 @@ detectPerf(
 )
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking information for each tracklet (i.e., x.pos, y.pos, frame).}
+\item{trackDat}{An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations (at least x.pos, y.pos, frame).}
 
 \item{refDat}{A dataframe containing "true" x and y coordinates of the particles (e.g., manually detected using imageJ)
 as well as a column specifying the time (e.g., frame). In case the the particles are located over several time unit
@@ -24,14 +24,14 @@ as well as a column specifying the time (e.g., frame). In case the the particles
 used to determine whether values are considered similar to those within the refDat or not (default = 20).}
 
 \item{imgRes}{A vector of 2 numeric values, the resolution of the video used as x and y limit of the plot (i.e., the number of pixels in image width and height).
-If imgRes is unspecified, the function retrieve it using x and y maximum values + 5\%.}
+If imgRes is unspecified, the function try to retrieve it from tracklets object attribute or approximate it using x and y maximum values + 5\%.}
 
 \item{timeCol}{A character string corresponding to the name of the column containing time information (default = "frame")}
 
 \item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 }
 \value{
-A list of dataframes summarizing the results of the sensitivity analysis:
+A list of data frames summarizing the results of the sensitivity analysis:
 \itemize{
 \item{"SensitivityStats": }{sensitivity index, n, standard deviation, standard error (sd, se are only computed if refDat contains particle's position over several time units).}
 \item{"SensitivityDetails": }{a data frame containing detailed sensitivity index and time units on which test have been performed.}
@@ -40,7 +40,7 @@ A list of dataframes summarizing the results of the sensitivity analysis:
 }
 }
 \description{
-Given a list of tracklets containing cartesian coordinates of particles over time
+Given an object of class "tracklets" containing a list of tracklets
 and a dataframe containing the "true" (i.e., manually detected) coordinates of the particles, this function
 compare the location of the particles performed manually and by the tracking software to return a list of
 informations related to sensitivity analysis:
@@ -76,12 +76,12 @@ Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 Path2Data
 
 # Import the list containing the 9 vectors classically used for further computation
-Data <- MoveR::readTrex(Path2Data[[1]],
+trackDat <- MoveR::readTrex(Path2Data[[1]],
                         flipY = T,
                         imgHeight = 2160)
 
-# convert it to a list of tracklets
-trackDat <- MoveR::convert2Tracklets(Data[1:7], by = "identity")
+# add the information about image resolution to the tracklet object
+trackDat <- setInfo(trackDat, imgRes = c(3840, 2160))
 
 # load the reference dataset (a dataframe containing manually detected position of the particle's over time unit)
 refDat <-

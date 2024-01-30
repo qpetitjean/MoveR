@@ -78,7 +78,7 @@ and repeat the above installation commands.
 More particularly, `MoveR` provides tools to:<br />
 
 <ul>
-<li><strong>IMPORT</strong> the raw data from various video-tracking software such as <a href="https://trex.run">TRex</a>, <a href="https://swarm-lab.github.io/trackR">trackR</a>, <a href="https://ctrax.sourceforge.net/">Ctrax</a> and <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a> (for now).</li><br />
+<li><strong>IMPORT</strong> the raw data from various video-tracking software such as <a href="https://trex.run">TRex</a>, <a href="https://swarm-lab.github.io/trackR">trackR</a>, <a href="https://ctrax.sourceforge.net/">Ctrax</a>, <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a> and <a href="https://vchiara.eu/index.php/animalta">AnimalTA</a> (for now) as a tracklets class object (S3).</li><br />
 <li><strong>VISUALIZE</strong> the tracklets of all or specified particles over time.</li><br />
 <li><strong>MANAGE ROIs (regions of interest)</strong> by importing the location of area edges or specifying it from scratch and assign ROIs identity to particle's position over trajectories.</li><br />
 <li><strong>CLEAN/FILTER</strong> the data according to custom functions specified by the user. For instance, it can easily remove suspected tracking errors based on expected particles' size or speed. It is also possible to sample particles' tracklets (i.e., a fragment of particle's trajectory) according to a specified time step or split tracklets' and remove parts that are detected outside an arena or a given area.</li><br />
@@ -95,6 +95,28 @@ Besides the high flexibility and unified environment, the primary innovations pr
 <li><strong>Identify and extract arbitrary patterns</strong>, in terms of changes among behavioral states, spatial regions or areas of interest, patch crosses, or any other patterns, using a very versatile regular-expression syntax.</li> 
 </ul>
 <img src="man/figures/WorkFlowMoveR.png" height="600" text-align="center"/>
+
+### Roadmap/future development
+
+<table border="1">
+    <tr>
+        <th>What</th>
+        <th>When</th>
+    </tr>
+    <tr>
+        <td>Publish the three missing "How to" - parallel computation, sequences identification, performance detection.</td>
+        <td>mid-2024</td>
+    </tr>
+    <tr>
+        <td>Providing functions to convert "tracklets" objects to other formats used in other libraries such as "sf".</td>
+        <td>mid-2024</td>
+    </tr>
+    <tr>
+        <td>speed up MoveR's computation.</td>
+        <td>Continuous implementation</td>
+    </tr>
+</table>
+
 
 ## Citation
 

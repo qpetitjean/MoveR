@@ -4,7 +4,7 @@
 \alias{sinuosity}
 \title{Compute corrected rediscretized sinuosity index for a given tracklet.}
 \usage{
-sinuosity(df, scale = 1, segL = NULL, timeCol = NULL, compass = NULL)
+sinuosity(df, scale = 1, segL = NULL, timeCol = "frame", compass = NULL)
 }
 \arguments{
 \item{df}{A data frame containing x and y coordinates in columns named "x.pos", "y.pos" for a given tracklet, as well as
@@ -17,9 +17,9 @@ a column containing time information, whatever the unit, over the tracklet.}
 to the length of the resampling step needed to discretize the input trajectory (optional)
 see \code{\link[trajr]{TrajRediscretize}}.}
 
-\item{timeCol}{A character string corresponding to the name of the column containing Time information (e.g., "frame").}
+\item{timeCol}{A character string corresponding to the name of the column containing Time information (default = 'frame').}
 
-\item{compass.direction}{A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).}
+\item{compass}{A value used to specify the compass direction (in radians). If not NULL, turning angles are calculated for a directed walk, otherwise, a random walk is assumed (default = NULL).}
 }
 \value{
 This function returns a value of sinuosity for a given tracklet according to \code{\link[trajr]{TrajSinuosity2}} from the \code{\link[trajr]{trajr}} package.

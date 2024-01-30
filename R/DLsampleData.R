@@ -43,16 +43,27 @@ DLsampleData <-
     if (dataSet != 1 &
         dataSet != 2) {
       stop(
-        "dataSet argument is not specified, please indicate either 1 or 2 to select the first or second sample dataset, respectively"
+        "[dataSet] argument is not specified, please indicate either 1 or 2 to select the first or second sample dataset, respectively"
       )
     } else{
       sampleData <- paste("sample", dataSet, sep = "_")
     }
-    if (!tracker %in% c("AnimalTA", "Ctrax", "IdTracker", "TrackR", "TRex")) {
+    if (length(tracker) == 1 && !tracker %in% c("AnimalTA", "Ctrax", "IdTracker", "TrackR", "TRex")) {
       stop(
-        "tracker argument is misspelled, please indicate from which tracking software data have to be downloaded: Ctrax, IdTracker, TrackR and/or TRex"
+        "[tracker] argument is misspelled, please indicate from which tracking software data have to be downloaded: AnimalTA, Ctrax, IdTracker, TrackR and/or TRex"
       )
+    }else if (length(tracker) > 1){
+      trackerL <- sapply(tracker, function(x)
+        !x %in% c("AnimalTA", "Ctrax", "IdTracker", "TrackR", "TRex")
+        )
+      missP <- names(trackerL)[which(trackerL)]
+      if (length(missP) > 0){
+        stop(
+          "In [tracker] argument [", paste(missP, collapse=", "), "] is misspelled, please indicate from which tracking software data have to be downloaded: AnimalTA, Ctrax, IdTracker, TrackR and/or TRex"
+        )
+      }
     }
+    
     # locate the directory where sample data will be located
     if (is.null(dir)) {
       # create a temporary directory

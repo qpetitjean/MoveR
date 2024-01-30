@@ -1,7 +1,7 @@
 #' @title Import Trex tracking output .npz files.
 #'
 #' @description Given the path of a folder containing multiple Trex outputs (one .npz file per particle/individual),
-#' this function returns a list of 9 vectors classically used for further computations using MoveR package:
+#' this function returns an object of class "tracklets", a list of tracklets (data frame) containing 7 elements classically used for further computations using MoveR package:
 #' \itemize{
 #'    \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
 #'    \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to X-axis.}
@@ -10,12 +10,10 @@
 #'    \item{'y.pos': }{y position of the particle's centroid.}
 #'    \item{'identity': }{the particle's identity given by the tracking software.}
 #'    \item{'frame': }{the video frame number at which the measurements has been made.}
-#'    \item{'ntargets': }{the number of particle tracked over each frame.}
-#'    \item{'timestamps': }{the elapsed time over each frame, in seconds.}
 #' }
 #'
-#' Alternatively, the function can returns a list containing 2 sublists, the first corresponding to the one mentioned above
-#' and the second containing all the elements retrieved from the .npz files (see rawDat argument).
+#' The function can also append all the others elements returned by the tracking software (see [rawDat] argument)
+#' Also, the function can flip y coordinates (see [flipY] argument).
 #'
 #' @param trexPath The path of the TRex output folder where .npz files are stored.
 #'
@@ -24,16 +22,17 @@
 #' @param imgHeight A numeric value expressed in pixels, the length of Y axis
 #' corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).
 #'
-#' @param rawDat TRUE or FALSE, if TRUE add a second list containing all the elements retrieved from .npz files (see \href{https://trex.run}{trex.run}),
-#' may drastically increase the size of the object returned by the function (default = FALSE).
+#' @param rawDat A logical value (i.e., TRUE or FALSE) indicating whether all other elements retrieved from the tracking output should appended to the tracklets data (see \href{https://trex.run}{trex.run}),
+#' Note that this may drastically increase the size of the object returned by the function (default = FALSE).
 #'
-#' @return A list containing either a list of 9 elements classically used for further computations or a list containing 2 sublists, the first corresponding to the one previously mentioned
-#' and the second containing all the elements retrieved from the .npz files (see rawDat argument). Also, by default the function flip y coordinates to start on the bottom-left.
+#' @return An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.
+#' In case [rawDat] argument is TRUE, it also append all the others elements returned by the tracking software (for TRex it corresponds to several metrics see \href{https://trex.run}{trex.run} for more details). 
+#' Also, by default the function returns y coordinates starting on the top-left.
 #'
 #'
 #' @author Quentin PETITJEAN
 #'
-#' @seealso \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
+#' @seealso \code{\link{readAnimalTA}} \code{\link{readCtrax}}, \code{\link{readTrackR}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 #'
 #' @references 
 #' Tristan Walter, Iain D Couzin (2021) TRex, a fast multi-animal tracking system with markerless identification, and 2D estimation of posture and visual fields eLife 10:e64000.
@@ -46,22 +45,15 @@
 #' Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "TRex")
 #' Path2Data
 #'
-#' # Import the list containing the 9 vectors classically used for further computation
+#' # Import the data as an object of class "tracklets"
 #' # and flip Y coordinates to start on the bottom-left
 #' Data <- MoveR::readTrex(Path2Data[[1]],
 #'                flipY = T,
 #'                imgHeight = 2160,
 #'                rawDat = F
 #'         )
+#'         
 #' str(Data)
-#'
-#' # Import the list containing 2 sublists, the first containing the 9 vectors classically used for further computation
-#' # and the second list containing all the elements retrieved from .npz files,
-#' # also do not flip Y coordinates (start on the top-left)
-#' DataFull <- MoveR::readTrex(Path2Data[[1]],
-#'                    rawDat = T
-#'             )
-#' str(DataFull)
 #'
 #' } 
 #' @export
@@ -70,11 +62,12 @@ readTrex = function(trexPath,
                     flipY = FALSE,
                     imgHeight = NULL,
                     rawDat = FALSE) {
-  if (flipY == TRUE & is.null(imgHeight)) {
-    stop(
-      "imgHeight argument is missing, the height of the image resolution is needed to flip y coordinates"
-    )
+  
+  error <- .errorCheck(imgHeight = imgHeight)
+  if (flipY == TRUE & !is.null(error)) {
+    stop(error)
   }
+  
   # import numpy python module to read .npz files
   np <-
     reticulate::import("numpy")
@@ -122,7 +115,7 @@ readTrex = function(trexPath,
               "_"))
   }), recursive = F)
   
-  # create identity and ntargets dataframes (not in Raw output of Trex)
+  # create identity dataframe (not in Raw output of Trex)
   ## retrieve the missing metric: 1/0 when indiv is missing for each frame, respectively
   df_list_missing <-
     lapply(lapply(mget(
@@ -138,14 +131,7 @@ readTrex = function(trexPath,
   missing_track <- do.call("rbind", df_list_missing)
   missing_track$identity <-
     gsub("[.][0-9]*", "", rownames(missing_track))
-  ntargets_temp <-
-    stats::ave(missing_track$missingInd, missing_track$frameNumb, FUN = sum)
-  ntargets_temp <-
-    unique(data.frame(ntargets_temp, frameNumb = missing_track$frameNumb))
-  ## compute number of missing particle per frame
-  ntargets_temp$indiv_numb <-
-    rep(length(unique(missing_track$identity)))
-  ntargets <- ntargets_temp$indiv_numb - ntargets_temp$ntargets_temp
+  
   ## create identity df
   identity_temp <-
     data.frame(gsub("_missing", "", missing_track$identity))
@@ -194,13 +180,10 @@ readTrex = function(trexPath,
       x.pos = metricList[["X#wcentroid"]],
       y.pos = metricList[["Y#wcentroid"]],
       identity = identity,
-      frame = metricList[["frame"]],
-      ntargets = ntargets,
-      timestamps = unique(metricList[["timestamp"]] / 1000000)
+      frame = metricList[["frame"]]
     )
   } else if (rawDat == TRUE) {
-    Data_Trex_All <- list(
-      Data_Trex = list(
+    Data_Trex_All <- c(list(
         maj.ax = metricList[["midline_length"]],
         angle = metricList[["ANGLE"]],
         min.ax = as.numeric(rep(NA, length(
@@ -209,13 +192,19 @@ readTrex = function(trexPath,
         x.pos = metricList[["X#wcentroid"]],
         y.pos = metricList[["Y#wcentroid"]],
         identity = identity,
-        frame = metricList[["frame"]],
-        ntargets = ntargets,
-        timestamps = unique(metricList[["timestamp"]] / 1000000)
-      ),
-      Data_Trex_Raw =
-        lapply(metricList, function (x) x)
+        frame = metricList[["frame"]]),
+        lapply(metricList[-which(names(metricList) %in% c("frame", "frame_segments", "segment_vxys"))], function (x) x)
     )
   }
+
+  # retrieve some information about tracking
+  frameR <- max(Data_Trex_All[["frame"]], na.rm=T) / (max(metricList[["timestamp"]], na.rm=T)/1000000)
+  
+  # create a tracklets class object to return
+  Data_Trex_All <- MoveR::convert2Tracklets(Data_Trex_All)
+  
+  # fill some attributes
+  Data_Trex_All <- MoveR::setInfo(Data_Trex_All, frameR = frameR)
+  
   return(Data_Trex_All)
 }

@@ -21,7 +21,7 @@ Now that we are familiar with importing raw data from tracking software, we are 
 For this example we are selecting the second sample of data available in the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository. 
 
 Briefly, this dataset comes from the video recording (image resolution: 1920x1080) of 24 parasitic micro-wasp individuals (genus <i>Trichogramma</i>) placed in a thermostated circular arena (2.5cm diameter, see Ion Scotta et al., 2021) for 110 minutes at 25 fps (see fig. \@ref(fig:VideoPics) left panel). 
-
+ 
 Over the exposure duration individuals has been exposed to a steady increases in temperature from 18&#8451; to 45&#8451; followed by a steady decreases from 45&#8451; to 18&#8451; (temperature changing rate: 0.5&#8451; per minutes). Individuals were then tracked using <a href="https://trex.run">TRex</a> (Walter and Couzin, 2021). 
 
 To reduce space allocation and computing time we reduced the dataset by removing the movements recorded below 35&#8451; (see fig. \@ref(fig:VideoPics) right panel). 
@@ -35,9 +35,13 @@ knitr::include_graphics(
 
 ## Import sample data from github
 
-Let's download the data, import and convert them to a list of tracklets (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html">Import Data vignette</a> for detailed procedure).
+Let's download the data, import them as a tracklets object and specify some additional information that will be useful for this tutorial (i.e., frame rate, scale, image resolution) using `setInfo()` (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html">Import Data vignette</a> for detailed procedure).
 
-<p class="notes">Note that we have included some extra data that are related to this dataset within the "raw tracking data" when we have reduced the dataset:<br /><li>the timeline expressed in frame (may be different from the default frame list because the data comes from merged videos)</li><br /><li>the temperature at which the individuals are exposed over the assay.</li><br /> These extra information will be useful to conduct further analyses in this tutorial and some others.<br /> For instance, we can automatically determine the frame rate of the video-recording using the timeline and timestamps (usually made using the default frame list instead of timeline).</p>
+<p class="notes">Note that we have included some extra data that are related to this dataset within the "raw tracking data" when we have reduced the dataset:<br /><li>the timeline expressed in frame (may be different from the default frame list because the data comes from merged videos)</li><br /><li>the temperature at which the individuals are exposed over the assay.</li><br /> These extra information will be useful to conduct further analyses in this tutorial and some others.</p>
+
+As the number of elements returned by <a href="https://trex.run">TRex</a> is relatively high and is not helpful here, we also are removing some of them by keeping only the necessary elements (maj.ax, x.pos, y.pos, identity, frame, runTimelinef and Measured_Temp_Deg_C). To ease this process we can first convert the tracklet object to a list of variable (varList object) using `convert2List()`, select only the desired variables and convert the varList back to tracklets using `convert2Tracklets()`.
+
+<p class="notes">Note that additional the information added to the tracklets object are conserved over the conversion process using `convert2List()` and `convert2Tracklets()`.</p>
 
 ```{r DLsampleData, echo=TRUE}
 # dl the second dataset from the sample data repository
@@ -47,17 +51,25 @@ Path2Data <- MoveR::DLsampleData(dataSet = 2, tracker = "TRex")
 TRexDat <- MoveR::readTrex(Path2Data[[1]],
                            rawDat = T)
 
-# retrieve some data specifically related to the dataset (the timeline and related temperature stored in the Data_Trex_Raw sublist)
-TRexDat <- c(TRexDat[[1]], 
-             TRexDat[[2]]["runTimelinef"],
-             TRexDat[[2]]["Measured_Temp_Deg_C"])
+# set additional information within the tracklets object (frameR is already retrieved from TREx data). In this video 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ software https://imagej.net/ij/index.html).
+TRexDat <- MoveR::setInfo(TRexDat, scale = 1/413.4, imgRes = c(1920, 1080)) 
 
-# retrieve the frame rate of the video (fps)
-frameRate <- max(TRexDat[["runTimelinef"]], na.rm=T) / max(TRexDat[["timestamps"]], na.rm=T)
-
-# convert the data to a list of tracklets
-# NB: remove ntargets and timestamps because their length is lower than other variables
-trackDat <- MoveR::convert2Tracklets(TRexDat[-which(names(TRexDat) == "ntargets" | names(TRexDat) == "timestamps")], by = "identity")
+# keep only the elements that will be useful for this tutorial (the timeline in frames and the temperature)
+## convert the tracklets object into a variable list to ease the selection of desired variables
+trackDatList <- MoveR::convert2List(TRexDat)
+trackDatList <-
+  trackDatList[c(
+    "maj.ax",
+    "x.pos",
+    "y.pos",
+    "identity",
+    "frame",
+    "runTimelinef",
+    "Measured_Temp_Deg_C"
+    )]
+    
+## convert it back to a tracklets object (conserving the additional information previously added)
+trackDat <- MoveR::convert2Tracklets(trackDatList, by = "identity")
 
 ```
 
@@ -110,7 +122,7 @@ Now, that the filter is properly specified the dataset can be filtered to remove
 
 <p class="notes">Note that in case a particle is lost and detected again during a very short time period, the function may return small tracklets which may be considered useless. These small tracklets can be removed by specifying the minimum duration above which tracklet should be kept using the `minDur` argument.</p>
 
-For this example, we are keeping only the tracklets lasting more than one second by setting minDur to 25 frames which correspond to 1 second, or to the frame rate of the video (hence we can use the frameRate object defined above).
+For this example, we are keeping only the tracklets lasting more than one second by setting minDur to 25 frames which correspond to 1 second, or to the frame rate of the video (hence we can use the frameR attribute that is contained in the tracklets object).
 
 ```{r InfRemove, results='markup'}
 # filter infinite values according to the previously specified filters
@@ -119,7 +131,7 @@ trackDat.Infilt <-
   MoveR::filterTracklets(trackDat,
                      filter = filter.Inf,
                      splitCond = TRUE,
-                     minDur = frameRate)
+                     minDur = MoveR::getInfo(trackDat, "frameR"))
 
 # display the summary of the filtering process
 str(trackDat.Infilt[[1]])
@@ -151,8 +163,6 @@ We first retrieve the scaling of the video using the diameter of the circular ar
 Then, we know that <em>Trichogramma</em>'s body length is generally higher than 0.15mm and lower than 1mm (personal observation) we can hence use these limits to filter the particles for which the length is not included within this interval (fig. \@ref(fig:SizeClean)A&B). 
 
 ```{r SizeClean, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Histogram of the Log-transformed length of the particles and specified limits (vertical lines corresponding to 0.015 and 0.1 cm) of the distribution before (A) and after the filtering process (B) removing the moments where the particles' length is below or above the specified limits."}
-# the scaling of the video - 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ)
-scaling <- 1 / 413.4
 
 # the upper and lower limits to filter on particles length, according to the scale (expressed in cm)
 LengthLim <- c(0.015, 0.1)
@@ -163,7 +173,7 @@ trackDat.InfiltList <-  MoveR::convert2List(trackDat.Infilt[[2]])
 # Use analyseTracklets function to scale the length of the particles (maj.ax) in cm by iterating over the tracklets
 trackDat2 <- MoveR::analyseTracklets(trackDat.Infilt[[2]],
                                      customFunc =
-                                       list(indLengthcm = function(x) x[["maj.ax"]] * scaling))
+                                       list(indLengthcm = function(x) x[["maj.ax"]] * MoveR::getInfo(TRexDat, "scale")))
 
 # plot the distribution of particles' length (log10) and the size limits
 par(mfrow=c(1,2))
@@ -189,7 +199,7 @@ trackDat.lenfilt <-
   MoveR::filterTracklets(trackDat2,
                      filter.length,
                      splitCond = TRUE,
-                     minDur = frameRate)
+                     minDur = MoveR::getInfo(TRexDat, "frameR"))
 
 # plot the distribution of particles' length (log10) after the filtering
 hist(log10(MoveR::convert2List(trackDat.lenfilt[[2]])$maj.ax),
@@ -332,7 +342,7 @@ graphics::points(
 ArenaEdge <- MoveR::circles(
   mean(edge[["x.pos"]]),
   mean(edge[["y.pos"]]),
-  radius = 2.5 / 2 / scaling, # here the radius of the arena is 2.5cm/2 divided by the scaling to obtain the value in pixels
+  radius = 2.5 / 2 / MoveR::getInfo(TRexDat, "scale"), # here the radius of the arena is 2.5cm/2 divided by the scaling to obtain the value in pixels
   border = "firebrick",
   draw = T
 )
@@ -385,7 +395,7 @@ trackDat.borderfilt <-
   MoveR::filterTracklets(trackDat4,
               filter.out,
               splitCond = TRUE,
-              minDur = frameRate)
+              minDur = MoveR::getInfo(TRexDat, "frameR"))
 
 # rename the cleaned dataset for further use
 trackDat5 <- trackDat.borderfilt[[2]]
@@ -481,20 +491,20 @@ FilterSummary
 
 As previously stated, we can indeed see that the filter based on infinite values have removed a lot of data contrary to the other filters. Also, it seems that the minimum duration of the tracklets set to 25 frames (1 second) is appropriate since it remove a small amount of data.
 
-It is also possible to display a summary of the tracking information of both the initial dataset (i.e., trackDat) and the filtered/cleaned one (trackDat5) using `trackStats()` to quickly compare them.
+It is also possible to display a summary of the tracking information of both the initial dataset (i.e., trackDat) and the filtered/cleaned one (trackDat5) using `summary()` to quickly compare them.
 
 ```{r TrackStatsSummary, message=FALSE, warning=FALSE}
-# compute and display a detailed summary of the tracking information before and after cleaning (see ??trackStats())
+# compute and display a detailed summary of the tracking information before and after cleaning (see ??summary())
 Data_Trex_stats_before_filter <-
-  MoveR::trackStats(trackDat,
-                    frameR = frameRate,
-                    scale = scaling,
+  MoveR::summary(trackDat,
+                    frameR = MoveR::getInfo(TRexDat, "frameR"),
+                    scale = MoveR::getInfo(TRexDat, "scale"),
                     unit = "cm")
 
 Data_Trex_stats_after_filter <-
-  MoveR::trackStats(trackDat5,
-                    frameR = frameRate,
-                    scale = scaling,
+  MoveR::summary(trackDat5,
+                    frameR = MoveR::getInfo(TRexDat, "frameR"),
+                    scale = MoveR::getInfo(TRexDat, "scale"),
                     unit = "cm")
 
 ```

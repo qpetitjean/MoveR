@@ -37,8 +37,7 @@
 #'   )
 #' 
 #' # draw the simulated particle's trajectory
-#' MoveR::drawTracklets(list(TrackDat),
-#'                      timeCol = "frame")
+#' MoveR::drawTracklets(trackletsClass(list(TrackDat)))
 #' 
 #' # generate the coordinates of three circular ROIs and add them to the plot
 #' ROIs <- MoveR::circles(
@@ -94,16 +93,11 @@ assignROI <- function(df = NULL,
                       edgeInclude = FALSE,
                       order = TRUE) {
   
-  if (is.null(MoveR::listGet(df, "x.pos"))) {
-    stop(
-      "x.pos column is missing from [df] or might be misspelled: x coordinates are needed to identify the ROI where the particles are located"
-    )
+  error <- .errorCheck(df = df, x.pos = "x.pos", y.pos = "y.pos")
+  if(!is.null(error)){
+    stop(error)
   }
-  if (is.null(MoveR::listGet(df, "y.pos"))) {
-    stop(
-      "y.pos column is missing from [df] or might be misspelled: y coordinates are needed to identify the ROI where the particles are located"
-    )
-  }
+  
   if (is.null(lapply(ROIs, function(z) MoveR::listGet(z, "x.pos")))) {
     stop(
       "x.pos column is missing from [ROIs] or might be misspelled: x coordinates are needed to identify the ROI where the particles are located"
@@ -114,7 +108,7 @@ assignROI <- function(df = NULL,
       "y.pos column is missing from [ROIs] or might be misspelled: y coordinates are needed to identify the ROI where the particles are located"
     )
   }
-  
+
   if(is.data.frame(ROIs)){
     ROIs <- list(ROIs)
   }

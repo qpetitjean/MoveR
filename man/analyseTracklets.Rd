@@ -4,10 +4,10 @@
 \alias{analyseTracklets}
 \title{Perform custom computation over a tracklet list.}
 \usage{
-analyseTracklets(trackDat, customFunc, progress = TRUE)
+analyseTracklets(trackDat = NULL, customFunc = NULL, progress = TRUE)
 }
 \arguments{
-\item{trackDat}{A list of data frame containing tracking information for each tracklet.}
+\item{trackDat}{An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.}
 
 \item{customFunc}{A function or a list of functions used to perform the computation over all tracklets
 NB: in case customFunc is a list of unnamed function it will try to retrieve their names by returning the first character string
@@ -16,13 +16,12 @@ following the function() call as result column name.}
 \item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 }
 \value{
-this function returns the original list of data frames (i.e., tracklet)
-with the result of the specified computation appended.
+this function returns an object of class "tracklets" with the result of the specified computation appended to each tracklet.
 }
 \description{
-Given a list of data frames containing tracking information for each tracklet and
+Given an object of class "tracklets" containing a list of tracklets and
 a custom function (or list of functions), this function iterate trough the tracklet lists to perform the specified computation
-and returns the original list of data frames with the result of the analysis appended.
+and returns the original object of class "tracklets" with the result of the analysis appended.
 }
 \examples{
 
@@ -33,7 +32,7 @@ TrackN <- 40 # the number of tracklet to simulate
 TrackL <-
   1:1000 # the length of the tracklets or a sequence to randomly sample tracklet length
 id <- 0
-TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
+TrackList <- MoveR::trackletsClass(stats::setNames(lapply(lapply(seq(TrackN), function(i)
   trajr::TrajGenerate(sample(TrackL, 1), random = TRUE, fps = 1)), function(j) {
     id <<- id + 1
     data.frame(
@@ -42,11 +41,10 @@ TrackList <- stats::setNames(lapply(lapply(seq(TrackN), function(i)
       frame = j$time,
       identity = paste("Tracklet", id, sep = "_")
     )
-  }), seq(TrackN))
+  }), seq(TrackN)))
 
 # check the tracklets
-MoveR::drawTracklets(TrackList,
-                 timeCol = "frame")
+MoveR::drawTracklets(TrackList)
 
 # Run some computation on the dataset using analyseTracklets
 TrackList2 <-
@@ -55,17 +53,12 @@ TrackList2 <-
     customFunc = list(
       # specify a first function to compute speed over each tracklet (a modulus present within the MoveR package)
       speed = function(x)
-        MoveR::speed(x,
-                     timeCol = "frame",
-                     scale = 1),
+        MoveR::speed(x),
       # compute turning angle in radians over each tracklet (a modulus present within the MoveR package)
       TurnAngle = function(x)
         MoveR::turnAngle(
           x,
-          timeCol = "frame",
-          unit = "radians",
-          scale = 1
-        ),
+          unit = "radians"),
       # convert the time expressed in frame in second using a conversion factor of 25 frame per second
       TimeSec = function(x)
         x[["frame"]] / 25,

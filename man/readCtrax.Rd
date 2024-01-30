@@ -15,12 +15,12 @@ readCtrax(ctraxPath, flipY = FALSE, imgHeight = NULL)
 corresponding to the height of the image or video resolution (optional, only used when flipY = TRUE).}
 }
 \value{
-A list containing 9 elements classically used for further computations.
+An object of class "tracklets" containing a list of tracklets and their characteristics classically used for further computations.
 Also, by default the function returns y coordinates starting on the bottom-left.
 }
 \description{
 Given the path of the .mat file corresponding to Ctrax output,
-this function returns a list of 9 vectors classically used for further computations using MoveR package:
+this function returns an object of class "tracklets", a list of tracklets (data frame) containing 7 elements classically used for further computations using MoveR package:
 \itemize{
 \item{'maj.ax': }{the length of the major axis (i.e., the midline) for a particle over frame (i.e., length of the ellipse).}
 \item{'angle': }{the particle's absolute angle in radians, orientation of the particle according to y-axis.}
@@ -29,11 +29,9 @@ this function returns a list of 9 vectors classically used for further computati
 \item{'y.pos': }{y position of the particle's centroid.}
 \item{'identity': }{the particle's identity given by the tracking software.}
 \item{'frame': }{the video frame number at which the measurements has been made.}
-\item{'ntargets': }{the number of particle tracked over each frame.}
-\item{'timestamps': }{the elapsed time over each frame, in seconds.}
 }
 
-Also, the function can flip y coordinates (see flipY argument).
+Also, the function can flip y coordinates (see \link{flipY} argument).
 }
 \examples{
 \dontrun{
@@ -42,8 +40,8 @@ Also, the function can flip y coordinates (see flipY argument).
 Path2Data <- MoveR::DLsampleData(dataSet = 1, tracker = "Ctrax")
 Path2Data
 
-# Import the list containing the 9 vectors classically used for further computation
-# and do not flip Y coordinates to start on the bottom-left
+# Import the data as an object of class "tracklets"
+# and do not flip Y coordinates (start on the bottom-left)
 Data <- MoveR::readCtrax(Path2Data[[1]])
 str(Data)
 
@@ -54,7 +52,7 @@ Branson, K., Robie, A., Bender, J. et al. High-throughput ethomics in large grou
 \href{https://ctrax.sourceforge.net/}{Ctrax: The Caltech Multiple Walking Fly Tracker}
 }
 \seealso{
-\code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
+\code{\link{readAnimalTA}} \code{\link{readTrackR}}, \code{\link{readTrex}}, \code{\link{readIdtracker}}, \code{\link{flipYCoords}}
 }
 \author{
 Quentin PETITJEAN, Vincent CALCAGNO
