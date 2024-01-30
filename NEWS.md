@@ -1,25 +1,75 @@
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# MoveR release v0.2.0
+# v0.3.0 –\> Thanks to the reviewers selected by software X journal for insightful comments
 
-- Add readAnimalTA function to import tracking data from AnimalTA
+- Make ‘identity’ the default value for the \[by\] argument in the
+  `convert2Tracklets()` function.
+- Make ‘frame’ the default value for the \[timeCol\] argument in the
+  `ANND()`, `resampTracklets()`, `sinuosity()`, `speed()`,
+  `temporalBoot()`, `temporalTrend()`, `turnAngle()` functions.
+- `speed()` function now accept \[frameR\] (frame rate) and \[timeU\]
+  (time unit) arguments allowing to return speed values according to the
+  desired unit (e.g., pixels per frame, pixels per second).
+- Make “1” the default value for the \[sampling\] argument in the
+  `ANND()` function.
+- Change the default value of the \[flipY\] argument in the
+  `readIdTracker()` functions from TRUE to FALSE as for other “read”
+  functions
+- Add “AnimalTA” to an error message returned by the `DLsampleData()`
+  function when the \[tracker\] argument is misspelled.
+- Add the possibility of retrieving the path to several tracking outputs
+  at the same time using `DLsampleData()`.
+- Solve an error when both \[selTrack\] and \[timeWin\] arguments were
+  specified in `drawTracklet()` with several time windows, drawing only
+  the specified tracklets on the first time window.
+- Processing time of `drawTracklet()` has also been speed up.
+- The “read” functions aiming to import tracking data from various
+  tracking software now return an object of class (S3) “tracklets”,
+  corresponding to a list of tracklets, meaning that converting the
+  output of “read” functions to a list of tracklets (using
+  `convert2Tracklets()`) before further processing is no longer needed.
+- Add `setInfo()` and `getInfo()` functions to the utilities to specify
+  and retrieve useful information such as frame rate (frameR), scale
+  (scale) and image resolution (imgRes) to the tracklets object,
+  allowing to avoid unnecessary repetition of code over several
+  functions.
+- `convert2List()` now returns an object of class “varList” which is
+  still a list of variables and conserve the additional information
+  appended to the converted tracklets object, meaning that additional
+  information are conserved over conversion from tracklets to varList
+  and back to tracklets.
+- `trackstats()` is now deprecated (but still can be used) and is
+  replaced by `summary()` according to the use of S3 methods for
+  tracklets class objects when importing tracking data.
+- Add the possibility to compute the distance between particles
+  trajectory and a polygon edges using `dist2Edge()` by setting
+  customFunc = “PolygonArena”.
+- `cutTracklets()` function is now considered as an internal function
+  and cannot be used anymore (prefer using filterTracklets).
+- Reduce code redundancy by creating an internal function to return
+  error messages .errorCheck.
+
+# v0.2.0
+
+- Add `readAnimalTA` function to import tracking data from AnimalTA
   software.
-- Add MSD to compute mean square displacement of particles according to
-  the equations derived from Kareiva & Shigesada (1983) or Turchin
-  (2015).
-- Modify the Dcoef function to properly use the equations derived from
+- Add `MSD` function to compute mean square displacement of particles
+  according to the equations derived from Kareiva & Shigesada (1983) or
+  Turchin (2015).
+- Modify the `Dcoef` function to properly use the equations derived from
   Kareiva & Shigesada (1983) or Turchin (2015) to compute net square
   displacement index.
-- Improve the speed of the slidWindow function by using stats::filter
-  instead of a ‘for loop’ within the function’s body. NB: while it
-  increases the speed of the slidWindow function, it also make it less
-  flexible, it is not possible to perform a custom computation over the
-  sliding window anymore. Instead, the ‘statistic’ argument allows to
-  choose some already implemented computation methods.
-- some minor modifications in readTrackR function
+- Improve the speed of the `slidWindow` function by using
+  `stats::filter` instead of a ‘for loop’ within the function’s body.
+  NB: while it increases the speed of the `slidWindow` function, it also
+  make it less flexible, it is not possible to perform a custom
+  computation over the sliding window anymore. Instead, the
+  \[statistic\] argument allows to choose some already implemented
+  computation methods.
+- some minor modifications in `readTrackR` function
 
-# MoveR dev. release v0.1.0
+# v0.1.0
 
 - This is the development release of the MoveR package.
 - This version is still under active development and might be unstable.

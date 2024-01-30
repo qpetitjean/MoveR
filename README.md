@@ -111,9 +111,10 @@ More particularly, `MoveR` provides tools to:<br />
 <strong>IMPORT</strong> the raw data from various video-tracking
 software such as <a href="https://trex.run">TRex</a>,
 <a href="https://swarm-lab.github.io/trackR">trackR</a>,
-<a href="https://ctrax.sourceforge.net/">Ctrax</a> and
+<a href="https://ctrax.sourceforge.net/">Ctrax</a>,
 <a href="https://idtrackerai.readthedocs.io/en/latest/">idtracker.ai</a>
-(for now).
+and <a href="https://vchiara.eu/index.php/animalta">AnimalTA</a> (for
+now) as a tracklets class object (S3).
 </li>
 <br />
 <li>
