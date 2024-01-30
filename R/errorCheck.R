@@ -23,13 +23,13 @@
            turnAngle = NA,
            distTraveled = NA,
            Tstep = NA) {
-    if (!is.na(df) && !is.logical(df)) {
+    if (!identical(df, NA)) {
       if (is.null(df)) {
         return(
           "[df] argument is missing, \nthe function need a data frame containing x and y coordinates of a given particules along a trajectory"
         )
       }
-      if (!is.null(df) && !is.na(df) && !is.data.frame(df)) {
+      if (!is.null(df) && !identical(df, NA) && !is.data.frame(df)) {
         return(
           "[df] is not a dataframe, \nconsider transforming the data, the function need a data frame containing x and y coordinates of a given particules along a trajectory"
         )

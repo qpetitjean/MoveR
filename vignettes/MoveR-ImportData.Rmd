@@ -41,7 +41,7 @@ Path2Data
 
 ```
 
-The function download the data from the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository and returns a vector containing the path to the raw data and the distance matrix helping to locate the edge of the arena and the reference data corresponding to the location particles (manually detected) over several frames (the latters will be useful in another tutorial).
+The function download the data from the <a href="https://github.com/qpetitjean/MoveR_SampleData">MoveR_SampleData</a> github repository and returns a vector containing the path to the raw data and the distance matrix helping to locate the edge of the arena and the reference data corresponding to the location particles (manually detected) over several frames (the laters will be useful in another tutorial).
 
 <p class="notes">Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the `dir` argument from `DLsampleData()`. In any case, the function look for previous occurrence of the sample data to avoid multiple downloading.</p>
 
@@ -93,10 +93,10 @@ Now that we have imported the tracking data, we either check or set some additio
 
 ```{r set-get, echo=TRUE, results='markup'}
 # check the additional information retrieved from the tracking output (depends on the tracking software used)
-getInfo(trackdat)
+MoveR::getInfo(trackdat)
 
 # set the the image resolution, but not the scale as it will not be useful for this tutorial
-trackdat <- setInfo(trackdat, imgRes = c(3840, 2160))
+trackdat <- MoveR::setInfo(trackdat, imgRes = c(3840, 2160))
 
 ```
 
@@ -119,8 +119,7 @@ Using `drawTracklets()`, it is easy to visualize the trajectories included in th
 par(mfrow = c(1, 2))
 
 # draw the trajectories of all particles
-MoveR::drawTracklets(trackDat,
-                     timeCol = "frame")
+MoveR::drawTracklets(trackDat)
 
 # add a letter identifying the plot to the upper left corner of the first plot
 mtext(
@@ -134,8 +133,7 @@ mtext(
 # draw the trajectories only for the first five particles
 MoveR::drawTracklets(
   trackDat,
-  selTrack = c(1:5),
-  timeCol = "frame"
+  selTrack = c(1:5)
 )
 
 # add a letter identifying the plot to the upper left corner of the second plot
@@ -158,8 +156,7 @@ par(mfrow=c(1,2))
 # draw the trajectories over a time window of 1000 frames (between 1 and 999 frames)
 MoveR::drawTracklets(
   trackDat,
-  timeWin = list(c(1, 999)),
-  timeCol = "frame"
+  timeWin = list(c(1, 999))
 )
 
 # add a letter identifying the plot to the upper left corner of the first plot
@@ -168,9 +165,8 @@ mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
 # draw the trajectories over two time windows of 1000 frames (between 6000 and 6999 and 11000 and 11999 frames)
 MoveR::drawTracklets(
   trackDat,
-  timeWin = list(c(6000, 6999), c(11000, 11999)),
-  timeCol = "frame"
-)
+  timeWin = list(c(6000, 6999), c(11000, 11999))
+  )
 
 # add a letter identifying the plot to the upper left corner of the second plot
 mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
@@ -203,7 +199,6 @@ par(mfrow=c(1,2))
 # draw the trajectories over the whole video timeline and color it according to particles' identity
 MoveR::drawTracklets(
   trackDat,
-  timeCol = "frame",
   colId = "identity"
 )
 
@@ -214,7 +209,6 @@ mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
 MoveR::drawTracklets(
   trackDat,
   timeWin = list(c(1, 999)),
-  timeCol = "frame",
   colId = "identity"
 )
 
@@ -232,7 +226,6 @@ par(mfrow=c(1,1))
 # draw the trajectories over the whole video timeline and color it according to particles' identity
 MoveR::drawTracklets(
   trackDat,
-  timeCol = "frame",
   colId = "identity",
   selTrack = c("Tricho_7","Tricho_11")
 )
