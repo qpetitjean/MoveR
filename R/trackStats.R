@@ -1,4 +1,4 @@
-#' @title Summary statistics of the tracking data.
+#' @title Summary statistics of the tracking data - DEPRECATED ! 
 #'
 #' @description Given an object of class "tracklets", a list of tracklets (data frame) containing at least cartesian coordinates and time,
 #' this function returns 2 sublists containing a summary of video and tracklets data:
@@ -38,7 +38,7 @@
 #'
 #' @param progress A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).
 #'
-#' @return A summary of video and tracklets data.
+#' @return A summary of video and tracklets data - trackStats is deprecated; Please use summary instead.
 #'
 #'
 #' @author Quentin PETITJEAN
