@@ -86,7 +86,7 @@ reference:
     desc: Evaluate the quantity of data removed over the cleaning/filtering process and perform sensitivity analysis between video tracking and manual detection.
     contents:
       - '`detectPerf`'
-      - '`trackStats`'     
+      - '`summary.tracklets`'     
 
   - title: Basic Descriptors
     desc: Performed simple computation over each tracklet. 
@@ -126,10 +126,11 @@ reference:
       - '`convert2List`'
       - '`convert2Tracklets`'
       - '`countMat`'
-      - '`cutTracklets`'
       - '`DLsampleData`'
       - '`flipYCoords`' 
+      - '`getInfo`'
       - '`listGet`'
       - '`locPos`'
+      - '`setInfo`'
       - '`slidWindow`'
-      - '`sortVertices`'
+      - '`trackletsClass`'

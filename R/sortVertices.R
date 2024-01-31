@@ -9,23 +9,9 @@
 #'
 #' @author Quentin PETITJEAN
 #'
-#'
-#' @examples
-#' 
-#' set.seed(2023)
-#' # generate dummy vertices for polygon
-#' ROI <- data.frame(x = sample(1:100, 6), y = sample(1:100, 6))
-#' par(mfrow=c(1,2))
-#' # plot the polygon without ordering the vertices
-#' plot(NULL, xlim = c(1,100), ylim = c(1,100))
-#' polygon(ROI)
-#' # plot the polygon with ordered vertices
-#' plot(NULL, xlim = c(1,100), ylim = c(1,100))
-#' polygon(sortVertices(ROI))
-#' 
-#' @export
+#' @keywords internal
 
-sortVertices <- function(ROI) {
+.sortVertices <- function(ROI) {
   # Compute the centroid of the ROI
   centroid <- apply(ROI, 2, mean)
   # Compute the angle of each vertex according to the centroid

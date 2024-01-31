@@ -173,11 +173,11 @@ mtext(substitute(paste(bold("B"))), side = 3, line = 0, adj = 0, padj = -0.5)
 
 ```
 
-<p class="notes">Note that it is also possible to represent specified tracklets over given time window(s) by combining the `selFrags` and `timeWin` arguments respectively.</p>
+<p class="notes">Note that it is also possible to represent specified tracklets over given time window(s) by combining the `selFrags` and `timeWin` arguments respectively. Also, more examples of what can be displayed using `drawTracklets` are available on the <a href="https://qpetitjean.github.io/MoveR/reference/drawTracklets.html">`drawTracklets` documentation page</a></p>
 
 Finally, drawTracklets allow to color the particles' tracks according to categorical variable, such as the identity of the particle (see fig. \@ref(fig:drawTracklets3)A below). 
 
-However, here the identity of the particles is a numerical variable, we hence need to convert it to a factor, for instance by appending "Tricho" (i.e., part of the micro-wasps genus name) in front of each id. For this purpose, the easiest way is to use the "convert2List" function, transform the identity variable then convert back the data as a list of tracklet using convert2Tracklets as follow: 
+However, here the identity of the particles is a numerical variable, we hence need to convert it to a factor, for instance by appending "Tricho" (i.e., part of the micro-wasps genus name) in front of each id. For this purpose, the easiest way is to use the "convert2List" function, transform the identity variable then convert back the data as a list of tracklets using convert2Tracklets as follow: 
 
 ```{r convertId, results='markup'}
 trackDatList <- MoveR::convert2List(trackDat)

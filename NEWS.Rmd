@@ -4,7 +4,8 @@ output: github_document
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# v0.3.0 --> Thanks to the reviewers selected by software X journal for insightful comments
+# v0.3.0 
+### Thanks to Software X journal's reviewers for insightful comments
 
 * Make 'identity' the default value for the [by] argument in the `convert2Tracklets()` function.
 * Make 'frame' the default value for the [timeCol] argument in the `ANND()`, `resampTracklets()`, `sinuosity()`, `speed()`, `temporalBoot()`, `temporalTrend()`, `turnAngle()` functions.
@@ -20,9 +21,10 @@ output: github_document
 * `convert2List()` now returns an object of class "varList" which is still a list of variables and conserve the additional information appended to the converted tracklets object, meaning that additional information are conserved over conversion from tracklets to varList and back to tracklets.
 * `trackstats()` is now deprecated (but still can be used) and is replaced by `summary()` according to the use of S3 methods for tracklets class objects when importing tracking data.
 * Add the possibility to compute the distance between particles trajectory and a polygon edges using `dist2Edge()` by setting customFunc = "PolygonArena".
-* `cutTracklets()` function is now considered as an internal function and cannot be used anymore (prefer using filterTracklets). 
+* `cutTracklets()` and `sortVertices()` functions are now considered as an internal function and cannot be used anymore (prefer using filterTracklets). 
 * Reduce code redundancy by creating an internal function to return error messages .errorCheck. 
 
+---
 
 # v0.2.0
 
@@ -33,6 +35,7 @@ output: github_document
 NB: while it increases the speed of the `slidWindow` function, it also make it less flexible, it is not possible to perform a custom computation over the sliding window anymore. Instead, the [statistic] argument allows to choose some already implemented computation methods.
 * some minor modifications in `readTrackR` function
 
+---
 
 # v0.1.0
 

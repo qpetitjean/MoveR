@@ -49,7 +49,8 @@
 #' MoveR::drawTracklets(trackDatSub,
 #'                  cex.leg = 0.8,
 #'                  main = "")
-#'
+#'                  
+#' @keywords internal
 
 .cutTracklets <- function(trackDat, customFunc) {
   if (class(trackDat) == "data.frame") {

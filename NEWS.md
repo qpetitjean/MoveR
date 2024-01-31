@@ -1,7 +1,9 @@
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# v0.3.0 –\> Thanks to the reviewers selected by software X journal for insightful comments
+# v0.3.0
+
+### Thanks to Software X journal’s reviewers for insightful comments
 
 - Make ‘identity’ the default value for the \[by\] argument in the
   `convert2Tracklets()` function.
@@ -45,10 +47,13 @@
 - Add the possibility to compute the distance between particles
   trajectory and a polygon edges using `dist2Edge()` by setting
   customFunc = “PolygonArena”.
-- `cutTracklets()` function is now considered as an internal function
-  and cannot be used anymore (prefer using filterTracklets).
+- `cutTracklets()` and `sortVertices()` functions are now considered as
+  an internal function and cannot be used anymore (prefer using
+  filterTracklets).
 - Reduce code redundancy by creating an internal function to return
   error messages .errorCheck.
+
+------------------------------------------------------------------------
 
 # v0.2.0
 
@@ -68,6 +73,8 @@
   \[statistic\] argument allows to choose some already implemented
   computation methods.
 - some minor modifications in `readTrackR` function
+
+------------------------------------------------------------------------
 
 # v0.1.0
 

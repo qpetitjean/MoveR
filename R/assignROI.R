@@ -115,7 +115,7 @@ assignROI <- function(df = NULL,
   # if order argument is TRUE reorder the vertices of the ROI in a clockwise order
   if (isTRUE(order)) {
     ROIs <- lapply(ROIs, function(z)
-      MoveR::sortVertices(z))
+      .sortVertices(z))
   }
   # if ROIs is an unnamed list, use ROI_n as a name of n elements found in the list
   if (is.null(names(ROIs))) {

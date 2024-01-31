@@ -6,7 +6,8 @@
 #'
 #' @author Quentin PETITJEAN
 #'
-#'
+#' @keywords internal
+
 .errorCheck <-
   function(trackDat = NA,
            df = NA,

@@ -14,14 +14,14 @@
 #'
 #' @param dec The character used in the file for decimal points (default = "." - only useful if ROImat is a path).
 #'
-#' @param order A logical value (i.e., TRUE or FALSE) indicating whether the coordinates of the ROI edges (i.e., vertices) should be reordered according to the centroid of the ROI and angle of each vertex (see \code{\link[MoveR]{sortVertices}}).
+#' @param order A logical value (i.e., TRUE or FALSE) indicating whether the coordinates of the ROI edges (i.e., vertices) should be reordered (clockwise) according to the centroid of the ROI and angle of each vertex.
 #'
 #' @return This function returns a list containing the coordinates of the ROI edges. Each element of the list correspond to a dataframe containing the coordinates of the edges of one ROI.
 #' In case there is only one ROI to retrieve (i.e., edgeCrit argument is a vector of length 1), the function returns a dataframe containing the coordinates of the ROI edges.
 #'
 #' @author Quentin PETITJEAN
 #'
-#' @seealso \code{\link[MoveR]{locPos}}, \code{\link[MoveR]{circles}}, \code{\link[MoveR]{polygons}}, \code{\link[MoveR]{sortVertices}}
+#' @seealso \code{\link[MoveR]{locPos}}, \code{\link[MoveR]{circles}}, \code{\link[MoveR]{polygons}}
 #' 
 #' @examples
 #' \dontrun{
@@ -82,7 +82,7 @@ locROI <-
     ROIedge <-
       stats::setNames(lapply(edgeCrit, function(x)
         if (isTRUE(order)) {
-          stats::setNames(MoveR::sortVertices(data.frame(which(
+          stats::setNames(.sortVertices(data.frame(which(
             ROImat == x, arr.ind = T
           ))),
           colNames)
