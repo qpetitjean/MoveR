@@ -12,7 +12,7 @@ by performing the computation specified by the 'statistic' argument over the inp
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,7 +136,7 @@ In case na.rm = TRUE and the selected statistic argument is 'median', the functi
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span> </span></span>
 <span class="r-in"><span><span class="co"># compute smoothed mean over a sliding window of 15 time unit in length</span></span></span>
-<span class="r-in"><span><span class="fu">slidWindow</span><span class="op">(</span> x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">150</span><span class="op">)</span>, Tstep <span class="op">=</span> <span class="fl">15</span>, statistic <span class="op">=</span> <span class="st">'mean'</span>,  na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">slidWindow</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">150</span><span class="op">)</span>, Tstep <span class="op">=</span> <span class="fl">15</span>, statistic <span class="op">=</span> <span class="st">'mean'</span>,  na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1]           NA           NA           NA           NA           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [6]           NA           NA -0.194226194 -0.142082057 -0.036829378</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [11]  0.118314565  0.190507140  0.270887288  0.170723922  0.212017264</span>
@@ -167,8 +167,9 @@ In case na.rm = TRUE and the selected statistic argument is 'median', the functi
 <span class="r-out co"><span class="r-pr">#&gt;</span> [136]  0.320118724  0.226212228  0.142834041  0.188207260  0.052744830</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [141]  0.039321250 -0.031673798 -0.044879985           NA           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [146]           NA           NA           NA           NA           NA</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compute smoothed variance over a sliding window of 15 time unit in length</span></span></span>
-<span class="r-in"><span><span class="fu">slidWindow</span><span class="op">(</span> x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">150</span><span class="op">)</span>, Tstep <span class="op">=</span> <span class="fl">15</span>, statistic <span class="op">=</span> <span class="st">'var'</span>,  na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">slidWindow</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">150</span><span class="op">)</span>, Tstep <span class="op">=</span> <span class="fl">15</span>, statistic <span class="op">=</span> <span class="st">'var'</span>,  na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1]        NA        NA        NA        NA        NA        NA        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [8] 1.0311998 1.0336001 0.6963756 0.5367159 0.5194341 0.4556176 0.4373905</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [15] 0.4381824 0.5352017 0.8295470 0.7657615 0.5436327 0.8428741 0.9182289</span>

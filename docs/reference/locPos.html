@@ -12,7 +12,7 @@ as those specifying the particle' position, this function retrieve the value (ar
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -138,14 +138,11 @@ an area of interest.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Import the list containing the 9 vectors classically used for further computation</span></span></span>
 <span class="r-in"><span><span class="co"># and flip Y coordinates to start on the bottom-left</span></span></span>
-<span class="r-in"><span><span class="va">Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="readTrex.html">readTrex</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="readTrex.html">readTrex</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                        flipY <span class="op">=</span> <span class="cn">T</span>,</span></span>
 <span class="r-in"><span>                        imgHeight <span class="op">=</span> <span class="fl">2160</span>,</span></span>
 <span class="r-in"><span>                        rawDat <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">Data</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># convert it to a list of tracklets</span></span></span>
-<span class="r-in"><span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">Data</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, by <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDat</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Import the reference dataset (A matrix or dataframe or path to a file (either .txt or .csv) containing a distance matrix to any object or</span></span></span>
 <span class="r-in"><span><span class="co"># the location of one or several areas of interest (here we have created a distance map using ImageJ)</span></span></span>

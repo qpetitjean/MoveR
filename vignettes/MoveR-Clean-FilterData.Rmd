@@ -173,7 +173,7 @@ trackDat.InfiltList <-  MoveR::convert2List(trackDat.Infilt[[2]])
 # Use analyseTracklets function to scale the length of the particles (maj.ax) in cm by iterating over the tracklets
 trackDat2 <- MoveR::analyseTracklets(trackDat.Infilt[[2]],
                                      customFunc =
-                                       list(indLengthcm = function(x) x[["maj.ax"]] * MoveR::getInfo(TRexDat, "scale")))
+                                       list(indLengthcm = function(x) x[["maj.ax"]] * MoveR::getInfo(trackDat.Infilt[[2]], "scale")))
 
 # plot the distribution of particles' length (log10) and the size limits
 par(mfrow=c(1,2))
@@ -199,7 +199,7 @@ trackDat.lenfilt <-
   MoveR::filterTracklets(trackDat2,
                      filter.length,
                      splitCond = TRUE,
-                     minDur = MoveR::getInfo(TRexDat, "frameR"))
+                     minDur = MoveR::getInfo(trackDat2, "frameR"))
 
 # plot the distribution of particles' length (log10) after the filtering
 hist(log10(MoveR::convert2List(trackDat.lenfilt[[2]])$maj.ax),
@@ -277,7 +277,7 @@ trackDat.speedfilt <-
   MoveR::filterTracklets(trackDat3,
                      filter.speed,
                      splitCond = TRUE,
-                     minDur = frameRate)
+                     minDur = MoveR::getInfo(trackDat3, "frameR"))
 
 # plot particles' speed (log10) distribution after the filtering
 hist(log10(MoveR::convert2List(trackDat.speedfilt[[2]])[["speed"]]),
@@ -342,7 +342,7 @@ graphics::points(
 ArenaEdge <- MoveR::circles(
   mean(edge[["x.pos"]]),
   mean(edge[["y.pos"]]),
-  radius = 2.5 / 2 / MoveR::getInfo(TRexDat, "scale"), # here the radius of the arena is 2.5cm/2 divided by the scaling to obtain the value in pixels
+  radius = 2.5 / 2 / MoveR::getInfo(trackDat.speedfilt[[2]], "scale"), # here the radius of the arena is 2.5cm/2 divided by the scaling to obtain the value in pixels
   border = "firebrick",
   draw = T
 )
@@ -395,7 +395,7 @@ trackDat.borderfilt <-
   MoveR::filterTracklets(trackDat4,
               filter.out,
               splitCond = TRUE,
-              minDur = MoveR::getInfo(TRexDat, "frameR"))
+              minDur = MoveR::getInfo(trackDat4, "frameR"))
 
 # rename the cleaned dataset for further use
 trackDat5 <- trackDat.borderfilt[[2]]
@@ -496,15 +496,15 @@ It is also possible to display a summary of the tracking information of both the
 ```{r TrackStatsSummary, message=FALSE, warning=FALSE}
 # compute and display a detailed summary of the tracking information before and after cleaning (see ??summary())
 Data_Trex_stats_before_filter <-
-  MoveR::summary(trackDat,
-                    frameR = MoveR::getInfo(TRexDat, "frameR"),
-                    scale = MoveR::getInfo(TRexDat, "scale"),
+  summary(trackDat,
+                    frameR = MoveR::getInfo(trackDat, "frameR"),
+                    scale = MoveR::getInfo(trackDat, "scale"),
                     unit = "cm")
 
 Data_Trex_stats_after_filter <-
-  MoveR::summary(trackDat5,
-                    frameR = MoveR::getInfo(TRexDat, "frameR"),
-                    scale = MoveR::getInfo(TRexDat, "scale"),
+  summary(trackDat5,
+                    frameR = MoveR::getInfo(trackDat5, "frameR"),
+                    scale = MoveR::getInfo(trackDat5, "scale"),
                     unit = "cm")
 
 ```

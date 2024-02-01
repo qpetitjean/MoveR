@@ -37,7 +37,7 @@ TRexDat <- data.table::fread(
   sep = ";",
   dec = ".")
 
-# convert the data to a list of tracklets
+# convert the data to a list of tracklets - here the data were saved as a varList object (a list of variable) a more simple structure than tracklets
 trackDat <- MoveR::convert2Tracklets(TRexDat, by = "trackletId")
 
 # set some useful information
@@ -264,7 +264,7 @@ For this purpose, we are using `activity2()` and the previously smoothed speed (
 
 trackDat3 <-
   MoveR::activity2(
-    trackDat = trackDat2,
+    trackDat2,
     var1 = "slideMeanSpeed",
     var2 = "slideVarAngle",
     var1T = log10,
@@ -353,7 +353,6 @@ Now we have identified activity states according to both 1d (`activity1()`) and 
 
 ```{r PieCharts, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Pie chart representing the proportion of active (green) and inactive (red) state over the whole dataset computed using activity1 (A) and activity2 (B) functions."}
 # compare the amount of active and inactive state between activity1() and activity2() functions
-trackDatL <- MoveR::convert2List(trackDat3)
 par(mfrow=c(1,2))
 for (i in c(1:2)) {
   ## compute the proportion of active and inactive states resulting from the activity1 and activity2 functions

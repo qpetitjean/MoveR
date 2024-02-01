@@ -16,7 +16,7 @@ trajectory and the closest point to the object edge."><!-- mathjax --><script sr
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ arena or any object edge.</p></dd>
 
 <dt>customFunc</dt>
 <dd><p>A function used to specify the formula allowing to compute the distance between a given object or arena edge and the particle over its trajectory.
-It is possible to call already implemented methods for Circular arena by calling customFunc = "CircularArena".</p></dd>
+It is possible to call already implemented methods for circular or polygonal arena by calling customFunc = "CircularArena" or customFunc = "PolygonArena", respectively.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -113,7 +113,7 @@ It is possible to call already implemented methods for Circular arena by calling
     
 
 <p>This function returns a vector containing the distance between each points of the
-trajectory and the closest point of the object edge. Negative values indicate increasing distance
+trajectory and the closest point of the object edge. If customFunc argument is an already implemented method (i.e., "CircularArena", "PolygonArena") negative values indicate increasing distance
 from the edge of the object in the direction of its center (the particle is considered inside) and vice versa.</p>
     </div>
     <div class="section level2">
@@ -128,24 +128,23 @@ from the edge of the object in the direction of its center (the particle is cons
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Exemple 1: With a circular arena</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># generate a dummy tracklet</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## start to specify some parameters to generate the tracklet</span></span></span>
 <span class="r-in"><span><span class="va">TrackL</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="fl">100</span> <span class="co"># the length of the tracklet or a sequence to randomly sample tracklet's length</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">TrackDatTemp</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="fu">trajr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/trajr/man/TrajGenerate.html" class="external-link">TrajGenerate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">TrackL</span>, <span class="fl">1</span><span class="op">)</span>, random <span class="op">=</span> <span class="cn">TRUE</span>, fps <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">TrackDat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">TrackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="trackletsClass.html">trackletsClass</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    x.pos <span class="op">=</span> <span class="va">TrackDatTemp</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">TrackDatTemp</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    y.pos <span class="op">=</span> <span class="va">TrackDatTemp</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">TrackDatTemp</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    frame <span class="op">=</span> <span class="va">TrackDatTemp</span><span class="op">[[</span><span class="st">"time"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Exemple 1: With a circular arena</span></span></span>
 <span class="r-in"><span><span class="co"># simulate a circular arena of 20 pixels radius and centered on the particle trajectory</span></span></span>
 <span class="r-in"><span><span class="va">arenaEdge</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="circles.html">circles</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">TrackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"x.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                            <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">TrackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
@@ -159,7 +158,7 @@ from the edge of the object in the direction of its center (the particle is cons
 <span class="r-in"><span><span class="co"># draw the tracklet and the arena edge</span></span></span>
 <span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="va">TrackDat</span>,</span></span>
 <span class="r-in"><span>                 imgRes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">80</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                 add2It <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>                 add2It <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>                   x <span class="op">=</span> <span class="va">arenaEdge</span><span class="op">[[</span><span class="st">"x.pos"</span><span class="op">]</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">arenaEdge</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span>, cex <span class="op">=</span> <span class="fl">0.1</span></span></span>
 <span class="r-in"><span>                 <span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="dist2Edge-1.png" alt="" width="700" height="433"></span>
@@ -184,8 +183,50 @@ from the edge of the object in the direction of its center (the particle is cons
 <span class="r-out co"><span class="r-pr">#&gt;</span> [73]  12.7711594  14.0918038  15.6964364  17.5537930  19.2826263  20.7471894</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [79]  22.3828249  23.1623846  24.2888489</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Exemple 2: With a a polygonal arena</span></span></span>
+<span class="r-in"><span><span class="co"># simulate a circular arena of 20 pixels radius and centered on the particle trajectory</span></span></span>
+<span class="r-in"><span><span class="va">arenaEdge</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="polygons.html">polygons</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">TrackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"x.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                           <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">TrackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                           width <span class="op">=</span> <span class="fl">40</span>,</span></span>
+<span class="r-in"><span>                                           height <span class="op">=</span> <span class="fl">40</span>,</span></span>
+<span class="r-in"><span>                                           sides <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>                                           rotation <span class="op">=</span> <span class="op">(</span><span class="fl">45</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">180</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                           draw <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">arenaEdge</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	4 obs. of  2 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ x.pos: num  45.4 45.4 17.1 17.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ y.pos: num  10.3 38.6 38.6 10.3</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Exemple 2: With a a polygonal arena, using a distance matrix to avoid tough computation</span></span></span>
+<span class="r-in"><span><span class="co"># draw the tracklet and the arena edge</span></span></span>
+<span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="va">TrackDat</span>,</span></span>
+<span class="r-in"><span>                     imgRes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">80</span>, <span class="fl">80</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                     add2It <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>                       x <span class="op">=</span> <span class="va">arenaEdge</span><span class="op">[[</span><span class="st">"x.pos"</span><span class="op">]</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">arenaEdge</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span>, cex <span class="op">=</span> <span class="fl">0.1</span></span></span>
+<span class="r-in"><span>                     <span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="dist2Edge-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compute the distance to the closest part of the edge based on the form of the arena (here circular)</span></span></span>
+<span class="r-in"><span><span class="co"># Negative values indicate increasing distance from the edge of the object in the direction of its center (the particle is considered inside) and vice versa.</span></span></span>
+<span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu">dist2Edge</span><span class="op">(</span><span class="va">TrackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                 edge <span class="op">=</span> <span class="va">arenaEdge</span>,</span></span>
+<span class="r-in"><span>                 customFunc <span class="op">=</span> <span class="st">"PolygonArena"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  19.2277966  16.8796519  15.8271121  15.1006686  15.2913564  14.6384137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7]  15.0309620  14.4320114  14.2088141  14.3899416  14.3019480  14.6244727</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13]  14.3809819  13.2962813  13.0217447  11.9337057  10.7098223   9.0357961</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19]   7.2087461   5.5057419   3.4901093   1.5372732  -0.4275203  -2.2741492</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25]  -4.3311166  -6.0063362  -6.9123259  -4.9165430  -3.9458275  -5.5872874</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31]  -6.9080986  -8.8394313 -10.4479257 -11.6694334 -11.1662214  -9.2781942</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37]  -7.7858018  -6.7744362  -6.9329301  -6.9610106  -5.1356325  -3.2554390</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43]  -1.6505652   0.1125051   1.5221174   2.6279702   1.4794940  -0.3487105</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [49]  -2.2441757  -4.4593061  -6.1848512  -8.6628137 -10.6700779 -12.7322906</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [55] -12.9901581 -11.2676548  -9.7218938  -7.8878287  -6.0644041  -3.9893752</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [61]  -2.2401427  -0.3705264   1.3419793   1.8971271   3.4190473   4.9316184</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [67]   6.8791351   8.6249111  10.6021036  12.3099056  14.3149765  16.1742334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [73]  17.4141332  18.1533472  19.3366758  20.6460709  21.8604379  22.8353235</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [79]  24.0405956  24.3109146  25.0462451</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Exemple 3: With a polygonal arena, using a distance matrix to avoid tough computation</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Download the first dataset from the sample data repository</span></span></span>
@@ -193,10 +234,7 @@ from the edge of the object in the direction of its center (the particle is cons
 <span class="r-in"><span><span class="va">Path2Data</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Import the list containing the 9 vectors classically used for further computation</span></span></span>
-<span class="r-in"><span><span class="va">Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="readTrex.html">readTrex</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># convert it to a list of tracklets</span></span></span>
-<span class="r-in"><span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">Data</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, by <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="readTrex.html">readTrex</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># load the distance matrix to the arena edge, an object or the location of one or several areas of interest (here we have created a distance map using ImageJ)</span></span></span>
 <span class="r-in"><span><span class="co"># and retrieve the value of the edge limit (1) to plot it</span></span></span>
@@ -208,20 +246,17 @@ from the edge of the object in the direction of its center (the particle is cons
 <span class="r-in"><span>                 add2It <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html" class="external-link">polygon</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">arenaEdge</span><span class="op">$</span><span class="va">x.pos</span>, y <span class="op">=</span> <span class="va">arenaEdge</span><span class="op">$</span><span class="va">y.pos</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Retrieve the distance from the edge using the distance matrix,</span></span></span>
-<span class="r-in"><span><span class="co"># because it is tough to compute the distance to the closest part of the arena edge in this case</span></span></span>
-<span class="r-in"><span><span class="co"># we can use another sister function helping to retrieve the distance to the edge from the distance</span></span></span>
-<span class="r-in"><span><span class="co"># matrix</span></span></span>
+<span class="r-in"><span><span class="co"># because it is tough and time consuming to compute the distance to the closest part of the arena edge in this case (lot of vertices on this polygon)</span></span></span>
+<span class="r-in"><span><span class="co"># we can use another sister function helping to retrieve the distance to the edge from the distance matrix</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## NB: here NAs are introduced because some tracklets in the raw data have Inf values in x and y.pos, which usually produce a warning message</span></span></span>
 <span class="r-in"><span><span class="co">## here the warning has been silenced but in this case retrieving the distance from the edge should be preceded by a filtering step to remove Inf values (see \code{\link{filterTracklets}})</span></span></span>
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"warn"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>warn <span class="op">=</span> <span class="op">-</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">trackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="locPos.html">locPos</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">trackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, Fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">950</span><span class="op">:</span><span class="fl">1000</span>, <span class="op">]</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="locPos.html">locPos</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="va">trackDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, Fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">950</span><span class="op">:</span><span class="fl">1000</span><span class="op">]</span> <span class="co"># display only the 50 position between the indices 950 and 1000</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>warn <span class="op">=</span> <span class="va">w</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

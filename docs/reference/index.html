@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -209,9 +209,14 @@
         <dd>Compute sensitivity index for particles detection.</dd>
       </dl><dl><dt>
           
-          <code><a href="trackStats.html">trackStats()</a></code> 
+          <code><a href="summary.tracklets.html">summary(<i>&lt;tracklets&gt;</i>)</a></code> 
         </dt>
         <dd>Summary statistics of the tracking data.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="trackStats.html">trackStats()</a></code> 
+        </dt>
+        <dd>Summary statistics of the tracking data - DEPRECATED !</dd>
       </dl></div><div class="section level2">
       <h2 id="basic-descriptors">Basic Descriptors<a class="anchor" aria-label="anchor" href="#basic-descriptors"></a></h2>
       
@@ -351,7 +356,7 @@
           
           <code><a href="convert2List.html">convert2List()</a></code> 
         </dt>
-        <dd>Convert a list of tracklets to list of variables.</dd>
+        <dd>Convert a tracklets object to list of variables.</dd>
       </dl><dl><dt>
           
           <code><a href="convert2Tracklets.html">convert2Tracklets()</a></code> 
@@ -364,11 +369,6 @@
         <dd>Build count matrix in a 2 dimensional space.</dd>
       </dl><dl><dt>
           
-          <code><a href="cutTracklets.html">cutTracklets()</a></code> 
-        </dt>
-        <dd>Cut tracklets.</dd>
-      </dl><dl><dt>
-          
           <code><a href="DLsampleData.html">DLsampleData()</a></code> 
         </dt>
         <dd>Download sample data to depict the use of the MoveR package.</dd>
@@ -377,6 +377,11 @@
           <code><a href="flipYCoords.html">flipYCoords()</a></code> 
         </dt>
         <dd>flip y coordinates.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getInfo.html">getInfo()</a></code> 
+        </dt>
+        <dd>Get information in a tracklets object.</dd>
       </dl><dl><dt>
           
           <code><a href="listGet.html">listGet()</a></code> 
@@ -389,14 +394,19 @@
         <dd>Locate a particle position.</dd>
       </dl><dl><dt>
           
+          <code><a href="setInfo.html">setInfo()</a></code> 
+        </dt>
+        <dd>Set information in a tracklets object.</dd>
+      </dl><dl><dt>
+          
           <code><a href="slidWindow.html">slidWindow()</a></code> 
         </dt>
         <dd>Sliding window.</dd>
       </dl><dl><dt>
           
-          <code><a href="sortVertices.html">sortVertices()</a></code> 
+          <code><a href="trackletsClass.html">trackletsClass()</a></code> 
         </dt>
-        <dd>Sort the vertices of an ROI in a clockwise order</dd>
+        <dd>Create an object of class <code>tracklets</code>.</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

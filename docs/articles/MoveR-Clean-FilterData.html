@@ -36,7 +36,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Clean/Filter Data</h1>
             
-            <h4 data-toc-skip class="date">2023-09-26</h4>
+            <h4 data-toc-skip class="date">2024-01-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-Clean-FilterData.Rmd" class="external-link"><code>vignettes/MoveR-Clean-FilterData.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-Clean-FilterData.Rmd</code></div>
@@ -127,7 +127,7 @@ Figure 1:  Frames extracted from a video recording of 24 parasitic micro-wasps (
 <div class="section level2">
 <h2 id="import-sample-data-from-github">Import sample data from github<a class="anchor" aria-label="anchor" href="#import-sample-data-from-github"></a>
 </h2>
-<p>Let’s download the data, import and convert them to a list of tracklets (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="external-link">Import Data vignette</a> for detailed procedure).</p>
+<p>Let’s download the data, import them as a tracklets object and specify some additional information that will be useful for this tutorial (i.e., frame rate, scale, image resolution) using <code><a href="../reference/setInfo.html">setInfo()</a></code> (see the <a href="https://qpetitjean.github.io/MoveR/articles/MoveR-ImportData.html" class="external-link">Import Data vignette</a> for detailed procedure).</p>
 <p class="notes">
 Note that we have included some extra data that are related to this dataset within the “raw tracking data” when we have reduced the dataset:<br></p>
 <li>
@@ -136,8 +136,12 @@ the timeline expressed in frame (may be different from the default frame list be
 <br><li>
 the temperature at which the individuals are exposed over the assay.
 </li>
-<br> These extra information will be useful to conduct further analyses in this tutorial and some others.<br> For instance, we can automatically determine the frame rate of the video-recording using the timeline and timestamps (usually made using the default frame list instead of timeline).
+<br> These extra information will be useful to conduct further analyses in this tutorial and some others.
 
+<p>As the number of elements returned by <a href="https://trex.run" class="external-link">TRex</a> is relatively high and is not helpful here, we also are removing some of them by keeping only the necessary elements (maj.ax, x.pos, y.pos, identity, frame, runTimelinef and Measured_Temp_Deg_C). To ease this process we can first convert the tracklet object to a list of variable (varList object) using <code><a href="../reference/convert2List.html">convert2List()</a></code>, select only the desired variables and convert the varList back to tracklets using <code><a href="../reference/convert2Tracklets.html">convert2Tracklets()</a></code>.</p>
+<p class="notes">
+Note that additional the information added to the tracklets object are conserved over the conversion process using <code><a href="../reference/convert2List.html">convert2List()</a></code> and <code><a href="../reference/convert2Tracklets.html">convert2Tracklets()</a></code>.
+</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># dl the second dataset from the sample data repository</span></span>
 <span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">2</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span>
@@ -146,17 +150,25 @@ the temperature at which the individuals are exposed over the assay.
 <span><span class="va">TRexDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/readTrex.html">readTrex</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>                           rawDat <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># retrieve some data specifically related to the dataset (the timeline and related temperature stored in the Data_Trex_Raw sublist)</span></span>
-<span><span class="va">TRexDat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">TRexDat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, </span>
-<span>             <span class="va">TRexDat</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="st">"runTimelinef"</span><span class="op">]</span>,</span>
-<span>             <span class="va">TRexDat</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="st">"Measured_Temp_Deg_C"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co"># set additional information within the tracklets object (frameR is already retrieved from TREx data). In this video 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ software https://imagej.net/ij/index.html).</span></span>
+<span><span class="va">TRexDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/setInfo.html">setInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, scale <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">413.4</span>, imgRes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1920</span>, <span class="fl">1080</span><span class="op">)</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="co"># retrieve the frame rate of the video (fps)</span></span>
-<span><span class="va">frameRate</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TRexDat</span><span class="op">[[</span><span class="st">"runTimelinef"</span><span class="op">]</span><span class="op">]</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">TRexDat</span><span class="op">[[</span><span class="st">"timestamps"</span><span class="op">]</span><span class="op">]</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># convert the data to a list of tracklets</span></span>
-<span><span class="co"># NB: remove ntargets and timestamps because their length is lower than other variables</span></span>
-<span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">TRexDat</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">TRexDat</span><span class="op">)</span> <span class="op">==</span> <span class="st">"ntargets"</span> <span class="op">|</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">TRexDat</span><span class="op">)</span> <span class="op">==</span> <span class="st">"timestamps"</span><span class="op">)</span><span class="op">]</span>, by <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># keep only the elements that will be useful for this tutorial (the timeline in frames and the temperature)</span></span>
+<span><span class="co">## convert the tracklets object into a variable list to ease the selection of desired variables</span></span>
+<span><span class="va">trackDatList</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">TRexDat</span><span class="op">)</span></span>
+<span><span class="va">trackDatList</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">trackDatList</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"maj.ax"</span>,</span>
+<span>    <span class="st">"x.pos"</span>,</span>
+<span>    <span class="st">"y.pos"</span>,</span>
+<span>    <span class="st">"identity"</span>,</span>
+<span>    <span class="st">"frame"</span>,</span>
+<span>    <span class="st">"runTimelinef"</span>,</span>
+<span>    <span class="st">"Measured_Temp_Deg_C"</span></span>
+<span>    <span class="op">)</span><span class="op">]</span></span>
+<span>    </span>
+<span><span class="co">## convert it back to a tracklets object (conserving the additional information previously added)</span></span>
+<span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">trackDatList</span>, by <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span></code></pre></div>
 <p>Now we have imported the data, we can clean them to remove for instance:</p>
 <ul>
 <li><p>infinite values corresponding to the moments where the particles were undetected</p></li>
@@ -200,7 +212,7 @@ the temperature at which the individuals are exposed over the assay.
 <p class="notes">
 Note that in case a particle is lost and detected again during a very short time period, the function may return small tracklets which may be considered useless. These small tracklets can be removed by specifying the minimum duration above which tracklet should be kept using the <code>minDur</code> argument.
 </p>
-<p>For this example, we are keeping only the tracklets lasting more than one second by setting minDur to 25 frames which correspond to 1 second, or to the frame rate of the video (hence we can use the frameRate object defined above).</p>
+<p>For this example, we are keeping only the tracklets lasting more than one second by setting minDur to 25 frames which correspond to 1 second, or to the frame rate of the video (hence we can use the frameR attribute that is contained in the tracklets object).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># filter infinite values according to the previously specified filters</span></span>
 <span><span class="co"># here we are also removing the tracklets that are shorter than 25 frames (1 second) using the minDur argument.</span></span>
@@ -208,7 +220,7 @@ Note that in case a particle is lost and detected again during a very short time
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/filterTracklets.html">filterTracklets</a></span><span class="op">(</span><span class="va">trackDat</span>,</span>
 <span>                     filter <span class="op">=</span> <span class="va">filter.Inf</span>,</span>
 <span>                     splitCond <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                     minDur <span class="op">=</span> <span class="va">frameRate</span><span class="op">)</span></span>
+<span>                     minDur <span class="op">=</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, <span class="st">"frameR"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># display the summary of the filtering process</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDat.Infilt</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
@@ -239,10 +251,7 @@ Note that in case a particle is lost and detected again during a very short time
 <p>We first retrieve the scaling of the video using the diameter of the circular arena measuring 2.5cm and it’s length in pixels.</p>
 <p>Then, we know that <em>Trichogramma</em>’s body length is generally higher than 0.15mm and lower than 1mm (personal observation) we can hence use these limits to filter the particles for which the length is not included within this interval (fig. <a href="#fig:SizeClean">2</a>A&amp;B).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># the scaling of the video - 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ)</span></span>
-<span><span class="va">scaling</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">413.4</span></span>
-<span></span>
-<span><span class="co"># the upper and lower limits to filter on particles length, according to the scale (expressed in cm)</span></span>
+<code class="sourceCode R"><span><span class="co"># the upper and lower limits to filter on particles length, according to the scale (expressed in cm)</span></span>
 <span><span class="va">LengthLim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.015</span>, <span class="fl">0.1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># convert the previously filtered data into a list to ease particle's size conversion (from pixels to cm)</span></span>
@@ -251,7 +260,7 @@ Note that in case a particle is lost and detected again during a very short time
 <span><span class="co"># Use analyseTracklets function to scale the length of the particles (maj.ax) in cm by iterating over the tracklets</span></span>
 <span><span class="va">trackDat2</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/analyseTracklets.html">analyseTracklets</a></span><span class="op">(</span><span class="va">trackDat.Infilt</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>                                     customFunc <span class="op">=</span></span>
-<span>                                       <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>indLengthcm <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[[</span><span class="st">"maj.ax"</span><span class="op">]</span><span class="op">]</span> <span class="op">*</span> <span class="va">scaling</span><span class="op">)</span><span class="op">)</span></span>
+<span>                                       <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>indLengthcm <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[[</span><span class="st">"maj.ax"</span><span class="op">]</span><span class="op">]</span> <span class="op">*</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, <span class="st">"scale"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot the distribution of particles' length (log10) and the size limits</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
@@ -277,7 +286,7 @@ Note that in case a particle is lost and detected again during a very short time
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/filterTracklets.html">filterTracklets</a></span><span class="op">(</span><span class="va">trackDat2</span>,</span>
 <span>                     <span class="va">filter.length</span>,</span>
 <span>                     splitCond <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                     minDur <span class="op">=</span> <span class="va">frameRate</span><span class="op">)</span></span>
+<span>                     minDur <span class="op">=</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, <span class="st">"frameR"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot the distribution of particles' length (log10) after the filtering</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat.lenfilt</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">maj.ax</span><span class="op">)</span>,</span>
@@ -360,7 +369,7 @@ Figure 2: Histogram of the Log-transformed length of the particles and specified
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/filterTracklets.html">filterTracklets</a></span><span class="op">(</span><span class="va">trackDat3</span>,</span>
 <span>                     <span class="va">filter.speed</span>,</span>
 <span>                     splitCond <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                     minDur <span class="op">=</span> <span class="va">frameRate</span><span class="op">)</span></span>
+<span>                     minDur <span class="op">=</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, <span class="st">"frameR"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># plot particles' speed (log10) distribution after the filtering</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat.speedfilt</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[[</span><span class="st">"speed"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
@@ -429,7 +438,7 @@ Figure 3: Histogram of the Log-transformed speed of the particles and 999th quan
 <span><span class="va">ArenaEdge</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/circles.html">circles</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[[</span><span class="st">"x.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">edge</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
-<span>  radius <span class="op">=</span> <span class="fl">2.5</span> <span class="op">/</span> <span class="fl">2</span> <span class="op">/</span> <span class="va">scaling</span>, <span class="co"># here the radius of the arena is 2.5cm/2 divided by the scaling to obtain the value in pixels</span></span>
+<span>  radius <span class="op">=</span> <span class="fl">2.5</span> <span class="op">/</span> <span class="fl">2</span> <span class="op">/</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, <span class="st">"scale"</span><span class="op">)</span>, <span class="co"># here the radius of the arena is 2.5cm/2 divided by the scaling to obtain the value in pixels</span></span>
 <span>  border <span class="op">=</span> <span class="st">"firebrick"</span>,</span>
 <span>  draw <span class="op">=</span> <span class="cn">T</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -485,7 +494,7 @@ Figure 5: Micro-wasps trajectories over the whole video timeline, expressed in f
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/filterTracklets.html">filterTracklets</a></span><span class="op">(</span><span class="va">trackDat4</span>,</span>
 <span>              <span class="va">filter.out</span>,</span>
 <span>              splitCond <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>              minDur <span class="op">=</span> <span class="va">frameRate</span><span class="op">)</span></span></code></pre></div>
+<span>              minDur <span class="op">=</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, <span class="st">"frameR"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in MoveR::filterTracklets(trackDat4, filter.out, splitCond = TRUE, : For Tracklet_2: </span></span>
 <span><span class="co">## All the new tracklets created after filtering are shorter than minDur, no tracklet returned</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in MoveR::filterTracklets(trackDat4, filter.out, splitCond = TRUE, : For Tracklet_3724: </span></span>
@@ -606,13 +615,13 @@ Figure 6: Representation of the particles’ trajectories detected outside the a
 <span><span class="co">## cumulative_%Data_kept_after_filter 2.321312e+01</span></span>
 <span><span class="co">## cumulative_%Data_kept_after_minDur 2.321307e+01</span></span></code></pre>
 <p>As previously stated, we can indeed see that the filter based on infinite values have removed a lot of data contrary to the other filters. Also, it seems that the minimum duration of the tracklets set to 25 frames (1 second) is appropriate since it remove a small amount of data.</p>
-<p>It is also possible to display a summary of the tracking information of both the initial dataset (i.e., trackDat) and the filtered/cleaned one (trackDat5) using <code><a href="../reference/trackStats.html">trackStats()</a></code> to quickly compare them.</p>
+<p>It is also possible to display a summary of the tracking information of both the initial dataset (i.e., trackDat) and the filtered/cleaned one (trackDat5) using <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> to quickly compare them.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># compute and display a detailed summary of the tracking information before and after cleaning (see ??trackStats())</span></span>
+<code class="sourceCode R"><span><span class="co"># compute and display a detailed summary of the tracking information before and after cleaning (see ??summary())</span></span>
 <span><span class="va">Data_Trex_stats_before_filter</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/trackStats.html">trackStats</a></span><span class="op">(</span><span class="va">trackDat</span>,</span>
-<span>                    frameR <span class="op">=</span> <span class="va">frameRate</span>,</span>
-<span>                    scale <span class="op">=</span> <span class="va">scaling</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">trackDat</span>,</span>
+<span>                    frameR <span class="op">=</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, <span class="st">"frameR"</span><span class="op">)</span>,</span>
+<span>                    scale <span class="op">=</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, <span class="st">"scale"</span><span class="op">)</span>,</span>
 <span>                    unit <span class="op">=</span> <span class="st">"cm"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 2</span></span>
 <span><span class="co">##  $ VideoSummary   :List of 4</span></span>
@@ -631,9 +640,9 @@ Figure 6: Representation of the particles’ trajectories detected outside the a
 <span><span class="co">##   ..$ trackLength_cm    : num [1:88] NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN ...</span></span></code></pre>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Data_Trex_stats_after_filter</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/trackStats.html">trackStats</a></span><span class="op">(</span><span class="va">trackDat5</span>,</span>
-<span>                    frameR <span class="op">=</span> <span class="va">frameRate</span>,</span>
-<span>                    scale <span class="op">=</span> <span class="va">scaling</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">trackDat5</span>,</span>
+<span>                    frameR <span class="op">=</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, <span class="st">"frameR"</span><span class="op">)</span>,</span>
+<span>                    scale <span class="op">=</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">TRexDat</span>, <span class="st">"scale"</span><span class="op">)</span>,</span>
 <span>                    unit <span class="op">=</span> <span class="st">"cm"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 2</span></span>
 <span><span class="co">##  $ VideoSummary   :List of 4</span></span>
@@ -652,12 +661,12 @@ Figure 6: Representation of the particles’ trajectories detected outside the a
 <span><span class="co">##   ..$ trackLength_cm    : num [1:5801] 0.059 0.0777 0.0182 0.0261 0.0126 ...</span></span></code></pre>
 <p>By comparing the summary of the tracking information before and after the filtering process, we can see that video characteristics are unchanged.</p>
 <p>On the contrary, tracklets are more numerous and shorter after the filtering than before which is not surprising since we have removed biased data and splited the tracklets accordingly.</p>
-<p>Both kind of summaries can then be saved as a .csv file using common function such as <code><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">utils::write.csv()</a></code> or <code><a href="https://Rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">data.table::fwrite()</a></code>.</p>
+<p>Both kind of summaries can then be saved as a .csv file using common function such as <code><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">utils::write.csv()</a></code> or <code><a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">data.table::fwrite()</a></code>.</p>
 <p>Also, the filtered dataset can be saved before using it for further computations.
-As such dataset can be large we recommend to use <code><a href="https://Rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">data.table::fwrite()</a></code> from the data.table package as well as saving the data as .gz archive to save as much disk space as possible (e.g., For this dataset: .csv = 181Mo vs .csv.gz = 62Mo).</p>
+As such dataset can be large we recommend to use <code><a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">data.table::fwrite()</a></code> from the data.table package as well as saving the data as .gz archive to save as much disk space as possible (e.g., For this dataset: .csv = 181Mo vs .csv.gz = 62Mo).</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save the cleaned dataset as .csv compressed as .gz</span></span>
-<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span></span>
+<span><span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fwrite.html" class="external-link">fwrite</a></span><span class="op">(</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat5</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, <span class="st">"cleanedData"</span>, sep <span class="op">=</span> <span class="st">"/"</span></span>
 <span>  <span class="op">)</span>, <span class="st">"csv"</span>, <span class="st">"gz"</span>, sep <span class="op">=</span> <span class="st">"."</span><span class="op">)</span>,</span>

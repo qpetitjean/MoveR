@@ -2,7 +2,7 @@
 % Please edit documentation in R/trackStats.R
 \name{trackStats}
 \alias{trackStats}
-\title{Summary statistics of the tracking data.}
+\title{Summary statistics of the tracking data - DEPRECATED !}
 \usage{
 trackStats(
   trackDat,
@@ -26,7 +26,7 @@ trackStats(
 \item{progress}{A logical value (i.e., TRUE or FALSE) indicating whether a progress bar should be displayed to inform process progression (default = TRUE).}
 }
 \value{
-A summary of video and tracklets data.
+A summary of video and tracklets data - trackStats is deprecated; Please use summary instead.
 }
 \description{
 Given an object of class "tracklets", a list of tracklets (data frame) containing at least cartesian coordinates and time,

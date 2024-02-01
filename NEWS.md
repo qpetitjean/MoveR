@@ -36,6 +36,9 @@
   (scale) and image resolution (imgRes) to the tracklets object,
   allowing to avoid unnecessary repetition of code over several
   functions.
+- Add the possibility to subset “varList” and “tracklets” objects using
+  `[]`, also allow to use `as.data.frame()` on varList object to convert
+  it to a data frame.
 - `convert2List()` now returns an object of class “varList” which is
   still a list of variables and conserve the additional information
   appended to the converted tracklets object, meaning that additional

@@ -55,8 +55,9 @@ MoveR::drawTracklets(TrackList,
 MoveR::drawTracklets(trackDatSub,
                  cex.leg = 0.8,
                  main = "")
-
+                 
 }
 \author{
 Quentin PETITJEAN
 }
+\keyword{internal}

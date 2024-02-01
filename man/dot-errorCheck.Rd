@@ -31,3 +31,4 @@ Given various arguments specific to the functions used in the MoveR package, the
 \author{
 Quentin PETITJEAN
 }
+\keyword{internal}

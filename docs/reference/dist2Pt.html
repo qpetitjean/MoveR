@@ -14,7 +14,7 @@ containing the euclidean distance between the object(s) and the particle over th
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,13 +127,13 @@ the euclidean distance between the object and the particle(s) over the trajector
 <span class="r-in"><span>  <span class="fl">100</span> <span class="co"># the length of the tracklet or a sequence to randomly sample tracklet's length</span></span></span>
 <span class="r-in"><span><span class="va">TrackDatTemp</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="fu">trajr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/trajr/man/TrajGenerate.html" class="external-link">TrajGenerate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">TrackL</span>, <span class="fl">1</span><span class="op">)</span>, random <span class="op">=</span> <span class="cn">TRUE</span>, fps <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">TrackDat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">TrackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="trackletsClass.html">trackletsClass</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    x.pos <span class="op">=</span> <span class="va">TrackDatTemp</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">TrackDatTemp</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    y.pos <span class="op">=</span> <span class="va">TrackDatTemp</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">TrackDatTemp</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    frame <span class="op">=</span> <span class="va">TrackDatTemp</span><span class="op">[[</span><span class="st">"time"</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># generate x and y coordinates for two objects located close to the particle trajectory</span></span></span>
 <span class="r-in"><span><span class="va">Objn</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="co"># the number of object to simulate</span></span></span>
 <span class="r-in"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="st">"rbind"</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">Objn</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span></span>

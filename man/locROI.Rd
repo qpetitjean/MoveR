@@ -24,7 +24,7 @@ locROI(
 
 \item{dec}{The character used in the file for decimal points (default = "." - only useful if ROImat is a path).}
 
-\item{order}{A logical value (i.e., TRUE or FALSE) indicating whether the coordinates of the ROI edges (i.e., vertices) should be reordered according to the centroid of the ROI and angle of each vertex (see \code{\link[MoveR]{sortVertices}}).}
+\item{order}{A logical value (i.e., TRUE or FALSE) indicating whether the coordinates of the ROI edges (i.e., vertices) should be reordered (clockwise) according to the centroid of the ROI and angle of each vertex.}
 }
 \value{
 This function returns a list containing the coordinates of the ROI edges. Each element of the list correspond to a dataframe containing the coordinates of the edges of one ROI.
@@ -62,7 +62,7 @@ lapply(ROIEdges, function(x)
 }
 }
 \seealso{
-\code{\link[MoveR]{locPos}}, \code{\link[MoveR]{circles}}, \code{\link[MoveR]{polygons}}, \code{\link[MoveR]{sortVertices}}
+\code{\link[MoveR]{locPos}}, \code{\link[MoveR]{circles}}, \code{\link[MoveR]{polygons}}
 }
 \author{
 Quentin PETITJEAN

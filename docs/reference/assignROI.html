@@ -12,7 +12,7 @@ or a list of several dataframe containing the coordinates of ROIs edges, this fu
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -138,8 +138,7 @@ else it returns the name of the ROI as specified in the ROIs list. In case ROIs 
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># draw the simulated particle's trajectory</span></span></span>
-<span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">TrackDat</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                     timeCol <span class="op">=</span> <span class="st">"frame"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="fu"><a href="trackletsClass.html">trackletsClass</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">TrackDat</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># generate the coordinates of three circular ROIs and add them to the plot</span></span></span>
 <span class="r-in"><span><span class="va">ROIs</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="circles.html">circles</a></span><span class="op">(</span></span></span>

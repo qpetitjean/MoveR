@@ -12,7 +12,7 @@ the function returns a list of data frames corresponding to the data for each tr
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,7 +83,7 @@ the function returns a list of data frames corresponding to the data for each tr
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">convert2Tracklets</span><span class="op">(</span><span class="va">trackDatList</span>, by <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">convert2Tracklets</span><span class="op">(</span><span class="va">trackDatList</span>, by <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -93,14 +93,14 @@ the function returns a list of data frames corresponding to the data for each tr
 
 
 <dt>by</dt>
-<dd><p>A character vector identifying the tracklets to join by.</p></dd>
+<dd><p>A character vector identifying the tracklets to join by (default = 'identity').</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A list of data frames corresponding the tracking data for each tracklets.</p>
+<p>An object of class "tracklets" containing a list of tracklets with tracking informations.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -121,7 +121,7 @@ the function returns a list of data frames corresponding to the data for each tr
 <span class="r-in"><span><span class="va">TrackL</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span> <span class="co"># the length of the tracklets or a sequence to randomly sample tracklet length</span></span></span>
 <span class="r-in"><span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
-<span class="r-in"><span><span class="va">TrackList</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">TrackN</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">TrackList</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="trackletsClass.html">trackletsClass</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">TrackN</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">trajr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/trajr/man/TrajGenerate.html" class="external-link">TrajGenerate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">TrackL</span>, <span class="fl">1</span><span class="op">)</span>, random <span class="op">=</span> <span class="cn">TRUE</span>, fps <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">j</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>    <span class="va">id</span> <span class="op">&lt;&lt;-</span> <span class="va">id</span> <span class="op">+</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
@@ -130,10 +130,18 @@ the function returns a list of data frames corresponding to the data for each tr
 <span class="r-in"><span>      frame <span class="op">=</span> <span class="va">j</span><span class="op">$</span><span class="va">time</span>,</span></span>
 <span class="r-in"><span>     identity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Tracklet"</span>, <span class="va">id</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">}</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">TrackN</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">TrackN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># convert the list of tracklets to a simple list of variables</span></span></span>
 <span class="r-in"><span> <span class="va">trackDatList</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">TrackList</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDatList</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ x.pos     : num [1:1738] 15.3 17.5 19.5 20.6 21.9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ y.pos     : num [1:1738] 7.13 6.64 5.92 4.52 3.17 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ frame     : num [1:1738] 0 1 2 3 4 5 6 7 8 9 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ identity  : chr [1:1738] "Tracklet_1" "Tracklet_1" "Tracklet_1" "Tracklet_1" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ trackletId: chr [1:1738] "1" "1" "1" "1" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr "varList"</span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span> <span class="co"># convert back the list of variables to a list of tracklet based on tracklets identity</span></span></span>
 <span class="r-in"><span> <span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">convert2Tracklets</span><span class="op">(</span><span class="va">trackDatList</span>, by <span class="op">=</span> <span class="st">"trackletId"</span><span class="op">)</span></span></span>
@@ -157,6 +165,7 @@ the function returns a list of data frames corresponding to the data for each tr
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ frame     : num [1:572] 0 1 2 3 4 5 6 7 8 9 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ identity  : chr [1:572] "Tracklet_3" "Tracklet_3" "Tracklet_3" "Tracklet_3" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ trackletId: chr [1:572] "3" "3" "3" "3" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr "tracklets"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

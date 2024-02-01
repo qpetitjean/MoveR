@@ -44,22 +44,9 @@
 #' @export
 
 convert2Tracklets <- function(trackDatList, by = 'identity') {
-  # convert trackDatList to a dataframe
-  if (inherits(try(as.data.frame(trackDatList[1:length(trackDatList)]), silent = T)
-               , "try-error")) {
-    diff <-
-      unlist(lapply(trackDatList, length))[!duplicated(unlist(lapply(trackDatList, length)))]
-    sim <-
-      unlist(lapply(trackDatList, length))[duplicated(unlist(lapply(trackDatList, length)))]
-    diff <- diff[!diff %in% sim]
-    stop(
-      "The input contains lists with different length: consider removing ",
-      deparse(names(diff))
-    )
-  } else {
-    trackDatDf <- as.data.frame(trackDatList[1:length(trackDatList)])
-  }
-  # convert the dataframe trackDatDf to a list of tracklets
+  # convert varList to df
+  trackDatDf <- as.data.frame(trackDatList)
+  # convert the dataframe trackDatDf to a tracklets object
   trackDat <-
     split(trackDatDf, listGet(trackDatDf, by))
   trackDat <- MoveR::trackletsClass(trackDat)
