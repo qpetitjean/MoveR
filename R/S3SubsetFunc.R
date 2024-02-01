@@ -9,9 +9,14 @@
 #' @keywords internal
 
 `[.varList` <- function(x, i, ..., drop = FALSE) {
+  isCharIndex <- is.character(i)
   res <- lapply(i, function(idx) x[[idx]])
   if (!is.null(names(x))) {
-    names(res) <- names(x)[i]
+    if (isCharIndex) {
+      names(res) <- i
+    } else {
+      names(res) <- names(x)[i]
+    }
   }
   class(res) <- "varList"
   # conserve attributes 
@@ -21,9 +26,14 @@
 }
 
 `[.tracklets` <- function(x, i, ..., drop = FALSE) {
+  isCharIndex <- is.character(i)
   res <- lapply(i, function(idx) x[[idx]])
   if (!is.null(names(x))) {
-    names(res) <- names(x)[i]
+    if (isCharIndex) {
+      names(res) <- i
+    } else {
+      names(res) <- names(x)[i]
+    }
   }
   class(res) <- "tracklets"
   # conserve attributes 
