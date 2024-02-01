@@ -35,6 +35,7 @@
 # ensure the methods are registered
 .onLoad <- function(libname, pkgname) {
   # Register S3 methods for internal use
+  registerS3method("as.data.frame", "varList", as.data.frame.varList, envir = asNamespace(pkgname))
   registerS3method("[", "varList", `[.varList` , envir = asNamespace(pkgname))
   registerS3method("[", "tracklets", `[.tracklets`, envir = asNamespace(pkgname))
 }
