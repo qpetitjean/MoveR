@@ -31,3 +31,10 @@
   res <- MoveR::setInfo(res, storedInfo[[1]],  storedInfo[[2]],  storedInfo[[3]])
   return(res)
 }
+
+# ensure the methods are registered
+.onLoad <- function(libname, pkgname) {
+  # Register S3 methods for internal use
+  registerS3method("[", "varList", `[.varList` , envir = asNamespace(pkgname))
+  registerS3method("[", "tracklets", `[.tracklets`, envir = asNamespace(pkgname))
+}
