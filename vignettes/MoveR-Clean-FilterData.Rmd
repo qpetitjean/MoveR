@@ -67,7 +67,7 @@ trackDatList <-
     "runTimelinef",
     "Measured_Temp_Deg_C"
     )]
-    
+
 ## convert it back to a tracklets object (conserving the additional information previously added)
 trackDat <- MoveR::convert2Tracklets(trackDatList, by = "identity")
 

@@ -36,7 +36,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Import Data</h1>
             
-            <h4 data-toc-skip class="date">2023-09-26</h4>
+            <h4 data-toc-skip class="date">2024-02-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-ImportData.Rmd" class="external-link"><code>vignettes/MoveR-ImportData.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-ImportData.Rmd</code></div>
@@ -131,10 +131,10 @@ Figure 1: Frames extracted from a video recording of 12 parasitic micro-wasps (g
 <span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">1</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Path2Data</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpGuGKfT\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span></span>
-<span><span class="co">## [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpGuGKfT\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span></span>
-<span><span class="co">## [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\RtmpGuGKfT\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"</span></span></code></pre>
-<p>The function download the data from the <a href="https://github.com/qpetitjean/MoveR_SampleData" class="external-link">MoveR_SampleData</a> github repository and returns a vector containing the path to the raw data and the distance matrix helping to locate the edge of the arena and the reference data corresponding to the location particles (manually detected) over several frames (the latters will be useful in another tutorial).</p>
+<pre><code><span><span class="co">## [1] "C:\\Users\\quent\\AppData\\Local\\Temp\\Rtmpwb0XWn\\MoveR_SampleData-main\\sample_1\\TRexOutput"                                                            </span></span>
+<span><span class="co">## [2] "C:\\Users\\quent\\AppData\\Local\\Temp\\Rtmpwb0XWn\\MoveR_SampleData-main\\sample_1\\ReferenceData\\DistMatrixFromArenaEdge_2602_ISA3080_Low_5.mov_1800.txt"</span></span>
+<span><span class="co">## [3] "C:\\Users\\quent\\AppData\\Local\\Temp\\Rtmpwb0XWn\\MoveR_SampleData-main\\sample_1\\ReferenceData\\RefDat_2602_ISA3080_Low_5.csv"</span></span></code></pre>
+<p>The function download the data from the <a href="https://github.com/qpetitjean/MoveR_SampleData" class="external-link">MoveR_SampleData</a> github repository and returns a vector containing the path to the raw data and the distance matrix helping to locate the edge of the arena and the reference data corresponding to the location particles (manually detected) over several frames (the laters will be useful in another tutorial).</p>
 <p class="notes">
 Note that by default the function are saving the sample data within a temporary directory that is deleted when the R session is terminated properly. User can also specify another directory using the <code>dir</code> argument from <code><a href="../reference/DLsampleData.html">DLsampleData()</a></code>. In any case, the function look for previous occurrence of the sample data to avoid multiple downloading.
 </p>
@@ -144,148 +144,122 @@ Note that by default the function are saving the sample data within a temporary 
 </h2>
 <p>Once the sample data has been downloaded or retrieved we use <code><a href="../reference/readTrex.html">readTrex()</a></code> to import the data into <svg aria-hidden="true" role="img" viewbox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:steelblue;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"></path></svg> environment.<br></p>
 <p class="notes">
-Note that the same result can be achieved trough the use of <code><a href="../reference/readCtrax.html">readCtrax()</a></code>, <code><a href="../reference/readIdtracker.html">readIdtracker()</a></code> or <code><a href="../reference/readTrackR.html">readTrackR()</a></code> depending on the input data.
+Note that the same result can be achieved trough the use of <code><a href="../reference/readAnimalTA.html">readAnimalTA()</a></code>, <code><a href="../reference/readCtrax.html">readCtrax()</a></code>, <code><a href="../reference/readIdtracker.html">readIdtracker()</a></code>, <code><a href="../reference/readPlain.html">readPlain()</a></code> or <code><a href="../reference/readTrackR.html">readTrackR()</a></code> depending on the input data. Accordingly, make sure to select the <code>read</code> function that corresponds to the chosen example dataset or to your own input data.
 </p>
 <p>Here the raw tracking data are located in the ./MoveR_SampleData-main/sample_1/TREXOutput directory which is the first element of the Path2Data vector.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Import the sample data</span></span>
-<span><span class="va">Data</span> <span class="op">&lt;-</span></span>
+<span><span class="va">trackdat</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/readTrex.html">readTrex</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">Data</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 9</span></span>
-<span><span class="co">##  $ maj.ax    : num [1:156291] 23.5 23.9 21.6 23.2 21.5 ...</span></span>
-<span><span class="co">##  $ angle     : num [1:156291] -0.733 -0.767 -0.761 -0.896 -0.88 ...</span></span>
-<span><span class="co">##  $ min.ax    : num [1:156291] NA NA NA NA NA NA NA NA NA NA ...</span></span>
-<span><span class="co">##  $ x.pos     : num [1:156291] 2278 2273 2269 2268 2267 ...</span></span>
-<span><span class="co">##  $ y.pos     : num [1:156291] 633 638 641 645 646 ...</span></span>
-<span><span class="co">##  $ identity  : num [1:156291] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">##  $ frame     : num [1:156291] 0 1 2 3 4 5 6 7 8 9 ...</span></span>
-<span><span class="co">##  $ ntargets  : num [1:12024] 13 10 8 8 8 8 8 8 8 7 ...</span></span>
-<span><span class="co">##  $ timestamps: num [1:12024] 0 0.04 0.08 0.12 0.16 0.2 0.24 0.28 0.32 0.36 ...</span></span></code></pre>
-<p>The function import the data as a list of 9 elements that are the most useful and further used by various functions of the MoveR package.</p>
-<p class="notes">
-Note that output of the various <code>read</code> functions is standardized. However, it is also possible to import the output as returned by the tracking software by specifying rawDat = TRUE.
-</p>
+<span><span class="co"># check the class, number of tracklets and their id</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">trackdat</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "tracklets"</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">trackdat</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 13</span></span></code></pre>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">trackdat</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  [1] "0"  "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10" "11" "12"</span></span></code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># display the data for the first particle only</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackdat</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 'data.frame':    12013 obs. of  7 variables:</span></span>
+<span><span class="co">##  $ maj.ax  : num  23.5 23.9 21.6 23.2 21.5 ...</span></span>
+<span><span class="co">##  $ angle   : num  -0.733 -0.767 -0.761 -0.896 -0.88 ...</span></span>
+<span><span class="co">##  $ min.ax  : num  NA NA NA NA NA NA NA NA NA NA ...</span></span>
+<span><span class="co">##  $ x.pos   : num  2278 2273 2269 2268 2267 ...</span></span>
+<span><span class="co">##  $ y.pos   : num  633 638 641 645 646 ...</span></span>
+<span><span class="co">##  $ identity: num  0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">##  $ frame   : num  0 1 2 3 4 5 6 7 8 9 ...</span></span></code></pre>
+<p>The function import the data as an object of class “tracklets”, a list of tracklets (data frame) numbered according to the identity specified by the tracking software and containing 7 elements classically used for further computations using the MoveR package.</p>
+<p class="notes">
+Note that, by default, the output of the various <code>read</code> functions is standardized. However, it is also possible to import other elements that are specific to the tracking software used by specifying rawDat = TRUE.
+</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Import the sample data</span></span>
-<span><span class="va">DataFull</span> <span class="op">&lt;-</span></span>
+<span><span class="va">trackdatFull</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/readTrex.html">readTrex</a></span><span class="op">(</span><span class="va">Path2Data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>                  rawDat <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">DataFull</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 2</span></span>
-<span><span class="co">##  $ Data_Trex    :List of 9</span></span>
-<span><span class="co">##   ..$ maj.ax    : num [1:156291] 23.5 23.9 21.6 23.2 21.5 ...</span></span>
-<span><span class="co">##   ..$ angle     : num [1:156291] -0.733 -0.767 -0.761 -0.896 -0.88 ...</span></span>
-<span><span class="co">##   ..$ min.ax    : num [1:156291] NA NA NA NA NA NA NA NA NA NA ...</span></span>
-<span><span class="co">##   ..$ x.pos     : num [1:156291] 2278 2273 2269 2268 2267 ...</span></span>
-<span><span class="co">##   ..$ y.pos     : num [1:156291] 633 638 641 645 646 ...</span></span>
-<span><span class="co">##   ..$ identity  : num [1:156291] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">##   ..$ frame     : num [1:156291] 0 1 2 3 4 5 6 7 8 9 ...</span></span>
-<span><span class="co">##   ..$ ntargets  : num [1:12024] 13 10 8 8 8 8 8 8 8 7 ...</span></span>
-<span><span class="co">##   ..$ timestamps: num [1:12024] 0 0.04 0.08 0.12 0.16 0.2 0.24 0.28 0.32 0.36 ...</span></span>
-<span><span class="co">##  $ Data_Trex_Raw:List of 31</span></span>
-<span><span class="co">##   ..$ BORDER_DISTANCE#pcentroid: num [1:156291] 634 640 644 646 648 ...</span></span>
-<span><span class="co">##   ..$ ACCELERATION#pcentroid   : num [1:156291] 0 5716 1187 2206 139 ...</span></span>
-<span><span class="co">##   ..$ ACCELERATION#wcentroid   : num [1:156291] 0 4371 1425 2476 1215 ...</span></span>
-<span><span class="co">##   ..$ SPEED#smooth#wcentroid   : num [1:156291] 0 174.9 142.4 87.5 39.4 ...</span></span>
-<span><span class="co">##   ..$ ANGULAR_A#centroid       : num [1:156291] 0 4001.2 -4063.9 58 -68.1 ...</span></span>
-<span><span class="co">##   ..$ ANGULAR_V#centroid       : num [1:156291] 0 160.049 -2.506 -0.185 -2.909 ...</span></span>
-<span><span class="co">##   ..$ normalized_midline       : num [1:156291] -0.0717 0.145 0.1258 0.1932 -0.066 ...</span></span>
-<span><span class="co">##   ..$ SPEED#wcentroid          : num [1:156291] 0 174.9 142.4 87.5 39.4 ...</span></span>
-<span><span class="co">##   ..$ SPEED#pcentroid          : num [1:156291] 0 228.6 212.1 131.1 83.4 ...</span></span>
-<span><span class="co">##   ..$ MIDLINE_OFFSET           : num [1:156291] -0.0801 0.1628 0.1041 0.1977 -0.0543 ...</span></span>
-<span><span class="co">##   ..$ midline_length           : num [1:156291] 23.5 23.9 21.6 23.2 21.5 ...</span></span>
-<span><span class="co">##   ..$ segment_length           : num [1:156291] 2.13 2.17 1.96 2.11 1.96 ...</span></span>
-<span><span class="co">##   ..$ frame_segments           : num [1:7578] 0 16 29 30 31 ...</span></span>
-<span><span class="co">##   ..$ segment_vxys             : num [1:551268] 1 2 3 4 5 6 7 8 9 10 ...</span></span>
-<span><span class="co">##   ..$ X#wcentroid              : num [1:156291] 2278 2273 2269 2268 2267 ...</span></span>
-<span><span class="co">##   ..$ Y#wcentroid              : num [1:156291] 633 638 641 645 646 ...</span></span>
-<span><span class="co">##   ..$ num_pixels               : num [1:156291] 173 171 174 186 169 163 172 196 193 205 ...</span></span>
-<span><span class="co">##   ..$ midline_x                : num [1:156291] 2286 2281 2275 2275 2274 ...</span></span>
-<span><span class="co">##   ..$ midline_y                : num [1:156291] 626 632 635 637 639 ...</span></span>
-<span><span class="co">##   ..$ timestamp                : num [1:156291] 0 40000 80000 120000 160000 200000 240000 280000 320000 360000 ...</span></span>
-<span><span class="co">##   ..$ missing                  : num [1:156291] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">##   ..$ ANGLE                    : num [1:156291] -0.733 -0.767 -0.761 -0.896 -0.88 ...</span></span>
-<span><span class="co">##   ..$ SPEED                    : num [1:156291] 0 43.2 39 132.8 153.4 ...</span></span>
-<span><span class="co">##   ..$ frame                    : num [1:156291] 0 1 2 3 4 5 6 7 8 9 ...</span></span>
-<span><span class="co">##   ..$ time                     : num [1:156291] 0 0.04 0.08 0.12 0.16 ...</span></span>
-<span><span class="co">##   ..$ AX                       : num [1:156291] 0 997 3282 6059 3629 ...</span></span>
-<span><span class="co">##   ..$ AY                       : num [1:156291] 0 414 -4185 -3220 -4406 ...</span></span>
-<span><span class="co">##   ..$ VX                       : num [1:156291] 0 39.9 16.9 121.7 123.1 ...</span></span>
-<span><span class="co">##   ..$ VY                       : num [1:156291] 0 16.6 -35.1 -53.2 -91.5 ...</span></span>
-<span><span class="co">##   ..$ X                        : num [1:156291] 2285 2280 2274 2273 2273 ...</span></span>
-<span><span class="co">##   ..$ Y                        : num [1:156291] 628 634 637 639 641 ...</span></span></code></pre>
-<p>In this case, the output of the function returns a list containing 2 sublists, the first corresponding to the one mentioned above and the second containing all the elements as returned by the tracking software.</p>
+<span><span class="co"># display the data for the first particle only</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackdatFull</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 'data.frame':    12013 obs. of  35 variables:</span></span>
+<span><span class="co">##  $ maj.ax                   : num  23.5 23.9 21.6 23.2 21.5 ...</span></span>
+<span><span class="co">##  $ angle                    : num  -0.733 -0.767 -0.761 -0.896 -0.88 ...</span></span>
+<span><span class="co">##  $ min.ax                   : num  NA NA NA NA NA NA NA NA NA NA ...</span></span>
+<span><span class="co">##  $ x.pos                    : num  2278 2273 2269 2268 2267 ...</span></span>
+<span><span class="co">##  $ y.pos                    : num  633 638 641 645 646 ...</span></span>
+<span><span class="co">##  $ identity                 : num  0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">##  $ frame                    : num  0 1 2 3 4 5 6 7 8 9 ...</span></span>
+<span><span class="co">##  $ BORDER_DISTANCE.pcentroid: num  634 640 644 646 648 ...</span></span>
+<span><span class="co">##  $ ACCELERATION.pcentroid   : num  0 5716 1187 2206 139 ...</span></span>
+<span><span class="co">##  $ ACCELERATION.wcentroid   : num  0 4371 1425 2476 1215 ...</span></span>
+<span><span class="co">##  $ SPEED.smooth.wcentroid   : num  0 174.9 142.4 87.5 39.4 ...</span></span>
+<span><span class="co">##  $ ANGULAR_A.centroid       : num  0 4001.2 -4063.9 58 -68.1 ...</span></span>
+<span><span class="co">##  $ ANGULAR_V.centroid       : num  0 160.049 -2.506 -0.185 -2.909 ...</span></span>
+<span><span class="co">##  $ normalized_midline       : num  -0.0717 0.145 0.1258 0.1932 -0.066 ...</span></span>
+<span><span class="co">##  $ SPEED.wcentroid          : num  0 174.9 142.4 87.5 39.4 ...</span></span>
+<span><span class="co">##  $ SPEED.pcentroid          : num  0 228.6 212.1 131.1 83.4 ...</span></span>
+<span><span class="co">##  $ MIDLINE_OFFSET           : num  -0.0801 0.1628 0.1041 0.1977 -0.0543 ...</span></span>
+<span><span class="co">##  $ midline_length           : num  23.5 23.9 21.6 23.2 21.5 ...</span></span>
+<span><span class="co">##  $ segment_length           : num  2.13 2.17 1.96 2.11 1.96 ...</span></span>
+<span><span class="co">##  $ X.wcentroid              : num  2278 2273 2269 2268 2267 ...</span></span>
+<span><span class="co">##  $ Y.wcentroid              : num  633 638 641 645 646 ...</span></span>
+<span><span class="co">##  $ num_pixels               : num  173 171 174 186 169 163 172 196 193 205 ...</span></span>
+<span><span class="co">##  $ midline_x                : num  2286 2281 2275 2275 2274 ...</span></span>
+<span><span class="co">##  $ midline_y                : num  626 632 635 637 639 ...</span></span>
+<span><span class="co">##  $ timestamp                : num  0 40000 80000 120000 160000 200000 240000 280000 320000 360000 ...</span></span>
+<span><span class="co">##  $ missing                  : num  0 0 0 0 0 0 0 0 0 0 ...</span></span>
+<span><span class="co">##  $ ANGLE                    : num  -0.733 -0.767 -0.761 -0.896 -0.88 ...</span></span>
+<span><span class="co">##  $ SPEED                    : num  0 43.2 39 132.8 153.4 ...</span></span>
+<span><span class="co">##  $ time                     : num  0 0.04 0.08 0.12 0.16 ...</span></span>
+<span><span class="co">##  $ AX                       : num  0 997 3282 6059 3629 ...</span></span>
+<span><span class="co">##  $ AY                       : num  0 414 -4185 -3220 -4406 ...</span></span>
+<span><span class="co">##  $ VX                       : num  0 39.9 16.9 121.7 123.1 ...</span></span>
+<span><span class="co">##  $ VY                       : num  0 16.6 -35.1 -53.2 -91.5 ...</span></span>
+<span><span class="co">##  $ X                        : num  2285 2280 2274 2273 2273 ...</span></span>
+<span><span class="co">##  $ Y                        : num  628 634 637 639 641 ...</span></span></code></pre>
+<p>In this case, the function still returns an object of class “tracklets” but each tracklet now contains more information, according to the elements returned by the tracking software, here <a href="https://trex.run" class="external-link">TRex</a> (e.g., “BORDER_DISTANCE.pcentroid”, “ACCELERATION.pcentroid”, “ANGULAR_A.centroid”).</p>
 <p>Also, the argument <code>mirrorY</code>, can be used to revert the y coordinates. Indeed some tracking software sets the origin of the y axis on the bottom-left while other use the upper-left corner of the video (see <code><a href="../reference/readTrex.html">readTrex()</a></code> for more insight).</p>
 </div>
 <div class="section level2">
-<h2 id="convert-the-data-to-a-list-of-particles-tracks-tracklets">Convert the data to a list of particles tracks (tracklets)<a class="anchor" aria-label="anchor" href="#convert-the-data-to-a-list-of-particles-tracks-tracklets"></a>
+<h2 id="read-and-add-some-information-to-a-tracklets-object">Read and add some information to a tracklets object<a class="anchor" aria-label="anchor" href="#read-and-add-some-information-to-a-tracklets-object"></a>
 </h2>
-<p>In order to ease the readability and computation performed on tracking data, the list of elements describing the tracking output need to be converted as a list of particles tracks called tracklets.</p>
-<p>To ease further computation, graphical representation and manual inspection the data are converted to a list of tracklets based on particles’ identity using <code><a href="../reference/convert2Tracklets.html">convert2Tracklets()</a></code>.
-Here we use only the 7 first element of Data because the last two (i.e., ntargets and timestamps) do not carry the same amount of information and are not useful for the next steps of this tutorial.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># convert the data to a list of tracklets</span></span>
-<span><span class="co"># NB: remove ntargets and timestamps because their length is lower than other variables</span></span>
-<span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">Data</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">]</span>, by <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDat</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span><span class="op">)</span> <span class="co"># display only the 3 first tracklets</span></span></code></pre></div>
-<pre><code><span><span class="co">## List of 3</span></span>
-<span><span class="co">##  $ 0:'data.frame':   12013 obs. of  7 variables:</span></span>
-<span><span class="co">##   ..$ maj.ax  : num [1:12013] 23.5 23.9 21.6 23.2 21.5 ...</span></span>
-<span><span class="co">##   ..$ angle   : num [1:12013] -0.733 -0.767 -0.761 -0.896 -0.88 ...</span></span>
-<span><span class="co">##   ..$ min.ax  : num [1:12013] NA NA NA NA NA NA NA NA NA NA ...</span></span>
-<span><span class="co">##   ..$ x.pos   : num [1:12013] 2278 2273 2269 2268 2267 ...</span></span>
-<span><span class="co">##   ..$ y.pos   : num [1:12013] 633 638 641 645 646 ...</span></span>
-<span><span class="co">##   ..$ identity: num [1:12013] 0 0 0 0 0 0 0 0 0 0 ...</span></span>
-<span><span class="co">##   ..$ frame   : num [1:12013] 0 1 2 3 4 5 6 7 8 9 ...</span></span>
-<span><span class="co">##  $ 1:'data.frame':   12024 obs. of  7 variables:</span></span>
-<span><span class="co">##   ..$ maj.ax  : num [1:12024] 30.9 31.1 30 22.7 29.8 ...</span></span>
-<span><span class="co">##   ..$ angle   : num [1:12024] 1.98 2.063 2.236 -0.942 2.328 ...</span></span>
-<span><span class="co">##   ..$ min.ax  : num [1:12024] NA NA NA NA NA NA NA NA NA NA ...</span></span>
-<span><span class="co">##   ..$ x.pos   : num [1:12024] 509 509 508 506 508 ...</span></span>
-<span><span class="co">##   ..$ y.pos   : num [1:12024] 636 636 635 637 635 ...</span></span>
-<span><span class="co">##   ..$ identity: num [1:12024] 1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">##   ..$ frame   : num [1:12024] 0 1 2 3 4 5 6 7 8 9 ...</span></span>
-<span><span class="co">##  $ 2:'data.frame':   12014 obs. of  7 variables:</span></span>
-<span><span class="co">##   ..$ maj.ax  : num [1:12014] 23.5 20.8 20.1 19.6 19.3 ...</span></span>
-<span><span class="co">##   ..$ angle   : num [1:12014] -1.07 2.02 1.98 1.83 1.85 ...</span></span>
-<span><span class="co">##   ..$ min.ax  : num [1:12014] NA NA NA NA NA NA NA NA NA NA ...</span></span>
-<span><span class="co">##   ..$ x.pos   : num [1:12014] 1221 1225 1229 1232 1235 ...</span></span>
-<span><span class="co">##   ..$ y.pos   : num [1:12014] 752 743 734 726 717 ...</span></span>
-<span><span class="co">##   ..$ identity: num [1:12014] 2 2 2 2 2 2 2 2 2 2 ...</span></span>
-<span><span class="co">##   ..$ frame   : num [1:12014] 0 1 2 3 4 5 6 7 8 9 ...</span></span></code></pre>
-<p>Now we can easily look at the trajectory for a given particle by selecting its identity.
-For instance, here we are displaying the data frame containing the characteristics of the first particle track.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># display the data for the first particle only</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDat</span><span class="op">[[</span><span class="st">"1"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 'data.frame':    12024 obs. of  7 variables:</span></span>
-<span><span class="co">##  $ maj.ax  : num  30.9 31.1 30 22.7 29.8 ...</span></span>
-<span><span class="co">##  $ angle   : num  1.98 2.063 2.236 -0.942 2.328 ...</span></span>
-<span><span class="co">##  $ min.ax  : num  NA NA NA NA NA NA NA NA NA NA ...</span></span>
-<span><span class="co">##  $ x.pos   : num  509 509 508 506 508 ...</span></span>
-<span><span class="co">##  $ y.pos   : num  636 636 635 637 635 ...</span></span>
-<span><span class="co">##  $ identity: num  1 1 1 1 1 1 1 1 1 1 ...</span></span>
-<span><span class="co">##  $ frame   : num  0 1 2 3 4 5 6 7 8 9 ...</span></span></code></pre>
-<p>It is then easy to look at the particles trajectories.</p>
+<p>Now that we have imported the tracking data, we either check or set some additional information about the tracking session that can be useful for further data processing. More especially, as the frame rate, the scale and the resolution of the video/image are used by several functions it is possible to encode them into the tracklets object using <code><a href="../reference/setInfo.html">setInfo()</a></code> or to access them using <code><a href="../reference/getInfo.html">getInfo()</a></code> as follow:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># check the additional information retrieved from the tracking output (depends on the tracking software used)</span></span>
+<span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">trackdat</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $frameR</span></span>
+<span><span class="co">## [1] 25</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $scale</span></span>
+<span><span class="co">## NULL</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $imgRes</span></span>
+<span><span class="co">## NULL</span></span></code></pre>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># set the the image resolution, but not the scale as it will not be useful for this tutorial</span></span>
+<span><span class="va">trackdat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/setInfo.html">setInfo</a></span><span class="op">(</span><span class="va">trackdat</span>, imgRes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3840</span>, <span class="fl">2160</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>As displayed, the frame rate (frameR) is automatically retrieved from the tracking output but this is not the case for the scale (scale) and the image resolution (imgRes). Accordingly, we can easily specify the image resolution using <code><a href="../reference/setInfo.html">setInfo()</a></code> but as the scale will not be useful in this section we can leave the slot empty.</p>
+<p class="notes">
+Note that the MoveR package’s functions (e.g., <code><a href="../reference/speed.html">speed()</a></code>, <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code>) using this additional information (i.e., frameR, scale, imgRes) will automatically retrieve them from the tracklets object, except if they are manually encoded in a given function, allowing to avoid unnecessary repetition of code.
+</p>
+<p>Now we have imported the data as tracklets object, it is easy to look at the particles trajectories.</p>
 </div>
 <div class="section level2">
 <h2 id="first-look-at-the-trajectories">First look at the trajectories<a class="anchor" aria-label="anchor" href="#first-look-at-the-trajectories"></a>
 </h2>
 <p>Using <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code>, it is easy to visualize the trajectories included in the dataset (see fig. <a href="#fig:drawTracklets1">2</a>A below), or to focus on the trajectories described only by some particles, here the fifth’ first (see fig. <a href="#fig:drawTracklets1">2</a>B below).</p>
 <p class="notes">
-Note that <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> needs an argument <code>timeCol</code> specifying the timeline of the video (here “frame”). One can also specify the resolution of the video to set x and y limits of the plot but as default, the <code>imgRes</code> argument use the maximum values recorded in x and y + 5% to set the plots limits (see drawTracklets documentation).
+Note that <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> needs an argument <code>timeCol</code> specifying the timeline of the video (here “frame”, which is the default value). One can also specify the resolution of the video to set x and y limits of the plot either manually or once for all trough <code><a href="../reference/setInfo.html">setInfo()</a></code> (see above) but in case neither of this option has been chosen, the <code>imgRes</code> argument use the maximum values recorded in x and y + 5% to set the plots limits (see <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> documentation).
 </p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># split the graphical window in 2 columns</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># draw the trajectories of all particles</span></span>
-<span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="va">trackDat</span>,</span>
-<span>                     timeCol <span class="op">=</span> <span class="st">"frame"</span><span class="op">)</span></span>
+<span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="va">trackdat</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># add a letter identifying the plot to the upper left corner of the first plot</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span></span>
@@ -298,9 +272,8 @@ Note that <code><a href="../reference/drawTracklets.html">drawTracklets()</a></c
 <span></span>
 <span><span class="co"># draw the trajectories only for the first five particles</span></span>
 <span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span></span>
-<span>  <span class="va">trackDat</span>,</span>
-<span>  selTrack <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>,</span>
-<span>  timeCol <span class="op">=</span> <span class="st">"frame"</span></span>
+<span>  <span class="va">trackdat</span>,</span>
+<span>  selTrack <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># add a letter identifying the plot to the upper left corner of the second plot</span></span>
@@ -318,15 +291,14 @@ Figure 2: Micro-wasps trajectories over the whole video timeline, expressed in f
 </p>
 </div>
 <p>Otherwise, it is possible to focus on the trajectories recorded within a given time intervals. For instance, between 1 and 999 frames (see fig. <a href="#fig:drawTracklets2">3</a>A below) and between 6000 and 6999 frames and 11000, 11999 frames (see fig. <a href="#fig:drawTracklets2">3</a>B below).</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># split the graphical window in 2 columns</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># draw the trajectories over a time window of 1000 frames (between 1 and 999 frames)</span></span>
 <span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span></span>
-<span>  <span class="va">trackDat</span>,</span>
-<span>  timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">999</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  timeCol <span class="op">=</span> <span class="st">"frame"</span></span>
+<span>  <span class="va">trackdat</span>,</span>
+<span>  timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">999</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># add a letter identifying the plot to the upper left corner of the first plot</span></span>
@@ -334,10 +306,9 @@ Figure 2: Micro-wasps trajectories over the whole video timeline, expressed in f
 <span></span>
 <span><span class="co"># draw the trajectories over two time windows of 1000 frames (between 6000 and 6999 and 11000 and 11999 frames)</span></span>
 <span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span></span>
-<span>  <span class="va">trackDat</span>,</span>
-<span>  timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6000</span>, <span class="fl">6999</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11000</span>, <span class="fl">11999</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  timeCol <span class="op">=</span> <span class="st">"frame"</span></span>
-<span><span class="op">)</span></span>
+<span>  <span class="va">trackdat</span>,</span>
+<span>  timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6000</span>, <span class="fl">6999</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">11000</span>, <span class="fl">11999</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># add a letter identifying the plot to the upper left corner of the second plot</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/mtext.html" class="external-link">mtext</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substitute.html" class="external-link">substitute</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu">bold</span><span class="op">(</span><span class="st">"B"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, side <span class="op">=</span> <span class="fl">3</span>, line <span class="op">=</span> <span class="fl">0</span>, adj <span class="op">=</span> <span class="fl">0</span>, padj <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span></span></code></pre></div>
@@ -348,16 +319,16 @@ Figure 3: Micro-wasps trajectories over specified part of the video timeline, ex
 </p>
 </div>
 <p class="notes">
-Note that it is also possible to represent specified tracklets over given time window(s) by combining the <code>selFrags</code> and <code>timeWin</code> arguments respectively.
+Note that it is also possible to represent specified tracklets over given time window(s) by combining the <code>selFrags</code> and <code>timeWin</code> arguments respectively. Also, more examples of what can be displayed using <code>drawTracklets</code> are available on the <a href="https://qpetitjean.github.io/MoveR/reference/drawTracklets.html" class="external-link"><code>drawTracklets</code> documentation page</a>
 </p>
 <p>Finally, drawTracklets allow to color the particles’ tracks according to categorical variable, such as the identity of the particle (see fig. <a href="#fig:drawTracklets3">4</a>A below).</p>
-<p>However, here the identity of the particles is a numerical variable, we hence need to convert it to a factor, for instance by appending “Tricho” (i.e., part of the micro-wasps genus name) in front of each id. For this purpose, the easiest way is to use the “convert2List” function, transform the identity variable then convert back the data as a list of tracklet using convert2Tracklets as follow:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">trackDatList</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat</span><span class="op">)</span></span>
-<span><span class="va">trackDatList</span><span class="op">[[</span><span class="st">"identity"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Tricho"</span>, <span class="va">trackDatList</span><span class="op">[[</span><span class="st">"identity"</span><span class="op">]</span><span class="op">]</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
-<span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">trackDatList</span>, by <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span>
+<p>However, here the identity of the particles is a numerical variable, we hence need to convert it to a factor, for instance by appending “Tricho” (i.e., part of the micro-wasps genus name) in front of each id. For this purpose, the easiest way is to use the “convert2List” function, transform the identity variable then convert back the data as a list of tracklets using convert2Tracklets as follow:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">trackdatList</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackdat</span><span class="op">)</span></span>
+<span><span class="va">trackdatList</span><span class="op">[[</span><span class="st">"identity"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Tricho"</span>, <span class="va">trackdatList</span><span class="op">[[</span><span class="st">"identity"</span><span class="op">]</span><span class="op">]</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
+<span><span class="va">trackdat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">trackdatList</span>, by <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackDat</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">trackdat</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 13</span></span>
 <span><span class="co">##  $ Tricho_0 :'data.frame':   12013 obs. of  8 variables:</span></span>
 <span><span class="co">##   ..$ maj.ax    : num [1:12013] 23.5 23.9 21.6 23.2 21.5 ...</span></span>
@@ -475,17 +446,19 @@ Note that it is also possible to represent specified tracklets over given time w
 <span><span class="co">##   ..$ y.pos     : num [1:12024] 2097 2097 Inf Inf Inf ...</span></span>
 <span><span class="co">##   ..$ identity  : chr [1:12024] "Tricho_9" "Tricho_9" "Tricho_9" "Tricho_9" ...</span></span>
 <span><span class="co">##   ..$ frame     : num [1:12024] 0 1 2 3 4 5 6 7 8 9 ...</span></span>
-<span><span class="co">##   ..$ trackletId: chr [1:12024] "9" "9" "9" "9" ...</span></span></code></pre>
+<span><span class="co">##   ..$ trackletId: chr [1:12024] "9" "9" "9" "9" ...</span></span>
+<span><span class="co">##  - attr(*, "class")= chr "tracklets"</span></span>
+<span><span class="co">##  - attr(*, "frameR")= num 25</span></span>
+<span><span class="co">##  - attr(*, "imgRes")= num [1:2] 3840 2160</span></span></code></pre>
 <p>As previously noted, the various arguments from <code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> can be combined to emphasize the behavior of particular tracklets over a specified time window (see fig. <a href="#fig:drawTracklets3">4</a>B below).</p>
 <p><code><a href="../reference/drawTracklets.html">drawTracklets()</a></code> also have various arguments helping to customize the graphical representation, see the function documentation for further information.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># split the graphical window in 2 columns</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># draw the trajectories over the whole video timeline and color it according to particles' identity</span></span>
 <span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span></span>
-<span>  <span class="va">trackDat</span>,</span>
-<span>  timeCol <span class="op">=</span> <span class="st">"frame"</span>,</span>
+<span>  <span class="va">trackdat</span>,</span>
 <span>  colId <span class="op">=</span> <span class="st">"identity"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -494,9 +467,8 @@ Note that it is also possible to represent specified tracklets over given time w
 <span></span>
 <span><span class="co"># draw the trajectories over two time windows of 1000 frames (between 6000 and 6999 and 11000 and 11999 frames)</span></span>
 <span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span></span>
-<span>  <span class="va">trackDat</span>,</span>
+<span>  <span class="va">trackdat</span>,</span>
 <span>  timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">999</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  timeCol <span class="op">=</span> <span class="st">"frame"</span>,</span>
 <span>  colId <span class="op">=</span> <span class="st">"identity"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -509,15 +481,14 @@ Figure 4: Micro-wasps trajectories A. over the whole video timeline, and B. over
 </p>
 </div>
 <p>By looking at the fig. <a href="#fig:drawTracklets3">4</a>B, we can see that some particles’ tracks are interrupted. This is particularly obvious for Tricho_7 or Tricho_11, let’s take a closer look.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># restore the graphical window as default</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># draw the trajectories over the whole video timeline and color it according to particles' identity</span></span>
+<span><span class="co"># draw the selected tracklets over the whole video timeline and color it according to tracklets</span></span>
 <span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/drawTracklets.html">drawTracklets</a></span><span class="op">(</span></span>
-<span>  <span class="va">trackDat</span>,</span>
-<span>  timeCol <span class="op">=</span> <span class="st">"frame"</span>,</span>
-<span>  colId <span class="op">=</span> <span class="st">"identity"</span>,</span>
+<span>  <span class="va">trackdat</span>,</span>
+<span>  colId <span class="op">=</span> <span class="st">"selTrack"</span>,</span>
 <span>  selTrack <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tricho_7"</span>,<span class="st">"Tricho_11"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">

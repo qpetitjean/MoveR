@@ -55,16 +55,16 @@ Here the raw tracking data are located in the ./MoveR_SampleData-main/sample_1/T
 
 ```{r ImportShortDat, echo=TRUE, results='markup'}
 # Import the sample data
-Data <-
+trackdat <-
   MoveR::readTrex(Path2Data[[1]])
 
 # check the class, number of tracklets and their id
-class(Data)
-length(Data)
-names(Data)
+class(trackdat)
+length(trackdat)
+names(trackdat)
 
 # display the data for the first particle only
-str(Data[[1]])
+str(trackdat[[1]])
 
 ```
 
@@ -74,12 +74,12 @@ The function import the data as an object of class "tracklets", a list of trackl
 
 ```{r ImportFullDat, echo=TRUE, results='markup'}
 # Import the sample data
-DataFull <-
+trackdatFull <-
   MoveR::readTrex(Path2Data[[1]],
                   rawDat = TRUE)
 
 # display the data for the first particle only
-str(DataFull[[1]])
+str(trackdatFull[[1]])
 
 ```
 
@@ -119,7 +119,7 @@ Using `drawTracklets()`, it is easy to visualize the trajectories included in th
 par(mfrow = c(1, 2))
 
 # draw the trajectories of all particles
-MoveR::drawTracklets(trackDat)
+MoveR::drawTracklets(trackdat)
 
 # add a letter identifying the plot to the upper left corner of the first plot
 mtext(
@@ -132,7 +132,7 @@ mtext(
 
 # draw the trajectories only for the first five particles
 MoveR::drawTracklets(
-  trackDat,
+  trackdat,
   selTrack = c(1:5)
 )
 
@@ -155,7 +155,7 @@ par(mfrow=c(1,2))
 
 # draw the trajectories over a time window of 1000 frames (between 1 and 999 frames)
 MoveR::drawTracklets(
-  trackDat,
+  trackdat,
   timeWin = list(c(1, 999))
 )
 
@@ -164,7 +164,7 @@ mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
 
 # draw the trajectories over two time windows of 1000 frames (between 6000 and 6999 and 11000 and 11999 frames)
 MoveR::drawTracklets(
-  trackDat,
+  trackdat,
   timeWin = list(c(6000, 6999), c(11000, 11999))
   )
 
@@ -180,11 +180,11 @@ Finally, drawTracklets allow to color the particles' tracks according to categor
 However, here the identity of the particles is a numerical variable, we hence need to convert it to a factor, for instance by appending "Tricho" (i.e., part of the micro-wasps genus name) in front of each id. For this purpose, the easiest way is to use the "convert2List" function, transform the identity variable then convert back the data as a list of tracklets using convert2Tracklets as follow: 
 
 ```{r convertId, results='markup'}
-trackDatList <- MoveR::convert2List(trackDat)
-trackDatList[["identity"]] <- paste("Tricho", trackDatList[["identity"]], sep = "_")
-trackDat <- MoveR::convert2Tracklets(trackDatList, by = "identity")
+trackdatList <- MoveR::convert2List(trackdat)
+trackdatList[["identity"]] <- paste("Tricho", trackdatList[["identity"]], sep = "_")
+trackdat <- MoveR::convert2Tracklets(trackdatList, by = "identity")
 
-str(trackDat)
+str(trackdat)
 
 ```
 
@@ -198,7 +198,7 @@ par(mfrow=c(1,2))
 
 # draw the trajectories over the whole video timeline and color it according to particles' identity
 MoveR::drawTracklets(
-  trackDat,
+  trackdat,
   colId = "identity"
 )
 
@@ -207,7 +207,7 @@ mtext(substitute(paste(bold("A"))), side = 3, line = 0, adj = 0, padj = -0.5)
 
 # draw the trajectories over two time windows of 1000 frames (between 6000 and 6999 and 11000 and 11999 frames)
 MoveR::drawTracklets(
-  trackDat,
+  trackdat,
   timeWin = list(c(1, 999)),
   colId = "identity"
 )
@@ -223,10 +223,10 @@ By looking at the fig. \@ref(fig:drawTracklets3)B, we can see that some particle
 # restore the graphical window as default
 par(mfrow=c(1,1))
 
-# draw the trajectories over the whole video timeline and color it according to particles' identity
+# draw the selected tracklets over the whole video timeline and color it according to tracklets
 MoveR::drawTracklets(
-  trackDat,
-  colId = "identity",
+  trackdat,
+  colId = "selTrack",
   selTrack = c("Tricho_7","Tricho_11")
 )
 

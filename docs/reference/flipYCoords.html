@@ -12,7 +12,7 @@ this function returns flipped y coordinates."><!-- mathjax --><script src="https
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,7 +109,52 @@ this function returns flipped y coordinates.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2023</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># generate some dummy tracklets</span></span></span>
+<span class="r-in"><span><span class="co">## start to specify some parameters to generate tracklets</span></span></span>
+<span class="r-in"><span><span class="va">TrackN</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="co"># the number of tracklet to simulate</span></span></span>
+<span class="r-in"><span><span class="va">TrackL</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fl">10000</span> <span class="co"># the length of the tracklets or a sequence to randomly sample tracklet length</span></span></span>
+<span class="r-in"><span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span><span class="va">TrackList</span> <span class="op">&lt;-</span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="trackletsClass.html">trackletsClass</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">TrackN</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">trajr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/trajr/man/TrajGenerate.html" class="external-link">TrajGenerate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">TrackL</span>, <span class="fl">1</span><span class="op">)</span>, random <span class="op">=</span> <span class="cn">TRUE</span>, fps <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">j</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">id</span> <span class="op">&lt;&lt;-</span> <span class="va">id</span> <span class="op">+</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      x.pos <span class="op">=</span> <span class="va">j</span><span class="op">$</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">j</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      y.pos <span class="op">=</span> <span class="va">j</span><span class="op">$</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">j</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      frame <span class="op">=</span> <span class="va">j</span><span class="op">$</span><span class="va">time</span>,</span></span>
+<span class="r-in"><span>      identity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Tracklet"</span>, <span class="va">id</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">TrackN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># convert the list of tracklets to a simple list of variables</span></span></span>
+<span class="r-in"><span><span class="va">trackDatList</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">TrackList</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># find the maximum value on the y axis (corresponding to image Height)</span></span></span>
+<span class="r-in"><span><span class="va">imgHeight</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">trackDatList</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use flipYCoords to flip y coords</span></span></span>
+<span class="r-in"><span><span class="va">trackDatList</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">flipYCoords</span><span class="op">(</span><span class="va">trackDatList</span><span class="op">[[</span><span class="st">"y.pos"</span><span class="op">]</span><span class="op">]</span>, imgHeight <span class="op">=</span> <span class="va">imgHeight</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span><span class="co"># rename the identity of the flipped tracklet by adding "bis"</span></span></span>
+<span class="r-in"><span><span class="va">trackDatList</span><span class="op">[[</span><span class="st">"identity"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"$"</span>, <span class="st">"Bis"</span>, <span class="va">trackDatList</span><span class="op">[[</span><span class="st">"identity"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># convert the new dataset to a list of tracklet</span></span></span>
+<span class="r-in"><span> <span class="va">trackDatList</span> <span class="op">&lt;-</span> <span class="va">trackDatList</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">trackDatList</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span> <span class="va">trackDatflipped</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>   <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">trackDatList</span>, by <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># draw the result</span></span></span>
+<span class="r-in"><span><span class="co"># here we can see that both trajectory are flipped, with the original trajectory</span></span></span>
+<span class="r-in"><span><span class="co"># drawed in black and the flipped one in red</span></span></span>
+<span class="r-in"><span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="drawTracklets.html">drawTracklets</a></span><span class="op">(</span><span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="trackletsClass.html">trackletsClass</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">TrackList</span>, <span class="va">trackDatflipped</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                     colId <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="flipYCoords-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

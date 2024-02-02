@@ -64,6 +64,9 @@
     <loc>http://qpetitjean.github.io/MoveR/reference/ANND.html</loc>
   </url>
   <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/as.data.frame.varList.html</loc>
+  </url>
+  <url>
     <loc>http://qpetitjean.github.io/MoveR/reference/assignROI.html</loc>
   </url>
   <url>
@@ -103,6 +106,15 @@
     <loc>http://qpetitjean.github.io/MoveR/reference/DLsampleData.html</loc>
   </url>
   <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/dot-cutTracklets.html</loc>
+  </url>
+  <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/dot-errorCheck.html</loc>
+  </url>
+  <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/dot-sortVertices.html</loc>
+  </url>
+  <url>
     <loc>http://qpetitjean.github.io/MoveR/reference/drawTracklets.html</loc>
   </url>
   <url>
@@ -119,6 +131,9 @@
   </url>
   <url>
     <loc>http://qpetitjean.github.io/MoveR/reference/flipYCoords.html</loc>
+  </url>
+  <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/getInfo.html</loc>
   </url>
   <url>
     <loc>http://qpetitjean.github.io/MoveR/reference/IdStateSeq.html</loc>
@@ -175,6 +190,9 @@
     <loc>http://qpetitjean.github.io/MoveR/reference/resampTracklets.html</loc>
   </url>
   <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/setInfo.html</loc>
+  </url>
+  <url>
     <loc>http://qpetitjean.github.io/MoveR/reference/sinuosity.html</loc>
   </url>
   <url>
@@ -187,10 +205,19 @@
     <loc>http://qpetitjean.github.io/MoveR/reference/speed.html</loc>
   </url>
   <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/sub-.varList.html</loc>
+  </url>
+  <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/summary.tracklets.html</loc>
+  </url>
+  <url>
     <loc>http://qpetitjean.github.io/MoveR/reference/temporalBoot.html</loc>
   </url>
   <url>
     <loc>http://qpetitjean.github.io/MoveR/reference/temporalTrend.html</loc>
+  </url>
+  <url>
+    <loc>http://qpetitjean.github.io/MoveR/reference/trackletsClass.html</loc>
   </url>
   <url>
     <loc>http://qpetitjean.github.io/MoveR/reference/trackStats.html</loc>

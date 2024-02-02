@@ -36,7 +36,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Compute some metrics</h1>
             
-            <h4 data-toc-skip class="date">2023-09-26</h4>
+            <h4 data-toc-skip class="date">2024-02-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/vignettes/MoveR-ComputeMetrics.Rmd" class="external-link"><code>vignettes/MoveR-ComputeMetrics.Rmd</code></a></small>
       <div class="d-none name"><code>MoveR-ComputeMetrics.Rmd</code></div>
@@ -125,13 +125,16 @@
 <span><span class="va">Path2Data</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/DLsampleData.html">DLsampleData</a></span><span class="op">(</span>dataSet <span class="op">=</span> <span class="fl">2</span>, tracker <span class="op">=</span> <span class="st">"TRex"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Import the sample data</span></span>
-<span><span class="va">TRexDat</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
+<span><span class="va">TRexDat</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span></span>
 <span>  <span class="va">Path2Data</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>  sep <span class="op">=</span> <span class="st">";"</span>,</span>
 <span>  dec <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># convert the data to a list of tracklets</span></span>
-<span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">TRexDat</span>, by <span class="op">=</span> <span class="st">"trackletId"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># convert the data to a list of tracklets - here the data were saved as a varList object (a list of variable) a more simple structure than tracklets</span></span>
+<span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2Tracklets.html">convert2Tracklets</a></span><span class="op">(</span><span class="va">TRexDat</span>, by <span class="op">=</span> <span class="st">"trackletId"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># set some useful information</span></span>
+<span><span class="va">trackDat</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/setInfo.html">setInfo</a></span><span class="op">(</span><span class="va">trackDat</span>, frameR <span class="op">=</span> <span class="fl">25</span>, scale <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">413.4</span>, imgRes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1920</span>, <span class="fl">1080</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
 <p>Okay! now that the data has been retrieved let’s start computing metric over each tracklet.</p>
 </div>
 <div class="section level2">
@@ -215,8 +218,7 @@ Figure 1: kernel density estimate of the particles’ speed. The bimodal distrib
 <p>Now need to identify the diameter of the typical surface a particle can “explore” around its position to determine the surface explored over each tracklet. To do that, we need some knowledge about the model species.</p>
 <p>In the case of <em>Trichogramma</em>, Wajnberg and Colazza (1998) reported that the perception distance (i.e., reaction distance) of an individual is about 4 mm. Accordingly, we can infer that an individual should explore a surrounding surface of 16 mm<sup>2</sup>. The diameter of such a cell is hence 8 mm or 331 pixels which corresponds to the <code>binRad</code> argument.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">scaling</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">413.4</span> <span class="co"># the scaling of the video - 1 cm represent 413.4 pixels (measured using the arena diameter -2.5cm- and ImageJ)</span></span>
-<span><span class="va">diamSurf</span> <span class="op">&lt;-</span> <span class="fl">0.8</span> <span class="op">/</span> <span class="va">scaling</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">diamSurf</span> <span class="op">&lt;-</span> <span class="fl">0.8</span> <span class="op">/</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/getInfo.html">getInfo</a></span><span class="op">(</span><span class="va">trackDat</span>, <span class="st">"scale"</span><span class="op">)</span></span></code></pre></div>
 <p>Now we have everything that is needed to run the computation of the desired metrics the first step consist in specifying a list of custom functions as follow:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Specify the batch of function to pass to the analyseTracklet function for metric computation over each tracklet</span></span>
@@ -351,26 +353,26 @@ Note that naming each element (function) of the list ensure that the output of t
 <span><span class="co">## 19      4127.92                35.7  0.03931012 0.04716597 -56.80705 Tracklet_1</span></span>
 <span><span class="co">## 20      4127.96                35.7  0.03984757 0.06905213 -56.84548 Tracklet_1</span></span>
 <span><span class="co">##     turnAngle distTraveled activity1 sinuosity explorArea slideMeanAngle</span></span>
-<span><span class="co">## 1          NA   0.04974185        NA  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 2   2.8945991   0.10071409         0  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 3  -1.4333993   0.26017052         0  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 4  -2.7932937   0.21399122         0  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 5   0.7595711   0.04826507         0  4.097819   94722.15     -0.6145500</span></span>
-<span><span class="co">## 6   1.0396458   0.40498167         0  4.097819   94722.15     -0.2470643</span></span>
-<span><span class="co">## 7  -2.6996207   0.30837970         0  4.097819   94722.15     -0.5766720</span></span>
-<span><span class="co">## 8  -0.4989445   0.09570492         0  4.097819   94722.15     -0.2002835</span></span>
-<span><span class="co">## 9   0.3309640   0.09401691         0  4.097819   94722.15      0.3511861</span></span>
-<span><span class="co">## 10 -3.1304721   0.56407927         0  4.097819   94722.15      0.5054759</span></span>
-<span><span class="co">## 11  3.0603075   0.48748878         0  4.097819   94722.15      0.4478788</span></span>
-<span><span class="co">## 12 -0.4014782   0.06696614         0  4.097819   94722.15      0.9781119</span></span>
-<span><span class="co">## 13  2.3304855   0.10322724         0  4.097819   94722.15      1.1591985</span></span>
-<span><span class="co">## 14  2.7214030   0.13205952         0  4.097819   94722.15      1.3629575</span></span>
-<span><span class="co">## 15  2.3024685   0.05659485         0  4.097819   94722.15      1.7512710</span></span>
-<span><span class="co">## 16  0.4636754   0.08056082         0  4.097819   94722.15      1.7192587</span></span>
-<span><span class="co">## 17  2.6027098   0.11350467         0  4.097819   94722.15      2.0475425</span></span>
-<span><span class="co">## 18  1.3119219   0.04716597         0  4.097819   94722.15      1.5778359</span></span>
-<span><span class="co">## 19  2.3685536   0.06905213         0  4.097819   94722.15      1.1360680</span></span>
-<span><span class="co">## 20  0.7526626   0.11835048         0  4.097819   94722.15      1.2199804</span></span>
+<span><span class="co">## 1          NA   0.04974185        NA  4.253483   94722.15             NA</span></span>
+<span><span class="co">## 2   2.8945991   0.10071409         0  4.253483   94722.15             NA</span></span>
+<span><span class="co">## 3  -1.4333993   0.26017052         0  4.253483   94722.15             NA</span></span>
+<span><span class="co">## 4  -2.7932937   0.21399122         0  4.253483   94722.15             NA</span></span>
+<span><span class="co">## 5   0.7595711   0.04826507         0  4.253483   94722.15     -0.6145500</span></span>
+<span><span class="co">## 6   1.0396458   0.40498167         0  4.253483   94722.15     -0.2470643</span></span>
+<span><span class="co">## 7  -2.6996207   0.30837970         0  4.253483   94722.15     -0.5766720</span></span>
+<span><span class="co">## 8  -0.4989445   0.09570492         0  4.253483   94722.15     -0.2002835</span></span>
+<span><span class="co">## 9   0.3309640   0.09401691         0  4.253483   94722.15      0.3511861</span></span>
+<span><span class="co">## 10 -3.1304721   0.56407927         0  4.253483   94722.15      0.5054759</span></span>
+<span><span class="co">## 11  3.0603075   0.48748878         0  4.253483   94722.15      0.4478788</span></span>
+<span><span class="co">## 12 -0.4014782   0.06696614         0  4.253483   94722.15      0.9781119</span></span>
+<span><span class="co">## 13  2.3304855   0.10322724         0  4.253483   94722.15      1.1591985</span></span>
+<span><span class="co">## 14  2.7214030   0.13205952         0  4.253483   94722.15      1.3629575</span></span>
+<span><span class="co">## 15  2.3024685   0.05659485         0  4.253483   94722.15      1.7512710</span></span>
+<span><span class="co">## 16  0.4636754   0.08056082         0  4.253483   94722.15      1.7192587</span></span>
+<span><span class="co">## 17  2.6027098   0.11350467         0  4.253483   94722.15      2.0475425</span></span>
+<span><span class="co">## 18  1.3119219   0.04716597         0  4.253483   94722.15      1.5778359</span></span>
+<span><span class="co">## 19  2.3685536   0.06905213         0  4.253483   94722.15      1.1360680</span></span>
+<span><span class="co">## 20  0.7526626   0.11835048         0  4.253483   94722.15      1.2199804</span></span>
 <span><span class="co">##    slideVarAngle slideMeanSpeed slideVarSpeed slideMeanTraveledDist</span></span>
 <span><span class="co">## 1             NA             NA            NA                    NA</span></span>
 <span><span class="co">## 2             NA             NA            NA                    NA</span></span>
@@ -430,7 +432,7 @@ Note that <code>sinuosity</code> and <code>explorArea</code> return an unique va
 <span></span>
 <span><span class="va">trackDat3</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/activity2.html">activity2</a></span><span class="op">(</span></span>
-<span>    trackDat <span class="op">=</span> <span class="va">trackDat2</span>,</span>
+<span>    <span class="va">trackDat2</span>,</span>
 <span>    var1 <span class="op">=</span> <span class="st">"slideMeanSpeed"</span>,</span>
 <span>    var2 <span class="op">=</span> <span class="st">"slideVarAngle"</span>,</span>
 <span>    var1T <span class="op">=</span> <span class="va">log10</span>,</span>
@@ -484,26 +486,26 @@ Note that <code>sinuosity</code> and <code>explorArea</code> return an unique va
 <span><span class="co">## 19      4127.92                35.7  0.03931012 0.04716597 -56.80705 Tracklet_1</span></span>
 <span><span class="co">## 20      4127.96                35.7  0.03984757 0.06905213 -56.84548 Tracklet_1</span></span>
 <span><span class="co">##     turnAngle distTraveled activity1 sinuosity explorArea slideMeanAngle</span></span>
-<span><span class="co">## 1          NA   0.04974185        NA  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 2   2.8945991   0.10071409         0  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 3  -1.4333993   0.26017052         0  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 4  -2.7932937   0.21399122         0  4.097819   94722.15             NA</span></span>
-<span><span class="co">## 5   0.7595711   0.04826507         0  4.097819   94722.15     -0.6145500</span></span>
-<span><span class="co">## 6   1.0396458   0.40498167         0  4.097819   94722.15     -0.2470643</span></span>
-<span><span class="co">## 7  -2.6996207   0.30837970         0  4.097819   94722.15     -0.5766720</span></span>
-<span><span class="co">## 8  -0.4989445   0.09570492         0  4.097819   94722.15     -0.2002835</span></span>
-<span><span class="co">## 9   0.3309640   0.09401691         0  4.097819   94722.15      0.3511861</span></span>
-<span><span class="co">## 10 -3.1304721   0.56407927         0  4.097819   94722.15      0.5054759</span></span>
-<span><span class="co">## 11  3.0603075   0.48748878         0  4.097819   94722.15      0.4478788</span></span>
-<span><span class="co">## 12 -0.4014782   0.06696614         0  4.097819   94722.15      0.9781119</span></span>
-<span><span class="co">## 13  2.3304855   0.10322724         0  4.097819   94722.15      1.1591985</span></span>
-<span><span class="co">## 14  2.7214030   0.13205952         0  4.097819   94722.15      1.3629575</span></span>
-<span><span class="co">## 15  2.3024685   0.05659485         0  4.097819   94722.15      1.7512710</span></span>
-<span><span class="co">## 16  0.4636754   0.08056082         0  4.097819   94722.15      1.7192587</span></span>
-<span><span class="co">## 17  2.6027098   0.11350467         0  4.097819   94722.15      2.0475425</span></span>
-<span><span class="co">## 18  1.3119219   0.04716597         0  4.097819   94722.15      1.5778359</span></span>
-<span><span class="co">## 19  2.3685536   0.06905213         0  4.097819   94722.15      1.1360680</span></span>
-<span><span class="co">## 20  0.7526626   0.11835048         0  4.097819   94722.15      1.2199804</span></span>
+<span><span class="co">## 1          NA   0.04974185        NA  4.253483   94722.15             NA</span></span>
+<span><span class="co">## 2   2.8945991   0.10071409         0  4.253483   94722.15             NA</span></span>
+<span><span class="co">## 3  -1.4333993   0.26017052         0  4.253483   94722.15             NA</span></span>
+<span><span class="co">## 4  -2.7932937   0.21399122         0  4.253483   94722.15             NA</span></span>
+<span><span class="co">## 5   0.7595711   0.04826507         0  4.253483   94722.15     -0.6145500</span></span>
+<span><span class="co">## 6   1.0396458   0.40498167         0  4.253483   94722.15     -0.2470643</span></span>
+<span><span class="co">## 7  -2.6996207   0.30837970         0  4.253483   94722.15     -0.5766720</span></span>
+<span><span class="co">## 8  -0.4989445   0.09570492         0  4.253483   94722.15     -0.2002835</span></span>
+<span><span class="co">## 9   0.3309640   0.09401691         0  4.253483   94722.15      0.3511861</span></span>
+<span><span class="co">## 10 -3.1304721   0.56407927         0  4.253483   94722.15      0.5054759</span></span>
+<span><span class="co">## 11  3.0603075   0.48748878         0  4.253483   94722.15      0.4478788</span></span>
+<span><span class="co">## 12 -0.4014782   0.06696614         0  4.253483   94722.15      0.9781119</span></span>
+<span><span class="co">## 13  2.3304855   0.10322724         0  4.253483   94722.15      1.1591985</span></span>
+<span><span class="co">## 14  2.7214030   0.13205952         0  4.253483   94722.15      1.3629575</span></span>
+<span><span class="co">## 15  2.3024685   0.05659485         0  4.253483   94722.15      1.7512710</span></span>
+<span><span class="co">## 16  0.4636754   0.08056082         0  4.253483   94722.15      1.7192587</span></span>
+<span><span class="co">## 17  2.6027098   0.11350467         0  4.253483   94722.15      2.0475425</span></span>
+<span><span class="co">## 18  1.3119219   0.04716597         0  4.253483   94722.15      1.5778359</span></span>
+<span><span class="co">## 19  2.3685536   0.06905213         0  4.253483   94722.15      1.1360680</span></span>
+<span><span class="co">## 20  0.7526626   0.11835048         0  4.253483   94722.15      1.2199804</span></span>
 <span><span class="co">##    slideVarAngle slideMeanSpeed slideVarSpeed slideMeanTraveledDist</span></span>
 <span><span class="co">## 1             NA             NA            NA                    NA</span></span>
 <span><span class="co">## 2             NA             NA            NA                    NA</span></span>
@@ -616,7 +618,6 @@ Indeed, note that to identify the clusters we assume that the distribution of in
 <p>Now we have identified activity states according to both 1d (<code><a href="../reference/activity1.html">activity1()</a></code>) and 2d (<code><a href="../reference/activity2.html">activity2()</a></code>) methods, we can compare the global proportion of both active and inactive state returned by the two functions (see fig. <a href="#fig:PieCharts">3</a> below).</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># compare the amount of active and inactive state between activity1() and activity2() functions</span></span>
-<span><span class="va">trackDatL</span> <span class="op">&lt;-</span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu"><a href="../reference/convert2List.html">convert2List</a></span><span class="op">(</span><span class="va">trackDat3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co">## compute the proportion of active and inactive states resulting from the activity1 and activity2 functions</span></span>
