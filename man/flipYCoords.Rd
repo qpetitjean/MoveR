@@ -60,7 +60,7 @@ trackDatList[["identity"]] <-
 # draw the result
 # here we can see that both trajectory are flipped, with the original trajectory
 # drawed in black and the flipped one in red
-MoveR::drawTracklets(MoveR::trackletsClass(c(TrackList, trackDatflipped),
+MoveR::drawTracklets(MoveR::trackletsClass(c(TrackList, trackDatflipped)),
                      colId = "identity")
 
 }
