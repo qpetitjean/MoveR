@@ -1,5 +1,8 @@
 ---
-output: github_document
+title: "MoveR ChangeLog"
+output:
+  md_document:
+    variant: markdown
 ---
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
