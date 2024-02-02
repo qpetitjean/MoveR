@@ -10,12 +10,22 @@
 
 `[.varList` <- function(x, i, ..., drop = FALSE) {
   isCharIndex <- is.character(i)
-  res <- lapply(i, function(idx) x[[idx]])
-  if (!is.null(names(x))) {
-    if (isCharIndex) {
-      names(res) <- i
-    } else {
-      names(res) <- names(x)[i]
+  if (is.numeric(i) && any(i < 0)) {
+    # Excluding elements based on negative indices
+    positiveIndices <- setdiff(seq_along(x), -i)
+    res <- x[positiveIndices]
+    if (!is.null(names(x))) {
+      names(res) <- names(x)[positiveIndices]
+    }
+  } else {
+    # Handle as before for positive numeric indices or character vectors
+    res <- lapply(i, function(idx) x[[idx]])
+    if (!is.null(names(x))) {
+      if (isCharIndex) {
+        names(res) <- i
+      } else {
+        names(res) <- names(x)[i]
+      }
     }
   }
   class(res) <- "varList"
@@ -27,12 +37,22 @@
 
 `[.tracklets` <- function(x, i, ..., drop = FALSE) {
   isCharIndex <- is.character(i)
-  res <- lapply(i, function(idx) x[[idx]])
-  if (!is.null(names(x))) {
-    if (isCharIndex) {
-      names(res) <- i
-    } else {
-      names(res) <- names(x)[i]
+  if (is.numeric(i) && any(i < 0)) {
+    # Excluding elements based on negative indices
+    positiveIndices <- setdiff(seq_along(x), -i)
+    res <- x[positiveIndices]
+    if (!is.null(names(x))) {
+      names(res) <- names(x)[positiveIndices]
+    }
+  } else {
+    # Handle as before for positive numeric indices or character vectors
+    res <- lapply(i, function(idx) x[[idx]])
+    if (!is.null(names(x))) {
+      if (isCharIndex) {
+        names(res) <- i
+      } else {
+        names(res) <- names(x)[i]
+      }
     }
   }
   class(res) <- "tracklets"
