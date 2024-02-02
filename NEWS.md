@@ -1,26 +1,26 @@
 
-# v0.3.0
+# MoveR v0.3.0
 
 ### Thanks to Software X journal’s reviewers for insightful comments
 
-- Make ‘identity’ the default value for the \[by\] argument in the
+- Make ‘identity’ the default value for the [by] argument in the
   `convert2Tracklets()` function.
-- Make ‘frame’ the default value for the \[timeCol\] argument in the
+- Make ‘frame’ the default value for the [timeCol] argument in the
   `ANND()`, `resampTracklets()`, `sinuosity()`, `speed()`,
   `temporalBoot()`, `temporalTrend()`, `turnAngle()` functions.
-- `speed()` function now accept \[frameR\] (frame rate) and \[timeU\]
+- `speed()` function now accept [frameR] (frame rate) and [timeU]
   (time unit) arguments allowing to return speed values according to the
   desired unit (e.g., pixels per frame, pixels per second).
-- Make “1” the default value for the \[sampling\] argument in the
+- Make “1” the default value for the [sampling] argument in the
   `ANND()` function.
-- Change the default value of the \[flipY\] argument in the
+- Change the default value of the [flipY] argument in the
   `readIdTracker()` functions from TRUE to FALSE as for other “read”
   functions
 - Add “AnimalTA” to an error message returned by the `DLsampleData()`
-  function when the \[tracker\] argument is misspelled.
+  function when the [tracker] argument is misspelled.
 - Add the possibility of retrieving the path to several tracking outputs
   at the same time using `DLsampleData()`.
-- Solve an error when both \[selTrack\] and \[timeWin\] arguments were
+- Solve an error when both [selTrack] and [timeWin] arguments were
   specified in `drawTracklet()` with several time windows, drawing only
   the specified tracklets on the first time window.
 - Processing time of `drawTracklet()` has also been speed up.
@@ -56,7 +56,7 @@
 
 ------------------------------------------------------------------------
 
-# v0.2.0
+# MoveR v0.2.0
 
 - Add `readAnimalTA` function to import tracking data from AnimalTA
   software.
@@ -71,13 +71,13 @@
   NB: while it increases the speed of the `slidWindow` function, it also
   make it less flexible, it is not possible to perform a custom
   computation over the sliding window anymore. Instead, the
-  \[statistic\] argument allows to choose some already implemented
+  [statistic] argument allows to choose some already implemented
   computation methods.
 - some minor modifications in `readTrackR` function
 
 ------------------------------------------------------------------------
 
-# v0.1.0
+# MoveR v0.1.0
 
 - This is the development release of the MoveR package.
 - This version is still under active development and might be unstable.

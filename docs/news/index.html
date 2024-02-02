@@ -73,7 +73,48 @@
       <small>Source: <a href="https://github.com/qpetitjean/MoveR/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
-  </main></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="mover-v030">MoveR v0.3.0<a class="anchor" aria-label="anchor" href="#mover-v030"></a></h2>
+<div class="section level4">
+<h4 id="thanks-to-software-x-journals-reviewers-for-insightful-comments-0-3-0">Thanks to Software X journal’s reviewers for insightful comments<a class="anchor" aria-label="anchor" href="#thanks-to-software-x-journals-reviewers-for-insightful-comments-0-3-0"></a></h4>
+<ul><li>Make ‘identity’ the default value for the [by] argument in the <code><a href="../reference/convert2Tracklets.html">convert2Tracklets()</a></code> function.</li>
+<li>Make ‘frame’ the default value for the [timeCol] argument in the <code><a href="../reference/ANND.html">ANND()</a></code>, <code><a href="../reference/resampTracklets.html">resampTracklets()</a></code>, <code><a href="../reference/sinuosity.html">sinuosity()</a></code>, <code><a href="../reference/speed.html">speed()</a></code>, <code><a href="../reference/temporalBoot.html">temporalBoot()</a></code>, <code><a href="../reference/temporalTrend.html">temporalTrend()</a></code>, <code><a href="../reference/turnAngle.html">turnAngle()</a></code> functions.</li>
+<li>
+<code><a href="../reference/speed.html">speed()</a></code> function now accept [frameR] (frame rate) and [timeU] (time unit) arguments allowing to return speed values according to the desired unit (e.g., pixels per frame, pixels per second).</li>
+<li>Make “1” the default value for the [sampling] argument in the <code><a href="../reference/ANND.html">ANND()</a></code> function.</li>
+<li>Change the default value of the [flipY] argument in the <code>readIdTracker()</code> functions from TRUE to FALSE as for other “read” functions</li>
+<li>Add “AnimalTA” to an error message returned by the <code><a href="../reference/DLsampleData.html">DLsampleData()</a></code> function when the [tracker] argument is misspelled.</li>
+<li>Add the possibility of retrieving the path to several tracking outputs at the same time using <code><a href="../reference/DLsampleData.html">DLsampleData()</a></code>.</li>
+<li>Solve an error when both [selTrack] and [timeWin] arguments were specified in <code>drawTracklet()</code> with several time windows, drawing only the specified tracklets on the first time window.</li>
+<li>Processing time of <code>drawTracklet()</code> has also been speed up.</li>
+<li>The “read” functions aiming to import tracking data from various tracking software now return an object of class (S3) “tracklets”, corresponding to a list of tracklets, meaning that converting the output of “read” functions to a list of tracklets (using <code><a href="../reference/convert2Tracklets.html">convert2Tracklets()</a></code>) before further processing is no longer needed.</li>
+<li>Add <code><a href="../reference/setInfo.html">setInfo()</a></code> and <code><a href="../reference/getInfo.html">getInfo()</a></code> functions to the utilities to specify and retrieve useful information such as frame rate (frameR), scale (scale) and image resolution (imgRes) to the tracklets object, allowing to avoid unnecessary repetition of code over several functions.</li>
+<li>Add the possibility to subset “varList” and “tracklets” objects using <code>[]</code>, also allow to use <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> on varList object to convert it to a data frame.</li>
+<li>
+<code><a href="../reference/convert2List.html">convert2List()</a></code> now returns an object of class “varList” which is still a list of variables and conserve the additional information appended to the converted tracklets object, meaning that additional information are conserved over conversion from tracklets to varList and back to tracklets.</li>
+<li>
+<code>trackstats()</code> is now deprecated (but still can be used) and is replaced by <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> according to the use of S3 methods for tracklets class objects when importing tracking data.</li>
+<li>Add the possibility to compute the distance between particles trajectory and a polygon edges using <code><a href="../reference/dist2Edge.html">dist2Edge()</a></code> by setting customFunc = “PolygonArena”.</li>
+<li>
+<code>cutTracklets()</code> and <code>sortVertices()</code> functions are now considered as an internal function and cannot be used anymore (prefer using filterTracklets).</li>
+<li>Reduce code redundancy by creating an internal function to return error messages .errorCheck.</li>
+</ul><hr></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="mover-v020">MoveR v0.2.0<a class="anchor" aria-label="anchor" href="#mover-v020"></a></h2>
+<ul><li>Add <code>readAnimalTA</code> function to import tracking data from AnimalTA software.</li>
+<li>Add <code>MSD</code> function to compute mean square displacement of particles according to the equations derived from Kareiva &amp; Shigesada (1983) or Turchin (2015).</li>
+<li>Modify the <code>Dcoef</code> function to properly use the equations derived from Kareiva &amp; Shigesada (1983) or Turchin (2015) to compute net square displacement index.</li>
+<li>Improve the speed of the <code>slidWindow</code> function by using <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">stats::filter</a></code> instead of a ‘for loop’ within the function’s body. NB: while it increases the speed of the <code>slidWindow</code> function, it also make it less flexible, it is not possible to perform a custom computation over the sliding window anymore. Instead, the [statistic] argument allows to choose some already implemented computation methods.</li>
+<li>some minor modifications in <code>readTrackR</code> function</li>
+</ul><hr></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.0" id="mover-v010">MoveR v0.1.0<a class="anchor" aria-label="anchor" href="#mover-v010"></a></h2>
+<ul><li>This is the development release of the MoveR package.</li>
+<li>This version is still under active development and might be unstable.</li>
+</ul></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
