@@ -32,6 +32,7 @@ MoveR <img src="man/figures/hexsticker.png" height="120" align="right"/>
 The `MoveR` `r fontawesome::fa("r-project", fill = "steelblue")` package aims to help users analyze the output of automated video-tracking solutions in a reproducible, reliable and open framework.
 
 > Preprint is now available here: https://biorxiv.org/cgi/content/short/2023.11.08.566216v1<br />
+> The edited version published in SoftwareX (Open Access) is now available here: https://www.softxjournal.com/article/S2352-7110(24)00045-1/fulltext<br />
 > Documentation website is available here: https://qpetitjean.github.io/MoveR/
 
 ## Dependencies
@@ -122,8 +123,7 @@ Besides the high flexibility and unified environment, the primary innovations pr
 
 Please cite this package as: 
 
-> Petitjean Q, Lartigue S, Cointe M, Ris N, Calcagno V. MoveR: an R package for easy processing and analysis of animal video-tracking data. 2023. bioRxiv., 2023.11.08.566216.
-
+> Petitjean, Q., Lartigue, S., Cointe, M., Ris, N., Calcagno, V., 2024. MoveR: An R package for easy processing and analysis of animal video-tracking data. SoftwareX 26, 101674. https://doi.org/10.1016/j.softx.2024.101674
 
 ## Code of Conduct
 
