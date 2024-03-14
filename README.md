@@ -21,13 +21,13 @@ style="width:1.13em;height:1em" /> package aims to help users analyze
 the output of automated video-tracking solutions in a reproducible,
 reliable and open framework.
 
-> Preprint is now available here:
-> <https://biorxiv.org/cgi/content/short/2023.11.08.566216v1><br /> The
-> edited version published in SoftwareX (Open Access) is now available
-> here:
+> Edited version of the article published in SoftwareX (Open Access) is
+> available here:<br />
 > <https://www.softxjournal.com/article/S2352-7110(24)00045-1/fulltext><br />
-> Documentation website is available here:
-> <https://qpetitjean.github.io/MoveR/>
+> Preprint is available
+> here:<br /><https://biorxiv.org/cgi/content/short/2023.11.08.566216v1><br />
+> Documentation website is available
+> here:<br /><https://qpetitjean.github.io/MoveR/>
 
 ## Dependencies
 
