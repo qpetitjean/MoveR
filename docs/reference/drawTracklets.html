@@ -14,7 +14,7 @@ cartesian coordinates between successive frames.'><!-- mathjax --><script src="h
     
     <a class="navbar-brand me-2" href="../index.html">MoveR</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,6 +95,7 @@ cartesian coordinates between successive frames.</p>
 <span>  timeCol <span class="op">=</span> <span class="st">"frame"</span>,</span>
 <span>  colGrad <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#000000"</span>, <span class="st">"#999999"</span>, <span class="st">"#6600CC"</span>, <span class="st">"#9999FF"</span>, <span class="st">"#33CCFF"</span>, <span class="st">"#0066CC"</span>,</span>
 <span>    <span class="st">"#66CC00"</span>, <span class="st">"#FFFF00"</span>, <span class="st">"#FF3300"</span>, <span class="st">"#CC0000"</span><span class="op">)</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  colId <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add2It <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  srt <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -147,6 +148,10 @@ corresponding to the time interval between which tracklets have to be drawn in f
 <dt>colGrad</dt>
 <dd><p>A vector of a ready to use color ramp or several colors specified
 either with their name or hexadecimal values (optional).</p></dd>
+
+
+<dt>alpha</dt>
+<dd><p>A numeric value modifying the opacity alpha of the colors; typically in 0,1 (optional).</p></dd>
 
 
 <dt>colId</dt>
@@ -258,22 +263,26 @@ for the x and y axis respectively (default = 0).</p></dd>
 <span class="r-in"><span>    <span class="op">}</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">TrackN</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># example 1: draw all tracklets, for the whole video duration</span></span></span>
-<span class="r-in"><span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">drawTracklets</span><span class="op">(</span><span class="va">TrackList</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="drawTracklets-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">drawTracklets</span><span class="op">(</span><span class="va">TrackList</span>,</span></span>
+<span class="r-in"><span>                   axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span> <span class="co"># example 1bis: draw all tracklets, for the whole video duration and change color gradient</span></span></span>
 <span class="r-in"><span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">drawTracklets</span><span class="op">(</span><span class="va">TrackList</span>,</span></span>
-<span class="r-in"><span>                      colGrad <span class="op">=</span> <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">viridis</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                      colGrad <span class="op">=</span> <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">viridis</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="drawTracklets-1.png" alt="" width="700" height="433"></span>
 <span class="r-plt img"><img src="drawTracklets-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># example 2: draw only selected tracklets (i.e., 1, 5 and 10), for the whole video duration</span></span></span>
 <span class="r-in"><span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">drawTracklets</span><span class="op">(</span><span class="va">TrackList</span>,</span></span>
-<span class="r-in"><span>                  selTrack <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                  selTrack <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                  axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="drawTracklets-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># example 3: draw tracklets according to time intervals (first interval 1 to 100, second interval 800 to 900 frames)</span></span></span>
 <span class="r-in"><span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">drawTracklets</span><span class="op">(</span><span class="va">TrackList</span>,</span></span>
-<span class="r-in"><span>                  timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">900</span><span class="op">)</span><span class="op">)</span>,<span class="op">)</span></span></span>
+<span class="r-in"><span>                  timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">900</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                  axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="drawTracklets-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="co"># example 4: draw tracklets according to time intervals (first interval 1 to 100, second interval 800 to 900 frames)</span></span></span>
@@ -281,6 +290,7 @@ for the x and y axis respectively (default = 0).</p></dd>
 <span class="r-in"><span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">drawTracklets</span><span class="op">(</span><span class="va">TrackList</span>,</span></span>
 <span class="r-in"><span>                  timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">900</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                  colId <span class="op">=</span> <span class="st">"tracklets"</span>,</span></span>
+<span class="r-in"><span>                  axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">6</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                  cex.leg <span class="op">=</span> <span class="fl">0.75</span>,</span></span>
 <span class="r-in"><span>                  ncol.leg <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="drawTracklets-5.png" alt="" width="700" height="433"></span>
@@ -289,6 +299,7 @@ for the x and y axis respectively (default = 0).</p></dd>
 <span class="r-in"><span> <span class="co"># (here we draw the starting and ending points of each tracklets in blue and green respectively)</span></span></span>
 <span class="r-in"><span> <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">drawTracklets</span><span class="op">(</span><span class="va">TrackList</span>,</span></span>
 <span class="r-in"><span>                  timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                  axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">6</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                  add2It <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="va">TrackList</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>                    <span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>                      <span class="va">TrackList</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">x.pos</span><span class="op">[</span><span class="va">TrackList</span><span class="op">[[</span><span class="va">j</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">frame</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span>,</span></span>
@@ -313,6 +324,7 @@ for the x and y axis respectively (default = 0).</p></dd>
 <span class="r-in"><span>                      selTrack <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">TrackList</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">12</span><span class="op">)</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                      timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                      colId <span class="op">=</span> <span class="st">"selTrack"</span>,</span></span>
+<span class="r-in"><span>                      axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">6</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                      cex.leg <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="drawTracklets-7.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span> </span></span>
@@ -325,6 +337,7 @@ for the x and y axis respectively (default = 0).</p></dd>
 <span class="r-in"><span>                selId <span class="op">=</span> <span class="va">ids</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                colId <span class="op">=</span> <span class="st">"selId"</span>,</span></span>
+<span class="r-in"><span>                axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">6</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                cex.leg <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="drawTracklets-8.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span>  </span></span>
@@ -337,8 +350,10 @@ for the x and y axis respectively (default = 0).</p></dd>
 <span class="r-in"><span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">drawTracklets</span><span class="op">(</span><span class="va">TrackList</span>,</span></span>
 <span class="r-in"><span>                selId <span class="op">=</span> <span class="va">ids</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                colId <span class="op">=</span> <span class="st">"tracklets"</span>,</span></span>
-<span class="r-in"><span>                axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">13</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                cex.leg <span class="op">=</span> <span class="fl">0.75</span>,</span></span>
+<span class="r-in"><span>                cex.axis <span class="op">=</span> <span class="fl">0.8</span>,</span></span>
+<span class="r-in"><span>                cex.lab <span class="op">=</span> <span class="fl">0.8</span>,</span></span>
 <span class="r-in"><span>                ncol.leg <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>                main <span class="op">=</span> <span class="st">"all id_7"</span>,</span></span>
 <span class="r-in"><span>                cex.main <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
@@ -347,10 +362,12 @@ for the x and y axis respectively (default = 0).</p></dd>
 <span class="r-in"><span>                selId <span class="op">=</span> <span class="va">ids</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                colId <span class="op">=</span> <span class="st">"tracklets"</span>,</span></span>
-<span class="r-in"><span>                axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">13</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                cex.leg <span class="op">=</span> <span class="fl">0.75</span>,</span></span>
+<span class="r-in"><span>                cex.axis <span class="op">=</span> <span class="fl">0.8</span>,</span></span>
+<span class="r-in"><span>                cex.lab <span class="op">=</span> <span class="fl">0.8</span>,</span></span>
 <span class="r-in"><span>                ncol.leg <span class="op">=</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>                main <span class="op">=</span> <span class="st">"id_7, \nspecific time window"</span>,</span></span>
+<span class="r-in"><span>                main <span class="op">=</span> <span class="st">"id_7\nspecifictime window"</span>,</span></span>
 <span class="r-in"><span>                cex.main <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co">#3</span></span></span>
 <span class="r-in"><span>  <span class="fu">MoveR</span><span class="fu">::</span><span class="fu">drawTracklets</span><span class="op">(</span><span class="va">TrackList</span>,</span></span>
@@ -358,10 +375,12 @@ for the x and y axis respectively (default = 0).</p></dd>
 <span class="r-in"><span>                selId <span class="op">=</span> <span class="va">ids</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                timeWin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">800</span>, <span class="fl">1000</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                colId <span class="op">=</span> <span class="st">"selTrack"</span>,</span></span>
-<span class="r-in"><span>                axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">13</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                axLabPos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">6</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                cex.leg <span class="op">=</span> <span class="fl">0.75</span>,</span></span>
+<span class="r-in"><span>                cex.axis <span class="op">=</span> <span class="fl">0.8</span>,</span></span>
+<span class="r-in"><span>                cex.lab <span class="op">=</span> <span class="fl">0.8</span>,</span></span>
 <span class="r-in"><span>                ncol.leg <span class="op">=</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>                main <span class="op">=</span> <span class="st">"id_7, \nspecific time window, specific tracklets"</span>,</span></span>
+<span class="r-in"><span>                main <span class="op">=</span> <span class="st">"id_7\nspecific time window &amp; tracklets"</span>,</span></span>
 <span class="r-in"><span>                cex.main <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="drawTracklets-9.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>

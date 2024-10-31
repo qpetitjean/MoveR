@@ -123,25 +123,30 @@ TrackList <-
     }), seq(TrackN)))
 
  # example 1: draw all tracklets, for the whole video duration
- MoveR::drawTracklets(TrackList)
+ MoveR::drawTracklets(TrackList,
+                   axLabPos = c(1, -6))
  
  # example 1bis: draw all tracklets, for the whole video duration and change color gradient
  MoveR::drawTracklets(TrackList,
-                      colGrad = viridis::viridis(10))
+                      colGrad = viridis::viridis(10),
+                      axLabPos = c(1, -6))
 
  # example 2: draw only selected tracklets (i.e., 1, 5 and 10), for the whole video duration
  MoveR::drawTracklets(TrackList,
-                  selTrack = c(1, 5, 10))
+                  selTrack = c(1, 5, 10),
+                  axLabPos = c(1, -6))
 
  # example 3: draw tracklets according to time intervals (first interval 1 to 100, second interval 800 to 900 frames)
  MoveR::drawTracklets(TrackList,
-                  timeWin = list(c(1, 100), c(800, 900)),)
+                  timeWin = list(c(1, 100), c(800, 900)),
+                  axLabPos = c(1, -6))
 
  # example 4: draw tracklets according to time intervals (first interval 1 to 100, second interval 800 to 900 frames)
  # and color the tracklets according to their Id instead of time elapsed
  MoveR::drawTracklets(TrackList,
                   timeWin = list(c(1, 100), c(800, 900)),
                   colId = "tracklets",
+                  axLabPos = c(1, -6),
                   cex.leg = 0.75,
                   ncol.leg = 2)
 
@@ -149,6 +154,7 @@ TrackList <-
  # (here we draw the starting and ending points of each tracklets in blue and green respectively)
  MoveR::drawTracklets(TrackList,
                   timeWin = list(c(1, 100)),
+                  axLabPos = c(1, -6),
                   add2It = list(for (j in seq(TrackList)) {
                     points(
                       TrackList[[j]]$x.pos[TrackList[[j]]$frame == 1],
@@ -172,6 +178,7 @@ TrackList <-
                       selTrack = names(TrackList)[c(1, 5, 10, 12)],
                       timeWin = list(c(1, 100), c(800, 1000)),
                       colId = "selTrack",
+                      axLabPos = c(1, -6),
                       cex.leg = 0.75)
  
   # example 7: select some particles' identity, time windows and color tracklet (all tracklets belonging to the selected particles' identity) according to particles identity
@@ -183,6 +190,7 @@ TrackList <-
                 selId = ids[c(1, 5, 10)],
                 timeWin = list(c(1, 100), c(800, 1000)),
                 colId = "selId",
+                axLabPos = c(1, -6),
                 cex.leg = 0.75)
   
   # example 8: make a panel plot with 
@@ -194,8 +202,10 @@ TrackList <-
   MoveR::drawTracklets(TrackList,
                 selId = ids[1],
                 colId = "tracklets",
-                axLabPos = c(-13, 2),
+                axLabPos = c(-6, 2),
                 cex.leg = 0.75,
+                cex.axis = 0.8,
+                cex.lab = 0.8,
                 ncol.leg = 1,
                 main = "all id_7",
                 cex.main = 0.8)
@@ -204,10 +214,12 @@ TrackList <-
                 selId = ids[1],
                 timeWin = list(c(1, 100), c(800, 1000)),
                 colId = "tracklets",
-                axLabPos = c(-13, 2),
+                axLabPos = c(-6, 2),
                 cex.leg = 0.75,
+                cex.axis = 0.8,
+                cex.lab = 0.8,
                 ncol.leg = 1,
-                main = "id_7, \nspecific time window",
+                main = "id_7\nspecifictime window",
                 cex.main = 0.8)
   #3
   MoveR::drawTracklets(TrackList,
@@ -215,10 +227,12 @@ TrackList <-
                 selId = ids[1],
                 timeWin = list(c(1, 100), c(800, 1000)),
                 colId = "selTrack",
-                axLabPos = c(-13, 2),
+                axLabPos = c(-6, 2),
                 cex.leg = 0.75,
+                cex.axis = 0.8,
+                cex.lab = 0.8,
                 ncol.leg = 1,
-                main = "id_7, \nspecific time window, specific tracklets",
+                main = "id_7\nspecific time window & tracklets",
                 cex.main = 0.8)
 
 }
