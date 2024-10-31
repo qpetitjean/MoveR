@@ -17,7 +17,7 @@ speed(
 a column containing time information, whatever the unit, over the trajectory.}
 
 \item{scale}{A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-(e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}, default = 1).}
+(e.g., size in cm / size in pixels, default = 1).}
 
 \item{timeCol}{A character string corresponding to the name of the column containing Time information (default = 'frame').}
 

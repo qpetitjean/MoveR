@@ -9,7 +9,8 @@ IdStateSeq(
   Bstate = NULL,
   pattern = NULL,
   perl = FALSE,
-  fixed = FALSE
+  fixed = FALSE,
+  na.handle = "NA"
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ containing behavioral patterns (e.g., behavioral states, location in areas).}
 \item{perl}{A logical value (i.e., TRUE or FALSE) indicating whether Perl-like regular expression should be used (default = FALSE, see \code{\link[base]{regex}}).}
 
 \item{fixed}{A logical value (i.e., TRUE or FALSE) indicating whether a literal regular expression (exact match) should be used (default = FALSE, see \code{\link[base]{regex}}).}
+
+\item{na.handle}{A character string specifying the replacement value for \code{NA} entries in the \code{Bstate} column. The default is "NA", but it can be set to any character that does not conflict with the chosen regular expression. This allows for flexible handling of missing values to ensure accurate pattern matching.}
 }
 \value{
 This function returns a list containing the part of the tracklets corresponding to the specified pattern.

@@ -15,6 +15,7 @@
            x.pos = NA,
            y.pos = NA,
            speedCol = NA,
+           geometry = NA,
            minSpeed = NA,
            timeCol = NA,
            imgHeight = NA,
@@ -97,6 +98,9 @@
     }
     if (!identical(customFunc, NA) && is.null(customFunc)) {
       return("[customFunc] argument is missing, a customFunc is needed to compute metric")
+    }
+    if (!identical(geometry, NA) && !geometry %in% c("point", "line", "multipoint")) {
+      return("Invalid geometry type. Choose either 'point', 'multipoint' or 'line'.")
     }
     if (!identical(trackDat, NA)) {
       if (!identical(trackDat, NA) && !inherits(trackDat, "tracklets")) {

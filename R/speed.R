@@ -9,7 +9,7 @@
 #' a column containing time information, whatever the unit, over the trajectory.
 #'
 #' @param scale A ratio corresponding to the scaling factor to be applied to the trajectory coordinates
-#' (e.g., size in cm / size in pixels; see \code{\link[trajr]{TrajScale}}, default = 1).
+#' (e.g., size in cm / size in pixels, default = 1).
 #'
 #' @param timeCol A character string corresponding to the name of the column containing Time information (default = 'frame').
 #'
@@ -94,14 +94,14 @@ speed <- function(df,
     stop("[timeU] argument is unknown:","[", timeU, "],", " choose among 'f', 's', 'm', 'h' or 'd' to convert speed values to the desired time unit")
   }
   
-  trj <-
-    trajr::TrajFromCoords(df[, c("x.pos", "y.pos", timeCol)],
-                          timeCol = 3, 
-                          spatialUnits = "NA",
-                          timeUnits = "NA")
-  trj <- trajr::TrajScale(trj, scale, units = "NA")
-  trjderiv <- trajr::TrajDerivatives(trj)
-  speedRes <-  base::append(trjderiv[[1]], NA, after = 0)
+  trj <- df[, c("x.pos", "y.pos", timeCol)]
+  if(scale != 1){
+    trj[, c("x.pos", "y.pos")] <- trj[, c("x.pos", "y.pos")] * scale
+  }
+  d <- stats::setNames(lapply(c("x.pos", "y.pos", timeCol), function(x) {
+    c(NA, diff(trj[[x]]))
+  }), c("x.pos", "y.pos", timeCol))
+  speedRes <- sqrt(d[["x.pos"]]^2 + d[["y.pos"]]^2) / d[[timeCol]]
   
   if(timeU == "s"){ 
     speedRes <- speedRes * frameR

@@ -20,6 +20,8 @@
 #'
 #' @param colGrad A vector of a ready to use color ramp or several colors specified
 #' either with their name or hexadecimal values (optional).
+#' 
+#' @param alpha A numeric value modifying the opacity alpha of the colors; typically in [0,1] (optional).
 #'
 #' @param colId A character string corresponding to a column name present within each tracklet's data frame from the trackDat list 
 #' and which is used as grouping factor to color the tracklets (default = timeCol).
@@ -206,6 +208,7 @@ drawTracklets <- function(trackDat,
                             "#FF3300",
                             "#CC0000"
                           ),
+                          alpha = 1,
                           colId = NULL,
                           add2It = NULL,
                           srt = 0,
@@ -300,6 +303,9 @@ drawTracklets <- function(trackDat,
   }
   colVal <- colVal[order(colVal)]
   coloration <- Pal(length(colVal[!is.na(colVal)]))
+  if(alpha != 1){
+  coloration <- adjustcolor(coloration, alpha = alpha)
+  }
   
   # FORCE the number of column in the legend if colVal is numeric
   if (is.numeric(colVal[!is.na(colVal)])) {

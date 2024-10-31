@@ -13,6 +13,7 @@ drawTracklets(
   timeCol = "frame",
   colGrad = c("#000000", "#999999", "#6600CC", "#9999FF", "#33CCFF", "#0066CC",
     "#66CC00", "#FFFF00", "#FF3300", "#CC0000"),
+  alpha = 1,
   colId = NULL,
   add2It = NULL,
   srt = 0,
@@ -50,6 +51,8 @@ corresponding to the time interval between which tracklets have to be drawn in f
 
 \item{colGrad}{A vector of a ready to use color ramp or several colors specified
 either with their name or hexadecimal values (optional).}
+
+\item{alpha}{A numeric value modifying the opacity alpha of the colors; typically in \link{0,1} (optional).}
 
 \item{colId}{A character string corresponding to a column name present within each tracklet's data frame from the trackDat list
 and which is used as grouping factor to color the tracklets (default = timeCol).

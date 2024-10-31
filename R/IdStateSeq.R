@@ -15,6 +15,8 @@
 #'
 #' @param fixed A logical value (i.e., TRUE or FALSE) indicating whether a literal regular expression (exact match) should be used (default = FALSE, see \code{\link[base]{regex}}).
 #'
+#' @param na.handle A character string specifying the replacement value for `NA` entries in the `Bstate` column. The default is "NA", but it can be set to any character that does not conflict with the chosen regular expression. This allows for flexible handling of missing values to ensure accurate pattern matching.
+#' 
 #' @return This function returns a list containing the part of the tracklets corresponding to the specified pattern.
 #' The parts of the tracklets corresponding to the specified pattern are grouped into a list named according to the id of the original tracklet
 #' (e.g. the first detected pattern extracted from the first tracklet is located in the list named tracklet_1 and is named tracklet_1.1).
@@ -91,15 +93,21 @@ IdStateSeq <-
            Bstate = NULL,
            pattern = NULL,
            perl = FALSE,
-           fixed = FALSE) {
+           fixed = FALSE,
+           na.handle = "NA") {
     
     error <- .errorCheck(trackDat = trackDat, Bstate = Bstate, pattern = pattern)
     if(!is.null(error)){
       stop(error)
     }
     
-    # transform the vector indicating the state of the individual as character
-    # string for each tracklet
+    # handle NA values to avoid positions miscalculation after collapsing the string into vector
+    trackDat <- lapply(trackDat, function(x) {
+      x[[Bstate]][is.na(x[[Bstate]])] <- na.handle
+      return(x)
+    })
+    
+    # transform the vector indicating the state of the individual as character string for each tracklet
     toMatch <-
       lapply(trackDat, function(x) {
         paste(x[[Bstate]], collapse = "")
@@ -144,7 +152,7 @@ IdStateSeq <-
         lapply(seq(length(starts[[x]])), function(y) {
           Pos <- c(starts[[x]][[y]]:(starts[[x]][[y]] + (len[[x]][[y]] - 1)))
           TruePos <-
-            cumsum(unlist(lapply(strsplit(trackDat[[x]][[Bstate]], ""), length)))
+            cumsum(unlist(lapply(strsplit(as.character(trackDat[[x]][[Bstate]]), ""), length)))
           Res <- trackDat[[x]][(TruePos %in% Pos),]
           return(Res)
         })

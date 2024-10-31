@@ -11,6 +11,7 @@
   x.pos = NA,
   y.pos = NA,
   speedCol = NA,
+  geometry = NA,
   minSpeed = NA,
   timeCol = NA,
   imgHeight = NA,
