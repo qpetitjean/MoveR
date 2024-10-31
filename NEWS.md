@@ -1,3 +1,11 @@
+# MoveR v0.3.1
+
+### Some minor updates: 
+- `speed` function calculation has been simplified to remove dependency on the trajr package, resulting in a more direct computation method (minor differences from previous versions may occur).
+- `drawTracklets` function now support color opacity adjustments through `alpha` argument.
+- `IdStateSeq` function now handles Boolean (TRUE or FALSE), numeric, and character values. Also, the `na.handle` argument now allows to specify a replacement for NA values, preventing conflicts with chosen regular expressions.
+
+------------------------------------------------------------------------
 
 # MoveR v0.3.0
 
