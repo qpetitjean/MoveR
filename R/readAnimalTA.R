@@ -15,7 +15,7 @@
 #' The function can also append all the others elements returned by the tracking software (see [rawDat] argument)
 #' Also, the function can flip y coordinates (see [flipY] argument).
 #'
-#' @param animalTAPath The full path of the TrackR output file (.csv).
+#' @param animalTAPath The full path of the AnimalTA output file (.csv).
 #'
 #' @param flipY A logical value (i.e., TRUE or FALSE) indicating whether the origin of y coordinates should be flipped. If TRUE, y coordinates are flipped to start on the top-left (default = FALSE).
 #'

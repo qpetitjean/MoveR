@@ -52,8 +52,9 @@
 #'       frame = j$time
 #'     )
 #'   }), seq(TrackN))
-#' ## convert it to a simple list of vector
-#' plainTab <- MoveR::convert2List(TrackList)
+#'   
+#' ## convert it to a simple dataframe
+#' plainTab <- do.call(rbind, Map(function(x, nm) cbind(x, trackletId = nm), TrackList, names(TrackList)))
 #' 
 #' # Import the data as an object of class "tracklets" (the function can also retrieve the plainTab from a table file by giving the full path to the file)
 #' # also do not flip Y coordinates (start on the bottom-left)

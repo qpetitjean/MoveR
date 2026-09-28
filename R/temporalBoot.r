@@ -549,7 +549,7 @@ temporalBoot <-
                 na.rm = T
               ) *
                 sdx[[z]] / sqrt(samplen[[z]])
-            ), meanBoot[[paste(z, "mean", sep="_")]], i, length(WhoWhen)
+            ), meanBoot[[paste(z, "mean", sep="_")]], i, samplen[[z]]
             )))
           }), names(customFunc))
         # append the results (95%CI, mean and time) to the boot.ci.student list

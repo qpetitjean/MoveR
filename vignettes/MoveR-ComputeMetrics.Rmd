@@ -634,7 +634,7 @@ Also, as the speed metrics, the distance traveled and the surface explored exhib
 ```{r SynthPlot, echo=TRUE, message=FALSE, warning=FALSE, fig.align = 'center', out.width="100%", fig.cap="Evolution of the activity, sinuosity and speed of <em>Trichogramma</em> individuals and studentize 95% confidence interval over time and temperature ramp (from 35\u00B0C to 45\u00B0C and back to 35\u00B0C, yellow to red line). The upper panel represent the evolution of the number of detected individuals relative to the true number of individual introduced in the arena (i.e., 24) over the experiment."}
 # import a custom function to plot the results
 source(
-  "https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/main/RScripts/Strains_plotFunc.r"
+  "https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/main/R_Func/Strains_plotFunc.r"
 )
 
 # plot the activity, speed and sinuosity and studentize 95% confidence interval as an envelope as well as the number of detection over the experiment.
