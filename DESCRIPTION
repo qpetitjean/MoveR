@@ -23,7 +23,7 @@ Authors@R: c(
            email   = "melina.cointe@inrae.fr"))
 Description: A set of functions helping users to process (i.e., import, filter, draw and analyse) movement data provided by 
     tracking software.  
-URL: https://github.com/qpetitjean/MoveR
+URL: http://qpetitjean.github.io/MoveR
 BugReports: https://github.com/qpetitjean/MoveR/issues
 License: GPL (>= 2)
 Encoding: UTF-8

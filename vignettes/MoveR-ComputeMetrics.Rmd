@@ -429,7 +429,7 @@ ANNDRes <- MoveR::ANND(
 ANNDResPlot <- merge(ANNDRes$ANND, trackDatL[c(8,10)], by = "runTimelinef")
 
 # import a custom function to plot the results
-source("https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/main/RScripts/Strains_plotFunc.r")
+source("https://raw.githubusercontent.com/qpetitjean/TrichoG_Thermal_Biology/refs/heads/main/R_Func/Strains_plotFunc.r")
 
 # plot the ANND and studentize 95% confidence interval as an envelope as well as the number of detection over the experiment.
 strains_plot(
